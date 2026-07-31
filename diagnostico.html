@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnóstico Financeiro — HZ Invest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: #F6F4EE; font-family: 'Manrope', sans-serif; color: #15153F; min-height: 100vh; display: flex; flex-direction: column; }
+  ::selection { background: rgba(111,168,160,0.35); }
+  input::placeholder, textarea::placeholder { color: rgba(21,21,63,0.35); }
+  select { -webkit-appearance: none; appearance: none; }
+  textarea { resize: vertical; }
+  button { font-family: 'Manrope', sans-serif; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 28px 64px; border-bottom: 1px solid rgba(27,27,92,0.14); }
+  .brand { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: #1B1B5C; letter-spacing: 0.01em; text-decoration: none; }
+  .brand em { font-style: italic; color: #4F8C84; font-weight: 500; }
+  .topbar-label { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(21,21,63,0.45); text-align: right; }
+
+  .stepper { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 16px 12px; border-bottom: 1px solid rgba(27,27,92,0.14); flex-wrap: wrap; }
+  .step-cell { display: flex; align-items: center; gap: 4px; }
+  .step-node { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; font-feature-settings: 'tnum'; flex-shrink: 0; }
+  .step-node.active { background: #1B1B5C; color: #FBFAF6; border: 1px solid #1B1B5C; }
+  .step-node.done { background: transparent; color: #4F8C84; border: 1px solid #4F8C84; }
+  .step-node.todo { background: transparent; color: rgba(21,21,63,0.35); border: 1px solid rgba(27,27,92,0.2); }
+  .step-line { width: 14px; height: 1px; background: rgba(27,27,92,0.2); }
+
+  .main { padding: 56px 24px 80px; flex: 1; display: flex; justify-content: center; }
+  .container { width: 100%; max-width: 760px; }
+
+  .hero { position: relative; overflow: hidden; background: #1B1B5C; border-radius: 8px; color: #FBFAF6; padding: 72px 64px; }
+  .hero-glow { position: absolute; top: -60px; right: -60px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(111,168,160,0.35) 0%, rgba(111,168,160,0) 70%); pointer-events: none; }
+  .hero-eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; position: relative; }
+  .hero-eyebrow-line { width: 48px; height: 2px; background: #6FA8A0; flex-shrink: 0; }
+  .hero-eyebrow-text { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #6FA8A0; }
+  .hero-title { font-family: 'Fraunces', serif; font-size: 44px; line-height: 1.15; font-weight: 500; max-width: 560px; position: relative; }
+  .hero-title em { font-style: italic; color: #6FA8A0; }
+  .hero-sub { margin-top: 28px; font-size: 15.5px; line-height: 1.7; color: rgba(251,250,246,0.75); max-width: 520px; position: relative; }
+  .entregaveis { margin-top: 40px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 32px; max-width: 560px; position: relative; }
+  .entregavel { display: flex; gap: 10px; align-items: baseline; }
+  .entregavel-dash { font-family: 'Fraunces', serif; font-style: italic; color: #6FA8A0; font-size: 15px; flex-shrink: 0; }
+  .entregavel-text { font-size: 14.5px; line-height: 1.5; color: rgba(251,250,246,0.9); }
+  .cta-wrap { margin-top: 40px; display: flex; flex-direction: row; align-items: center; gap: 28px; flex-wrap: wrap; position: relative; }
+  .btn-cta { background: #FBFAF6; color: #1B1B5C; border: none; border-radius: 6px; padding: 16px 32px; font-weight: 700; font-size: 15px; cursor: pointer; letter-spacing: 0.01em; }
+  .btn-cta:hover { background: #6FA8A0; color: #FBFAF6; }
+  .cta-note { font-size: 13px; color: rgba(251,250,246,0.55); line-height: 1.5; }
+
+  .step-eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .step-eyebrow-line { width: 48px; height: 2px; background: #4F8C84; flex-shrink: 0; }
+  .step-eyebrow-text { font-size: 12px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: #4F8C84; }
+  .step-title { font-family: 'Fraunces', serif; font-size: 34px; font-weight: 500; color: #1B1B5C; margin-bottom: 10px; }
+  .step-desc { font-size: 15px; color: rgba(21,21,63,0.6); margin-bottom: 28px; max-width: 560px; line-height: 1.6; }
+
+  .card { background: #FBFAF6; border: 1px solid rgba(27,27,92,0.14); border-radius: 8px; padding: 40px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .grid2.tight { gap: 20px; }
+  .span2 { grid-column: span 2; }
+  .grid1 { display: grid; grid-template-columns: 1fr; gap: 24px; }
+
+  .f-label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(21,21,63,0.45); margin-bottom: 8px; }
+  .f-input { width: 100%; padding: 13px 14px; border: 1px solid rgba(27,27,92,0.2); border-radius: 6px; font-family: 'Manrope', sans-serif; font-size: 15px; color: #15153F; background: #FBFAF6; }
+  .f-input:focus { outline: none; border-color: #4F8C84; }
+  .f-input:disabled { opacity: 0.6; }
+  .f-input.num { font-feature-settings: 'tnum'; }
+  .f-hint { font-size: 12.5px; color: rgba(21,21,63,0.5); margin-top: 8px; }
+
+  .rule { grid-column: span 2; height: 1px; background: rgba(27,27,92,0.14); margin: 4px 0 8px; }
+  .rule-full { height: 1px; background: rgba(27,27,92,0.14); margin: 28px 0; }
+
+  .seg { display: inline-flex; border: 1px solid rgba(27,27,92,0.2); border-radius: 6px; overflow: hidden; }
+  .seg.full { width: 100%; }
+  .seg button { padding: 12px 22px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; background: transparent; color: rgba(21,21,63,0.55); }
+  .seg button + button { border-left: 1px solid rgba(27,27,92,0.2); }
+  .seg button.on { background: #1B1B5C; color: #FBFAF6; }
+  .seg.stretch button { flex: 1; padding: 13px 10px; font-size: 13px; }
+
+  .totalizer { position: relative; overflow: hidden; background: #1B1B5C; border-radius: 8px; padding: 24px 28px; color: #FBFAF6; margin-bottom: 28px; }
+  .totalizer.flat { margin-bottom: 0; }
+  .totalizer-glow { position: absolute; top: -30px; right: -30px; width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, rgba(111,168,160,0.35) 0%, rgba(111,168,160,0) 70%); pointer-events: none; }
+  .totalizer-label { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #6FA8A0; margin-bottom: 8px; position: relative; }
+  .totalizer-value { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 500; font-feature-settings: 'tnum'; position: relative; }
+
+  .list-item { border: 1px solid rgba(27,27,92,0.14); border-radius: 8px; padding: 20px; margin-bottom: 14px; }
+  .list-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .list-title { font-size: 13px; font-weight: 700; color: #1B1B5C; }
+  .link-remove { background: transparent; border: none; color: rgba(21,21,63,0.45); font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: underline; }
+  .link-add { display: inline-block; margin-top: 4px; background: transparent; border: none; color: #4F8C84; font-size: 14px; font-weight: 700; cursor: pointer; padding: 0; }
+  .link-edit { background: transparent; border: 1px solid rgba(27,27,92,0.25); color: #1B1B5C; font-size: 12.5px; font-weight: 700; cursor: pointer; padding: 6px 14px; border-radius: 5px; }
+
+  .review-card { margin-bottom: 20px; }
+  .review-title { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 500; color: #1B1B5C; }
+  .review-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; }
+  .review-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(21,21,63,0.4); margin-bottom: 3px; }
+  .review-value { font-size: 14.5px; color: #15153F; line-height: 1.5; }
+  .confirm-banner { background: #1B1B5C; border-radius: 8px; padding: 28px 32px; color: #FBFAF6; font-size: 14.5px; line-height: 1.6; }
+
+  .error-msg { text-align: right; font-size: 13px; color: #B34747; margin-bottom: 10px; line-height: 1.6; }
+  .footer-nav { display: flex; flex-direction: row; justify-content: space-between; align-items: center; margin-top: 36px; }
+  .btn-back { background: transparent; border: none; color: rgba(21,21,63,0.55); font-weight: 600; font-size: 14px; cursor: pointer; padding: 12px 4px; }
+  .btn-continue { border: none; border-radius: 6px; padding: 16px 36px; font-weight: 700; font-size: 15px; cursor: pointer; background: #1B1B5C; color: #FBFAF6; }
+  .btn-continue.blocked { background: rgba(27,27,92,0.35); color: rgba(251,250,246,0.85); }
+
+  .done-hero { text-align: center; }
+  .done-title { font-family: 'Fraunces', serif; font-style: italic; font-size: 28px; color: #6FA8A0; margin-bottom: 16px; position: relative; }
+  .done-text { font-size: 16px; line-height: 1.7; color: rgba(251,250,246,0.8); max-width: 460px; margin: 0 auto; position: relative; }
+  .done-actions { margin-top: 32px; position: relative; }
+  .btn-report { display: inline-block; background: #FBFAF6; color: #1B1B5C; text-decoration: none; border-radius: 6px; padding: 16px 32px; font-weight: 700; font-size: 15px; }
+  .btn-report:hover { background: #6FA8A0; color: #FBFAF6; }
+  .link-restart { display: block; margin-top: 18px; font-size: 13px; color: rgba(251,250,246,0.55); background: none; border: none; cursor: pointer; text-decoration: underline; margin-left: auto; margin-right: auto; position: relative; }
+
+  .gasto-slider-box { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .gasto-slider-box span { font-size: 14px; color: rgba(21,21,63,0.6); }
+  .check-label { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px; color: rgba(21,21,63,0.55); cursor: pointer; }
+
+  @media (max-width: 639px) {
+    .topbar { padding: 16px 20px; }
+    .topbar-label { font-size: 9px; letter-spacing: 0.14em; }
+    .step-node { width: 22px; height: 22px; font-size: 10px; }
+    .step-line { width: 8px; }
+    .main { padding: 28px 18px 56px; }
+    .hero { padding: 36px 24px; }
+    .hero-title { font-size: 28px; }
+    .entregaveis { grid-template-columns: 1fr; }
+    .cta-wrap { flex-direction: column; align-items: stretch; gap: 16px; }
+    .btn-cta { width: 100%; text-align: center; }
+    .step-title { font-size: 26px; }
+    .card { padding: 24px 20px; }
+    .grid2, .review-grid { grid-template-columns: 1fr; }
+    .span2, .rule { grid-column: auto; }
+    .seg-wrap-mobile .seg { width: 100%; }
+    .seg-wrap-mobile .seg button { flex: 1; }
+    .footer-nav { flex-direction: column-reverse; gap: 12px; margin-top: 28px; }
+    .btn-continue { width: 100%; }
+    .error-msg { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="index.html">HZ <em>Invest</em></a>
+  <div class="topbar-label">Diagnóstico Financeiro</div>
+</div>
+
+<div class="stepper" id="stepper" style="display:none;"></div>
+
+<div class="main">
+  <div class="container" id="app"></div>
+</div>
+
+<script>
+"use strict";
+
+/* ===================== Constantes ===================== */
+var UF_LIST = [["AC","Acre"],["AL","Alagoas"],["AP","Amapá"],["AM","Amazonas"],["BA","Bahia"],["CE","Ceará"],["DF","Distrito Federal"],["ES","Espírito Santo"],["GO","Goiás"],["MA","Maranhão"],["MT","Mato Grosso"],["MS","Mato Grosso do Sul"],["MG","Minas Gerais"],["PA","Pará"],["PB","Paraíba"],["PR","Paraná"],["PE","Pernambuco"],["PI","Piauí"],["RJ","Rio de Janeiro"],["RN","Rio Grande do Norte"],["RS","Rio Grande do Sul"],["RO","Rondônia"],["RR","Roraima"],["SC","Santa Catarina"],["SP","São Paulo"],["SE","Sergipe"],["TO","Tocantins"]];
+var ESTADO_CIVIL = ["Solteiro(a)", "Casado(a)", "União estável", "Divorciado(a)", "Viúvo(a)"];
+var OCUPACOES = ["Tecnologia", "Saúde", "Educação", "Direito", "Finanças / Contabilidade", "Comércio / Varejo", "Indústria", "Serviços", "Setor Público", "Autônomo(a) / Empreendedor(a)", "Aposentado(a)", "Outro"];
+var ENTREGAVEIS = ["Diagnóstico completo das suas finanças", "Seu arquétipo financeiro", "Plano de ação personalizado", "Projeção de patrimônio futuro"];
+var DESPESA_CATEGORIES = [["alimentacao","Alimentação"],["educacao","Educação"],["impostos","Impostos"],["investimentos","Investimentos / Poupança"],["lazer","Lazer"],["moradia","Moradia"],["presentes","Presentes / Doações"],["saude","Saúde"],["seguros","Seguros"],["servicos","Serviços Diversos"],["transporte","Transporte"],["vestuario","Vestuário / Cuidados Pessoais"]];
+var INVEST_FIELDS = [["investPoupanca","Poupança"],["investRendaFixaPublica","Renda Fixa Pública (Tesouro Direto)"],["investRendaFixaPrivada","Renda Fixa Privada (CDB/LCI/LCA)"],["investRendaVariavel","Renda Variável (ações/FIIs/ETFs)"],["investCripto","Criptomoedas"],["investOutros","Outros"]];
+var PERFIL_RISCO = ["Conservador", "Moderado", "Arrojado"];
+var SABE_RENTABILIDADE = ["Não sei", "Ideia vaga", "Sei aproximado", "Sei exato"];
+var INVESTE_AUTOMATICO = ["Só o que sobra", "Às vezes automático", "Quase sempre", "Sempre automático"];
+var USOU_ROTATIVO = ["Frequentemente", "Já aconteceu 1-2 vezes", "Raramente", "Nunca"];
+var ONDE_APLICADA = ["Poupança", "Conta corrente", "CDB liquidez diária", "Tesouro Selic", "Outro"];
+var TEMPO_SEM_RENDA = ["Dias", "Semanas", "Poucos meses", "6+ meses"];
+var TEMPO_RENDA_GARANTIDA = ["Nenhum tempo", "Menos de 3 meses", "3-6 meses", "6+ meses ou tenho seguro invalidez"];
+var REVISOU_APOLICES = ["Nunca revisei", "Faz mais de 2 anos", "Há 1-2 anos", "Recentemente"];
+var METAS_DEFINIDAS = ["Não tenho metas", "Ideias vagas", "Algumas com prazo/valor", "Todas com prazo/valor"];
+var CALCULOU_GUARDAR = ["Não", "Pensei mas não calculei", "Calculei aproximado", "Calculei exato"];
+var SOBRA_EMPATA = ["Sobra", "Empata", "Fico no vermelho"];
+var SABE_PARA_ONDE = ["Sei bem, sem surpresas", "Mais ou menos, às vezes me surpreendo", "Não, tenho surpresas com frequência"];
+
+var STEP_META = {
+  1: { eyebrow: "Etapa 1 de 10", title: "Identificação", desc: "Alguns dados básicos pra personalizar seu relatório e mantermos contato sobre seu diagnóstico." },
+  2: { eyebrow: "Etapa 2 de 10", title: "Renda Mensal", desc: "Sua renda líquida e a do seu cônjuge, se aplicável, além de outras fontes de renda." },
+  3: { eyebrow: "Etapa 3 de 10", title: "Despesas", desc: "Seus gastos mensais por categoria. Pode preencher direto, sem detalhar sub-itens." },
+  4: { eyebrow: "Etapa 4 de 10", title: "Patrimônio e Investimentos", desc: "Imóveis, veículos, investimentos e seu perfil como investidor." },
+  5: { eyebrow: "Etapa 5 de 10", title: "Dívidas", desc: "Cartão de crédito, cheque especial, empréstimos e outras dívidas em aberto." },
+  6: { eyebrow: "Etapa 6 de 10", title: "Liquidez e Reserva de Emergência", desc: "Quanto você tem guardado para imprevistos e onde está aplicado." },
+  7: { eyebrow: "Etapa 7 de 10", title: "Gestão de Risco (Seguros)", desc: "Seguro de vida, plano de saúde e proteção da sua renda." },
+  8: { eyebrow: "Etapa 8 de 10", title: "Metas e Planejamento de Longo Prazo", desc: "Aposentadoria e outras metas financeiras de vida." },
+  9: { eyebrow: "Etapa 9 de 10", title: "Situação Atual", desc: "Como você enxerga sua própria situação financeira hoje." },
+  10: { eyebrow: "Etapa 10 de 10", title: "Revisão e Finalização", desc: "Confira tudo antes de enviar. Você pode voltar e editar qualquer etapa." }
+};
+
+var STORAGE_FORM = "hz_diagnostico_form";
+var STORAGE_DATA = "hz_diagnostico_data";
+
+/* ===================== Estado ===================== */
+function defaultData() {
+  return {
+    nome: "", email: "", estado: "", cidade: "", idade: "",
+    estadoCivil: "", temConjuge: "", idadeConjuge: "", filhos: "", ocupacao: "",
+    rendaPropria: 0, rendaConjuge: 0, outrasRendas: [],
+    despesas: { alimentacao: 0, educacao: 0, impostos: 0, investimentos: 0, lazer: 0, moradia: 0, presentes: 0, saude: 0, seguros: 0, servicos: 0, transporte: 0, vestuario: 0 },
+    imoveis: [], veiculos: [],
+    investPoupanca: 0, investRendaFixaPublica: 0, investRendaFixaPrivada: 0, investRendaVariavel: 0, investCripto: 0, investOutros: 0,
+    perfilRisco: "", sabeRentabilidade: "", investeAutomatico: "",
+    temDividas: "", cartaoCredito: 0, chequeEspecial: 0, emprestimoPessoal: 0, outrasDividas: [],
+    parcelasMensais: 0, sabeTaxaJuros: "", usouRotativo: "",
+    reservaEmergencia: 0, ondeAplicada: "", tempoSemRenda: "",
+    temSeguroVida: "", capitalSegurado: 0, temPlanoSaude: "", reservaMedica: "",
+    tempoRendaGarantida: "", revisouApolices: "",
+    idadeAposentadoria: "", gastoMensalAposentadoria: 0, gastoNaoSei: false, gastoPercent: 70,
+    temMetasDefinidas: "", calculouQuantoGuardar: "", outrasMetas: [],
+    salarioCobre: "", sobraEmpataVermelho: "", sabeParaOndeVaiDinheiro: "", descricaoSituacao: "", maiorDor: "", sonhos: ""
+  };
+}
+
+var step = 0;
+var attempted = {};
+var data = defaultData();
+
+(function restore() {
+  try {
+    var saved = JSON.parse(localStorage.getItem(STORAGE_FORM) || "null");
+    if (saved && saved.data) {
+      data = Object.assign(defaultData(), saved.data);
+      data.despesas = Object.assign(defaultData().despesas, saved.data.despesas || {});
+      step = typeof saved.step === "number" ? saved.step : 0;
+    }
+  } catch (e) { /* dados corrompidos: começa do zero */ }
+})();
+
+function persist() {
+  try { localStorage.setItem(STORAGE_FORM, JSON.stringify({ step: step, data: data })); } catch (e) {}
+}
+
+/* ===================== Helpers ===================== */
+function fmt(value) {
+  var n = Number(value) || 0;
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(n);
+}
+function esc(s) {
+  return String(s === undefined || s === null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+function parseCents(raw) {
+  var digits = String(raw).replace(/\D/g, "");
+  return digits === "" ? 0 : parseInt(digits, 10) / 100;
+}
+
+/* ===================== Totais ===================== */
+function totals() {
+  var totalRenda = (data.rendaPropria || 0) + (data.temConjuge === true ? (data.rendaConjuge || 0) : 0) + data.outrasRendas.reduce(function (a, r) { return a + (r.valor || 0); }, 0);
+  var totalDespesas = DESPESA_CATEGORIES.reduce(function (a, c) { return a + (data.despesas[c[0]] || 0); }, 0);
+  var patrimonioImoveis = data.imoveis.reduce(function (a, i) { return a + (i.valorMercado || 0); }, 0);
+  var patrimonioVeiculos = data.veiculos.reduce(function (a, i) { return a + (i.valor || 0); }, 0);
+  var patrimonioInvest = INVEST_FIELDS.reduce(function (a, f) { return a + (data[f[0]] || 0); }, 0);
+  var patrimonioTotal = patrimonioImoveis + patrimonioVeiculos + patrimonioInvest;
+  var saldosFinanciamento = data.imoveis.concat(data.veiculos).reduce(function (a, i) { return a + (i.status === "financiado" ? (i.saldoDevedor || 0) : 0); }, 0);
+  var totalDividas = data.temDividas === true ? (data.cartaoCredito || 0) + (data.chequeEspecial || 0) + (data.emprestimoPessoal || 0) + data.outrasDividas.reduce(function (a, d) { return a + (d.valor || 0); }, 0) : 0;
+  var patrimonioLiquido = patrimonioTotal - saldosFinanciamento - totalDividas;
+  var gastoEstimado = totalRenda * ((data.gastoPercent || 0) / 100);
+  return { totalRenda: totalRenda, totalDespesas: totalDespesas, patrimonioTotal: patrimonioTotal, patrimonioLiquido: patrimonioLiquido, totalDividas: totalDividas, gastoEstimado: gastoEstimado };
+}
+
+function updateTotalizers() {
+  var t = totals();
+  var map = { "tot-renda": t.totalRenda, "tot-despesas": t.totalDespesas, "tot-patrimonio": t.patrimonioTotal, "tot-liquido": t.patrimonioLiquido, "tot-dividas": t.totalDividas };
+  Object.keys(map).forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = fmt(map[id]);
+  });
+  var gastoLabel = document.getElementById("gasto-estimado-label");
+  if (gastoLabel) gastoLabel.textContent = "~ " + fmt(t.gastoEstimado) + " (" + data.gastoPercent + "% da renda)";
+}
+
+/* ===================== Validação ===================== */
+function requiredByStep(n) {
+  var req = {
+    1: [
+      ["Nome completo", data.nome.trim() !== ""],
+      ["E-mail", /\S+@\S+\.\S+/.test(data.email)],
+      ["Estado", data.estado !== ""],
+      ["Cidade", data.cidade.trim() !== ""],
+      ["Idade", String(data.idade) !== ""],
+      ["Estado civil", data.estadoCivil !== ""],
+      ["Tem cônjuge com renda própria?", data.temConjuge === true || data.temConjuge === false],
+      ["Filhos / dependentes", String(data.filhos) !== ""],
+      ["Ocupação", data.ocupacao !== ""]
+    ],
+    2: [], 3: [],
+    4: [
+      ["Perfil de risco autodeclarado", data.perfilRisco !== ""],
+      ["Sabe a rentabilidade média no último ano?", data.sabeRentabilidade !== ""],
+      ["Investe automático ou só o que sobra?", data.investeAutomatico !== ""]
+    ],
+    5: [["Você tem dívidas em cartão de crédito, cheque especial ou empréstimo pessoal hoje?", data.temDividas === true || data.temDividas === false]],
+    6: [
+      ["Onde está aplicada", data.ondeAplicada !== ""],
+      ["Tempo sem se desesperar", data.tempoSemRenda !== ""]
+    ],
+    7: [
+      ["Tem seguro de vida?", data.temSeguroVida === true || data.temSeguroVida === false],
+      ["Tem plano de saúde?", data.temPlanoSaude === true || data.temPlanoSaude === false],
+      ["Tempo com renda garantida", data.tempoRendaGarantida !== ""],
+      ["Revisou apólices/coberturas nos últimos 2 anos?", !(data.temSeguroVida === true || data.temPlanoSaude === true) || data.revisouApolices !== ""]
+    ],
+    8: [
+      ["Idade-alvo de aposentadoria", String(data.idadeAposentadoria) !== ""],
+      ["Metas financeiras definidas", data.temMetasDefinidas !== ""],
+      ["Já calculou quanto guardar", data.calculouQuantoGuardar !== ""]
+    ],
+    9: [
+      ["O salário/renda cobre todas as despesas?", data.salarioCobre === true || data.salarioCobre === false],
+      ["Sobra, empata ou fica no vermelho", data.sobraEmpataVermelho !== ""],
+      ["Sabe pra onde vai o dinheiro", data.sabeParaOndeVaiDinheiro !== ""]
+    ],
+    10: []
+  };
+  return (req[n] || []).filter(function (r) { return !r[1]; }).map(function (r) { return r[0]; });
+}
+
+/* ===================== Render: blocos ===================== */
+function selectHtml(field, options, selected, extraClass) {
+  var html = '<select class="f-input' + (extraClass || "") + '" data-field="' + field + '"><option value="">Selecione</option>';
+  options.forEach(function (opt) {
+    var value = Array.isArray(opt) ? opt[0] : opt;
+    var label = Array.isArray(opt) ? opt[1] : opt;
+    html += '<option value="' + esc(value) + '"' + (selected === value ? " selected" : "") + '>' + esc(label) + '</option>';
+  });
+  return html + '</select>';
+}
+
+function simNaoSeg(field, value) {
+  return '<div class="seg">' +
+    '<button type="button" class="' + (value === true ? "on" : "") + '" data-action="set" data-key="' + field + '" data-val="true">Sim</button>' +
+    '<button type="button" class="' + (value === false ? "on" : "") + '" data-action="set" data-key="' + field + '" data-val="false">Não</button>' +
+    '</div>';
+}
+
+function moneyInput(field, label, extra) {
+  return '<div' + (extra ? ' class="' + extra + '"' : "") + '><label class="f-label">' + esc(label) + '</label>' +
+    '<input type="text" inputmode="numeric" class="f-input num" data-money="' + field + '" value="' + esc(fmt(data[field])) + '"></div>';
+}
+
+function totalizerHtml(id, label, value, flat) {
+  return '<div class="totalizer' + (flat ? " flat" : "") + '"><div class="totalizer-glow"></div>' +
+    '<div class="totalizer-label">' + label + '</div>' +
+    '<div class="totalizer-value" id="' + id + '">' + fmt(value) + '</div></div>';
+}
+
+function assetListHtml(listKey, itemLabel, valorField, valorLabel) {
+  var html = "";
+  data[listKey].forEach(function (item, i) {
+    var fin = item.status === "financiado";
+    html += '<div class="list-item">' +
+      '<div class="list-header"><div class="list-title">' + itemLabel + ' ' + (i + 1) + '</div>' +
+      '<button type="button" class="link-remove" data-action="removeItem" data-list="' + listKey + '" data-index="' + i + '">Remover</button></div>' +
+      '<div class="grid2 tight">' +
+      '<div class="span2"><label class="f-label">Descrição</label><input type="text" class="f-input" data-ltext="descricao" data-list="' + listKey + '" data-index="' + i + '" placeholder="Ex: ' + (listKey === "imoveis" ? "Apartamento" : "Carro") + '" value="' + esc(item.descricao) + '"></div>' +
+      '<div><label class="f-label">' + valorLabel + '</label><input type="text" inputmode="numeric" class="f-input num" data-lmoney="' + valorField + '" data-list="' + listKey + '" data-index="' + i + '" value="' + esc(fmt(item[valorField])) + '"></div>' +
+      '<div><label class="f-label">Situação</label><div class="seg stretch" style="width:100%;">' +
+      '<button type="button" class="' + (!fin ? "on" : "") + '" data-action="setListField" data-list="' + listKey + '" data-index="' + i + '" data-lfield="status" data-val="quitado">Quitado</button>' +
+      '<button type="button" class="' + (fin ? "on" : "") + '" data-action="setListField" data-list="' + listKey + '" data-index="' + i + '" data-lfield="status" data-val="financiado">Financiado</button>' +
+      '</div></div>' +
+      (fin ? '<div class="span2"><label class="f-label">Saldo devedor</label><input type="text" inputmode="numeric" class="f-input num" data-lmoney="saldoDevedor" data-list="' + listKey + '" data-index="' + i + '" value="' + esc(fmt(item.saldoDevedor)) + '"></div>' : "") +
+      '</div></div>';
+  });
+  return html;
+}
+
+/* ===================== Render: etapas ===================== */
+function renderStep0() {
+  var items = ENTREGAVEIS.map(function (e) {
+    return '<div class="entregavel"><div class="entregavel-dash">—</div><div class="entregavel-text">' + e + '</div></div>';
+  }).join("");
+  return '<div class="hero"><div class="hero-glow"></div>' +
+    '<div class="hero-eyebrow"><div class="hero-eyebrow-line"></div><div class="hero-eyebrow-text">Diagnóstico Financeiro HZ</div></div>' +
+    '<div class="hero-title">Um raio-x completo da sua vida financeira, <em>em cerca de 25 minutos</em>.</div>' +
+    '<div class="hero-sub">Você vai responder perguntas sobre renda, gastos, patrimônio, dívidas e objetivos. Ao final, preparamos um relatório personalizado com seu diagnóstico completo.</div>' +
+    '<div class="entregaveis">' + items + '</div>' +
+    '<div class="cta-wrap">' +
+    '<button type="button" class="btn-cta" data-action="start">Começar diagnóstico</button>' +
+    '<div class="cta-note">Tempo estimado: 20–30 min · você pode salvar e continuar depois</div>' +
+    '</div></div>';
+}
+
+function renderStep1() {
+  return '<div class="card"><div class="grid2">' +
+    '<div class="span2"><label class="f-label">Nome completo</label><input type="text" class="f-input" data-field="nome" placeholder="Seu nome" value="' + esc(data.nome) + '"></div>' +
+    '<div class="span2"><label class="f-label">E-mail</label><input type="email" class="f-input" data-field="email" placeholder="voce@email.com" value="' + esc(data.email) + '"></div>' +
+    '<div><label class="f-label">Estado</label>' + selectHtml("estado", UF_LIST, data.estado) + '</div>' +
+    '<div><label class="f-label">Cidade</label><input type="text" class="f-input" id="cidade-input" data-field="cidade" ' + (data.estado ? "" : "disabled ") + 'placeholder="' + (data.estado ? "Digite sua cidade" : "Selecione um estado primeiro") + '" value="' + esc(data.cidade) + '"></div>' +
+    '<div><label class="f-label">Idade</label><input type="number" min="0" class="f-input num" data-field="idade" placeholder="Ex: 34" value="' + esc(data.idade) + '"></div>' +
+    '<div><label class="f-label">Estado civil</label>' + selectHtml("estadoCivil", ESTADO_CIVIL, data.estadoCivil) + '</div>' +
+    '<div class="rule"></div>' +
+    '<div class="span2"><label class="f-label" style="margin-bottom:10px;">Tem cônjuge com renda própria?</label>' + simNaoSeg("temConjuge", data.temConjuge) + '</div>' +
+    (data.temConjuge === true ?
+      '<div class="span2"><label class="f-label">Idade do cônjuge</label><input type="number" min="0" class="f-input num" style="max-width:220px;" data-field="idadeConjuge" placeholder="Ex: 32" value="' + esc(data.idadeConjuge) + '">' +
+      '<div class="f-hint">A renda do cônjuge será perguntada na próxima etapa (Renda Mensal).</div></div>' : "") +
+    '<div class="rule"></div>' +
+    '<div class="span2"><label class="f-label">Filhos / dependentes</label><input type="number" min="0" class="f-input num" data-field="filhos" placeholder="0" value="' + esc(data.filhos) + '"></div>' +
+    '<div class="span2"><label class="f-label">Ocupação</label>' + selectHtml("ocupacao", OCUPACOES, data.ocupacao) + '</div>' +
+    '</div></div>';
+}
+
+function renderStep2() {
+  var t = totals();
+  var outras = "";
+  data.outrasRendas.forEach(function (item, i) {
+    outras += '<div class="list-item">' +
+      '<div class="list-header"><div class="list-title">Renda ' + (i + 1) + '</div><button type="button" class="link-remove" data-action="removeItem" data-list="outrasRendas" data-index="' + i + '">Remover</button></div>' +
+      '<div class="grid2 tight">' +
+      '<div><label class="f-label">Descrição</label><input type="text" class="f-input" data-ltext="descricao" data-list="outrasRendas" data-index="' + i + '" placeholder="Ex: Aluguel" value="' + esc(item.descricao) + '"></div>' +
+      '<div><label class="f-label">Valor</label><input type="text" inputmode="numeric" class="f-input num" data-lmoney="valor" data-list="outrasRendas" data-index="' + i + '" value="' + esc(fmt(item.valor)) + '"></div>' +
+      '</div></div>';
+  });
+  return totalizerHtml("tot-renda", "Renda total mensal", t.totalRenda) +
+    '<div class="card"><div class="grid2">' +
+    moneyInput("rendaPropria", "Renda mensal líquida própria") +
+    (data.temConjuge === true ? moneyInput("rendaConjuge", "Renda mensal líquida do cônjuge") : "") +
+    '</div><div class="rule-full"></div>' +
+    '<label class="f-label" style="margin-bottom:14px;">Outras rendas (aluguel, freelance, etc.)</label>' + outras +
+    '<button type="button" class="link-add" data-action="addItem" data-list="outrasRendas">+ Adicionar outra renda</button></div>';
+}
+
+function renderStep3() {
+  var t = totals();
+  var fields = DESPESA_CATEGORIES.map(function (c) {
+    return '<div><label class="f-label">' + esc(c[1]) + '</label><input type="text" inputmode="numeric" class="f-input num" data-despesa="' + c[0] + '" value="' + esc(fmt(data.despesas[c[0]])) + '"></div>';
+  }).join("");
+  return totalizerHtml("tot-despesas", "Total de despesas mensais", t.totalDespesas) +
+    '<div class="card"><div class="grid2">' + fields + '</div></div>';
+}
+
+function renderStep4() {
+  var t = totals();
+  var invest = INVEST_FIELDS.map(function (f) {
+    return '<div><label class="f-label">' + esc(f[1]) + '</label><input type="text" inputmode="numeric" class="f-input num" data-money="' + f[0] + '" value="' + esc(fmt(data[f[0]])) + '"></div>';
+  }).join("");
+  var perfil = PERFIL_RISCO.map(function (opt) {
+    return '<button type="button" class="' + (data.perfilRisco === opt ? "on" : "") + '" data-action="set" data-key="perfilRisco" data-val="' + esc(opt) + '" style="padding:12px 20px;">' + esc(opt) + '</button>';
+  }).join("");
+  return '<div class="grid2" style="gap:20px;">' +
+    totalizerHtml("tot-patrimonio", "Patrimônio total", t.patrimonioTotal, true) +
+    totalizerHtml("tot-liquido", "Patrimônio líquido", t.patrimonioLiquido, true) +
+    '</div>' +
+    '<div class="card" style="margin-top:28px;">' +
+    '<label class="f-label" style="margin-bottom:14px;">Imóveis</label>' +
+    assetListHtml("imoveis", "Imóvel", "valorMercado", "Valor de mercado") +
+    '<button type="button" class="link-add" data-action="addItem" data-list="imoveis">+ Adicionar imóvel</button>' +
+    '<div class="rule-full"></div>' +
+    '<label class="f-label" style="margin-bottom:14px;">Veículos</label>' +
+    assetListHtml("veiculos", "Veículo", "valor", "Valor") +
+    '<button type="button" class="link-add" data-action="addItem" data-list="veiculos">+ Adicionar veículo</button>' +
+    '<div class="rule-full"></div>' +
+    '<label class="f-label" style="margin-bottom:14px;">Investimentos</label>' +
+    '<div class="grid2 tight">' + invest + '</div>' +
+    '<div class="rule-full"></div>' +
+    '<div class="grid2">' +
+    '<div class="span2 seg-wrap-mobile"><label class="f-label" style="margin-bottom:10px;">Perfil de risco autodeclarado</label><div class="seg">' + perfil + '</div></div>' +
+    '<div><label class="f-label">Sabe a rentabilidade média no último ano?</label>' + selectHtml("sabeRentabilidade", SABE_RENTABILIDADE, data.sabeRentabilidade) + '</div>' +
+    '<div><label class="f-label">Investe automático ou só o que sobra?</label>' + selectHtml("investeAutomatico", INVESTE_AUTOMATICO, data.investeAutomatico) + '</div>' +
+    '</div></div>';
+}
+
+function renderStep5() {
+  var t = totals();
+  var detail = "";
+  if (data.temDividas === true) {
+    var outras = "";
+    data.outrasDividas.forEach(function (item, i) {
+      outras += '<div class="list-item">' +
+        '<div class="list-header"><div class="list-title">Dívida ' + (i + 1) + '</div><button type="button" class="link-remove" data-action="removeItem" data-list="outrasDividas" data-index="' + i + '">Remover</button></div>' +
+        '<div class="grid2 tight">' +
+        '<div><label class="f-label">Descrição</label><input type="text" class="f-input" data-ltext="descricao" data-list="outrasDividas" data-index="' + i + '" value="' + esc(item.descricao) + '"></div>' +
+        '<div><label class="f-label">Valor</label><input type="text" inputmode="numeric" class="f-input num" data-lmoney="valor" data-list="outrasDividas" data-index="' + i + '" value="' + esc(fmt(item.valor)) + '"></div>' +
+        '</div></div>';
+    });
+    detail = '<div style="margin-top:28px;">' +
+      totalizerHtml("tot-dividas", "Total de dívidas", t.totalDividas) +
+      '<div class="grid1">' +
+      moneyInput("cartaoCredito", "Cartão de crédito (fatura/rotativo em aberto)") +
+      moneyInput("chequeEspecial", "Cheque especial (valor utilizado)") +
+      moneyInput("emprestimoPessoal", "Empréstimo pessoal (saldo devedor)") +
+      moneyInput("parcelasMensais", "Total das parcelas mensais dessas dívidas") +
+      '</div><div class="rule-full"></div>' +
+      '<label class="f-label" style="margin-bottom:14px;">Outras dívidas</label>' + outras +
+      '<button type="button" class="link-add" data-action="addItem" data-list="outrasDividas">+ Adicionar outra dívida</button>' +
+      '<div class="rule-full"></div>' +
+      '<div class="grid1">' +
+      '<div><label class="f-label">Sabe a taxa de juros da dívida mais cara?</label>' + selectHtml("sabeTaxaJuros", SABE_RENTABILIDADE, data.sabeTaxaJuros) + '</div>' +
+      '<div><label class="f-label">Nos últimos 12 meses, já pegou empréstimo/usou rotativo pra cobrir outra dívida?</label>' + selectHtml("usouRotativo", USOU_ROTATIVO, data.usouRotativo) + '</div>' +
+      '</div></div>';
+  }
+  return '<div class="card">' +
+    '<label class="f-label" style="margin-bottom:10px;">Você tem dívidas em cartão de crédito, cheque especial ou empréstimo pessoal hoje?</label>' +
+    simNaoSeg("temDividas", data.temDividas) + detail + '</div>';
+}
+
+function renderStep6() {
+  return '<div class="card"><div class="grid2">' +
+    moneyInput("reservaEmergencia", "Valor total da reserva de emergência") +
+    '<div><label class="f-label">Onde está aplicada</label>' + selectHtml("ondeAplicada", ONDE_APLICADA, data.ondeAplicada) + '</div>' +
+    '<div class="span2"><label class="f-label">Se perdesse sua renda hoje, por quanto tempo manteria seu padrão de vida sem se desesperar?</label>' + selectHtml("tempoSemRenda", TEMPO_SEM_RENDA, data.tempoSemRenda) + '</div>' +
+    '</div></div>';
+}
+
+function renderStep7() {
+  return '<div class="card"><div class="grid2">' +
+    '<div><label class="f-label" style="margin-bottom:10px;">Tem seguro de vida?</label>' + simNaoSeg("temSeguroVida", data.temSeguroVida) + '</div>' +
+    (data.temSeguroVida === true ? moneyInput("capitalSegurado", "Capital segurado") : "") +
+    '<div><label class="f-label" style="margin-bottom:10px;">Tem plano de saúde?</label>' + simNaoSeg("temPlanoSaude", data.temPlanoSaude) + '</div>' +
+    '<div><label class="f-label" style="margin-bottom:10px;">Tem reserva específica pra emergências médicas?</label>' + simNaoSeg("reservaMedica", data.reservaMedica) + '</div>' +
+    '<div class="span2"><label class="f-label">Se ficasse incapacitado de trabalhar, por quanto tempo sua renda estaria garantida?</label>' + selectHtml("tempoRendaGarantida", TEMPO_RENDA_GARANTIDA, data.tempoRendaGarantida) + '</div>' +
+    (data.temSeguroVida === true || data.temPlanoSaude === true ?
+      '<div class="span2"><label class="f-label">Revisou apólices/coberturas nos últimos 2 anos?</label>' + selectHtml("revisouApolices", REVISOU_APOLICES, data.revisouApolices) + '</div>' : "") +
+    '</div></div>';
+}
+
+function renderStep8() {
+  var t = totals();
+  var gastoField;
+  if (data.gastoNaoSei) {
+    gastoField = '<div class="f-input gasto-slider-box">' +
+      '<span id="gasto-estimado-label">~ ' + fmt(t.gastoEstimado) + ' (' + data.gastoPercent + '% da renda)</span>' +
+      '<input type="range" min="30" max="120" value="' + data.gastoPercent + '" data-range="gastoPercent" style="width:100px;">' +
+      '</div>';
+  } else {
+    gastoField = '<input type="text" inputmode="numeric" class="f-input num" data-money="gastoMensalAposentadoria" value="' + esc(fmt(data.gastoMensalAposentadoria)) + '">';
+  }
+  var metas = "";
+  data.outrasMetas.forEach(function (item, i) {
+    metas += '<div class="list-item">' +
+      '<div class="list-header"><div class="list-title">Meta ' + (i + 1) + '</div><button type="button" class="link-remove" data-action="removeItem" data-list="outrasMetas" data-index="' + i + '">Remover</button></div>' +
+      '<div class="grid2 tight">' +
+      '<div class="span2"><label class="f-label">Descrição</label><input type="text" class="f-input" data-ltext="descricao" data-list="outrasMetas" data-index="' + i + '" placeholder="Ex: Casa própria" value="' + esc(item.descricao) + '"></div>' +
+      '<div><label class="f-label">Valor estimado</label><input type="text" inputmode="numeric" class="f-input num" data-lmoney="valorEstimado" data-list="outrasMetas" data-index="' + i + '" value="' + esc(fmt(item.valorEstimado)) + '"></div>' +
+      '<div><label class="f-label">Prazo</label><input type="text" class="f-input" data-ltext="prazo" data-list="outrasMetas" data-index="' + i + '" placeholder="Ex: 5 anos" value="' + esc(item.prazo) + '"></div>' +
+      '</div></div>';
+  });
+  return '<div class="card"><div class="grid2">' +
+    '<div><label class="f-label">Idade-alvo de aposentadoria</label><input type="number" min="0" class="f-input num" data-field="idadeAposentadoria" placeholder="Ex: 60" value="' + esc(data.idadeAposentadoria) + '"></div>' +
+    '<div><label class="f-label">Gasto mensal desejado na aposentadoria</label>' + gastoField +
+    '<label class="check-label"><input type="checkbox" data-action="toggleGastoNaoSei"' + (data.gastoNaoSei ? " checked" : "") + '> Não sei — estimar como % da renda atual</label></div>' +
+    '<div class="span2"><label class="f-label">Tem metas financeiras com prazo e valor definidos, ou são ideias vagas?</label>' + selectHtml("temMetasDefinidas", METAS_DEFINIDAS, data.temMetasDefinidas) + '</div>' +
+    '<div class="span2"><label class="f-label">Já calculou quanto precisaria guardar por mês pra chegar nas metas?</label>' + selectHtml("calculouQuantoGuardar", CALCULOU_GUARDAR, data.calculouQuantoGuardar) + '</div>' +
+    '</div><div class="rule-full"></div>' +
+    '<label class="f-label" style="margin-bottom:14px;">Outras metas de vida</label>' + metas +
+    '<button type="button" class="link-add" data-action="addItem" data-list="outrasMetas">+ Adicionar outra meta</button></div>';
+}
+
+function renderStep9() {
+  return '<div class="card"><div class="grid2">' +
+    '<div><label class="f-label" style="margin-bottom:10px;">O salário/renda cobre todas as despesas?</label>' + simNaoSeg("salarioCobre", data.salarioCobre) + '</div>' +
+    '<div><label class="f-label">Geralmente sobra, empata ou fica no vermelho?</label>' + selectHtml("sobraEmpataVermelho", SOBRA_EMPATA, data.sobraEmpataVermelho) + '</div>' +
+    '<div class="span2"><label class="f-label">Você sente que sabe pra onde vai o seu dinheiro todo mês, ou tem surpresas com frequência?</label>' + selectHtml("sabeParaOndeVaiDinheiro", SABE_PARA_ONDE, data.sabeParaOndeVaiDinheiro) + '</div>' +
+    '<div class="span2"><label class="f-label">Descreva sua situação financeira atual</label><textarea rows="3" class="f-input" data-field="descricaoSituacao">' + esc(data.descricaoSituacao) + '</textarea></div>' +
+    '<div class="span2"><label class="f-label">Qual sua maior dor financeira hoje?</label><textarea rows="3" class="f-input" data-field="maiorDor">' + esc(data.maiorDor) + '</textarea></div>' +
+    '<div class="span2"><label class="f-label">Quais seus sonhos financeiros? (com prazo)</label><textarea rows="3" class="f-input" data-field="sonhos">' + esc(data.sonhos) + '</textarea></div>' +
+    '</div></div>';
+}
+
+function renderStep10() {
+  var t = totals();
+  var simNao = function (v) { return v === true ? "Sim" : v === false ? "Não" : "—"; };
+  var orDash = function (v) { return v === "" || v === undefined || v === null ? "—" : esc(v); };
+  var sections = [
+    { n: 1, title: "Identificação", rows: [
+      ["Nome", orDash(data.nome)], ["E-mail", orDash(data.email)],
+      ["Cidade/Estado", orDash(data.cidade) + " / " + orDash(data.estado)], ["Idade", orDash(data.idade)],
+      ["Estado civil", orDash(data.estadoCivil)], ["Cônjuge com renda", simNao(data.temConjuge)],
+      ["Filhos/dependentes", orDash(data.filhos)], ["Ocupação", orDash(data.ocupacao)]
+    ]},
+    { n: 2, title: "Renda Mensal", rows: [
+      ["Renda própria", fmt(data.rendaPropria)], ["Renda cônjuge", fmt(data.rendaConjuge)],
+      ["Outras rendas", String(data.outrasRendas.length)], ["Total", fmt(t.totalRenda)]
+    ]},
+    { n: 3, title: "Despesas", rows: [["Total de despesas", fmt(t.totalDespesas)]] },
+    { n: 4, title: "Patrimônio e Investimentos", rows: [
+      ["Imóveis", String(data.imoveis.length)], ["Veículos", String(data.veiculos.length)],
+      ["Perfil de risco", orDash(data.perfilRisco)], ["Patrimônio total", fmt(t.patrimonioTotal)],
+      ["Patrimônio líquido", fmt(t.patrimonioLiquido)]
+    ]},
+    { n: 5, title: "Dívidas", rows: [["Tem dívidas", simNao(data.temDividas)], ["Total de dívidas", fmt(t.totalDividas)]] },
+    { n: 6, title: "Liquidez e Reserva", rows: [
+      ["Reserva de emergência", fmt(data.reservaEmergencia)], ["Onde está aplicada", orDash(data.ondeAplicada)],
+      ["Tempo sem se desesperar", orDash(data.tempoSemRenda)]
+    ]},
+    { n: 7, title: "Gestão de Risco (Seguros)", rows: [
+      ["Seguro de vida", simNao(data.temSeguroVida)], ["Plano de saúde", simNao(data.temPlanoSaude)],
+      ["Renda garantida se incapacitado", orDash(data.tempoRendaGarantida)]
+    ]},
+    { n: 8, title: "Metas e Planejamento", rows: [
+      ["Idade-alvo aposentadoria", orDash(data.idadeAposentadoria)],
+      ["Gasto mensal desejado", data.gastoNaoSei ? "~" + fmt(t.gastoEstimado) : fmt(data.gastoMensalAposentadoria)],
+      ["Metas definidas", orDash(data.temMetasDefinidas)], ["Outras metas", String(data.outrasMetas.length)]
+    ]},
+    { n: 9, title: "Situação Atual", rows: [
+      ["Renda cobre despesas", simNao(data.salarioCobre)], ["Sobra/empata/vermelho", orDash(data.sobraEmpataVermelho)],
+      ["Sabe pra onde vai o dinheiro", orDash(data.sabeParaOndeVaiDinheiro)], ["Maior dor financeira", orDash(data.maiorDor)]
+    ]}
+  ];
+  var html = sections.map(function (s) {
+    var rows = s.rows.map(function (r) {
+      return '<div><div class="review-label">' + r[0] + '</div><div class="review-value">' + r[1] + '</div></div>';
+    }).join("");
+    return '<div class="card review-card"><div class="review-head">' +
+      '<div class="review-title">' + s.n + '. ' + s.title + '</div>' +
+      '<button type="button" class="link-edit" data-action="goto" data-step="' + s.n + '">Editar</button></div>' +
+      '<div class="review-grid">' + rows + '</div></div>';
+  }).join("");
+  return html + '<div class="confirm-banner">Após finalizar, seu diagnóstico personalizado será gerado na hora, com seu relatório completo.</div>';
+}
+
+function renderDone() {
+  return '<div class="hero done-hero"><div class="hero-glow"></div>' +
+    '<div class="done-title">Diagnóstico recebido</div>' +
+    '<div class="done-text">Obrigado, ' + esc(data.nome) + '. Seu relatório personalizado está pronto — clique abaixo para visualizá-lo. Ele também fica salvo neste navegador para consultar depois.</div>' +
+    '<div class="done-actions"><a class="btn-report" href="diagnostico-relatorio.html">Ver meu relatório →</a>' +
+    '<button type="button" class="link-restart" data-action="restart">Refazer o diagnóstico do zero</button></div>' +
+    '</div>';
+}
+
+/* ===================== Render principal ===================== */
+function renderStepper() {
+  var el = document.getElementById("stepper");
+  if (step < 1 || step > 10) { el.style.display = "none"; return; }
+  el.style.display = "flex";
+  var html = "";
+  for (var n = 1; n <= 10; n++) {
+    var cls = n === step ? "active" : n < step ? "done" : "todo";
+    html += '<div class="step-cell"><div class="step-node ' + cls + '">' + n + '</div>' + (n < 10 ? '<div class="step-line"></div>' : "") + '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function render() {
+  renderStepper();
+  var app = document.getElementById("app");
+  var html = "";
+  if (step === 0) {
+    html = renderStep0();
+  } else if (step === 11) {
+    html = renderDone();
+  } else {
+    var meta = STEP_META[step];
+    html += '<div class="step-eyebrow"><div class="step-eyebrow-line"></div><div class="step-eyebrow-text">' + meta.eyebrow + '</div></div>' +
+      '<div class="step-title">' + meta.title + '</div>' +
+      '<div class="step-desc">' + meta.desc + '</div>';
+    var renderers = { 1: renderStep1, 2: renderStep2, 3: renderStep3, 4: renderStep4, 5: renderStep5, 6: renderStep6, 7: renderStep7, 8: renderStep8, 9: renderStep9, 10: renderStep10 };
+    html += renderers[step]();
+    var missing = requiredByStep(step);
+    var blocked = missing.length > 0;
+    var showError = attempted[step] && blocked;
+    html += '<div style="margin-top:36px;">' +
+      (showError ? '<div class="error-msg">Preencha para continuar: ' + esc(missing.join(", ")) + '</div>' : "") +
+      '<div class="footer-nav" style="margin-top:0;">' +
+      '<button type="button" class="btn-back" data-action="back">← Voltar</button>' +
+      '<button type="button" class="btn-continue' + (blocked ? " blocked" : "") + '" data-action="continue">' + (step === 10 ? "Finalizar" : "Continuar →") + '</button>' +
+      '</div></div>';
+  }
+  app.innerHTML = html;
+  bindEvents();
+}
+
+/* ===================== Eventos ===================== */
+function scrollTop() { window.scrollTo({ top: 0 }); }
+
+function coerceVal(v) { return v === "true" ? true : v === "false" ? false : v; }
+
+var LIST_TEMPLATES = {
+  outrasRendas: { descricao: "", valor: 0 },
+  outrasDividas: { descricao: "", valor: 0 },
+  outrasMetas: { descricao: "", valorEstimado: 0, prazo: "" },
+  imoveis: { descricao: "", valorMercado: 0, status: "quitado", saldoDevedor: 0 },
+  veiculos: { descricao: "", valor: 0, status: "quitado", saldoDevedor: 0 }
+};
+
+function bindEvents() {
+  var app = document.getElementById("app");
+
+  app.querySelectorAll("[data-field]").forEach(function (el) {
+    var evt = el.tagName === "SELECT" ? "change" : "input";
+    el.addEventListener(evt, function () {
+      data[el.dataset.field] = el.value;
+      persist();
+      if (el.dataset.field === "estado") {
+        var cidade = document.getElementById("cidade-input");
+        if (cidade) {
+          cidade.disabled = !data.estado;
+          cidade.placeholder = data.estado ? "Digite sua cidade" : "Selecione um estado primeiro";
+        }
+      }
+    });
+  });
+
+  app.querySelectorAll("[data-money]").forEach(function (el) {
+    el.addEventListener("input", function () {
+      var v = parseCents(el.value);
+      data[el.dataset.money] = v;
+      el.value = fmt(v);
+      persist();
+      updateTotalizers();
+    });
+  });
+
+  app.querySelectorAll("[data-despesa]").forEach(function (el) {
+    el.addEventListener("input", function () {
+      var v = parseCents(el.value);
+      data.despesas[el.dataset.despesa] = v;
+      el.value = fmt(v);
+      persist();
+      updateTotalizers();
+    });
+  });
+
+  app.querySelectorAll("[data-ltext]").forEach(function (el) {
+    el.addEventListener("input", function () {
+      data[el.dataset.list][parseInt(el.dataset.index, 10)][el.dataset.ltext] = el.value;
+      persist();
+    });
+  });
+
+  app.querySelectorAll("[data-lmoney]").forEach(function (el) {
+    el.addEventListener("input", function () {
+      var v = parseCents(el.value);
+      data[el.dataset.list][parseInt(el.dataset.index, 10)][el.dataset.lmoney] = v;
+      el.value = fmt(v);
+      persist();
+      updateTotalizers();
+    });
+  });
+
+  app.querySelectorAll("[data-range]").forEach(function (el) {
+    el.addEventListener("input", function () {
+      data[el.dataset.range] = parseInt(el.value, 10);
+      persist();
+      updateTotalizers();
+    });
+  });
+
+  app.querySelectorAll("[data-action]").forEach(function (el) {
+    var action = el.dataset.action;
+    if (action === "toggleGastoNaoSei") {
+      el.addEventListener("change", function () {
+        data.gastoNaoSei = el.checked;
+        persist();
+        render();
+      });
+      return;
+    }
+    el.addEventListener("click", function () {
+      switch (action) {
+        case "start": step = 1; persist(); scrollTop(); render(); break;
+        case "back": step = Math.max(0, step - 1); persist(); scrollTop(); render(); break;
+        case "continue": {
+          var missing = requiredByStep(step);
+          if (missing.length === 0) {
+            if (step === 10) {
+              try { localStorage.setItem(STORAGE_DATA, JSON.stringify({ data: data, geradoEm: new Date().toISOString() })); } catch (e) {}
+              step = 11;
+            } else {
+              step = Math.min(11, step + 1);
+            }
+            persist(); scrollTop(); render();
+          } else {
+            attempted[step] = true;
+            render();
+          }
+          break;
+        }
+        case "goto": step = parseInt(el.dataset.step, 10); persist(); scrollTop(); render(); break;
+        case "set": data[el.dataset.key] = coerceVal(el.dataset.val); persist(); render(); break;
+        case "setListField":
+          data[el.dataset.list][parseInt(el.dataset.index, 10)][el.dataset.lfield] = coerceVal(el.dataset.val);
+          persist(); render(); break;
+        case "addItem":
+          data[el.dataset.list].push(Object.assign({}, LIST_TEMPLATES[el.dataset.list]));
+          persist(); render(); break;
+        case "removeItem":
+          data[el.dataset.list].splice(parseInt(el.dataset.index, 10), 1);
+          persist(); render(); break;
+        case "restart":
+          if (confirm("Isso apaga todas as respostas salvas neste navegador. Deseja recomeçar?")) {
+            try { localStorage.removeItem(STORAGE_FORM); localStorage.removeItem(STORAGE_DATA); } catch (e) {}
+            step = 0; attempted = {}; data = defaultData();
+            scrollTop(); render();
+          }
+          break;
+      }
+    });
+  });
+}
+
+render();
+</script>
+</body>
+</html>
