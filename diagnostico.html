@@ -184,11 +184,11 @@ var STEP_META = {
   1: { eyebrow: "Etapa 1 de 10", title: "Identificação", desc: "Alguns dados básicos pra personalizar seu relatório e mantermos contato sobre seu diagnóstico." },
   2: { eyebrow: "Etapa 2 de 10", title: "Renda Mensal", desc: "Sua renda líquida e a do seu cônjuge, se aplicável, além de outras fontes de renda." },
   3: { eyebrow: "Etapa 3 de 10", title: "Despesas", desc: "Seus gastos mensais por categoria. O valor em Investimentos / Poupança conta como aporte mensal (poupança), não como gasto." },
-  4: { eyebrow: "Etapa 4 de 10", title: "Patrimônio e Investimentos", desc: "Imóveis, veículos, investimentos e seu perfil como investidor." },
+  4: { eyebrow: "Etapa 4 de 10", title: "Patrimônio e Investimentos", desc: "Imóveis, veículos, investimentos e seu perfil como investidor. Se você tem cônjuge, informe o patrimônio do casal." },
   5: { eyebrow: "Etapa 5 de 10", title: "Dívidas", desc: "Cartão de crédito, cheque especial, empréstimos e outras dívidas em aberto." },
-  6: { eyebrow: "Etapa 6 de 10", title: "Liquidez e Reserva de Emergência", desc: "Quanto você tem guardado para imprevistos e onde está aplicado." },
+  6: { eyebrow: "Etapa 6 de 10", title: "Liquidez e Reserva de Emergência", desc: "Quanto você tem guardado para imprevistos e onde está aplicado. Informe o valor mesmo que já esteja incluído nos investimentos da etapa 4 — aqui ele serve para avaliar sua liquidez." },
   7: { eyebrow: "Etapa 7 de 10", title: "Gestão de Risco (Seguros)", desc: "Seguro de vida, plano de saúde e proteção da sua renda." },
-  8: { eyebrow: "Etapa 8 de 10", title: "Metas e Planejamento de Longo Prazo", desc: "Aposentadoria e outras metas financeiras de vida." },
+  8: { eyebrow: "Etapa 8 de 10", title: "Metas e Planejamento de Longo Prazo", desc: "Aposentadoria e outras metas financeiras de vida. Se você tem cônjuge, considere as metas do casal." },
   9: { eyebrow: "Etapa 9 de 10", title: "Situação Atual", desc: "Como você enxerga sua própria situação financeira hoje." },
   10: { eyebrow: "Etapa 10 de 10", title: "Revisão e Finalização", desc: "Confira tudo antes de enviar. Você pode voltar e editar qualquer etapa." }
 };
@@ -200,7 +200,7 @@ var STORAGE_DATA = "hz_diagnostico_data";
 function defaultData() {
   return {
     nome: "", email: "", estado: "", cidade: "", idade: "",
-    estadoCivil: "", temConjuge: "", idadeConjuge: "", filhos: "", ocupacao: "",
+    estadoCivil: "", temConjuge: "", filhos: "", ocupacao: "",
     rendaPropria: 0, rendaConjuge: 0, outrasRendas: [],
     despesas: { alimentacao: 0, educacao: 0, impostos: 0, investimentos: 0, lazer: 0, moradia: 0, presentes: 0, saude: 0, seguros: 0, servicos: 0, transporte: 0, vestuario: 0 },
     imoveis: [], veiculos: [],
@@ -403,8 +403,7 @@ function renderStep1() {
     '<div class="rule"></div>' +
     '<div class="span2"><label class="f-label" style="margin-bottom:10px;">Tem cônjuge com renda própria?</label>' + simNaoSeg("temConjuge", data.temConjuge) + '</div>' +
     (data.temConjuge === true ?
-      '<div class="span2"><label class="f-label">Idade do cônjuge</label><input type="number" min="0" class="f-input num" style="max-width:220px;" data-field="idadeConjuge" placeholder="Ex: 32" value="' + esc(data.idadeConjuge) + '">' +
-      '<div class="f-hint">A renda do cônjuge será perguntada na próxima etapa (Renda Mensal).</div></div>' : "") +
+      '<div class="span2"><div class="f-hint" style="margin-top:0;">A renda do cônjuge será perguntada na próxima etapa (Renda Mensal). Nas etapas de patrimônio e metas, considere os valores do casal.</div></div>' : "") +
     '<div class="rule"></div>' +
     '<div class="span2"><label class="f-label">Filhos / dependentes</label><input type="number" min="0" class="f-input num" data-field="filhos" placeholder="0" value="' + esc(data.filhos) + '"></div>' +
     '<div class="span2"><label class="f-label">Ocupação</label>' + selectHtml("ocupacao", OCUPACOES, data.ocupacao) + '</div>' +
@@ -512,7 +511,7 @@ function renderStep5() {
 
 function renderStep6() {
   return '<div class="card"><div class="grid2">' +
-    moneyInput("reservaEmergencia", "Valor total da reserva de emergência") +
+    moneyInput("reservaEmergencia", "Valor total da reserva de emergência (mesmo se já informado nos investimentos)") +
     '<div><label class="f-label">Onde está aplicada</label>' + selectHtml("ondeAplicada", ONDE_APLICADA, data.ondeAplicada) + '</div>' +
     '<div class="span2"><label class="f-label">Se perdesse sua renda hoje, por quanto tempo manteria seu padrão de vida sem se desesperar?</label>' + selectHtml("tempoSemRenda", TEMPO_SEM_RENDA, data.tempoSemRenda) + '</div>' +
     '</div></div>';
@@ -521,7 +520,7 @@ function renderStep6() {
 function renderStep7() {
   return '<div class="card"><div class="grid2">' +
     '<div><label class="f-label" style="margin-bottom:10px;">Tem seguro de vida?</label>' + simNaoSeg("temSeguroVida", data.temSeguroVida) + '</div>' +
-    (data.temSeguroVida === true ? moneyInput("capitalSegurado", "Capital segurado") : "") +
+    (data.temSeguroVida === true ? moneyInput("capitalSegurado", "Capital segurado (da sua apólice)") : "") +
     '<div><label class="f-label" style="margin-bottom:10px;">Tem plano de saúde?</label>' + simNaoSeg("temPlanoSaude", data.temPlanoSaude) + '</div>' +
     '<div><label class="f-label" style="margin-bottom:10px;">Tem reserva específica pra emergências médicas?</label>' + simNaoSeg("reservaMedica", data.reservaMedica) + '</div>' +
     '<div class="span2"><label class="f-label">Se ficasse incapacitado de trabalhar, por quanto tempo sua renda estaria garantida?</label>' + selectHtml("tempoRendaGarantida", TEMPO_RENDA_GARANTIDA, data.tempoRendaGarantida) + '</div>' +

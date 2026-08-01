@@ -149,6 +149,7 @@ function renderReport(R) {
   if (R.vozCliente.show) {
     voz = '<div style="position:relative; margin-top:24px; border-top:1px solid rgba(251,250,246,0.15); padding-top:24px;">' +
       '<div style="font-size:10.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#6FA8A0; margin-bottom:12px;">Na sua fala</div>' +
+      (R.vozCliente.situacao ? '<div style="font-family:\'Fraunces\', serif; font-style:italic; font-size:16px; line-height:1.6; color:rgba(251,250,246,0.85); margin-bottom:10px;">"' + esc(R.vozCliente.situacao) + '"</div>' : "") +
       (R.vozCliente.maiorDor ? '<div style="font-family:\'Fraunces\', serif; font-style:italic; font-size:16px; line-height:1.6; color:rgba(251,250,246,0.85); margin-bottom:10px;">"' + esc(R.vozCliente.maiorDor) + '"</div>' : "") +
       (R.vozCliente.sonhos ? '<div style="font-family:\'Fraunces\', serif; font-style:italic; font-size:16px; line-height:1.6; color:rgba(251,250,246,0.85);">"' + esc(R.vozCliente.sonhos) + '"</div>' : "") +
       '</div>';
@@ -233,7 +234,7 @@ function renderReport(R) {
     '<div style="display:flex; align-items:center; gap:8px; font-size:13px; color:rgba(21,21,63,0.65);"><div style="width:20px; height:3px; background:#4F8C84;"></div> Seguindo recomendações</div>' +
     '</div>' +
     '<div style="font-size:12.5px; color:rgba(21,21,63,0.5); margin-top:20px; line-height:1.6; border-top:1px solid rgba(27,27,92,0.14); padding-top:16px;">' +
-    'Premissas: retorno nominal anual de ' + R.kpis.taxaRetornoDisplay + ' (perfil ' + esc(R.data.perfilRisco) + '), aportes mensais conforme indicado. Projeções não constituem garantia ou promessa de retorno; são baseadas em premissas assumidas e podem não se concretizar.' +
+    'Valores a preços de hoje: as projeções usam retorno real anual de ' + R.kpis.taxaRetornoDisplay + ' (perfil ' + esc(R.data.perfilRisco) + '), ou seja, já descontada uma inflação estimada de ' + R.kpis.inflacaoDisplay + ' ao ano, com aportes mensais conforme indicado. Assim, a meta e as curvas ficam na mesma base de comparação. Projeções não constituem garantia ou promessa de retorno; são baseadas em premissas assumidas e podem não se concretizar.' +
     '</div></div></div></section>';
 
   // 9. Plano de ação
