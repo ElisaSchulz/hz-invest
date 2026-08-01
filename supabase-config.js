@@ -21,8 +21,8 @@
 //  normalmente — apenas não envia nada para o Supabase.
 // ─────────────────────────────────────────────────────────────
 
-var HZ_SUPABASE_URL = "https://SEU-PROJETO.supabase.co";
-var HZ_SUPABASE_ANON_KEY = "COLE-AQUI-SUA-CHAVE-ANON-PUBLICA";
+var HZ_SUPABASE_URL = "https://ejrpfbnthmgefgtadkmg.supabase.co";
+var HZ_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqcnBmYm50aG1nZWZndGFka21nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2MDE3NTYsImV4cCI6MjEwMTE3Nzc1Nn0.orQRByFyD899W0MWaNYRqb7YzwhxMqmY81JW0aQaoB4";
 
 (function () {
   "use strict";
