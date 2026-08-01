@@ -25,7 +25,7 @@
   --ink:           #15153F;
   --ink-strong:    #1B1B5C;
   --text:          rgba(21,21,63,0.80);
-  --muted:         rgba(21,21,63,0.65);
+  --muted:         rgba(21,21,63,0.60);
   --faint:         rgba(21,21,63,0.50);
 
   /* ── marca ── */
@@ -33,7 +33,7 @@
   --navy-deep:     #15153F;
   --navy-soft:     #2A2A6E;  /* hover de superfícies navy */
   --sage:          #4F8C84;  /* acento principal */
-  --sage-deep:     #37625D;  /* acento em hover sobre fundo claro */
+  --sage-deep:     #3E6F69;  /* acento em hover sobre fundo claro */
   --sage-light:    #6FA8A0;  /* acento sobre fundo navy */
   --sage-dim:      rgba(79,140,132,0.10);
   --sage-border:   rgba(79,140,132,0.28);
@@ -65,13 +65,13 @@
   --navy-dark:   #F6F4EE;   /* era o fundo da página */
   --navy-mid:    #FBFAF6;   /* era o fundo dos cartões */
   --navy-light:  #F1EEE6;
-  --teal:        #37625D;   /* texto: versão acessível do sage */
-  --teal-light:  #3E6F69;
+  --teal:        #4F8C84;   /* acento da marca, igual ao diagnostico.html */
+  --teal-light:  #3E6F69;   /* hover sobre fundo claro */
   --teal-dim:    rgba(79,140,132,0.10);
   --teal-border: rgba(79,140,132,0.28);
   --white:       #1B1B5C;   /* era a cor de texto forte */
   --white-pure:  #15153F;
-  --green:       #37625D;   /* texto positivo */
+  --green:       #3E6F69;   /* texto positivo */
   --amber:       #8A5F22;   /* texto de alerta */
   --red:         #9E3B3B;   /* texto negativo */
   --card:        #FBFAF6;
@@ -138,6 +138,8 @@ nav {
   letter-spacing: 0.01em;
   text-decoration: none;
 }
+/* seletor com elemento + classe para vencer o text-transform das páginas */
+a.nav-logo, a.footer-logo, a.brand { text-transform: none; letter-spacing: 0.01em; }
 .nav-logo span, .footer-logo span, .brand em {
   color: var(--sage);
   font-style: italic;
