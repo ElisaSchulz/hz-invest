@@ -589,6 +589,96 @@
     padding-left: 1rem;
   }
 
+  /* ─── DEPOIMENTOS ─── */
+  #depoimentos { background: rgba(14,10,60,0.7); }
+  .depo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.4rem;
+    margin-top: 3rem;
+  }
+  .depo-card {
+    background: rgba(26,20,100,0.55);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.9rem 1.8rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .depo-card.exemplo { border-style: dashed; border-color: rgba(224,164,88,0.4); }
+  .depo-tag {
+    align-self: flex-start;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--amber);
+    border: 1px solid rgba(224,164,88,0.4);
+    border-radius: 4px;
+    padding: 0.15rem 0.45rem;
+    margin-bottom: 0.9rem;
+  }
+  .depo-quote {
+    font-size: 0.98rem;
+    line-height: 1.7;
+    color: var(--text);
+    font-weight: 300;
+    flex: 1;
+  }
+  .depo-autor { margin-top: 1.3rem; padding-top: 1.1rem; border-top: 1px solid var(--border); }
+  .depo-autor .nome { font-size: 0.92rem; font-weight: 600; color: var(--white-pure); }
+  .depo-autor .ctx { font-size: 0.82rem; color: var(--muted); }
+
+  /* ─── CUSTO DE NÃO SABER (ancoragem) ─── */
+  .anchor-box {
+    max-width: 620px;
+    margin: 0 auto;
+    text-align: center;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem 2.2rem;
+    background: rgba(26,20,100,0.4);
+  }
+  .anchor-box .lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--text);
+    font-weight: 300;
+  }
+  .anchor-box .num { color: var(--teal); font-weight: 700; }
+  .anchor-box .fine { display: block; margin-top: 1rem; font-size: 0.76rem; color: rgba(196,193,230,0.4); line-height: 1.6; }
+
+  /* ─── BÔNUS ─── */
+  .bonus-box {
+    position: relative;
+    max-width: 620px;
+    margin: 1.4rem auto 0;
+    background: rgba(107,191,181,0.09);
+    border: 1px solid var(--teal-border);
+    border-radius: 12px;
+    padding: 1.8rem 2rem;
+    text-align: left;
+  }
+  .bonus-tag {
+    display: inline-block;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--navy-dark);
+    background: var(--teal);
+    border-radius: 4px;
+    padding: 0.2rem 0.55rem;
+    margin-bottom: 0.9rem;
+  }
+  .bonus-box h3 { font-size: 1.15rem; font-weight: 700; color: var(--white-pure); margin-bottom: 0.6rem; }
+  .bonus-box p { font-size: 0.94rem; color: var(--text); font-weight: 300; line-height: 1.65; }
+
+  /* ─── FECHAMENTO PÓS-FAQ ─── */
+  .closing { text-align: center; padding-top: 80px; padding-bottom: 90px; }
+  .closing h2 { max-width: 640px; margin: 0 auto 1.2rem; }
+  .closing .section-sub { margin: 0 auto 2rem; }
+
   /* ─── OFERTA / STICKY ─── */
   .after-buy {
     display: grid;
@@ -916,6 +1006,100 @@
   </div>
 </section>
 
+<!-- ─── AUTORIDADE ─── -->
+<section id="quem">
+  <div class="reveal">
+    <div class="section-label">// quem faz</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Metodologia de quem vive disso</h2>
+  </div>
+
+  <div class="author-box reveal">
+    <img class="author-img" src="https://framerusercontent.com/images/0DlZ0kmXAutFyVmhsf2IzDVYA.jpeg" alt="Elisa Schulz">
+    <div>
+      <h3>Elisa Schulz</h3>
+      <div class="author-role">Economista &amp; Mestre em Finanças</div>
+      <p>
+        O diagnóstico traduz em software o mesmo método que a HZ Invest usa no atendimento individual:
+        seis dimensões avaliadas, pesos definidos por relevância e recomendações que saem dos seus números,
+        não de um modelo genérico. É a porta de entrada para quem quer clareza antes de decidir qualquer coisa.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── DEPOIMENTOS ─── -->
+<section id="depoimentos">
+  <div class="reveal">
+    <div class="section-label">// quem já fez</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">O que dizem quem<br>passou pelo diagnóstico</h2>
+    <p class="section-sub">Relatos de quem respondeu o questionário e recebeu o relatório completo.</p>
+  </div>
+
+  <div class="depo-grid reveal" id="depoGrid"></div>
+</section>
+
+<!-- ─── OFERTA (preço só aqui, no final) ─── -->
+<section id="oferta">
+  <div class="reveal" style="text-align:center;">
+    <div class="section-label" style="text-align:center;">// o investimento</div>
+    <h2 class="section-title">Em 25 minutos você sai da dúvida<br>e entra no plano.</h2>
+    <p class="section-sub" style="margin:0 auto;">Um retrato honesto da sua vida financeira, com o próximo passo escrito com todas as letras — e ele fica com você para sempre.</p>
+  </div>
+
+  <div class="anchor-box reveal" style="margin-bottom:2.2rem;">
+    <div class="lead">
+      Uma reserva de <strong style="color:var(--white);">R$ 30 mil</strong> parada na poupança rende cerca de
+      <span class="num">R$ 1.200 a menos por ano</span> do que num CDB de 100% do CDI.
+      Só esse detalhe já paga o diagnóstico mais de dez vezes — e ele examina
+      <strong style="color:var(--white);">seis dimensões</strong> da sua vida financeira atrás desse tipo de vazamento.
+      <span class="fine">Comparação ilustrativa, com taxas de referência que variam conforme a Selic. Não é promessa de retorno.</span>
+    </div>
+  </div>
+
+  <div class="price-box reveal">
+    <div class="price-tag">
+      <span class="cur">R$</span><span class="val">97</span>
+      <span class="note">pagamento único · sem mensalidade · acesso imediato</span>
+    </div>
+    <ul class="price-list">
+      <li>Questionário guiado de 10 etapas, com salvar e continuar depois</li>
+      <li>Relatório personalizado de 13 seções, gerado na hora</li>
+      <li>Score geral, arquétipo financeiro e 11 indicadores</li>
+      <li>Plano de ação individualizado e checklist de 30 dias</li>
+      <li>Projeção patrimonial de 10 anos a preços de hoje</li>
+      <li>Download em PDF para consultar e comparar quando refizer</li>
+      <li><strong style="color:var(--white);">Bônus:</strong> 30 minutos com a consultoria da HZ para discutir o resultado</li>
+    </ul>
+    <a href="#" class="btn-primary js-cta" style="font-size:1rem;padding:1.1rem 2.6rem;">Quero meu diagnóstico agora</a>
+    <div class="price-guarantee">
+      <strong style="color:var(--white);">Garantia de 7 dias.</strong> Se o relatório não te entregar clareza, devolvemos o valor integral — basta escrever para
+      <a href="mailto:elisa@hzinvest.com.br" style="color:var(--teal);">elisa@hzinvest.com.br</a>.
+    </div>
+  </div>
+
+  <div class="bonus-box reveal">
+    <span class="bonus-tag">Bônus incluso</span>
+    <h3>30 minutos com a consultoria da HZ</h3>
+    <p>
+      Depois de receber o relatório, você agenda uma conversa de 30 minutos com a equipe de consultoria da HZ Invest
+      para tirar dúvidas sobre o que o diagnóstico encontrou e definir por onde começar. Sem custo adicional e sem compromisso de contratar nada.
+    </p>
+  </div>
+
+  <div class="after-buy reveal">
+    <div><strong>1. Pagamento</strong>Confirmação em segundos, direto no checkout.</div>
+    <div><strong>2. Acesso liberado</strong>Você já cai no questionário, sem espera nem e-mail de liberação.</div>
+    <div><strong>3. Relatório na hora</strong>Ao finalizar, ele é gerado na mesma sessão e fica disponível em PDF.</div>
+  </div>
+
+  <p class="section-sub reveal" style="margin:2rem auto 0;text-align:center;max-width:560px;font-size:0.85rem;">
+    Seus dados são usados apenas para gerar o seu diagnóstico, com acesso restrito à HZ Invest.
+    Você pode pedir acesso, correção ou exclusão quando quiser — veja a <a href="politica-privacidade.html" style="color:var(--teal);">Política de Privacidade</a>.
+  </p>
+</section>
+
 <!-- ─── FAQ ─── -->
 <section id="faq">
   <div class="reveal">
@@ -960,66 +1144,13 @@
   </div>
 </section>
 
-<!-- ─── AUTORIDADE ─── -->
-<section id="quem">
+<!-- ─── FECHAMENTO ─── -->
+<section class="closing">
   <div class="reveal">
-    <div class="section-label">// quem faz</div>
-    <div class="teal-line"></div>
-    <h2 class="section-title">Metodologia de quem vive disso</h2>
+    <h2 class="section-title">Ainda com dúvida sobre<br>onde você está?</h2>
+    <p class="section-sub">É exatamente isso que o diagnóstico resolve — em 25 minutos, com números seus e um plano escrito.</p>
+    <a href="#oferta" class="btn-primary" style="font-size:1rem;padding:1.1rem 2.6rem;">Quero meu diagnóstico</a>
   </div>
-
-  <div class="author-box reveal">
-    <img class="author-img" src="https://framerusercontent.com/images/0DlZ0kmXAutFyVmhsf2IzDVYA.jpeg" alt="Elisa Schulz">
-    <div>
-      <h3>Elisa Schulz</h3>
-      <div class="author-role">Economista &amp; Mestre em Finanças</div>
-      <p>
-        O diagnóstico traduz em software o mesmo método que a HZ Invest usa no atendimento individual:
-        seis dimensões avaliadas, pesos definidos por relevância e recomendações que saem dos seus números,
-        não de um modelo genérico. É a porta de entrada para quem quer clareza antes de decidir qualquer coisa.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- ─── OFERTA (preço só aqui, no final) ─── -->
-<section id="oferta">
-  <div class="reveal" style="text-align:center;">
-    <div class="section-label" style="text-align:center;">// o investimento</div>
-    <h2 class="section-title">Em 25 minutos você sai da dúvida<br>e entra no plano.</h2>
-    <p class="section-sub" style="margin:0 auto;">Um retrato honesto da sua vida financeira, com o próximo passo escrito com todas as letras — e ele fica com você para sempre.</p>
-  </div>
-
-  <div class="price-box reveal">
-    <div class="price-tag">
-      <span class="cur">R$</span><span class="val">97</span>
-      <span class="note">pagamento único · sem mensalidade · acesso imediato</span>
-    </div>
-    <ul class="price-list">
-      <li>Questionário guiado de 10 etapas, com salvar e continuar depois</li>
-      <li>Relatório personalizado de 13 seções, gerado na hora</li>
-      <li>Score geral, arquétipo financeiro e 11 indicadores</li>
-      <li>Plano de ação individualizado e checklist de 30 dias</li>
-      <li>Projeção patrimonial de 10 anos a preços de hoje</li>
-      <li>Download em PDF para consultar e comparar quando refizer</li>
-    </ul>
-    <a href="#" class="btn-primary js-cta" style="font-size:1rem;padding:1.1rem 2.6rem;">Quero meu diagnóstico agora</a>
-    <div class="price-guarantee">
-      <strong style="color:var(--white);">Garantia de 7 dias.</strong> Se o relatório não te entregar clareza, devolvemos o valor integral — basta escrever para
-      <a href="mailto:elisa@hzinvest.com.br" style="color:var(--teal);">elisa@hzinvest.com.br</a>.
-    </div>
-  </div>
-
-  <div class="after-buy reveal">
-    <div><strong>1. Pagamento</strong>Confirmação em segundos, direto no checkout.</div>
-    <div><strong>2. Acesso liberado</strong>Você já cai no questionário, sem espera nem e-mail de liberação.</div>
-    <div><strong>3. Relatório na hora</strong>Ao finalizar, ele é gerado na mesma sessão e fica disponível em PDF.</div>
-  </div>
-
-  <p class="section-sub reveal" style="margin:2rem auto 0;text-align:center;max-width:560px;font-size:0.85rem;">
-    Seus dados são usados apenas para gerar o seu diagnóstico, com acesso restrito à HZ Invest.
-    Você pode pedir acesso, correção ou exclusão quando quiser — veja a <a href="politica-privacidade.html" style="color:var(--teal);">Política de Privacidade</a>.
-  </p>
 </section>
 
 <div class="disclaimer">
@@ -1058,6 +1189,39 @@
 // ─────────────────────────────────────────────────────────────
 var HZ_CHECKOUT_URL = "COLE-AQUI-O-LINK-DE-CHECKOUT";
 
+// ─────────────────────────────────────────────────────────────
+//  DEPOIMENTOS
+//  Os itens abaixo são EXEMPLOS de preenchimento (exemplo: true).
+//  Enquanto houver algum exemplo, os cards aparecem com borda
+//  tracejada, etiqueta "exemplo" e um aviso na tela — para nenhum
+//  depoimento fictício ir ao ar parecendo real.
+//
+//  Ao coletar os depoimentos reais das pessoas que fizerem o
+//  diagnóstico, troque o texto/nome/contexto e remova a linha
+//  "exemplo: true" de cada item. A seção some sozinha se a lista
+//  ficar vazia.
+// ─────────────────────────────────────────────────────────────
+var HZ_DEPOIMENTOS = [
+  {
+    texto: "[Texto do depoimento — o que a pessoa achou do diagnóstico, o que descobriu que não sabia e o que mudou depois.]",
+    nome: "Nome da pessoa",
+    contexto: "Profissão · Cidade/UF",
+    exemplo: true
+  },
+  {
+    texto: "[Texto do depoimento — bom pedir que cite um número ou uma descoberta concreta: o score, o arquétipo ou uma ação do plano que ela colocou em prática.]",
+    nome: "Nome da pessoa",
+    contexto: "Profissão · Cidade/UF",
+    exemplo: true
+  },
+  {
+    texto: "[Texto do depoimento — vale um relato de quem estava em dúvida se valia a pena e mudou de ideia depois de ler o relatório.]",
+    nome: "Nome da pessoa",
+    contexto: "Profissão · Cidade/UF",
+    exemplo: true
+  }
+];
+
 (function () {
   var configurado = HZ_CHECKOUT_URL.indexOf("COLE-AQUI") === -1 && HZ_CHECKOUT_URL.length > 8;
   var ctas = document.querySelectorAll(".js-cta");
@@ -1070,7 +1234,41 @@ var HZ_CHECKOUT_URL = "COLE-AQUI-O-LINK-DE-CHECKOUT";
       ctas[i].setAttribute("href", "#preco");
     }
   }
-  if (!configurado) document.getElementById("cfgWarn").style.display = "block";
+  // ── depoimentos ──
+  var grid = document.getElementById("depoGrid");
+  var secDepo = document.getElementById("depoimentos");
+  var temExemplo = false;
+
+  if (!HZ_DEPOIMENTOS.length) {
+    secDepo.style.display = "none";
+  } else {
+    var html = "";
+    for (var d = 0; d < HZ_DEPOIMENTOS.length; d++) {
+      var dep = HZ_DEPOIMENTOS[d];
+      if (dep.exemplo) temExemplo = true;
+      html += '<div class="depo-card' + (dep.exemplo ? ' exemplo' : '') + '">' +
+        (dep.exemplo ? '<span class="depo-tag">exemplo · substituir</span>' : '') +
+        '<div class="depo-quote">"' + esc(dep.texto) + '"</div>' +
+        '<div class="depo-autor"><div class="nome">' + esc(dep.nome) + '</div>' +
+        '<div class="ctx">' + esc(dep.contexto) + '</div></div></div>';
+    }
+    grid.innerHTML = html;
+  }
+
+  var avisos = [];
+  if (!configurado) avisos.push("<strong>Checkout não configurado.</strong> Preencha <code>HZ_CHECKOUT_URL</code> com o link de pagamento.");
+  if (temExemplo) avisos.push("<strong>Depoimentos de exemplo na página.</strong> Substitua os itens de <code>HZ_DEPOIMENTOS</code> pelos relatos reais (e remova <code>exemplo: true</code>) antes de publicar.");
+  if (avisos.length) {
+    var warn = document.getElementById("cfgWarn");
+    warn.innerHTML = "⚠ " + avisos.join("<br><br>⚠ ");
+    warn.style.display = "block";
+  }
+
+  function esc(t) {
+    return String(t == null ? "" : t)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
 
   // barra fixa de CTA no mobile: aparece depois do hero e some na seção de oferta
   var sticky = document.getElementById("stickyCta");
