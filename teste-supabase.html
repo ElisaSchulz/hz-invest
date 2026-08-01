@@ -70,7 +70,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
+<script src="supabase-config.js?v=2"></script>
 <script>
 "use strict";
 
@@ -106,11 +106,27 @@ function rodar() {
     linha("falha", "Biblioteca não carregou", "O script do Supabase não foi carregado. Verifique sua conexão e recarregue a página.");
     return fim(false);
   }
-  if (!window.hzSupabase || !hzSupabase.configurado()) {
-    linha("falha", "Credenciais não configuradas", "O arquivo supabase-config.js ainda está com os valores de exemplo.");
+  if (!window.hzSupabase || typeof HZ_SUPABASE_URL === "undefined") {
+    linha("falha", "O arquivo de configuração não carregou",
+      "O supabase-config.js não chegou a rodar nesta página. Se o site acabou de ser publicado, " +
+      "aguarde um minuto e recarregue. Se persistir, force a recarga: no celular, segure o botão de " +
+      "recarregar e escolha recarregar sem cache, ou abra em aba anônima.");
     return fim(false);
   }
-  linha("ok", "Credenciais carregadas", "Projeto: " + HZ_SUPABASE_URL.replace("https://", ""));
+
+  var urlLida = String(HZ_SUPABASE_URL);
+  var ehExemplo = urlLida.indexOf("SEU-PROJETO") !== -1 ||
+                  String(HZ_SUPABASE_ANON_KEY).indexOf("COLE-AQUI") !== -1;
+
+  if (ehExemplo) {
+    linha("falha", "Versão antiga do arquivo em cache",
+      "O navegador leu: <code>" + urlLida + "</code>, que é o valor de exemplo. " +
+      "As credenciais reais já estão publicadas, então isso é cache do navegador ou da CDN. " +
+      "Abra esta página em aba anônima, ou aguarde alguns minutos e recarregue.");
+    return fim(false);
+  }
+
+  linha("ok", "Credenciais carregadas", "Projeto: " + urlLida.replace("https://", ""));
 
   var sb = window.supabase.createClient(HZ_SUPABASE_URL, HZ_SUPABASE_ANON_KEY);
   var id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
