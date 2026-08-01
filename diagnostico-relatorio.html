@@ -216,7 +216,7 @@ function renderReport(R) {
     '<polyline points="' + R.chart.points1 + '" fill="none" stroke="rgba(27,27,92,0.45)" stroke-width="2.5" />' +
     '<polyline points="' + R.chart.points2 + '" fill="none" stroke="#4F8C84" stroke-width="3" />' + dots +
     '</svg>' +
-    '<div style="' + R.chart.targetLabelStyle + ' position:absolute; font-size:11px; color:#1B1B5C;">Meta: ' + R.kpis.patrimonioNecessarioDisplay + '</div>' +
+    '<div style="' + R.chart.targetLabelStyle + ' position:absolute; font-size:11px; color:#1B1B5C;">' + R.chart.targetLabel + '</div>' +
     '<div style="' + R.chart.end1Style + ' position:absolute; font-size:12px; font-weight:700; color:rgba(27,27,92,0.65); font-feature-settings:\'tnum\';">' + R.kpis.projecaoAtualDisplay + '</div>' +
     '<div style="' + R.chart.end2Style + ' position:absolute; font-size:12px; font-weight:700; color:#4F8C84; font-feature-settings:\'tnum\';">' + R.kpis.projecaoRecomendadaDisplay + '</div>' +
     '</div>' +
@@ -248,9 +248,23 @@ function renderReport(R) {
           '<div style="font-size:14.5px; line-height:1.6; color:rgba(21,21,63,0.7);"><span style="font-weight:700; color:#1B1B5C;">' + s.dimNome + ': </span>' + s.texto + '</div></div>';
       }).join("") + '</div>';
   }
+  var is = R.investSeguro;
+  var investSeguroHtml = '<div class="archetype-block" style="position:relative; overflow:hidden; margin-top:36px; background:#1B1B5C; color:#FBFAF6; border-radius:8px; padding:36px;">' +
+    '<div class="navy-glow" style="top:-50px; right:-50px; width:200px; height:200px;"></div>' +
+    '<div style="position:relative; font-size:11px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#6FA8A0; margin-bottom:14px;">Onde aplicar com segurança</div>' +
+    '<div style="position:relative; font-size:15px; line-height:1.7; color:rgba(251,250,246,0.85); margin-bottom:22px; max-width:620px;">' + esc(is.intro) + '</div>' +
+    '<div style="position:relative; display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px; margin-bottom:18px;">' +
+    is.itens.map(function (item) {
+      return '<div style="background:rgba(251,250,246,0.06); border-radius:8px; padding:20px 22px;">' +
+        '<div style="font-family:\'Fraunces\', serif; font-size:17px; font-weight:500; color:#FBFAF6; margin-bottom:8px;">' + item.nome + '</div>' +
+        '<div style="font-size:13.5px; line-height:1.65; color:rgba(251,250,246,0.75);">' + item.desc + '</div></div>';
+    }).join("") +
+    '</div>' +
+    '<div style="position:relative; font-size:11.5px; color:rgba(251,250,246,0.45);">' + is.nota + '</div>' +
+    '</div>';
   html += '<section class="hairline"><div class="wrap">' +
     sectionHeader("O que fazer", "09", "Plano de Ação Individualizado") +
-    plan + strengthsHtml + '</div></section>';
+    plan + strengthsHtml + investSeguroHtml + '</div></section>';
 
   // 10. Checklist 30 dias
   var checks = R.checklist.map(function (c) {

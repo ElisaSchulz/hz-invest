@@ -183,7 +183,7 @@ var SABE_PARA_ONDE = ["Sei bem, sem surpresas", "Mais ou menos, às vezes me sur
 var STEP_META = {
   1: { eyebrow: "Etapa 1 de 10", title: "Identificação", desc: "Alguns dados básicos pra personalizar seu relatório e mantermos contato sobre seu diagnóstico." },
   2: { eyebrow: "Etapa 2 de 10", title: "Renda Mensal", desc: "Sua renda líquida e a do seu cônjuge, se aplicável, além de outras fontes de renda." },
-  3: { eyebrow: "Etapa 3 de 10", title: "Despesas", desc: "Seus gastos mensais por categoria. Pode preencher direto, sem detalhar sub-itens." },
+  3: { eyebrow: "Etapa 3 de 10", title: "Despesas", desc: "Seus gastos mensais por categoria. O valor em Investimentos / Poupança conta como aporte mensal (poupança), não como gasto." },
   4: { eyebrow: "Etapa 4 de 10", title: "Patrimônio e Investimentos", desc: "Imóveis, veículos, investimentos e seu perfil como investidor." },
   5: { eyebrow: "Etapa 5 de 10", title: "Dívidas", desc: "Cartão de crédito, cheque especial, empréstimos e outras dívidas em aberto." },
   6: { eyebrow: "Etapa 6 de 10", title: "Liquidez e Reserva de Emergência", desc: "Quanto você tem guardado para imprevistos e onde está aplicado." },
@@ -279,6 +279,7 @@ function updateTotalizers() {
 
 /* ===================== Validação ===================== */
 function requiredByStep(n) {
+  var t = totals();
   var req = {
     1: [
       ["Nome completo", data.nome.trim() !== ""],
@@ -291,7 +292,8 @@ function requiredByStep(n) {
       ["Filhos / dependentes", String(data.filhos) !== ""],
       ["Ocupação", data.ocupacao !== ""]
     ],
-    2: [], 3: [],
+    2: [["Renda mensal (informe ao menos uma fonte)", t.totalRenda > 0]],
+    3: [["Despesas mensais (informe ao menos uma categoria)", t.totalDespesas > 0]],
     4: [
       ["Perfil de risco autodeclarado", data.perfilRisco !== ""],
       ["Sabe a rentabilidade média no último ano?", data.sabeRentabilidade !== ""],
