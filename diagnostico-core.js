@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────
-//  diagnostico-core.js — HZ Invest
+//  diagnostico-core.js | HZ Invest
 //  Lógica de cálculo do Diagnóstico Financeiro (fonte da verdade
 //  das regras de negócio), compartilhada entre o formulário
 //  (diagnostico.html) e o relatório (diagnostico-relatorio.html).
@@ -36,7 +36,7 @@
     adiamento: { nome: "Adiamento do Futuro", abertura: "Você tem disciplina, guarda dinheiro, se vira bem no dia a dia. O que falta não é esforço, é direção." },
     otimismo: { nome: "Otimismo Desprotegido", abertura: "Ninguém gosta de pensar no que pode dar errado, e é exatamente por isso que essa é a área mais adiada por quase todo mundo." },
     paralisia: { nome: "Paralisia da Decisão", abertura: "Você guarda dinheiro, isso já é mais do que a maioria consegue fazer. O problema não é a disciplina, é o próximo passo depois de guardar." },
-    vazamento: { nome: "Vazamento Silencioso", abertura: "Suas contas fecham, você não vive no vermelho — mas isso não significa que não haja dinheiro escorrendo pelo ralo todo mês. Só que esse vazamento é silencioso." },
+    vazamento: { nome: "Vazamento Silencioso", abertura: "Suas contas fecham, você não vive no vermelho, mas isso não significa que não haja dinheiro escorrendo pelo ralo todo mês. Só que esse vazamento é silencioso." },
     dominio: { nome: "Domínio Comportamental", abertura: "Você já construiu algo raro: uma relação madura com o dinheiro, não só uma planilha organizada." }
   };
 
@@ -52,9 +52,9 @@
       otimizacao: function (n) { return { texto: "Sua reserva está bem dimensionada" + n.aplicacaoNota, acao: n.aplicacaoAcao }; }
     },
     endividamento: {
-      critico: function (n) { return { texto: "Suas dívidas somam " + n.totalDividas + " (cerca de " + n.mesesDivida + " meses da sua renda), com parcelas comprometendo " + n.comprometimento + " da renda mensal — nível crítico. Priorizar a quitação da dívida de maior taxa de juros antes de qualquer investimento é essencial.", acao: "Listar todas as dívidas por taxa de juros e priorizar a quitação da mais cara primeiro." }; },
-      insuficiente: function (n) { return { texto: "Suas dívidas somam " + n.totalDividas + " e as parcelas comprometem " + n.comprometimento + " da renda mensal — pede atenção. Recomendamos consolidar ou renegociar as dívidas de maior taxa.", acao: "Buscar consolidação ou renegociação das dívidas de maior taxa de juros." }; },
-      otimizacao: function (n) { return { texto: "Sem dívidas problemáticas no momento — sua saúde de endividamento está excelente.", acao: "Manter o hábito de evitar crédito rotativo e cheque especial." }; }
+      critico: function (n) { return { texto: "Suas dívidas somam " + n.totalDividas + " (cerca de " + n.mesesDivida + " meses da sua renda), com parcelas comprometendo " + n.comprometimento + " da renda mensal, nível crítico. Priorizar a quitação da dívida de maior taxa de juros antes de qualquer investimento é essencial.", acao: "Listar todas as dívidas por taxa de juros e priorizar a quitação da mais cara primeiro." }; },
+      insuficiente: function (n) { return { texto: "Suas dívidas somam " + n.totalDividas + " e as parcelas comprometem " + n.comprometimento + " da renda mensal, o que pede atenção. Recomendamos consolidar ou renegociar as dívidas de maior taxa.", acao: "Buscar consolidação ou renegociação das dívidas de maior taxa de juros." }; },
+      otimizacao: function (n) { return { texto: "Sem dívidas problemáticas no momento. Sua saúde de endividamento está excelente.", acao: "Manter o hábito de evitar crédito rotativo e cheque especial." }; }
     },
     risco: {
       critico: function (n) { return { texto: "Sua proteção contra imprevistos tem lacunas sérias: " + n.protecaoLista + ". Isso expõe " + (n.dependentes > 0 ? "sua família" : "você") + " a risco financeiro significativo em caso de imprevisto.", acao: n.protecaoAcao }; },
@@ -70,11 +70,11 @@
       critico: function (n) {
         if (n.aposentado) return { texto: "Pela idade-alvo informada, você já está no período de aposentadoria, e seu patrimônio investido cobre " + n.progresso + " do necessário pela regra dos 25x pra sustentar o gasto desejado.", acao: "Revisar o gasto mensal sustentável com base no patrimônio atual, junto com a estratégia de renda." };
         if (n.metasVagas) return { texto: "Você ainda não tem metas com prazo e valor definidos. Isso torna qualquer estratégia de investimento genérica, sem direção clara.", acao: "Definir 2-3 metas prioritárias com prazo e valor específicos nos próximos 30 dias." };
-        return { texto: "Suas metas têm prazo e valor definidos, mas o patrimônio investido cobre só " + n.progresso + " do necessário — o ritmo atual de aportes ainda não sustenta o plano.", acao: n.aporteViavel ? "Estruturar um aporte mensal de " + n.aporte + " direcionado à meta de aposentadoria." : "Revisar valor e prazo da meta de aposentadoria pra chegar num plano de aportes realista." };
+        return { texto: "Suas metas têm prazo e valor definidos, mas o patrimônio investido cobre só " + n.progresso + " do necessário. O ritmo atual de aportes ainda não sustenta o plano.", acao: n.aporteViavel ? "Estruturar um aporte mensal de " + n.aporte + " direcionado à meta de aposentadoria." : "Revisar valor e prazo da meta de aposentadoria pra chegar num plano de aportes realista." };
       },
       insuficiente: function (n) {
         if (n.aposentado) return { texto: "Pela idade-alvo informada, você já está no período de aposentadoria, e seu patrimônio investido cobre " + n.progresso + " do necessário pela regra dos 25x pra sustentar o gasto desejado.", acao: "Revisar o gasto mensal sustentável com base no patrimônio atual, junto com a estratégia de renda." };
-        if (!n.aporteViavel) return { texto: "Seu progresso pra aposentadoria está em " + n.progresso + ", abaixo do esperado pra sua idade. O aporte mensal necessário pra fechar esse gap no prazo atual (" + n.aporte + ") está acima do que a renda comporta — sinal de que o valor ou o prazo da meta precisam ser recalibrados.", acao: "Revisar valor e prazo da meta de aposentadoria pra chegar num plano de aportes realista." };
+        if (!n.aporteViavel) return { texto: "Seu progresso pra aposentadoria está em " + n.progresso + ", abaixo do esperado pra sua idade. O aporte mensal necessário pra fechar esse gap no prazo atual (" + n.aporte + ") está acima do que a renda comporta, sinal de que o valor ou o prazo da meta precisam ser recalibrados.", acao: "Revisar valor e prazo da meta de aposentadoria pra chegar num plano de aportes realista." };
         return { texto: "Seu progresso pra aposentadoria está em " + n.progresso + ", abaixo do esperado pra sua idade. Seria necessário um aporte mensal de " + n.aporte + " pra fechar esse gap no prazo desejado.", acao: "Estruturar um aporte mensal de " + n.aporte + " direcionado à meta de aposentadoria." };
       },
       otimizacao: function (n) { return { texto: "Você está no caminho certo pra suas metas. Vale revisar anualmente se os valores e prazos continuam realistas.", acao: "Revisar metas e prazos uma vez por ano." }; }
@@ -123,7 +123,7 @@
   }
 
   /* ===================== Cálculo do relatório (regras de negócio) ===================== */
-  // geradoEm (opcional): data ISO em que o diagnóstico foi finalizado — o
+  // geradoEm (opcional): data ISO em que o diagnóstico foi finalizado. O
   // relatório fica datado do momento da finalização, não da visita à página.
   function computeReport(data, geradoEm) {
     var D = data;
@@ -215,14 +215,14 @@
     if (patrimonioInvest > 0) {
       if (D.perfilRisco === "Conservador" && rvPct > 30) perfilAlertText = "alocação em renda variável (" + pct(rvPct) + ") acima do que seu perfil conservador costuma sugerir";
       else if (D.perfilRisco === "Moderado" && rvPct > 65) perfilAlertText = "alocação em renda variável (" + pct(rvPct) + ") bem acima do que um perfil moderado costuma sugerir";
-      else if (D.perfilRisco === "Arrojado" && rvPct < 15) perfilAlertText = "apenas " + pct(rvPct) + " em renda variável para um perfil arrojado — possível ineficiência de alocação";
+      else if (D.perfilRisco === "Arrojado" && rvPct < 15) perfilAlertText = "apenas " + pct(rvPct) + " em renda variável para um perfil arrojado, possível ineficiência de alocação";
     }
 
     // ---- Dim 6: Metas ----
     var gastoMensalAposentadoria = D.gastoNaoSei ? rendaTotal * ((D.gastoPercent || 70) / 100) : (D.gastoMensalAposentadoria || 0);
     var patrimonioNecessario = gastoMensalAposentadoria * 12 * 25;
     // A reserva de emergência tem função própria (imprevistos) e fica fora
-    // dos ativos destinados à aposentadoria — evita contar duas vezes.
+    // dos ativos destinados à aposentadoria, evitando contar duas vezes.
     var ativosLiquidos = Math.max(0, patrimonioInvest - (D.reservaEmergencia || 0));
     var idadeAposentadoria = Number(D.idadeAposentadoria) || idade + 20;
     var progressoAtual = patrimonioNecessario > 0 ? (ativosLiquidos / patrimonioNecessario) * 100 : 0;
@@ -258,7 +258,7 @@
     if (deficit) archetypeId = "negacao";
     else if (scoreGeral < 40) archetypeId = "ilusao";
     // Se até a dimensão mais fraca está em faixa adequada (>= 60, mesma régua do
-    // plano de ação), o padrão é de domínio — sem esse piso, um cliente excelente
+    // plano de ação), o padrão é de domínio. Sem esse piso, um cliente excelente
     // em tudo receberia o arquétipo da sua "pior" dimensão mesmo ela estando ótima.
     else if (weakest.score >= 60) archetypeId = "dominio";
     else if (weakest.key === "fluxo") archetypeId = "ilusao";
@@ -272,7 +272,7 @@
 
     var rendaBand = rendaTotal < 8000 ? "inicial" : rendaTotal <= 20000 ? "média" : "alta";
 
-    // Fatos reais do cliente que condicionam os textos do arquétipo —
+    // Fatos reais do cliente que condicionam os textos do arquétipo:
     // nenhum texto pode afirmar algo que as respostas contradizem.
     var metasVagas = D.temMetasDefinidas === "Não tenho metas" || D.temMetasDefinidas === "Ideias vagas" || !D.temMetasDefinidas;
     var protecaoAtiva = !!(D.temSeguroVida && D.temPlanoSaude);
@@ -285,31 +285,31 @@
         ? "Sua taxa de poupança de " + pct(taxaPoupanca) + " mostra disciplina real."
         : "Suas contas fecham no azul, com taxa de poupança de " + pct(taxaPoupanca) + ".") +
         " Mas seu progresso pra aposentadoria está em " + pct(progressoAtual, 1) + " do patrimônio necessário" +
-        (metasVagas ? ", e suas metas ainda são ideias vagas, sem prazo ou valor definidos." : " — abaixo do ritmo que as metas que você definiu pedem."),
+        (metasVagas ? ", e suas metas ainda são ideias vagas, sem prazo ou valor definidos." : ", abaixo do ritmo que as metas que você definiu pedem."),
       otimismo: (dependentes > 0
-        ? "Sua cobertura de seguro de vida é de " + num1(multiploCobertura) + "x sua renda anual, com " + dependentes + " dependente(s) — abaixo do recomendado (" + String(benchmarkMultiplo).replace(".", ",") + "x)."
-        : "Sua proteção contra imprevistos está incompleta" + (D.temPlanoSaude ? "" : " — a começar pela ausência de plano de saúde") + ", e sua renda ficaria garantida por pouco tempo se algo acontecesse.") +
+        ? "Sua cobertura de seguro de vida é de " + num1(multiploCobertura) + "x sua renda anual, com " + dependentes + " dependente(s), abaixo do recomendado (" + String(benchmarkMultiplo).replace(".", ",") + "x)."
+        : "Sua proteção contra imprevistos está incompleta" + (D.temPlanoSaude ? "" : ", a começar pela ausência de plano de saúde") + ", e sua renda ficaria garantida por pouco tempo se algo acontecesse.") +
         " Existe um viés bem humano por trás disso: a crença de que imprevistos graves acontecem com os outros, não com a gente.",
-      paralisia: "Você guarda dinheiro, isso já é mais do que a maioria consegue fazer. Mas seu patrimônio representa " + pct(indicePatrimonio) + " do esperado pra sua idade e renda — o problema não é a disciplina, é o próximo passo depois de guardar.",
+      paralisia: "Você guarda dinheiro, isso já é mais do que a maioria consegue fazer. Mas seu patrimônio representa " + pct(indicePatrimonio) + " do esperado pra sua idade e renda. O problema não é a disciplina, é o próximo passo depois de guardar.",
       vazamento: "Suas contas fecham (taxa de poupança de " + pct(taxaPoupanca) + "), mas " + pct(comprometimento) + " da sua renda mensal está comprometida com dívidas" + (D.sabeTaxaJuros === "Não sei" ? ", e você nem sabe a que taxa de juros" : "") + ". Esse é o tipo de vazamento que não aparece como problema óbvio no orçamento, mas consome silenciosamente sua capacidade de construir patrimônio.",
       dominio: "Reserva, proteção, planejamento e investimento já estão no lugar: score geral de " + scoreGeral + ". Isso não é sorte, é hábito e comportamento construídos ao longo do tempo."
     };
     var ARCH_NAO_OUTRO = {
       negacao: "Diferente de quem só precisa de ajuste fino, aqui o problema é estrutural: com déficit mensal, nenhuma outra dimensão pode ser resolvida de forma sustentável antes desta.",
       ilusao: (D.temDividas
-        ? "Mesmo com dívidas em aberto, o ponto central aqui não é o endividamento em si — é a ausência de margem e de estrutura de segurança: reserva, proteção e investimento ainda não existem de forma consistente."
+        ? "Mesmo com dívidas em aberto, o ponto central aqui não é o endividamento em si, e sim a ausência de margem e de estrutura de segurança: reserva, proteção e investimento ainda não existem de forma consistente."
         : "Diferente de quem está endividado (você não tem dívidas em aberto) ou sem direção de longo prazo, o que te diferencia aqui é a ausência de qualquer estrutura de segurança: reserva, proteção e investimento ainda não existem de forma consistente."),
       adiamento: "Diferente de quem enfrenta um rombo mensal (você poupa " + pct(taxaPoupanca) + " da renda)" +
         (protecaoAtiva ? " ou de quem não tem proteção básica (seu seguro e plano de saúde estão ativos)" : "") +
         ", o que te diferencia é " +
         (metasVagas
-          ? "a ausência de metas com prazo e valor definidos — o dinheiro é guardado, mas sem destino claro."
-          : "a distância entre o ritmo atual de acúmulo e o que suas metas pedem — o dinheiro é guardado, mas ainda não no volume necessário."),
+          ? "a ausência de metas com prazo e valor definidos: o dinheiro é guardado, mas sem destino claro."
+          : "a distância entre o ritmo atual de acúmulo e o que suas metas pedem: o dinheiro é guardado, mas ainda não no volume necessário."),
       otimismo: "Diferente de quem tem problema de disciplina de poupança (sua taxa de poupança de " + pct(taxaPoupanca) + " é saudável), o gap está especificamente na proteção contra imprevistos.",
       paralisia: (taxaSaudavel
-        ? "Diferente de quem não consegue guardar dinheiro, sua taxa de poupança de " + pct(taxaPoupanca) + " mostra disciplina — o gap está em transformar essa disciplina em patrimônio de fato investido."
-        : "Diferente de quem não consegue fechar as contas no azul, seu fluxo está sob controle — o gap está em transformar o que você já acumulou em patrimônio de fato investido."),
-      vazamento: "Diferente de quem está no vermelho (suas contas fecham, com taxa de poupança de " + pct(taxaPoupanca) + ") ou sem direção de longo prazo, o que te diferencia aqui é uma dívida cara ativa consumindo recursos que poderiam estar rendendo — o problema não é falta de renda ou disciplina, é uma prioridade de quitação que ainda não foi resolvida.",
+        ? "Diferente de quem não consegue guardar dinheiro, sua taxa de poupança de " + pct(taxaPoupanca) + " mostra disciplina. O gap está em transformar essa disciplina em patrimônio de fato investido."
+        : "Diferente de quem não consegue fechar as contas no azul, seu fluxo está sob controle. O gap está em transformar o que você já acumulou em patrimônio de fato investido."),
+      vazamento: "Diferente de quem está no vermelho (suas contas fecham, com taxa de poupança de " + pct(taxaPoupanca) + ") ou sem direção de longo prazo, o que te diferencia aqui é uma dívida cara ativa consumindo recursos que poderiam estar rendendo. O problema não é falta de renda ou disciplina, e sim uma prioridade de quitação que ainda não foi resolvida.",
       dominio: "Todas as 6 dimensões avaliadas estão em faixa adequada ou excelente, o que é raro: o foco deixa de ser corrigir e passa a ser otimizar."
     };
     var CTA_BY_BAND = {
@@ -394,10 +394,10 @@
     if (D.temDividas) {
       var extra = "";
       if (D.sabeTaxaJuros === "Não sei") {
-        extra += " Levantar a taxa de juros exata de cada dívida é o primeiro passo — sem esse dado não é possível priorizar corretamente o que quitar primeiro.";
+        extra += " Levantar a taxa de juros exata de cada dívida é o primeiro passo. Sem esse dado não é possível priorizar corretamente o que quitar primeiro.";
       }
       if (D.usouRotativo === "Frequentemente" || D.usouRotativo === "Já aconteceu 1-2 vezes") {
-        extra += " O uso recorrente de crédito rotativo pra cobrir outra dívida é um sinal de ciclo — resolver isso é tão prioritário quanto reduzir o valor total da dívida.";
+        extra += " O uso recorrente de crédito rotativo pra cobrir outra dívida é um sinal de ciclo. Resolver isso é tão prioritário quanto reduzir o valor total da dívida.";
       }
       if (extra) {
         var inPlan = actionPlan.filter(function (a) { return a.key === "endividamento"; })[0];
@@ -409,7 +409,7 @@
 
     // Regra contextual: apólices sem revisão há 2+ anos entram na recomendação de risco
     if ((D.temSeguroVida || D.temPlanoSaude) && (D.revisouApolices === "Nunca revisei" || D.revisouApolices === "Faz mais de 2 anos")) {
-      var extraRisco = " Suas apólices estão sem revisão há mais de 2 anos — coberturas desatualizadas costumam ser descobertas na pior hora; vale agendar uma revisão.";
+      var extraRisco = " Suas apólices estão sem revisão há mais de 2 anos. Coberturas desatualizadas costumam ser descobertas na pior hora, então vale agendar uma revisão.";
       var riscoPlan = actionPlan.filter(function (a) { return a.key === "risco"; })[0];
       var riscoStrength = strengths.filter(function (s) { return s.key === "risco"; })[0];
       if (riscoPlan) riscoPlan.texto += extraRisco;
@@ -419,10 +419,10 @@
     // Regra contextual: hábitos de investimento entram na recomendação de patrimônio
     var extraPatrimonio = "";
     if (D.investeAutomatico === "Só o que sobra") {
-      extraPatrimonio += " Investir \"só o que sobra\" costuma ser o maior freio de acúmulo — automatizar o aporte logo após receber a renda muda esse jogo.";
+      extraPatrimonio += " Investir \"só o que sobra\" costuma ser o maior freio de acúmulo. Automatizar o aporte logo após receber a renda muda esse jogo.";
     }
     if (D.sabeRentabilidade === "Não sei") {
-      extraPatrimonio += " Vale também passar a acompanhar a rentabilidade da carteira — sem esse número, não dá pra saber se ela está trabalhando a seu favor.";
+      extraPatrimonio += " Vale também passar a acompanhar a rentabilidade da carteira. Sem esse número, não dá pra saber se ela está trabalhando a seu favor.";
     }
     if (extraPatrimonio) {
       var patPlan = actionPlan.filter(function (a) { return a.key === "patrimonio"; })[0];
@@ -476,7 +476,7 @@
     var rMensal1 = Math.pow(1 + rAnual1, 1 / 12) - 1;
     var rMensal2 = Math.pow(1 + rAnual2, 1 / 12) - 1;
     var pmt1 = Math.max(0, (taxaPoupanca / 100) * rendaTotal);
-    // O cenário recomendado nunca assume aporte acima de 40% da renda —
+    // O cenário recomendado nunca assume aporte acima de 40% da renda:
     // acima disso a recomendação passa a ser recalibrar a meta, não o aporte.
     var pmt2 = Math.max(pmt1 * 1.2, Math.min(aporteNecessario, rendaTotal * 0.4));
     var fv = function (p0, pmt, n, rMensal) { return p0 * Math.pow(1 + rMensal, n) + pmt * ((Math.pow(1 + rMensal, n) - 1) / rMensal); };
@@ -534,26 +534,26 @@
     // Insight comportamental: divergência entre percepção e realidade calculada
     var divergencias = [];
     if (D.salarioCobre === true && deficit) {
-      divergencias.push("Você sente que sua renda cobre as despesas, mas o cálculo real mostra um déficit de " + fmt(despesaTotal - rendaTotal) + "/mês — vale revisar o orçamento com mais atenção.");
+      divergencias.push("Você sente que sua renda cobre as despesas, mas o cálculo real mostra um déficit de " + fmt(despesaTotal - rendaTotal) + "/mês. Vale revisar o orçamento com mais atenção.");
     } else if (D.salarioCobre === false && !deficit) {
-      divergencias.push("Você sente que a renda não cobre as despesas, mas pelos números reais suas contas fecham (taxa de poupança de " + pct(taxaPoupanca) + ") — a sensação de aperto pode vir de falta de clareza sobre para onde o dinheiro vai, não de um problema real de fluxo.");
+      divergencias.push("Você sente que a renda não cobre as despesas, mas pelos números reais suas contas fecham (taxa de poupança de " + pct(taxaPoupanca) + "). A sensação de aperto pode vir de falta de clareza sobre para onde o dinheiro vai, não de um problema real de fluxo.");
     }
     if (D.sobraEmpataVermelho === "Sobra" && taxaPoupanca < 5 && !deficit) {
-      divergencias.push("Você sente que sobra dinheiro no fim do mês, mas sua taxa de poupança real é de apenas " + pct(taxaPoupanca) + " — vale confirmar se essa sobra está realmente sendo guardada ou só some sem destino.");
+      divergencias.push("Você sente que sobra dinheiro no fim do mês, mas sua taxa de poupança real é de apenas " + pct(taxaPoupanca) + ". Vale confirmar se essa sobra está realmente sendo guardada ou só some sem destino.");
     } else if (D.sobraEmpataVermelho === "Fico no vermelho" && !deficit) {
-      divergencias.push("Você sente que fica no vermelho, mas o cálculo mostra que as contas fecham — pode valer a pena mapear os gastos com mais detalhe pra entender de onde vem essa sensação.");
+      divergencias.push("Você sente que fica no vermelho, mas o cálculo mostra que as contas fecham. Pode valer a pena mapear os gastos com mais detalhe pra entender de onde vem essa sensação.");
     }
     if (D.sabeParaOndeVaiDinheiro === "Não, tenho surpresas com frequência") {
-      divergencias.push("Você relatou ter surpresas frequentes com os próprios gastos — mapear categorias com mais detalhe no dia a dia pode trazer bastante clareza sobre para onde o dinheiro está indo.");
+      divergencias.push("Você relatou ter surpresas frequentes com os próprios gastos. Mapear categorias com mais detalhe no dia a dia pode trazer bastante clareza sobre para onde o dinheiro está indo.");
     }
     // Segurança percebida (tempo que aguentaria sem renda) × cobertura real da reserva
     var TEMPO_PERCEBIDO_MESES = { "Dias": 0.2, "Semanas": 0.7, "Poucos meses": 3, "6+ meses": 6 };
     var percepcaoMeses = TEMPO_PERCEBIDO_MESES[D.tempoSemRenda];
     if (percepcaoMeses !== undefined && despesaTotal > 0) {
       if (percepcaoMeses >= 3 && mesesCobertura < percepcaoMeses * 0.5) {
-        divergencias.push("Você acredita que manteria seu padrão de vida por " + D.tempoSemRenda.toLowerCase() + " sem renda, mas sua reserva cobre " + num1(mesesCobertura) + " meses de despesas — a segurança percebida está maior que a real.");
+        divergencias.push("Você acredita que manteria seu padrão de vida por " + D.tempoSemRenda.toLowerCase() + " sem renda, mas sua reserva cobre " + num1(mesesCobertura) + " meses de despesas. A segurança percebida está maior que a real.");
       } else if (percepcaoMeses <= 0.7 && mesesCobertura >= 3) {
-        divergencias.push("Você sente que se desesperaria em " + D.tempoSemRenda.toLowerCase() + " sem renda, mas sua reserva cobre " + num1(mesesCobertura) + " meses de despesas — você está mais protegido(a) do que imagina.");
+        divergencias.push("Você sente que se desesperaria em " + D.tempoSemRenda.toLowerCase() + " sem renda, mas sua reserva cobre " + num1(mesesCobertura) + " meses de despesas. Você está mais protegido(a) do que imagina.");
       }
     }
     var insightPercepcao = { show: divergencias.length > 0, itens: divergencias.slice(0, 3) };
@@ -605,7 +605,7 @@
       intro: investSeguroIntro,
       itens: [
         { nome: "CDB 100% do CDI (ou mais) com liquidez diária", desc: "Rende consistentemente mais que a poupança, com garantia do FGC de até R$ 250 mil por CPF por instituição e resgate no mesmo dia." },
-        { nome: "Tesouro Selic", desc: "Título público federal — a aplicação de menor risco do mercado brasileiro. Acompanha a taxa Selic e permite resgate a qualquer momento sem perda relevante." }
+        { nome: "Tesouro Selic", desc: "Título público federal, a aplicação de menor risco do mercado brasileiro. Acompanha a taxa Selic e permite resgate a qualquer momento sem perda relevante." }
       ],
       nota: "Indicações educacionais de classes de aplicação, não recomendação individualizada de produto."
     };
