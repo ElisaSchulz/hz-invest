@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico Financeiro — HZ Invest</title>
+<meta name="description" content="Um raio-x completo da sua vida financeira em 25 minutos. Score, arquétipo financeiro, plano de ação e projeção de patrimônio num relatório personalizado de 13 seções.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --navy:       #1a1464;
+    --navy-dark:  #120e4e;
+    --navy-mid:   #1e1875;
+    --navy-light: #252098;
+    --teal:       #6bbfb5;
+    --teal-light: #8dd4cb;
+    --teal-dim:   rgba(107,191,181,0.14);
+    --teal-border:rgba(107,191,181,0.25);
+    --white:      #f4f2ff;
+    --white-pure: #ffffff;
+    --muted:      rgba(196,193,230,0.55);
+    --text:       rgba(220,218,245,0.85);
+    --border:     rgba(107,191,181,0.12);
+    --green:      #4ade80;
+    --amber:      #e0a458;
+    --red:        #e06b6b;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+
+  body {
+    background: var(--navy-dark);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(107,191,181,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 80% 90%, rgba(107,191,181,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 80% 80% at 50% 50%, rgba(26,20,100,0.9) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(107,191,181,0.18) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 0%, transparent 80%);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 12%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(18,14,78,0.88);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 900;
+    font-size: 1.35rem;
+    color: var(--white-pure);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo span { color: var(--teal); }
+  .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+  .nav-back {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .nav-back:hover { color: var(--teal-light); }
+  @media (max-width: 700px) {
+    nav { padding: 0 6%; }
+    .nav-back { display: none; }
+  }
+
+  section {
+    position: relative;
+    padding: 100px 12%;
+    z-index: 1;
+  }
+  @media (max-width: 860px) { section { padding: 70px 7%; } }
+
+  .section-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 1rem;
+    opacity: 0.9;
+  }
+  .section-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 800;
+    color: var(--white-pure);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+  }
+  .section-sub {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 560px;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+  .teal-line { width: 48px; height: 2px; background: var(--teal); margin-bottom: 1.4rem; }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--teal);
+    color: var(--navy-dark);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 1rem 2.2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(107,191,181,0.25);
+    border: none;
+    cursor: pointer;
+  }
+  .btn-primary:hover {
+    background: var(--teal-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(107,191,181,0.35);
+  }
+  .btn-primary.disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    color: var(--white);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 1rem 2rem;
+    border-radius: 6px;
+    border: 1px solid var(--teal-border);
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--teal); background: var(--teal-dim); color: var(--teal-light); }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding-top: 150px;
+    padding-bottom: 90px;
+    text-align: center;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    background: var(--teal-dim);
+    border: 1px solid var(--teal-border);
+    color: var(--teal-light);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.45rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 2rem;
+  }
+  .hero h1 {
+    font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--white-pure);
+    margin: 0 auto 1.5rem;
+    max-width: 900px;
+  }
+  .hero h1 .accent { color: var(--teal); }
+  .hero-sub {
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 640px;
+    margin: 0 auto 2.2rem;
+    font-weight: 300;
+    line-height: 1.75;
+  }
+  .hero-price {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin-bottom: 1.8rem;
+  }
+  .hero-price .val {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: var(--white-pure);
+    letter-spacing: -0.02em;
+  }
+  .hero-price .note { font-size: 0.9rem; color: var(--muted); }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .hero-trust {
+    margin-top: 1.8rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+    display: flex;
+    gap: 1.4rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .hero-trust span { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .dot-teal { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+
+  /* ─── PROBLEMA ─── */
+  #problema { background: rgba(14,10,60,0.7); }
+  .pain-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 3rem;
+  }
+  .pain-card {
+    background: rgba(26,20,100,0.6);
+    padding: 1.8rem 1.6rem;
+    font-size: 0.98rem;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .pain-card .q {
+    font-family: 'Fira Code', monospace;
+    color: var(--teal);
+    font-size: 0.85rem;
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+
+  /* ─── ENTREGÁVEIS ─── */
+  .deliver-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 1.2rem;
+    margin-top: 3.2rem;
+  }
+  .deliver-card {
+    background: rgba(26,20,100,0.55);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.7rem 1.6rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .deliver-card:hover { border-color: var(--teal-border); transform: translateY(-2px); }
+  .deliver-num {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem;
+    color: var(--teal);
+    opacity: 0.8;
+    margin-bottom: 0.7rem;
+  }
+  .deliver-card h3 {
+    font-size: 1.08rem;
+    font-weight: 700;
+    color: var(--white-pure);
+    margin-bottom: 0.55rem;
+    letter-spacing: -0.01em;
+  }
+  .deliver-card p { font-size: 0.92rem; color: var(--muted); line-height: 1.6; font-weight: 300; }
+
+  /* ─── COMO FUNCIONA ─── */
+  #como { background: rgba(14,10,60,0.7); }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+    margin-top: 3.2rem;
+  }
+  .step-num {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.6rem;
+    font-weight: 900;
+    color: var(--teal);
+    opacity: 0.35;
+    line-height: 1;
+    margin-bottom: 0.8rem;
+  }
+  .step h3 { font-size: 1.15rem; font-weight: 700; color: var(--white-pure); margin-bottom: 0.6rem; }
+  .step p { font-size: 0.95rem; color: var(--muted); font-weight: 300; line-height: 1.65; }
+
+  /* ─── PREVIEW ─── */
+  .preview-wrap {
+    margin-top: 3.2rem;
+    background: rgba(26,20,100,0.55);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.4rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2.8rem;
+    align-items: center;
+  }
+  @media (max-width: 780px) {
+    .preview-wrap { grid-template-columns: 1fr; gap: 2rem; padding: 1.8rem; }
+  }
+  .gauge-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    color: var(--teal);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 0.6rem;
+  }
+  .dim-row { margin-bottom: 1.1rem; }
+  .dim-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.45rem;
+    font-size: 0.9rem;
+  }
+  .dim-head .nome { color: var(--white); font-weight: 500; }
+  .dim-head .score { font-family: 'Fira Code', monospace; font-size: 0.82rem; color: var(--muted); }
+  .dim-bar { height: 6px; border-radius: 3px; background: rgba(107,191,181,0.1); overflow: hidden; }
+  .dim-bar > div { height: 100%; border-radius: 3px; }
+  .preview-note {
+    margin-top: 1.6rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ─── PARA QUEM ─── */
+  #paraquem { background: rgba(14,10,60,0.7); }
+  .fit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .fit-card {
+    background: rgba(26,20,100,0.55);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2rem 1.8rem;
+  }
+  .fit-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--white-pure);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .fit-card ul { list-style: none; }
+  .fit-card li {
+    font-size: 0.94rem;
+    color: var(--text);
+    font-weight: 300;
+    line-height: 1.6;
+    padding-left: 1.5rem;
+    margin-bottom: 0.85rem;
+    position: relative;
+  }
+  .fit-card li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0.62em;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+  .fit-yes li::before { background: var(--teal); }
+  .fit-no li::before { background: rgba(196,193,230,0.3); }
+
+  /* ─── PREÇO ─── */
+  .price-box {
+    max-width: 620px;
+    margin: 3rem auto 0;
+    background: rgba(26,20,100,0.75);
+    border: 1px solid var(--teal-border);
+    border-radius: 14px;
+    padding: 3rem 2.6rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .price-box::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(107,191,181,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .price-tag { position: relative; margin-bottom: 1.6rem; }
+  .price-tag .val {
+    font-size: 3.6rem;
+    font-weight: 900;
+    color: var(--white-pure);
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .price-tag .cur { font-size: 1.4rem; font-weight: 600; color: var(--muted); vertical-align: super; margin-right: 0.2rem; }
+  .price-tag .note { display: block; font-size: 0.88rem; color: var(--muted); margin-top: 0.6rem; }
+  .price-list { list-style: none; text-align: left; margin: 0 auto 2rem; max-width: 420px; position: relative; }
+  .price-list li {
+    font-size: 0.94rem;
+    color: var(--text);
+    font-weight: 300;
+    padding-left: 1.8rem;
+    margin-bottom: 0.7rem;
+    position: relative;
+    line-height: 1.55;
+  }
+  .price-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--teal);
+    font-weight: 700;
+  }
+  .price-guarantee {
+    margin-top: 1.6rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+    position: relative;
+  }
+
+  /* ─── FAQ ─── */
+  #faq { background: rgba(14,10,60,0.7); }
+  .faq-list { margin-top: 3rem; max-width: 780px; }
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 0;
+  }
+  .faq-item h3 {
+    font-size: 1.02rem;
+    font-weight: 600;
+    color: var(--white-pure);
+    margin-bottom: 0.7rem;
+  }
+  .faq-item p { font-size: 0.94rem; color: var(--muted); font-weight: 300; line-height: 1.7; }
+  .faq-item p a { color: var(--teal); }
+
+  /* ─── AUTORIDADE ─── */
+  .author-box {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin-top: 3rem;
+    background: rgba(26,20,100,0.55);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.2rem;
+  }
+  @media (max-width: 640px) { .author-box { grid-template-columns: 1fr; text-align: center; justify-items: center; } }
+  .author-img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid var(--teal-border); }
+  .author-box h3 { font-size: 1.2rem; font-weight: 700; color: var(--white-pure); margin-bottom: 0.3rem; }
+  .author-role { font-family: 'Fira Code', monospace; font-size: 0.78rem; color: var(--teal); margin-bottom: 0.9rem; }
+  .author-box p { font-size: 0.95rem; color: var(--muted); font-weight: 300; line-height: 1.7; }
+
+  /* ─── CTA FINAL ─── */
+  .final-cta { text-align: center; }
+  .final-cta h2 { max-width: 700px; margin-left: auto; margin-right: auto; }
+  .final-cta .section-sub { margin: 0 auto 2.2rem; }
+
+  .disclaimer {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 2.5rem 12% 0;
+    font-size: 0.78rem;
+    color: rgba(196,193,230,0.4);
+    line-height: 1.7;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  footer {
+    background: var(--navy-dark);
+    border-top: 1px solid var(--border);
+    padding: 3rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 1;
+    margin-top: 3rem;
+  }
+  .footer-logo { font-weight: 900; font-size: 1.1rem; color: var(--white-pure); text-decoration: none; }
+  .footer-logo span { color: var(--teal); }
+  footer p { font-size: 0.78rem; color: var(--muted); }
+  .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .footer-links a { font-size: 0.8rem; color: var(--muted); text-decoration: none; }
+  .footer-links a:hover { color: var(--teal-light); }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* aviso de configuração — visível só enquanto o checkout não estiver definido */
+  .cfg-warn {
+    display: none;
+    position: fixed;
+    bottom: 16px; left: 16px;
+    z-index: 999;
+    background: #3a2a00;
+    border: 1px solid #e0a458;
+    color: #ffd79a;
+    font-size: 0.78rem;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    max-width: 320px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">HZ<span>.</span>Invest</a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-back">← Voltar ao site</a>
+    <a href="#preco" class="btn-primary" style="padding:0.7rem 1.4rem;font-size:0.85rem;">Quero meu diagnóstico</a>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-badge"><span class="dot-teal"></span> Diagnóstico Financeiro HZ</div>
+  <h1>Um raio-x completo da sua vida financeira, <span class="accent">em cerca de 25 minutos</span>.</h1>
+  <p class="hero-sub">
+    Você responde um questionário guiado sobre renda, gastos, patrimônio, dívidas, proteção e objetivos.
+    Na hora, recebe um relatório personalizado de 13 seções — com seu score, seu arquétipo financeiro
+    e um plano de ação com os próximos 30 dias.
+  </p>
+  <div class="hero-price">
+    <span class="val">R$ 97</span>
+    <span class="note">pagamento único · acesso imediato</span>
+  </div>
+  <div class="hero-actions">
+    <a href="#preco" class="btn-primary js-cta">Fazer meu diagnóstico</a>
+    <a href="#entregaveis" class="btn-secondary">Ver o que está incluso</a>
+  </div>
+  <div class="hero-trust">
+    <span><span class="dot-teal"></span> Relatório gerado na hora</span>
+    <span><span class="dot-teal"></span> Garantia de 7 dias</span>
+    <span><span class="dot-teal"></span> Feito por consultoria especializada</span>
+  </div>
+</section>
+
+<!-- ─── PROBLEMA ─── -->
+<section id="problema">
+  <div class="reveal">
+    <div class="section-label">// o problema</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Você já sabe que precisa<br>organizar as finanças.</h2>
+    <p class="section-sub">O que falta não é vontade — é um retrato claro de onde você está hoje e qual é o próximo passo certo. Se alguma dessas frases é sua, o diagnóstico foi feito pra você.</p>
+  </div>
+
+  <div class="pain-grid reveal">
+    <div class="pain-card"><span class="q">01</span>"Ganho bem, mas não sei exatamente pra onde vai o meu dinheiro todo mês."</div>
+    <div class="pain-card"><span class="q">02</span>"Consigo guardar, mas o dinheiro fica parado na poupança rendendo quase nada."</div>
+    <div class="pain-card"><span class="q">03</span>"Não faço ideia se estou investindo certo pro futuro que eu quero."</div>
+    <div class="pain-card"><span class="q">04</span>"As contas fecham, mas qualquer imprevisto me tiraria do sério."</div>
+    <div class="pain-card"><span class="q">05</span>"Tenho seguro e plano de saúde, mas nunca conferi se a cobertura faz sentido."</div>
+    <div class="pain-card"><span class="q">06</span>"Quero me aposentar tranquilo, mas nunca calculei quanto preciso guardar."</div>
+  </div>
+</section>
+
+<!-- ─── ENTREGÁVEIS ─── -->
+<section id="entregaveis">
+  <div class="reveal">
+    <div class="section-label">// o que você recebe</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Um relatório de 13 seções,<br>todo sobre <span style="color:var(--teal);">você</span></h2>
+    <p class="section-sub">Nada de conteúdo genérico. Cada número, cada texto e cada recomendação é gerado a partir das suas respostas.</p>
+  </div>
+
+  <div class="deliver-grid reveal">
+    <div class="deliver-card">
+      <div class="deliver-num">01</div>
+      <h3>Score geral de 0 a 100</h3>
+      <p>Uma nota única da sua saúde financeira, com o seu nível de maturidade em 5 estágios — do Ponto de Partida ao Otimizado.</p>
+    </div>
+    <div class="deliver-card">
+      <div class="deliver-num">02</div>
+      <h3>Seu arquétipo financeiro</h3>
+      <p>Qual dos 7 padrões comportamentais explica a sua relação com o dinheiro hoje — e por que ele, e não os outros.</p>
+    </div>
+    <div class="deliver-card">
+      <div class="deliver-num">03</div>
+      <h3>Percepção x realidade</h3>
+      <p>Onde a sua sensação sobre o próprio dinheiro diverge dos números reais. Costuma ser a parte que mais abre os olhos.</p>
+    </div>
+    <div class="deliver-card">
+      <div class="deliver-num">04</div>
+      <h3>Score por dimensão</h3>
+      <p>Fluxo de caixa, liquidez, endividamento, proteção, patrimônio e metas — cada um com nota, faixa e explicação.</p>
+    </div>
+    <div class="deliver-card">
+      <div class="deliver-num">05</div>
+      <h3>11 indicadores financeiros</h3>
+      <p>Taxa de poupança, meses de cobertura da reserva, comprometimento de renda, índice de solvência, cobertura de seguro e mais.</p>
+    </div>
+    <div class="deliver-card">
+      <div class="deliver-num">06</div>
+      <h3>Projeção de 10 anos</h3>
+      <p>Quanto você terá mantendo o ritmo atual e quanto teria seguindo as recomendações — a preços de hoje, já descontada a inflação.</p>
+    </div>
+    <div class="deliver-card">
+      <div class="deliver-num">07</div>
+      <h3>Plano de ação individualizado</h3>
+      <p>Para cada ponto fraco, o diagnóstico e uma ação prática concreta. E a lista do que já está bom e merece ser mantido.</p>
+    </div>
+    <div class="deliver-card">
+      <div class="deliver-num">08</div>
+      <h3>Checklist de 30 dias</h3>
+      <p>Cinco tarefas objetivas para as próximas semanas, priorizadas pelo que mais destrava a sua situação.</p>
+    </div>
+    <div class="deliver-card">
+      <div class="deliver-num">09</div>
+      <h3>Onde aplicar com segurança</h3>
+      <p>Alternativas de baixo risco e boa liquidez para a reserva e o curto prazo, como CDB 100% do CDI e Tesouro Selic.</p>
+    </div>
+    <div class="deliver-card">
+      <div class="deliver-num">10</div>
+      <h3>Glossário sem jargão</h3>
+      <p>Os sete conceitos que aparecem no relatório, explicados em português claro para consultar quando quiser.</p>
+    </div>
+    <div class="deliver-card">
+      <div class="deliver-num">11</div>
+      <h3>PDF para guardar</h3>
+      <p>Baixe o relatório completo em PDF e volte a ele sempre que precisar acompanhar a sua evolução.</p>
+    </div>
+    <div class="deliver-card">
+      <div class="deliver-num">12</div>
+      <h3>Próximo passo recomendado</h3>
+      <p>Quanto tempo de acompanhamento faz sentido pro seu caso — e por quê, com base nas dimensões críticas encontradas.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── COMO FUNCIONA ─── -->
+<section id="como">
+  <div class="reveal">
+    <div class="section-label">// como funciona</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Três passos, sem<br>reunião e sem planilha</h2>
+  </div>
+
+  <div class="steps reveal">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Responda o questionário</h3>
+      <p>Dez etapas guiadas, cerca de 25 minutos. Tudo fica salvo no seu navegador — dá pra parar no meio e continuar depois de onde estava.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Receba o relatório na hora</h3>
+      <p>Ao finalizar, o relatório é gerado imediatamente. Sem espera, sem "enviaremos em até 5 dias úteis".</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Coloque em prática</h3>
+      <p>Comece pelo checklist de 30 dias. Se quiser ir além, o próprio relatório indica o acompanhamento que faz sentido pro seu caso.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PREVIEW ─── -->
+<section id="preview">
+  <div class="reveal">
+    <div class="section-label">// por dentro do relatório</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Assim é o seu resultado</h2>
+    <p class="section-sub">Score geral, nível de maturidade e o desempenho em cada uma das seis dimensões avaliadas.</p>
+  </div>
+
+  <div class="preview-wrap reveal">
+    <div>
+      <svg width="180" height="180" viewBox="0 0 160 160" role="img" aria-label="Exemplo de score geral: 66 de 100">
+        <circle cx="80" cy="80" r="68" fill="none" stroke="rgba(107,191,181,0.12)" stroke-width="14" />
+        <circle cx="80" cy="80" r="68" fill="none" stroke="#6bbfb5" stroke-width="14" stroke-linecap="round"
+                stroke-dasharray="427.3 427.3" stroke-dashoffset="145.3" transform="rotate(-90 80 80)" />
+        <text x="80" y="90" text-anchor="middle" font-family="Outfit, sans-serif" font-size="44" font-weight="800" fill="#ffffff">66</text>
+      </svg>
+      <div class="gauge-label">Nível 4 · Consolidado</div>
+    </div>
+    <div>
+      <div class="dim-row">
+        <div class="dim-head"><span class="nome">Fluxo de Caixa e Orçamento</span><span class="score">88 / 100</span></div>
+        <div class="dim-bar"><div style="width:88%;background:#6bbfb5;"></div></div>
+      </div>
+      <div class="dim-row">
+        <div class="dim-head"><span class="nome">Liquidez e Reserva</span><span class="score">72 / 100</span></div>
+        <div class="dim-bar"><div style="width:72%;background:#6bbfb5;"></div></div>
+      </div>
+      <div class="dim-row">
+        <div class="dim-head"><span class="nome">Endividamento</span><span class="score">95 / 100</span></div>
+        <div class="dim-bar"><div style="width:95%;background:#4ade80;"></div></div>
+      </div>
+      <div class="dim-row">
+        <div class="dim-head"><span class="nome">Gestão de Risco (Seguros)</span><span class="score">41 / 100</span></div>
+        <div class="dim-bar"><div style="width:41%;background:#e0a458;"></div></div>
+      </div>
+      <div class="dim-row">
+        <div class="dim-head"><span class="nome">Patrimônio e Investimentos</span><span class="score">54 / 100</span></div>
+        <div class="dim-bar"><div style="width:54%;background:#e0a458;"></div></div>
+      </div>
+      <div class="dim-row" style="margin-bottom:0;">
+        <div class="dim-head"><span class="nome">Metas e Planejamento</span><span class="score">28 / 100</span></div>
+        <div class="dim-bar"><div style="width:28%;background:#e06b6b;"></div></div>
+      </div>
+      <div class="preview-note">Exemplo ilustrativo. O seu relatório traz os seus próprios números, textos e recomendações.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PARA QUEM ─── -->
+<section id="paraquem">
+  <div class="reveal">
+    <div class="section-label">// para quem é</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Feito pra quem quer clareza,<br>não mais um curso</h2>
+  </div>
+
+  <div class="fit-grid reveal">
+    <div class="fit-card fit-yes">
+      <h3><span class="dot-teal"></span> É pra você se…</h3>
+      <ul>
+        <li>Você tem renda estável e quer entender se está no caminho certo</li>
+        <li>Sente que falta uma visão de conjunto — não só o extrato do mês</li>
+        <li>Quer saber o que priorizar primeiro, com ordem e justificativa</li>
+        <li>Está pensando em aposentadoria e nunca fez a conta</li>
+        <li>Prefere um retrato honesto a um discurso motivacional</li>
+      </ul>
+    </div>
+    <div class="fit-card fit-no">
+      <h3>Não é pra você se…</h3>
+      <ul>
+        <li>Você procura recomendação de ativos específicos para comprar</li>
+        <li>Espera uma promessa de rentabilidade ou fórmula de enriquecimento</li>
+        <li>Não tem 25 minutos para responder com atenção e dados reais</li>
+        <li>Quer uma consultoria completa e contínua — nesse caso, o caminho é falar direto com a gente</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PREÇO ─── -->
+<section id="preco">
+  <div class="reveal" style="text-align:center;">
+    <div class="section-label" style="text-align:center;">// investimento</div>
+    <h2 class="section-title">Menos que uma consulta,<br>com você para sempre</h2>
+  </div>
+
+  <div class="price-box reveal">
+    <div class="price-tag">
+      <span class="cur">R$</span><span class="val">97</span>
+      <span class="note">pagamento único · sem mensalidade</span>
+    </div>
+    <ul class="price-list">
+      <li>Questionário guiado de 10 etapas, com salvar e continuar depois</li>
+      <li>Relatório personalizado de 13 seções, gerado na hora</li>
+      <li>Score geral, arquétipo financeiro e 11 indicadores</li>
+      <li>Plano de ação individualizado e checklist de 30 dias</li>
+      <li>Projeção patrimonial de 10 anos a preços de hoje</li>
+      <li>Download em PDF para consultar quando quiser</li>
+    </ul>
+    <a href="#" class="btn-primary js-cta" style="font-size:1rem;padding:1.1rem 2.6rem;">Quero meu diagnóstico agora</a>
+    <div class="price-guarantee">
+      <strong style="color:var(--white);">Garantia de 7 dias.</strong> Se o relatório não te entregar clareza, devolvemos o valor integral — basta escrever para
+      <a href="mailto:elisa@hzinvest.com.br" style="color:var(--teal);">elisa@hzinvest.com.br</a>.
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ─── -->
+<section id="faq">
+  <div class="reveal">
+    <div class="section-label">// dúvidas frequentes</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Perguntas que costumam vir antes</h2>
+  </div>
+
+  <div class="faq-list reveal">
+    <div class="faq-item">
+      <h3>Preciso entender de finanças para responder?</h3>
+      <p>Não. As perguntas são sobre a sua vida — quanto entra, quanto sai, o que você tem e o que te preocupa. Onde aparece algum termo técnico, o relatório traz um glossário em português claro.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Preciso ter todos os números na ponta do lápis?</h3>
+      <p>Valores aproximados já geram um diagnóstico útil. Quanto mais próximos da realidade, mais preciso o resultado — e como dá para salvar e continuar depois, você pode parar para conferir um extrato e voltar.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Isso é uma consultoria de investimentos?</h3>
+      <p>Não. É um diagnóstico educacional e orientativo: ele mostra onde você está e o que priorizar, sem recomendar ativos específicos. Se fizer sentido seguir para um acompanhamento individualizado, o próprio relatório indica o formato e a duração.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Em quanto tempo recebo o relatório?</h3>
+      <p>Na hora. Assim que você finaliza o questionário, o relatório é gerado e fica disponível para leitura e download em PDF.</p>
+    </div>
+    <div class="faq-item">
+      <h3>O que acontece com os meus dados?</h3>
+      <p>Suas respostas são usadas para gerar o seu relatório e ficam guardadas com acesso restrito à HZ Invest. Você pode pedir acesso, correção ou exclusão a qualquer momento. Os detalhes estão na <a href="politica-privacidade.html">Política de Privacidade</a>.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Posso refazer o diagnóstico mais pra frente?</h3>
+      <p>Sim, e é justamente o recomendado: refazer depois de alguns meses mostra a evolução do seu score e das dimensões que você trabalhou.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── AUTORIDADE ─── -->
+<section id="quem">
+  <div class="reveal">
+    <div class="section-label">// quem faz</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Metodologia de quem vive disso</h2>
+  </div>
+
+  <div class="author-box reveal">
+    <img class="author-img" src="https://framerusercontent.com/images/0DlZ0kmXAutFyVmhsf2IzDVYA.jpeg" alt="Elisa Schulz">
+    <div>
+      <h3>Elisa Schulz</h3>
+      <div class="author-role">Economista &amp; Mestre em Finanças</div>
+      <p>
+        O diagnóstico traduz em software o mesmo método que a HZ Invest usa no atendimento individual:
+        seis dimensões avaliadas, pesos definidos por relevância e recomendações que saem dos seus números,
+        não de um modelo genérico. É a porta de entrada para quem quer clareza antes de decidir qualquer coisa.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA FINAL ─── -->
+<section class="final-cta">
+  <div class="reveal">
+    <h2 class="section-title">Em 25 minutos você sai da dúvida<br>e entra no plano.</h2>
+    <p class="section-sub">Um retrato honesto da sua vida financeira, com o próximo passo escrito com todas as letras.</p>
+    <a href="#" class="btn-primary js-cta" style="font-size:1rem;padding:1.1rem 2.6rem;">Fazer meu diagnóstico — R$ 97</a>
+  </div>
+</section>
+
+<div class="disclaimer">
+  Este diagnóstico é um material educacional e orientativo e não substitui uma consultoria financeira individualizada completa.
+  Projeções e cenários são baseados em premissas assumidas, não constituem garantia ou promessa de retorno e podem não se concretizar.
+  As indicações de classes de aplicação têm caráter educacional e não configuram recomendação individualizada de produto.
+</div>
+
+<footer>
+  <a href="index.html" class="footer-logo">HZ<span>.</span>Invest</a>
+  <p>© 2025 HZ Invest · Todos os direitos reservados</p>
+  <div class="footer-links">
+    <a href="index.html">Site</a>
+    <a href="politica-privacidade.html">Política de Privacidade</a>
+    <a href="mailto:elisa@hzinvest.com.br">Contato</a>
+  </div>
+</footer>
+
+<div class="cfg-warn" id="cfgWarn">
+  ⚠ <strong>Checkout não configurado.</strong> Abra <code>diagnostico-lp.html</code> e preencha
+  <code>HZ_CHECKOUT_URL</code> com o link de pagamento. Este aviso some sozinho depois disso
+  (e não aparece para quem só lê a página).
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+//  CONFIGURE AQUI o link de pagamento do diagnóstico (R$ 97).
+//  Cole a URL de checkout do provedor que você usar
+//  (Hotmart, Kiwify, Mercado Pago, Stripe…). Enquanto estiver
+//  como "COLE-AQUI", os botões de compra ficam desabilitados
+//  para não vender sem ter como receber.
+// ─────────────────────────────────────────────────────────────
+var HZ_CHECKOUT_URL = "COLE-AQUI-O-LINK-DE-CHECKOUT";
+
+(function () {
+  var configurado = HZ_CHECKOUT_URL.indexOf("COLE-AQUI") === -1 && HZ_CHECKOUT_URL.length > 8;
+  var ctas = document.querySelectorAll(".js-cta");
+
+  for (var i = 0; i < ctas.length; i++) {
+    if (configurado) {
+      ctas[i].setAttribute("href", HZ_CHECKOUT_URL);
+    } else {
+      ctas[i].classList.add("disabled");
+      ctas[i].setAttribute("href", "#preco");
+    }
+  }
+  if (!configurado) document.getElementById("cfgWarn").style.display = "block";
+
+  // scroll reveal (mesmo padrão do site)
+  var reveals = document.querySelectorAll(".reveal");
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        e.target.classList.add("visible");
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(function (el) { observer.observe(el); });
+})();
+</script>
+
+</body>
+</html>
