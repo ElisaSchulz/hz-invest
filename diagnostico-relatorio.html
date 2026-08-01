@@ -134,7 +134,15 @@ function renderReport(R) {
     '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:24px 32px;">' +
     '<div><div class="kpi-label">Renda total mensal</div><div class="kpi-med">' + R.kpis.rendaTotalDisplay + '</div></div>' +
     '<div><div class="kpi-label">Patrimônio total</div><div class="kpi-med">' + R.kpis.patrimonioTotalDisplay + '</div></div>' +
-    '</div></div></div></section>';
+    '</div>' +
+    '<div style="height:1px; background:rgba(27,27,92,0.14); margin:28px 0;"></div>' +
+    '<div class="kpi-label" style="margin-bottom:14px;">Metas declaradas</div>' +
+    R.metasDeclaradas.map(function (m) {
+      return '<div style="display:flex; gap:12px; margin-bottom:10px; align-items:baseline;">' +
+        '<div style="font-family:\'Fraunces\', serif; font-style:italic; color:#4F8C84; flex-shrink:0;">—</div>' +
+        '<div style="font-size:14.5px; line-height:1.6; color:rgba(21,21,63,0.75);"><span style="font-weight:700; color:#1B1B5C;">' + esc(m.titulo) + '</span>' + (m.detalhe ? ' · ' + esc(m.detalhe) : '') + '</div></div>';
+    }).join("") +
+    '</div></div></section>';
 
   // 5. Arquétipo
   var voz = "";
@@ -302,7 +310,7 @@ function renderReport(R) {
     '<div style="max-width:700px; margin:0 auto; position:relative; text-align:center;">' +
     '<div style="font-family:\'Fraunces\', serif; font-style:italic; font-size:24px; color:#6FA8A0; margin-bottom:20px;">Obrigado pela confiança, ' + esc(R.data.primeiroNome) + '.</div>' +
     '<div style="font-size:15.5px; line-height:1.8; color:rgba(251,250,246,0.8); margin-bottom:32px;">Esperamos que este diagnóstico tenha trazido clareza. Estamos à disposição para conversar sobre os próximos passos.</div>' +
-    '<div style="font-size:14px; color:rgba(251,250,246,0.6); margin-bottom:28px;">HZ Invest Consultoria de Investimentos · <a href="mailto:elisa@hzinvest.com.br" style="color:#6FA8A0;">elisa@hzinvest.com.br</a></div>' +
+    '<div style="font-size:14px; color:rgba(251,250,246,0.6); margin-bottom:28px;">HZ Invest Consultoria de Investimentos · <a href="mailto:elisa@hzinvest.com.br" style="color:#6FA8A0;">elisa@hzinvest.com.br</a> · <a href="politica-privacidade.html" style="color:#6FA8A0;">Política de Privacidade</a></div>' +
     '<div style="height:1px; background:rgba(251,250,246,0.15); margin:0 auto 24px; max-width:400px;"></div>' +
     '<div style="font-size:11.5px; line-height:1.7; color:rgba(251,250,246,0.45); max-width:560px; margin:0 auto;">Este diagnóstico é educacional e orientativo. Não substitui uma consultoria financeira individualizada completa. Projeções e cenários apresentados são baseados em premissas assumidas e não constituem garantia ou promessa de retorno.</div>' +
     '</div></section>';
@@ -324,7 +332,7 @@ function renderEmpty() {
   var stored = null;
   try { stored = JSON.parse(localStorage.getItem("hz_diagnostico_data") || "null"); } catch (e) {}
   if (stored && stored.data && stored.data.nome) {
-    container.innerHTML = renderReport(computeReport(stored.data));
+    container.innerHTML = renderReport(computeReport(stored.data, stored.geradoEm));
     if (window.hzSupabase && hzSupabase.configurado()) {
       hzSupabase.enviarDiagnostico().then(function () { return hzSupabase.enviarRelatorio(); });
     }

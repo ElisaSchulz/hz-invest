@@ -110,9 +110,13 @@
   }
 
   /* ===================== Cálculo do relatório (regras de negócio) ===================== */
-  function computeReport(data) {
+  // geradoEm (opcional): data ISO em que o diagnóstico foi finalizado — o
+  // relatório fica datado do momento da finalização, não da visita à página.
+  function computeReport(data, geradoEm) {
     var D = data;
     var primeiroNome = (D.nome || "").split(" ")[0] || D.nome;
+    var dataRef = geradoEm ? new Date(geradoEm) : new Date();
+    if (isNaN(dataRef.getTime())) dataRef = new Date();
 
     // ---- Dim 1: Fluxo de Caixa ----
     var rendaTotal = (D.rendaPropria || 0) + (D.temConjuge ? (D.rendaConjuge || 0) : 0) + (D.outrasRendas || []).reduce(function (a, r) { return a + (r.valor || 0); }, 0);
@@ -508,6 +512,19 @@
       return { nome: DIM_NAMES[key], score: score, contexto: DIM_CONTEXT[key], barStyle: "width:" + Math.max(4, score) + "%; background:" + barColor + ";" };
     });
 
+    // ---- Metas declaradas (aposentadoria + outras metas do formulário) ----
+    var metasDeclaradas = [{
+      titulo: "Aposentadoria aos " + idadeAposentadoria + " anos",
+      detalhe: "gasto desejado de " + fmt(gastoMensalAposentadoria) + "/mês · patrimônio-alvo de " + fmt(patrimonioNecessario) + " (regra dos 25x)"
+    }];
+    (D.outrasMetas || []).forEach(function (m) {
+      if (!m || (!m.descricao && !(m.valorEstimado > 0))) return;
+      var det = [];
+      if (m.valorEstimado > 0) det.push(fmt(m.valorEstimado));
+      if (m.prazo) det.push("prazo: " + m.prazo);
+      metasDeclaradas.push({ titulo: m.descricao || "Meta", detalhe: det.join(" · ") });
+    });
+
     // ---- Alternativas seguras e mais rentáveis (CDB 100% CDI, Tesouro Selic) ----
     var poupancaParada = (D.investPoupanca || 0) > 0;
     var reservaMalAplicada = (D.reservaEmergencia || 0) > 0 && !aplicacaoAdequada;
@@ -533,7 +550,7 @@
 
     return {
       data: Object.assign({}, D, { primeiroNome: primeiroNome }),
-      dataFormatada: new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }),
+      dataFormatada: dataRef.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }),
       scoreGeral: scoreGeral, nivel: nivel, arquetipo: arquetipo,
       gaugeDash: gaugeDash, gaugeOffset: gaugeOffset,
       kpis: {
@@ -544,7 +561,7 @@
         projecaoRecomendadaDisplay: fmt(series2[series2.length - 1]),
         taxaRetornoDisplay: pct(rAnual1 * 100, 1) + " (atual) / " + pct(rAnual2 * 100, 1) + " (recomendado)"
       },
-      kpiHero: kpiHero, kpiRest: kpiRest, dimRows: dimRows,
+      kpiHero: kpiHero, kpiRest: kpiRest, dimRows: dimRows, metasDeclaradas: metasDeclaradas,
       chart: { points1: points1, points2: points2, dots2: dots2, targetY: targetY, targetLabel: targetLabel, targetLabelStyle: targetLabelStyle, end1Style: end1Style, end2Style: end2Style },
       actionPlan: actionPlan, hasStrengths: strengths.length > 0, strengths: strengths, investSeguro: investSeguro,
       checklist: checklist, glossario: GLOSSARIO, nextStep: nextStep, insightPercepcao: insightPercepcao,
