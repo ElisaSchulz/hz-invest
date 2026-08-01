@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teste da conexão com o Supabase | HZ Invest</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hz-design.css">
+<style>
+  body { padding: 0; }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    padding: 22px 24px; border-bottom: 1px solid var(--border);
+  }
+  .main { max-width: 620px; margin: 0 auto; padding: 32px 20px 80px; position: relative; z-index: 1; }
+  h1 { font-size: 28px; margin: 0 0 10px; }
+  .lead { font-size: 15px; line-height: 1.7; color: var(--muted); margin-bottom: 28px; }
+  .btn-run {
+    width: 100%; background: var(--navy); color: #FBFAF6; border: none;
+    border-radius: var(--r-sm); padding: 18px 24px; font-family: var(--font-body);
+    font-weight: 700; font-size: 16px; cursor: pointer;
+  }
+  .btn-run:disabled { opacity: 0.55; cursor: wait; }
+  .resultado { margin-top: 26px; }
+  .linha {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-md); padding: 18px 20px; margin-bottom: 12px;
+  }
+  .linha.ok    { border-color: rgba(79,140,132,0.45); background: rgba(79,140,132,0.07); }
+  .linha.falha { border-color: rgba(179,71,71,0.45);  background: rgba(179,71,71,0.07); }
+  .linha .titulo { font-weight: 700; font-size: 15px; color: var(--navy); margin-bottom: 5px; }
+  .linha .detalhe { font-size: 13.5px; line-height: 1.6; color: var(--muted); word-break: break-word; }
+  .veredito {
+    margin-top: 22px; border-radius: var(--r-md); padding: 22px 20px;
+    font-size: 15.5px; line-height: 1.65; text-align: center;
+  }
+  .veredito.ok    { background: var(--navy); color: #FBFAF6; }
+  .veredito.falha { background: rgba(179,71,71,0.12); border: 1px solid rgba(179,71,71,0.45); color: var(--ink); }
+  .veredito strong { display: block; font-family: var(--font-display); font-size: 20px; margin-bottom: 8px; }
+  .nota { margin-top: 26px; font-size: 13px; line-height: 1.65; color: var(--faint); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="index.html">HZ <em>Invest</em></a>
+  <div class="topbar-label" style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--faint);">Teste técnico</div>
+</div>
+
+<div class="main">
+  <h1>Teste da conexão com o Supabase</h1>
+  <p class="lead">
+    Esta página confirma duas coisas: que as respostas do diagnóstico conseguem ser
+    gravadas no banco e, principalmente, que ninguém consegue lê-las de fora.
+    Funciona no celular, sem precisar de console.
+  </p>
+
+  <button class="btn-run" id="run">Rodar o teste</button>
+
+  <div class="resultado" id="resultado"></div>
+
+  <p class="nota">
+    O teste grava uma linha chamada "TESTE DE CONEXÃO" na tabela <code>diagnosticos</code>.
+    Depois de validar, apague essa linha pelo painel do Supabase, em Table Editor.
+    Esta página é só uma ferramenta de verificação e pode ser removida do site depois.
+  </p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script>
+"use strict";
+
+var alvo = document.getElementById("resultado");
+var botao = document.getElementById("run");
+
+function linha(estado, titulo, detalhe) {
+  var d = document.createElement("div");
+  d.className = "linha " + estado;
+  d.innerHTML = '<div class="titulo">' + titulo + '</div>' +
+                '<div class="detalhe">' + detalhe + '</div>';
+  alvo.appendChild(d);
+}
+
+function veredito(estado, titulo, texto) {
+  var d = document.createElement("div");
+  d.className = "veredito " + estado;
+  d.innerHTML = "<strong>" + titulo + "</strong>" + texto;
+  alvo.appendChild(d);
+}
+
+botao.addEventListener("click", function () {
+  alvo.innerHTML = "";
+  botao.disabled = true;
+  botao.textContent = "Testando...";
+
+  setTimeout(function () { rodar(); }, 50);
+});
+
+function rodar() {
+  // 0) a biblioteca e as credenciais carregaram?
+  if (!window.supabase || !window.supabase.createClient) {
+    linha("falha", "Biblioteca não carregou", "O script do Supabase não foi carregado. Verifique sua conexão e recarregue a página.");
+    return fim(false);
+  }
+  if (!window.hzSupabase || !hzSupabase.configurado()) {
+    linha("falha", "Credenciais não configuradas", "O arquivo supabase-config.js ainda está com os valores de exemplo.");
+    return fim(false);
+  }
+  linha("ok", "Credenciais carregadas", "Projeto: " + HZ_SUPABASE_URL.replace("https://", ""));
+
+  var sb = window.supabase.createClient(HZ_SUPABASE_URL, HZ_SUPABASE_ANON_KEY);
+  var id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+         : "00000000-0000-4000-8000-" + String(Date.now()).slice(-12).padStart(12, "0");
+
+  // 1) gravar
+  sb.from("diagnosticos").insert({
+    id: id,
+    nome: "TESTE DE CONEXÃO",
+    email: "teste@hzinvest.com.br",
+    respostas: { teste: true, quando: new Date().toISOString() }
+  }).then(function (res) {
+    var gravou = !res.error;
+    if (gravou) {
+      linha("ok", "Gravar: funcionou", "A resposta de teste foi salva na tabela diagnosticos.");
+    } else {
+      var m = res.error.message || "";
+      var dica = /does not exist|relation/i.test(m)
+        ? " Parece que o supabase-setup.sql ainda não foi executado no SQL Editor."
+        : (/policy|row-level/i.test(m) ? " A política de inserção não foi criada. Rode o supabase-setup.sql." : "");
+      linha("falha", "Gravar: falhou", m + dica);
+    }
+
+    // 2) ler (precisa estar bloqueado)
+    return sb.from("diagnosticos").select("id").then(function (sel) {
+      var protegido, detalhe;
+      if (sel.error) {
+        protegido = true;
+        detalhe = "A leitura foi recusada pelo banco, como esperado.";
+      } else if (!sel.data || sel.data.length === 0) {
+        protegido = true;
+        detalhe = "A leitura retornou vazio: o RLS está filtrando os dados de todo mundo.";
+      } else {
+        protegido = false;
+        detalhe = "A leitura retornou " + sel.data.length + " registro(s). O RLS não está protegendo a tabela.";
+      }
+      linha(protegido ? "ok" : "falha", protegido ? "Ler: bloqueado (correto)" : "Ler: NÃO está bloqueado", detalhe);
+      fim(gravou && protegido, gravou, protegido);
+    });
+  }).catch(function (e) {
+    linha("falha", "Erro inesperado", String(e && e.message ? e.message : e));
+    fim(false);
+  });
+}
+
+function fim(tudoOk, gravou, protegido) {
+  botao.disabled = false;
+  botao.textContent = "Rodar o teste de novo";
+  if (tudoOk) {
+    veredito("ok", "Tudo certo",
+      "O diagnóstico já pode salvar as respostas, e os dados financeiros de quem responder ficam protegidos. " +
+      "Apague a linha de teste pelo painel do Supabase.");
+  } else if (protegido === false) {
+    veredito("falha", "Atenção: dados expostos",
+      "A tabela está aceitando leitura pela chave pública, ou seja, qualquer pessoa conseguiria ver as respostas. " +
+      "Não publique o formulário assim. Rode o supabase-setup.sql e teste de novo.");
+  } else {
+    veredito("falha", "Ainda não está pronto",
+      "Veja a mensagem acima. Na maioria dos casos falta rodar o supabase-setup.sql no SQL Editor do Supabase.");
+  }
+}
+</script>
+
+</body>
+</html>
