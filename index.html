@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HZ Invest — Educação Financeira e Consultoria</title>
+<title>HZ Invest · Educação Financeira e Consultoria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -686,6 +686,110 @@
     color: var(--teal-light);
   }
 
+  /* ─── DIAGNÓSTICO (destaque) ─── */
+  #diagnostico { background: #F1EEE6; }
+  .diag-layout {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 3.5rem;
+    align-items: center;
+  }
+  .diag-tag {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    background: var(--teal-dim);
+    border: 1px solid var(--teal-border);
+    border-radius: 999px;
+    padding: 0.35rem 0.85rem;
+    margin-bottom: 1.1rem;
+  }
+  .diag-list {
+    list-style: none;
+    margin: 1.8rem 0 2rem;
+    display: grid;
+    gap: 0.85rem;
+  }
+  .diag-list li {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    font-size: 0.975rem;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .diag-list .check {
+    flex-shrink: 0;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--teal-dim);
+    color: var(--teal);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+  .diag-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.4rem;
+  }
+  .diag-actions .nota {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .diag-card {
+    background: #FBFAF6;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.4rem 2.2rem;
+  }
+  .diag-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 500;
+    color: var(--white-pure);
+    margin-bottom: 0.35rem;
+  }
+  .diag-card > p {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 1.6rem;
+  }
+  .diag-steps { display: grid; gap: 1.1rem; }
+  .diag-step { display: flex; gap: 0.9rem; align-items: flex-start; }
+  .diag-step .n {
+    flex-shrink: 0;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: #FBFAF6;
+    font-size: 0.72rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .diag-step strong {
+    display: block;
+    font-size: 0.925rem;
+    color: var(--white-pure);
+    margin-bottom: 0.15rem;
+  }
+  .diag-step span {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  @media (max-width: 860px) {
+    .diag-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+  }
+
   /* ─── TOOLS GRID ─── */
   .tools-grid {
     display: grid;
@@ -920,6 +1024,16 @@
   }
 
   /* ─── RESPONSIVE ─── */
+  /* Com o link do Diagnóstico o menu passou a ter sete itens, então
+     entre 769px e 1200px ele precisa de espaçamento mais apertado
+     para não estourar a barra. */
+  @media (min-width: 769px) and (max-width: 1200px) {
+    nav { padding: 0 4%; }
+    .nav-links { gap: 1.1rem; }
+    .nav-links a { font-size: 0.85rem; }
+    .nav-cta { padding: 0.55rem 1rem; }
+  }
+
   @media (max-width: 768px) {
     nav { padding: 0 1.5rem; }
     .nav-links { display: none; }
@@ -1136,6 +1250,7 @@
     <li><a href="#cursos">Cursos</a></li>
     <li><a href="#equipe">Equipe</a></li>
     <li><a href="#consultoria">Consultoria</a></li>
+    <li><a href="#diagnostico">Diagnóstico</a></li>
     <li><a href="#ferramentas">Ferramentas</a></li>
     <li><a href="#depoimentos">Depoimentos</a></li>
     <li><a href="https://t.me/+uMdIiepcb-E0ZWIx" class="nav-cta" target="_blank">Entrar no Grupo</a></li>
@@ -1153,6 +1268,7 @@
   <a href="#cursos" onclick="closeMenu()">Cursos</a>
   <a href="#equipe" onclick="closeMenu()">Equipe</a>
   <a href="#consultoria" onclick="closeMenu()">Consultoria</a>
+  <a href="#diagnostico" onclick="closeMenu()">Diagnóstico</a>
   <a href="#ferramentas" onclick="closeMenu()">Ferramentas</a>
   <a href="#depoimentos" onclick="closeMenu()">Depoimentos</a>
   <div id="mobile-user-pill" style="padding:.85rem 0;border-bottom:1px solid var(--border);"></div>
@@ -1175,12 +1291,12 @@
       <span class="thin">Resultado real.</span>
     </h1>
     <p class="hero-sub">
-      Do básico ao avançado — educação financeira, acompanhamento de mercado e consultoria personalizada para brasileiros que levam dinheiro a sério.
+      Do básico ao avançado: educação financeira, acompanhamento de mercado e consultoria personalizada para brasileiros que levam dinheiro a sério.
     </p>
     <div class="hero-actions">
       <a href="https://t.me/+uMdIiepcb-E0ZWIx" class="btn-primary" target="_blank">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-        Entrar no Grupo — Gratuito
+        Entrar no Grupo · Gratuito
       </a>
       <a href="#consultoria" class="btn-secondary">
         Falar com um especialista →
@@ -1195,7 +1311,7 @@
     <div class="section-label">// o que fazemos</div>
     <div class="teal-line"></div>
     <h2 class="section-title">Uma plataforma completa<br>de educação financeira</h2>
-    <p class="section-sub">Conteúdo gratuito, ferramentas práticas e consultoria especializada — tudo no mesmo lugar.</p>
+    <p class="section-sub">Conteúdo gratuito, ferramentas práticas e consultoria especializada, tudo no mesmo lugar.</p>
   </div>
   <div class="offer-grid reveal">
     <a class="offer-card" href="https://t.me/+uMdIiepcb-E0ZWIx" target="_blank" style="text-decoration:none;display:block;">
@@ -1211,7 +1327,7 @@
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c0 1.657 2.686 3 6 3s6-1.343 6-3v-5"/></svg>
       </span>
       <h3>Educação Financeira</h3>
-      <p>Comece do zero com cursos práticos e simples. Do orçamento pessoal aos primeiros investimentos — tudo explicado sem jargão.</p>
+      <p>Comece do zero com cursos práticos e simples. Do orçamento pessoal aos primeiros investimentos, tudo explicado sem jargão.</p>
       <span class="offer-tag">Ver cursos →</span>
     </a>
     <a class="offer-card" href="#consultoria" style="text-decoration:none;display:block;">
@@ -1246,7 +1362,7 @@
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
       </span>
       <h3>Newsletter Semanal</h3>
-      <p>Um resumo completo da semana nos mercados, direto no seu e-mail. Sem spam, sem enrolação — só o que importa para o seu bolso.</p>
+      <p>Um resumo completo da semana nos mercados, direto no seu e-mail. Sem spam e sem enrolação, só o que importa para o seu bolso.</p>
       <span class="offer-tag">Assinar →</span>
     </a>
   </div>
@@ -1258,17 +1374,17 @@
     <div class="section-label">// cursos</div>
     <div class="teal-line"></div>
     <h2 class="section-title">Aprenda finanças do<br><span style="color:var(--teal);">zero</span>, no seu ritmo</h2>
-    <p class="section-sub">Cursos gratuitos e pagos criados pela nossa equipe de especialistas — diretos, práticos e sem enrolação.</p>
+    <p class="section-sub">Cursos gratuitos e pagos criados pela nossa equipe de especialistas, diretos, práticos e sem enrolação.</p>
   </div>
 
   <div class="courses-preview reveal" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-top:3rem;">
 
-    <div style="background:rgba(14,80,74,0.25); border:1px solid var(--teal-border); border-radius:12px; overflow:hidden; display:flex; flex-direction:column;">
-      <div style="height:120px; background:linear-gradient(135deg,rgba(14,80,74,0.9),rgba(26,100,94,0.8)); display:flex; align-items:center; justify-content:center; font-size:2.8rem;">💰</div>
+    <div style="background:#FBFAF6; border:1px solid var(--teal-border); border-radius:12px; overflow:hidden; display:flex; flex-direction:column;">
+      <div style="height:120px; background:linear-gradient(135deg,rgba(79,140,132,0.16),rgba(79,140,132,0.06)); display:flex; align-items:center; justify-content:center; font-size:2.8rem;">💰</div>
       <div style="padding:1.4rem; flex:1; display:flex; flex-direction:column;">
         <div style="font-family:var(--font-body); font-size:0.65rem; color:var(--teal); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Iniciante · Gratuito</div>
         <div style="font-family:var(--font-body); font-weight:700; font-size:1rem; color:var(--white-pure); margin-bottom:0.5rem; line-height:1.3;">Dinheiro 101: Como Organizar Sua Vida Financeira</div>
-        <div style="font-size:0.85rem; color:var(--muted); flex:1; margin-bottom:1.2rem; line-height:1.6;">Orçamento, reserva de emergência e primeiros passos — do zero.</div>
+        <div style="font-size:0.85rem; color:var(--muted); flex:1; margin-bottom:1.2rem; line-height:1.6;">Orçamento, reserva de emergência e primeiros passos, do zero.</div>
         <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:0.9rem;">
           <span style="font-family:var(--font-body); font-weight:800; color:var(--green);">Grátis</span>
           <a href="dinheiro101.html" style="font-family:var(--font-body); font-size:0.8rem; font-weight:600; color:var(--muted); text-decoration:none; border:1px solid var(--border); padding:0.4rem 0.9rem; border-radius:6px; opacity:0.6; cursor:default;">Em breve</a>
@@ -1281,7 +1397,7 @@
       <div style="padding:1.4rem; flex:1; display:flex; flex-direction:column;">
         <div style="font-family:var(--font-body); font-size:0.65rem; color:var(--teal); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Iniciante · Gratuito</div>
         <div style="font-family:var(--font-body); font-weight:700; font-size:1rem; color:var(--white-pure); margin-bottom:0.5rem; line-height:1.3;">Meu Primeiro Investimento: Renda Fixa sem Medo</div>
-        <div style="font-size:0.85rem; color:var(--muted); flex:1; margin-bottom:1.2rem; line-height:1.6;">CDB, Tesouro Direto, LCI e LCA — sem complicação.</div>
+        <div style="font-size:0.85rem; color:var(--muted); flex:1; margin-bottom:1.2rem; line-height:1.6;">CDB, Tesouro Direto, LCI e LCA, sem complicação.</div>
         <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:0.9rem;">
           <span style="font-family:var(--font-body); font-weight:800; color:var(--green);">Grátis</span>
           <a href="rendafixa.html" style="font-family:var(--font-body); font-size:0.8rem; font-weight:600; color:var(--muted); text-decoration:none; border:1px solid var(--border); padding:0.4rem 0.9rem; border-radius:6px; opacity:0.6; cursor:default;">Em breve</a>
@@ -1294,7 +1410,7 @@
       <div style="padding:1.4rem; flex:1; display:flex; flex-direction:column;">
         <div style="font-family:var(--font-body); font-size:0.65rem; color:var(--teal); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Iniciante · Gratuito</div>
         <div style="font-family:var(--font-body); font-weight:700; font-size:1rem; color:var(--white-pure); margin-bottom:0.5rem; line-height:1.3;">Sair do Vermelho: Entenda e Elimine Suas Dívidas</div>
-        <div style="font-size:0.85rem; color:var(--muted); flex:1; margin-bottom:1.2rem; line-height:1.6;">Dívida no cartão, cheque especial, nome sujo — diagnóstico e plano.</div>
+        <div style="font-size:0.85rem; color:var(--muted); flex:1; margin-bottom:1.2rem; line-height:1.6;">Dívida no cartão, cheque especial, nome sujo: diagnóstico e plano.</div>
         <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:0.9rem;">
           <span style="font-family:var(--font-body); font-weight:800; color:var(--green);">Grátis</span>
           <a href="sairdovermelho.html" style="font-family:var(--font-body); font-size:0.8rem; font-weight:600; color:var(--muted); text-decoration:none; border:1px solid var(--border); padding:0.4rem 0.9rem; border-radius:6px; opacity:0.6; cursor:default;">Em breve</a>
@@ -1306,7 +1422,7 @@
 
   <div class="reveal" style="text-align:center; margin-top:2.5rem;">
     <span style="display:inline-flex; align-items:center; gap:0.5rem; background:#FBFAF6; color:var(--muted); font-family:var(--font-body); font-weight:700; font-size:0.95rem; padding:0.85rem 2rem; border-radius:8px; border:1px solid var(--border); cursor:default;">
-      Em breve — cursos disponíveis em breve
+      Cursos disponíveis em breve
     </span>
   </div>
 </section>
@@ -1376,7 +1492,7 @@
       <h3>Agendar uma conversa</h3>
       <p>Preencha seus dados e entraremos em contato para uma primeira conversa sem compromisso. Totalmente gratuita.</p>
       <form action="https://formsubmit.co/elisacmazzo@gmail.com" method="POST" style="display:contents">
-        <input type="hidden" name="_subject" value="Nova consulta — HZ Invest">
+        <input type="hidden" name="_subject" value="Nova consulta · HZ Invest">
         <input type="hidden" name="_captcha" value="false">
         <div class="form-group">
           <label>Seu nome</label>
@@ -1422,6 +1538,55 @@
           Quero uma conversa gratuita →
         </button>
       </form>
+    </div>
+  </div>
+</section>
+
+<!-- DIAGNÓSTICO FINANCEIRO -->
+<section id="diagnostico">
+  <div class="diag-layout reveal">
+    <div>
+      <div class="section-label">// diagnóstico financeiro</div>
+      <div class="teal-line"></div>
+      <span class="diag-tag">Novo</span>
+      <h2 class="section-title">Um raio-x da sua<br>vida financeira</h2>
+      <p class="section-sub" style="margin-bottom:0;">
+        Você responde um questionário guiado sobre renda, gastos, patrimônio, dívidas, proteção e metas.
+        No fim, recebe um relatório personalizado com o seu score, o seu arquétipo financeiro e o que fazer nos próximos 30 dias.
+      </p>
+      <ul class="diag-list">
+        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Score geral e nota em 6 dimensões da sua vida financeira</li>
+        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Seu arquétipo financeiro e o padrão que trava o seu dinheiro</li>
+        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Projeção de patrimônio já descontando a inflação</li>
+        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Plano de ação priorizado, com uma lista prática para 30 dias</li>
+        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Bônus: 30 minutos de conversa com a consultoria da HZ</li>
+      </ul>
+      <div class="diag-actions">
+        <a href="diagnostico-lp.html" class="btn-primary">Conhecer o diagnóstico →</a>
+        <span class="nota">Cerca de 25 minutos para responder. Garantia de 7 dias.</span>
+      </div>
+    </div>
+    <div class="diag-card">
+      <h3>Como funciona</h3>
+      <p>Do questionário ao relatório, sem planilha e sem reunião obrigatória.</p>
+      <div class="diag-steps">
+        <div class="diag-step">
+          <span class="n">1</span>
+          <div><strong>Você responde</strong><span>10 etapas guiadas, com salvamento automático. Dá para parar e voltar depois.</span></div>
+        </div>
+        <div class="diag-step">
+          <span class="n">2</span>
+          <div><strong>A gente calcula</strong><span>Suas respostas viram score, arquétipo, projeções e comparações com referências de mercado.</span></div>
+        </div>
+        <div class="diag-step">
+          <span class="n">3</span>
+          <div><strong>Você recebe o relatório</strong><span>Um documento personalizado, escrito com os seus números, pronto para guardar e revisitar.</span></div>
+        </div>
+        <div class="diag-step">
+          <span class="n">4</span>
+          <div><strong>Conversamos</strong><span>30 minutos com a consultoria da HZ para tirar dúvidas sobre o que o relatório apontou.</span></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1480,11 +1645,6 @@
   </div>
 
   <div class="tools-grid reveal">
-    <a class="tool-card" href="diagnostico.html" style="text-decoration:none;display:block;">
-      <h3 style="color:var(--white-pure)">Diagnóstico Financeiro</h3>
-      <p>Um raio-x completo da sua vida financeira em cerca de 25 minutos: score, arquétipo financeiro, plano de ação e projeção de patrimônio.</p>
-      <span class="tool-badge" style="background:var(--teal-dim);color:var(--teal);border-color:var(--teal-border);">Abrir →</span>
-    </a>
     <a class="tool-card" href="calculadora-fire.html" style="text-decoration:none;display:block;">
       <h3 style="color:var(--white-pure)">Calculadora de FIRE</h3>
       <p>Descubra quanto você precisa acumular para viver de renda e em quantos anos pode alcançar a independência financeira.</p>
@@ -1545,7 +1705,7 @@
     <div class="cta-actions">
       <a href="https://t.me/+uMdIiepcb-E0ZWIx" class="btn-primary" target="_blank">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-        Entrar no Telegram — Grátis
+        Entrar no Telegram · Grátis
       </a>
       <a href="#consultoria" class="btn-secondary">Falar com especialista</a>
     </div>
@@ -1761,7 +1921,7 @@ window.subscribeNewsletter = async function() {
     btn.style.background = '#4F8C84';
     btn.style.color = '#F6F4EE';
     msg.textContent = 'Obrigado! Você receberá nosso resumo toda sexta-feira.';
-    msg.style.color = '#4F8C84';
+    msg.style.color = '#3E6F69';
   } catch(e) {
     btn.disabled = false;
     btn.textContent = 'Quero receber →';

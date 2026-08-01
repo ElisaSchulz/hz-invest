@@ -103,6 +103,31 @@
   function num1(value) {
     return (Number(value) || 0).toFixed(1).replace(".", ",");
   }
+  // Idade a partir da data de nascimento (AAAA-MM-DD), na data de referência.
+  // Retorna null se a data for inválida ou implausível.
+  function idadeEm(dataNascimento, referencia) {
+    if (!dataNascimento) return null;
+    var n = new Date(dataNascimento);
+    if (isNaN(n.getTime())) return null;
+    var hoje = referencia ? new Date(referencia) : new Date();
+    if (isNaN(hoje.getTime())) hoje = new Date();
+    var anos = hoje.getFullYear() - n.getFullYear();
+    var m = hoje.getMonth() - n.getMonth();
+    if (m < 0 || (m === 0 && hoje.getDate() < n.getDate())) anos--;
+    return (anos >= 0 && anos <= 120) ? anos : null;
+  }
+  // Idade efetiva: calcula pela data de nascimento quando existir e,
+  // para os diagnósticos antigos, cai de volta no campo `idade`.
+  function idadeDe(D, referencia) {
+    var calc = idadeEm(D.dataNascimento, referencia);
+    return calc !== null ? calc : (Number(D.idade) || null);
+  }
+  function formatarData(iso) {
+    if (!iso) return null;
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return null;
+    return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC" });
+  }
   function esc(s) {
     return String(s === undefined || s === null ? "" : s)
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
@@ -200,7 +225,8 @@
     var scoreRisco = scoreRisco1 * 0.4 + scoreRisco2 * 0.35 + scoreRisco3 * 0.25;
 
     // ---- Dim 5: Patrimônio ----
-    var idade = Number(D.idade) || 30;
+    var idadeCalculada = idadeDe(D, geradoEm);
+    var idade = idadeCalculada || 30;
     var patrimonioEsperado = (idade * rendaAnual) / 10;
     var indicePatrimonio = patrimonioEsperado > 0 ? (patrimonioTotal / patrimonioEsperado) * 100 : 100;
     var scorePatrimonio = bandInterp(indicePatrimonio, [50, 100, 150]);
@@ -611,7 +637,12 @@
     };
 
     return {
-      data: Object.assign({}, D, { primeiroNome: primeiroNome }),
+      data: Object.assign({}, D, {
+        primeiroNome: primeiroNome,
+        idade: idadeCalculada !== null ? idadeCalculada : (D.idade || ""),
+        nascimentoDisplay: formatarData(D.dataNascimento),
+        nascimentoConjugeDisplay: formatarData(D.dataNascimentoConjuge)
+      }),
       dataFormatada: dataRef.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }),
       scoreGeral: scoreGeral, nivel: nivel, arquetipo: arquetipo,
       gaugeDash: gaugeDash, gaugeOffset: gaugeOffset,
@@ -638,6 +669,9 @@
     fmt: fmt,
     pct: pct,
     num1: num1,
+    idadeEm: idadeEm,
+    idadeDe: idadeDe,
+    formatarData: formatarData,
     esc: esc,
     bandInterp: bandInterp,
     bandLabel: bandLabel,
