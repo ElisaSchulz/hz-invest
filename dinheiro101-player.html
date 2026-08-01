@@ -6,24 +6,9 @@
 <title>Dinheiro 101 — Aulas · HZ Invest</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hz-design.css">
 <style>
-  :root {
-    --navy-dark:   #120e4e;
-    --navy-mid:    #1e1875;
-    --teal:        #6bbfb5;
-    --teal-light:  #8dd4cb;
-    --teal-dim:    rgba(107,191,181,0.14);
-    --teal-border: rgba(107,191,181,0.25);
-    --white-pure:  #ffffff;
-    --muted:       rgba(196,193,230,0.55);
-    --text:        rgba(220,218,245,0.88);
-    --border:      rgba(107,191,181,0.12);
-    --green:       #4ade80;
-    --amber:       #fbbf24;
-    --red:         #f87171;
-    --navy-card:   rgba(26,20,100,0.6);
-  }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -31,7 +16,7 @@
   body {
     background: var(--navy-dark);
     color: var(--text);
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 16px;
     line-height: 1.6;
     overflow-x: hidden;
@@ -40,7 +25,7 @@
   body::before {
     content: '';
     position: fixed; inset: 0;
-    background: radial-gradient(ellipse 60% 40% at 80% 10%, rgba(107,191,181,0.06) 0%, transparent 60%);
+    background: radial-gradient(ellipse 60% 40% at 80% 10%, rgba(79,140,132,0.06) 0%, transparent 60%);
     pointer-events: none; z-index: 0;
   }
 
@@ -49,18 +34,18 @@
     position: fixed; top: 0; left: 0; right: 0; z-index: 200;
     height: 60px; padding: 0 1.5rem;
     display: flex; align-items: center; justify-content: space-between;
-    background: rgba(12,9,60,0.95);
+    background: rgba(246,244,238,0.95);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
     gap: 1rem;
   }
   .nav-left { display: flex; align-items: center; gap: 1rem; flex-shrink: 0; }
   .nav-logo {
-    font-family: 'Outfit', sans-serif; font-weight: 900;
+    font-family: var(--font-body); font-weight: 900;
     font-size: 1.1rem; color: var(--white-pure);
     text-decoration: none; letter-spacing: 0.04em; text-transform: uppercase;
   }
-  .nav-sep { color: var(--border); font-size: 1.2rem; }
+  .nav-sep { color: var(--faint); font-size: 1.2rem; }
   .nav-course-title {
     font-size: 0.85rem; color: var(--muted); font-weight: 500;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px;
@@ -70,11 +55,11 @@
   /* progress bar in nav */
   .nav-progress {
     display: flex; align-items: center; gap: 0.6rem;
-    font-family: 'Fira Code', monospace; font-size: 0.7rem; color: var(--muted);
+    font-family: var(--font-body); font-size: 0.7rem; color: var(--muted);
   }
   .nav-progress-bar {
     width: 100px; height: 4px;
-    background: rgba(107,191,181,0.15); border-radius: 2px; overflow: hidden;
+    background: rgba(79,140,132,0.15); border-radius: 2px; overflow: hidden;
   }
   .nav-progress-fill {
     height: 100%;
@@ -88,7 +73,7 @@
   .nav-user-name { font-size:0.82rem; color:var(--teal-light); font-weight:600; }
   .nav-signout {
     background:transparent; border:1px solid var(--teal-border);
-    color:var(--muted); font-family:'Fira Code',monospace; font-size:0.65rem;
+    color:var(--muted); font-family:var(--font-body); font-size:0.65rem;
     padding:0.2rem 0.6rem; border-radius:4px; cursor:pointer; transition:all 0.2s;
   }
   .nav-signout:hover { border-color:var(--teal); color:var(--teal); }
@@ -125,7 +110,7 @@
     position: absolute; inset: 0;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    background: linear-gradient(135deg, rgba(14,10,60,0.95), rgba(26,20,100,0.9));
+    background: linear-gradient(135deg, #F1EEE6, #FBFAF6);
     color: var(--muted); gap: 1rem; text-align: center; padding: 2rem;
   }
   .video-placeholder svg { color: var(--teal); opacity: 0.6; }
@@ -137,12 +122,12 @@
     border-bottom: 1px solid var(--border);
   }
   .lesson-module-label {
-    font-family: 'Fira Code', monospace; font-size: 0.68rem;
+    font-family: var(--font-body); font-size: 0.68rem;
     color: var(--teal); letter-spacing: 0.1em; text-transform: uppercase;
     margin-bottom: 0.5rem;
   }
   .lesson-title-main {
-    font-family: 'Outfit', sans-serif; font-weight: 800;
+    font-family: var(--font-body); font-weight: 800;
     font-size: 1.3rem; color: var(--white-pure);
     letter-spacing: -0.02em; margin-bottom: 0.8rem; line-height: 1.2;
   }
@@ -156,24 +141,24 @@
   .btn-complete {
     display: inline-flex; align-items: center; gap: 0.4rem;
     background: var(--teal-dim); border: 1px solid var(--teal-border);
-    color: var(--teal-light); font-family: 'Outfit', sans-serif;
+    color: var(--teal-light); font-family: var(--font-body);
     font-weight: 600; font-size: 0.82rem;
     padding: 0.5rem 1.1rem; border-radius: 6px; cursor: pointer;
     transition: all 0.2s;
   }
-  .btn-complete:hover { background: rgba(107,191,181,0.22); border-color: var(--teal); color: var(--white-pure); }
+  .btn-complete:hover { background: rgba(79,140,132,0.22); border-color: var(--teal); color: var(--white-pure); }
   .btn-complete.done {
-    background: rgba(74,222,128,0.12); border-color: rgba(74,222,128,0.3);
+    background: rgba(79,140,132,0.12); border-color: rgba(79,140,132,0.3);
     color: var(--green); cursor: default;
   }
   .btn-next {
     display: inline-flex; align-items: center; gap: 0.4rem;
     background: var(--teal); color: var(--navy-dark);
-    font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.82rem;
+    font-family: var(--font-body); font-weight: 700; font-size: 0.82rem;
     padding: 0.5rem 1.2rem; border-radius: 6px; border: none;
     cursor: pointer; text-decoration: none;
     transition: background 0.2s, transform 0.15s;
-    box-shadow: 0 3px 12px rgba(107,191,181,0.25);
+    box-shadow: 0 3px 12px rgba(79,140,132,0.25);
   }
   .btn-next:hover { background: var(--teal-light); transform: translateY(-1px); }
   .btn-next:disabled { opacity: 0.4; cursor: default; transform: none; }
@@ -184,7 +169,7 @@
     border-bottom: 1px solid var(--border);
   }
   .pdf-section h4 {
-    font-family: 'Fira Code', monospace; font-size: 0.68rem;
+    font-family: var(--font-body); font-size: 0.68rem;
     letter-spacing: 0.1em; text-transform: uppercase;
     color: var(--muted); margin-bottom: 0.8rem;
   }
@@ -196,23 +181,23 @@
     text-decoration: none; color: var(--text);
     transition: border-color 0.2s, background 0.2s;
   }
-  .pdf-item:hover { border-color: var(--teal-border); background: rgba(26,20,100,0.8); color: var(--white-pure); }
+  .pdf-item:hover { border-color: var(--teal-border); background: #FBFAF6; color: var(--white-pure); }
   .pdf-icon {
     width: 32px; height: 32px; border-radius: 6px;
-    background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.25);
+    background: rgba(179,71,71,0.12); border: 1px solid rgba(179,71,71,0.25);
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0; color: var(--red);
   }
   .pdf-info { flex: 1; min-width: 0; }
   .pdf-name { font-size: 0.85rem; font-weight: 600; color: var(--white-pure); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .pdf-size { font-family: 'Fira Code', monospace; font-size: 0.65rem; color: var(--muted); margin-top: 0.1rem; }
+  .pdf-size { font-family: var(--font-body); font-size: 0.65rem; color: var(--muted); margin-top: 0.1rem; }
   .pdf-download { color: var(--teal); flex-shrink: 0; }
 
   /* ─── SIDEBAR ─── */
   .sidebar {
     grid-row: 1 / 3;
     grid-column: 2;
-    background: rgba(14,10,54,0.9);
+    background: #F1EEE6;
     border-left: 1px solid var(--border);
     overflow-y: auto;
     max-height: calc(100vh - 60px);
@@ -222,22 +207,22 @@
     padding: 1.2rem 1.2rem 0.8rem;
     border-bottom: 1px solid var(--border);
     position: sticky; top: 0;
-    background: rgba(12,9,54,0.98);
+    background: rgba(246,244,238,0.95);
     backdrop-filter: blur(10px);
     z-index: 10;
   }
   .sidebar-title {
-    font-family: 'Outfit', sans-serif; font-weight: 800;
+    font-family: var(--font-body); font-weight: 800;
     font-size: 0.9rem; color: var(--white-pure);
     letter-spacing: -0.01em; margin-bottom: 0.6rem;
   }
   .sidebar-progress {
     display: flex; align-items: center; gap: 0.6rem;
-    font-family: 'Fira Code', monospace; font-size: 0.65rem; color: var(--muted);
+    font-family: var(--font-body); font-size: 0.65rem; color: var(--muted);
   }
   .sidebar-progress-bar {
     flex: 1; height: 3px;
-    background: rgba(107,191,181,0.15); border-radius: 2px; overflow: hidden;
+    background: rgba(79,140,132,0.15); border-radius: 2px; overflow: hidden;
   }
   .sidebar-progress-fill {
     height: 100%;
@@ -252,9 +237,9 @@
     padding: 0.85rem 1.2rem; cursor: pointer;
     transition: background 0.15s; user-select: none;
   }
-  .mod-header:hover { background: rgba(107,191,181,0.04); }
+  .mod-header:hover { background: rgba(79,140,132,0.04); }
   .mod-num {
-    font-family: 'Fira Code', monospace; font-size: 0.6rem;
+    font-family: var(--font-body); font-size: 0.6rem;
     color: var(--teal); letter-spacing: 0.08em;
     background: var(--teal-dim); border: 1px solid var(--teal-border);
     padding: 0.1rem 0.4rem; border-radius: 3px; flex-shrink: 0;
@@ -270,9 +255,9 @@
     display: flex; align-items: center; gap: 0.65rem;
     padding: 0.65rem 1.2rem 0.65rem 2.2rem;
     cursor: pointer; transition: background 0.15s;
-    border-top: 1px solid rgba(107,191,181,0.05);
+    border-top: 1px solid rgba(79,140,132,0.05);
   }
-  .s-lesson:hover { background: rgba(107,191,181,0.06); }
+  .s-lesson:hover { background: rgba(79,140,132,0.06); }
   .s-lesson.active { background: var(--teal-dim); border-left: 2px solid var(--teal); padding-left: calc(2.2rem - 2px); }
   .s-lesson.completed .s-lesson-icon { color: var(--green); }
   .s-lesson.completed .s-lesson-name { color: var(--muted); }
@@ -281,17 +266,17 @@
   .s-lesson-name { font-size: 0.8rem; color: var(--text); flex: 1; line-height: 1.4; }
   .s-lesson.active .s-lesson-name { color: var(--white-pure); font-weight: 600; }
   .s-lesson-dur {
-    font-family: 'Fira Code', monospace; font-size: 0.62rem;
+    font-family: var(--font-body); font-size: 0.62rem;
     color: var(--muted); flex-shrink: 0;
   }
   .s-pdf-item {
     display: flex; align-items: center; gap: 0.65rem;
     padding: 0.5rem 1.2rem 0.5rem 2.2rem;
     text-decoration: none;
-    border-top: 1px solid rgba(107,191,181,0.05);
+    border-top: 1px solid rgba(79,140,132,0.05);
     transition: background 0.15s;
   }
-  .s-pdf-item:hover { background: rgba(248,113,113,0.05); }
+  .s-pdf-item:hover { background: rgba(179,71,71,0.05); }
   .s-pdf-icon { color: var(--red); flex-shrink: 0; opacity: 0.7; }
   .s-pdf-name { font-size: 0.75rem; color: var(--muted); }
 
@@ -315,13 +300,13 @@
   .nav-minha-area {
     display: inline-flex; align-items: center; gap: 0.4rem;
     background: var(--teal-dim); border: 1px solid var(--teal-border);
-    color: var(--teal-light); font-family: 'Outfit', sans-serif;
+    color: var(--teal-light); font-family: var(--font-body);
     font-weight: 600; font-size: 0.82rem;
     padding: 0.4rem 0.9rem; border-radius: 6px; text-decoration: none;
     transition: all 0.2s;
   }
   .nav-minha-area:hover {
-    background: rgba(107,191,181,0.22); border-color: var(--teal);
+    background: rgba(79,140,132,0.22); border-color: var(--teal);
     color: var(--white-pure);
   }
 </style>
@@ -384,28 +369,28 @@
 <!-- ─── AUTH GATE — shown when not logged in ─── -->
 <div id="authGate" style="
   position:fixed;inset:0;z-index:9999;
-  background:rgba(10,7,50,0.97);
+  background:rgba(246,244,238,0.95);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:1.5rem;
   backdrop-filter:blur(8px);
 ">
   <!-- Loading state (shown first while Firebase initialises) -->
   <div id="gateLoading" style="display:flex;flex-direction:column;align-items:center;gap:1rem;">
-    <div style="width:36px;height:36px;border-radius:50%;border:3px solid rgba(107,191,181,0.2);border-top-color:#6bbfb5;animation:spin 0.8s linear infinite;"></div>
-    <p style="font-family:'Fira Code',monospace;font-size:0.72rem;color:rgba(196,193,230,0.55);letter-spacing:0.08em;">verificando acesso...</p>
+    <div style="width:36px;height:36px;border-radius:50%;border:3px solid rgba(79,140,132,0.2);border-top-color:#4F8C84;animation:spin 0.8s linear infinite;"></div>
+    <p style="font-family:var(--font-body);font-size:0.72rem;color:var(--muted);letter-spacing:0.08em;">verificando acesso...</p>
   </div>
 
   <!-- Login/signup card (shown once Firebase confirms not logged in) -->
   <div id="gateCard" style="display:none;width:100%;max-width:420px;">
     <div style="text-align:center;margin-bottom:1.8rem;">
-      <a href="index.html" style="font-family:'Outfit',sans-serif;font-weight:900;font-size:1.2rem;color:#fff;text-decoration:none;letter-spacing:.04em;text-transform:uppercase;">HZ INVEST</a>
-      <p style="font-size:.85rem;color:rgba(196,193,230,0.55);margin-top:.4rem;">Crie uma conta gratuita para assistir às aulas</p>
+      <a href="index.html" style="font-family:var(--font-body);font-weight:900;font-size:1.2rem;color:#fff;text-decoration:none;letter-spacing:.04em;text-transform:uppercase;">HZ INVEST</a>
+      <p style="font-size:.85rem;color:var(--muted);margin-top:.4rem;">Crie uma conta gratuita para assistir às aulas</p>
     </div>
 
     <!-- Tabs -->
-    <div style="display:flex;background:rgba(18,14,78,0.7);border-radius:8px;padding:4px;gap:4px;margin-bottom:1.4rem;">
-      <button id="tabLogin" onclick="gateTab('login')" style="flex:1;padding:.55rem;background:#6bbfb5;border:none;border-radius:6px;font-family:'Outfit',sans-serif;font-weight:700;font-size:.85rem;color:#120e4e;cursor:pointer;">Entrar</button>
-      <button id="tabSignup" onclick="gateTab('signup')" style="flex:1;padding:.55rem;background:transparent;border:none;border-radius:6px;font-family:'Outfit',sans-serif;font-weight:600;font-size:.85rem;color:rgba(196,193,230,0.55);cursor:pointer;">Criar conta</button>
+    <div style="display:flex;background:#F6F4EE;border-radius:8px;padding:4px;gap:4px;margin-bottom:1.4rem;">
+      <button id="tabLogin" onclick="gateTab('login')" style="flex:1;padding:.55rem;background:#4F8C84;border:none;border-radius:6px;font-family:var(--font-body);font-weight:700;font-size:.85rem;color:#F6F4EE;cursor:pointer;">Entrar</button>
+      <button id="tabSignup" onclick="gateTab('signup')" style="flex:1;padding:.55rem;background:transparent;border:none;border-radius:6px;font-family:var(--font-body);font-weight:600;font-size:.85rem;color:var(--muted);cursor:pointer;">Criar conta</button>
     </div>
 
     <!-- Error message -->
@@ -414,17 +399,17 @@
     <!-- LOGIN FORM -->
     <div id="formLogin">
       <div style="margin-bottom:.9rem;">
-        <label style="display:block;font-family:'Fira Code',monospace;font-size:.65rem;color:rgba(196,193,230,0.55);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem;">E-mail</label>
+        <label style="display:block;font-family:var(--font-body);font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem;">E-mail</label>
         <input id="gEmail" type="email" placeholder="seu@email.com" autocomplete="email"
-          style="width:100%;background:rgba(18,14,78,0.8);border:1px solid rgba(107,191,181,0.12);border-radius:8px;padding:.75rem 1rem;color:#fff;font-family:'Outfit',sans-serif;font-size:.9rem;outline:none;" onfocus="this.style.borderColor='#6bbfb5'" onblur="this.style.borderColor='rgba(107,191,181,0.12)'">
+          style="width:100%;background:rgba(246,244,238,0.92);border:1px solid rgba(79,140,132,0.12);border-radius:8px;padding:.75rem 1rem;color:#fff;font-family:var(--font-body);font-size:.9rem;outline:none;" onfocus="this.style.borderColor='#4F8C84'" onblur="this.style.borderColor='rgba(79,140,132,0.12)'">
       </div>
       <div style="margin-bottom:1.2rem;">
-        <label style="display:block;font-family:'Fira Code',monospace;font-size:.65rem;color:rgba(196,193,230,0.55);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem;">Senha</label>
+        <label style="display:block;font-family:var(--font-body);font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem;">Senha</label>
         <input id="gPass" type="password" placeholder="••••••••" autocomplete="current-password"
-          style="width:100%;background:rgba(18,14,78,0.8);border:1px solid rgba(107,191,181,0.12);border-radius:8px;padding:.75rem 1rem;color:#fff;font-family:'Outfit',sans-serif;font-size:.9rem;outline:none;" onfocus="this.style.borderColor='#6bbfb5'" onblur="this.style.borderColor='rgba(107,191,181,0.12)'">
+          style="width:100%;background:rgba(246,244,238,0.92);border:1px solid rgba(79,140,132,0.12);border-radius:8px;padding:.75rem 1rem;color:#fff;font-family:var(--font-body);font-size:.9rem;outline:none;" onfocus="this.style.borderColor='#4F8C84'" onblur="this.style.borderColor='rgba(79,140,132,0.12)'">
       </div>
       <button onclick="gateLogin()" id="btnGateLogin"
-        style="width:100%;padding:.85rem;background:#6bbfb5;color:#120e4e;font-family:'Outfit',sans-serif;font-weight:700;font-size:.95rem;border:none;border-radius:8px;cursor:pointer;box-shadow:0 4px 20px rgba(107,191,181,0.3);">
+        style="width:100%;padding:.85rem;background:#4F8C84;color:#F6F4EE;font-family:var(--font-body);font-weight:700;font-size:.95rem;border:none;border-radius:8px;cursor:pointer;box-shadow:0 4px 20px rgba(79,140,132,0.3);">
         Entrar
       </button>
     </div>
@@ -432,47 +417,58 @@
     <!-- SIGNUP FORM -->
     <div id="formSignup" style="display:none;">
       <div style="margin-bottom:.9rem;">
-        <label style="display:block;font-family:'Fira Code',monospace;font-size:.65rem;color:rgba(196,193,230,0.55);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem;">Nome completo</label>
+        <label style="display:block;font-family:var(--font-body);font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem;">Nome completo</label>
         <input id="gName" type="text" placeholder="Seu nome" autocomplete="name"
-          style="width:100%;background:rgba(18,14,78,0.8);border:1px solid rgba(107,191,181,0.12);border-radius:8px;padding:.75rem 1rem;color:#fff;font-family:'Outfit',sans-serif;font-size:.9rem;outline:none;" onfocus="this.style.borderColor='#6bbfb5'" onblur="this.style.borderColor='rgba(107,191,181,0.12)'">
+          style="width:100%;background:rgba(246,244,238,0.92);border:1px solid rgba(79,140,132,0.12);border-radius:8px;padding:.75rem 1rem;color:#fff;font-family:var(--font-body);font-size:.9rem;outline:none;" onfocus="this.style.borderColor='#4F8C84'" onblur="this.style.borderColor='rgba(79,140,132,0.12)'">
       </div>
       <div style="margin-bottom:.9rem;">
-        <label style="display:block;font-family:'Fira Code',monospace;font-size:.65rem;color:rgba(196,193,230,0.55);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem;">E-mail</label>
+        <label style="display:block;font-family:var(--font-body);font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem;">E-mail</label>
         <input id="gEmail2" type="email" placeholder="seu@email.com" autocomplete="email"
-          style="width:100%;background:rgba(18,14,78,0.8);border:1px solid rgba(107,191,181,0.12);border-radius:8px;padding:.75rem 1rem;color:#fff;font-family:'Outfit',sans-serif;font-size:.9rem;outline:none;" onfocus="this.style.borderColor='#6bbfb5'" onblur="this.style.borderColor='rgba(107,191,181,0.12)'">
+          style="width:100%;background:rgba(246,244,238,0.92);border:1px solid rgba(79,140,132,0.12);border-radius:8px;padding:.75rem 1rem;color:#fff;font-family:var(--font-body);font-size:.9rem;outline:none;" onfocus="this.style.borderColor='#4F8C84'" onblur="this.style.borderColor='rgba(79,140,132,0.12)'">
       </div>
       <div style="margin-bottom:.9rem;">
-        <label style="display:block;font-family:'Fira Code',monospace;font-size:.65rem;color:rgba(196,193,230,0.55);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem;">Senha (mín. 6 caracteres)</label>
+        <label style="display:block;font-family:var(--font-body);font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem;">Senha (mín. 6 caracteres)</label>
         <input id="gPass2" type="password" placeholder="••••••••" autocomplete="new-password"
-          style="width:100%;background:rgba(18,14,78,0.8);border:1px solid rgba(107,191,181,0.12);border-radius:8px;padding:.75rem 1rem;color:#fff;font-family:'Outfit',sans-serif;font-size:.9rem;outline:none;" onfocus="this.style.borderColor='#6bbfb5'" onblur="this.style.borderColor='rgba(107,191,181,0.12)'">
+          style="width:100%;background:rgba(246,244,238,0.92);border:1px solid rgba(79,140,132,0.12);border-radius:8px;padding:.75rem 1rem;color:#fff;font-family:var(--font-body);font-size:.9rem;outline:none;" onfocus="this.style.borderColor='#4F8C84'" onblur="this.style.borderColor='rgba(79,140,132,0.12)'">
       </div>
       <div style="margin-bottom:1.2rem;">
-        <label style="display:block;font-family:'Fira Code',monospace;font-size:.65rem;color:rgba(196,193,230,0.55);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem;">Confirmar senha</label>
+        <label style="display:block;font-family:var(--font-body);font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem;">Confirmar senha</label>
         <input id="gPass3" type="password" placeholder="••••••••" autocomplete="new-password"
-          style="width:100%;background:rgba(18,14,78,0.8);border:1px solid rgba(107,191,181,0.12);border-radius:8px;padding:.75rem 1rem;color:#fff;font-family:'Outfit',sans-serif;font-size:.9rem;outline:none;" onfocus="this.style.borderColor='#6bbfb5'" onblur="this.style.borderColor='rgba(107,191,181,0.12)'">
+          style="width:100%;background:rgba(246,244,238,0.92);border:1px solid rgba(79,140,132,0.12);border-radius:8px;padding:.75rem 1rem;color:#fff;font-family:var(--font-body);font-size:.9rem;outline:none;" onfocus="this.style.borderColor='#4F8C84'" onblur="this.style.borderColor='rgba(79,140,132,0.12)'">
       </div>
       <button onclick="gateSignup()" id="btnGateSignup"
-        style="width:100%;padding:.85rem;background:#6bbfb5;color:#120e4e;font-family:'Outfit',sans-serif;font-weight:700;font-size:.95rem;border:none;border-radius:8px;cursor:pointer;box-shadow:0 4px 20px rgba(107,191,181,0.3);">
+        style="width:100%;padding:.85rem;background:#4F8C84;color:#F6F4EE;font-family:var(--font-body);font-weight:700;font-size:.95rem;border:none;border-radius:8px;cursor:pointer;box-shadow:0 4px 20px rgba(79,140,132,0.3);">
         Criar conta gratuita
       </button>
     </div>
 
     <!-- Google -->
-    <div style="display:flex;align-items:center;gap:.75rem;margin:1rem 0;font-size:.72rem;color:rgba(196,193,230,0.45);font-family:'Fira Code',monospace;">
-      <div style="flex:1;height:1px;background:rgba(107,191,181,0.12);"></div>ou<div style="flex:1;height:1px;background:rgba(107,191,181,0.12);"></div>
+    <div style="display:flex;align-items:center;gap:.75rem;margin:1rem 0;font-size:.72rem;color:var(--muted);font-family:var(--font-body);">
+      <div style="flex:1;height:1px;background:rgba(79,140,132,0.12);"></div>ou<div style="flex:1;height:1px;background:rgba(79,140,132,0.12);"></div>
     </div>
     <button onclick="gateGoogle()"
-      style="width:100%;padding:.75rem;background:rgba(255,255,255,0.06);border:1px solid rgba(107,191,181,0.12);border-radius:8px;color:rgba(220,218,245,0.88);font-family:'Outfit',sans-serif;font-weight:600;font-size:.88rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.6rem;">
+      style="width:100%;padding:.75rem;background:rgba(255,255,255,0.06);border:1px solid rgba(79,140,132,0.12);border-radius:8px;color:rgba(21,21,63,0.80);font-family:var(--font-body);font-weight:600;font-size:.88rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.6rem;">
       <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
       Continuar com Google
     </button>
 
-    <p style="text-align:center;font-size:.72rem;color:rgba(196,193,230,0.4);margin-top:1.2rem;">
+    <p style="text-align:center;font-size:.72rem;color:var(--muted);margin-top:1.2rem;">
       Acesso 100% gratuito · Sem cartão de crédito
     </p>
   </div>
 </div>
-<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+<style>@keyframes spin{to{transform:rotate(360deg)}}
+  /* ─── identidade HZ: títulos na serifada da marca ─── */
+  h1, h2, h3, h4,
+  .section-title, .hero h1, .hero-title, .nav-logo, .footer-logo, .brand,
+  .stat-num, .stat-value, .big-num, .result-val, .sim-result-val,
+  .price-tag .val, .cover-title, .modal-box h3 {
+    font-family: var(--font-display) !important;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+  .nav-logo, .footer-logo, .brand { font-weight: 600; }
+</style>
 
 <script type="module">
 import { auth, bindNavUser, onAuthStateChanged,
@@ -827,10 +823,10 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword,
 
 function gateTab(tab) {
   const isLogin = tab === 'login';
-  document.getElementById('tabLogin').style.background  = isLogin ? '#6bbfb5' : 'transparent';
-  document.getElementById('tabLogin').style.color       = isLogin ? '#120e4e' : 'rgba(196,193,230,0.55)';
-  document.getElementById('tabSignup').style.background = isLogin ? 'transparent' : '#6bbfb5';
-  document.getElementById('tabSignup').style.color      = isLogin ? 'rgba(196,193,230,0.55)' : '#120e4e';
+  document.getElementById('tabLogin').style.background  = isLogin ? '#4F8C84' : 'transparent';
+  document.getElementById('tabLogin').style.color       = isLogin ? '#F6F4EE' : 'var(--muted)';
+  document.getElementById('tabSignup').style.background = isLogin ? 'transparent' : '#4F8C84';
+  document.getElementById('tabSignup').style.color      = isLogin ? 'var(--muted)' : '#F6F4EE';
   document.getElementById('formLogin').style.display    = isLogin ? 'block' : 'none';
   document.getElementById('formSignup').style.display   = isLogin ? 'none'  : 'block';
 }
@@ -840,9 +836,9 @@ function gateMsg(text, isError = true) {
   const el = document.getElementById('gateMsg');
   el.textContent = text;
   el.style.display = text ? 'block' : 'none';
-  el.style.background = isError ? 'rgba(248,113,113,0.12)' : 'rgba(74,222,128,0.12)';
-  el.style.border = isError ? '1px solid rgba(248,113,113,0.3)' : '1px solid rgba(74,222,128,0.3)';
-  el.style.color = isError ? '#f87171' : '#4ade80';
+  el.style.background = isError ? 'rgba(179,71,71,0.12)' : 'rgba(79,140,132,0.12)';
+  el.style.border = isError ? '1px solid rgba(179,71,71,0.3)' : '1px solid rgba(79,140,132,0.3)';
+  el.style.color = isError ? '#B34747' : '#4F8C84';
 }
 
 function errPT(code) {

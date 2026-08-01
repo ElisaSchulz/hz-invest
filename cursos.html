@@ -6,24 +6,9 @@
 <title>HZ Invest — Cursos para Iniciantes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hz-design.css">
 <style>
-  :root {
-    --navy:        #1a1464;
-    --navy-dark:   #120e4e;
-    --navy-mid:    #1e1875;
-    --teal:        #6bbfb5;
-    --teal-light:  #8dd4cb;
-    --teal-dim:    rgba(107,191,181,0.14);
-    --teal-border: rgba(107,191,181,0.25);
-    --white:       #f4f2ff;
-    --white-pure:  #ffffff;
-    --muted:       rgba(196,193,230,0.55);
-    --text:        rgba(220,218,245,0.85);
-    --border:      rgba(107,191,181,0.12);
-    --green:       #4ade80;
-    --amber:       #fbbf24;
-  }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -31,7 +16,7 @@
   body {
     background: var(--navy-dark);
     color: var(--text);
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 18px;
     line-height: 1.65;
     overflow-x: hidden;
@@ -43,8 +28,8 @@
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(ellipse 60% 50% at 15% 10%, rgba(107,191,181,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 60% at 85% 90%, rgba(107,191,181,0.05) 0%, transparent 60%);
+      radial-gradient(ellipse 60% 50% at 15% 10%, rgba(79,140,132,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 85% 90%, rgba(79,140,132,0.05) 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
   }
@@ -52,7 +37,7 @@
     content: '';
     position: fixed;
     inset: 0;
-    background-image: radial-gradient(circle, rgba(107,191,181,0.15) 1px, transparent 1px);
+    background-image: radial-gradient(circle, rgba(79,140,132,0.15) 1px, transparent 1px);
     background-size: 40px 40px;
     mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 0%, transparent 80%);
     pointer-events: none;
@@ -70,12 +55,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(18,14,78,0.88);
+    background: rgba(246,244,238,0.92);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
   }
   .nav-logo {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-weight: 900;
     font-size: 1.35rem;
     color: var(--white-pure);
@@ -103,7 +88,7 @@
     z-index: 1;
   }
   .page-hero .section-label {
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
     font-size: 0.72rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -118,7 +103,7 @@
     opacity: 0.7;
   }
   .page-hero h1 {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: clamp(2.2rem, 5vw, 3.8rem);
     font-weight: 900;
     color: var(--white-pure);
@@ -150,7 +135,7 @@
     background: transparent;
     border: 1px solid var(--border);
     color: var(--muted);
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
     font-size: 0.75rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -181,7 +166,7 @@
 
   /* ─── COURSE CARD ─── */
   .course-card {
-    background: rgba(26,20,100,0.6);
+    background: #FBFAF6;
     border: 1px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
@@ -192,7 +177,7 @@
   .course-card:hover {
     border-color: var(--teal-border);
     transform: translateY(-4px);
-    box-shadow: 0 16px 40px rgba(107,191,181,0.1);
+    box-shadow: 0 16px 40px rgba(79,140,132,0.1);
   }
   .course-thumb {
     width: 100%;
@@ -208,14 +193,15 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, transparent 40%, rgba(18,14,78,0.7) 100%);
+    background: linear-gradient(180deg, transparent 40%, #F6F4EE 100%);
   }
-  .thumb-blue   { background: linear-gradient(135deg, rgba(26,20,100,0.9), rgba(37,32,152,0.8)); }
-  .thumb-teal   { background: linear-gradient(135deg, rgba(14,80,74,0.9), rgba(26,100,94,0.8)); }
-  .thumb-purple { background: linear-gradient(135deg, rgba(60,20,100,0.9), rgba(80,30,130,0.8)); }
-  .thumb-green  { background: linear-gradient(135deg, rgba(14,60,30,0.9), rgba(20,90,50,0.8)); }
-  .thumb-amber  { background: linear-gradient(135deg, rgba(80,50,10,0.9), rgba(100,70,10,0.8)); }
-  .thumb-red    { background: linear-gradient(135deg, rgba(80,15,15,0.9), rgba(110,20,20,0.8)); }
+  .thumb-blue   { background: linear-gradient(135deg, #FBFAF6, #F1EEE6); }
+  .thumb-teal   { background: linear-gradient(135deg, #1B1B5C, #4F8C84); }
+  .thumb-purple { background: linear-gradient(135deg, #15153F, #3E4C86); }
+  .thumb-green  { background: linear-gradient(135deg, #3E6F69, #6FA8A0); }
+  .thumb-amber  { background: linear-gradient(135deg, #8A5F22, #C48A3E); }
+  .thumb-red    { background: linear-gradient(135deg, #7A2F2F, #B34747); }
+  .thumb-blue   { background: linear-gradient(135deg, #1B1B5C, #3A6EA5); }
 
   .course-badges {
     position: absolute;
@@ -225,7 +211,7 @@
     z-index: 2;
   }
   .badge {
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
     font-size: 0.62rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -233,9 +219,9 @@
     border-radius: 3px;
     font-weight: 500;
   }
-  .badge-free    { background: rgba(74,222,128,0.15); color: var(--green); border: 1px solid rgba(74,222,128,0.25); }
-  .badge-new     { background: rgba(107,191,181,0.15); color: var(--teal-light); border: 1px solid var(--teal-border); }
-  .badge-popular { background: rgba(251,191,36,0.15); color: var(--amber); border: 1px solid rgba(251,191,36,0.25); }
+  .badge-free    { background: rgba(79,140,132,0.15); color: var(--sage-deep); border: 1px solid rgba(79,140,132,0.25); }
+  .badge-new     { background: rgba(79,140,132,0.15); color: var(--sage-deep); border: 1px solid var(--teal-border); }
+  .badge-popular { background: rgba(196,138,62,0.15); color: #8A5F22; border: 1px solid rgba(196,138,62,0.25); }
 
   .course-body {
     padding: 1.6rem;
@@ -244,7 +230,7 @@
     flex-direction: column;
   }
   .course-level {
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
     font-size: 0.68rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -252,7 +238,7 @@
     margin-bottom: 0.6rem;
   }
   .course-title {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--white-pure);
@@ -273,7 +259,7 @@
     font-size: 0.78rem;
     color: var(--muted);
     margin-bottom: 1.2rem;
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
   }
   .course-meta span { display: flex; align-items: center; gap: 0.3rem; }
   .course-footer {
@@ -284,7 +270,7 @@
     border-top: 1px solid var(--border);
   }
   .course-price {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 1rem;
     font-weight: 800;
     color: var(--white-pure);
@@ -297,7 +283,7 @@
     background: var(--teal-dim);
     border: 1px solid var(--teal-border);
     color: var(--teal-light);
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.82rem;
     font-weight: 600;
     padding: 0.5rem 1.1rem;
@@ -307,7 +293,7 @@
     transition: background 0.2s, border-color 0.2s, color 0.2s;
   }
   .btn-course:hover {
-    background: rgba(107,191,181,0.25);
+    background: rgba(79,140,132,0.25);
     border-color: var(--teal);
     color: var(--white-pure);
   }
@@ -320,7 +306,7 @@
     position: relative;
     z-index: 1;
     margin: 0 5% 80px;
-    background: rgba(26,20,100,0.7);
+    background: #FBFAF6;
     border: 1px solid var(--teal-border);
     border-radius: 14px;
     padding: 3rem;
@@ -335,11 +321,11 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 60% 100% at 0% 50%, rgba(107,191,181,0.08), transparent);
+    background: radial-gradient(ellipse 60% 100% at 0% 50%, rgba(79,140,132,0.08), transparent);
     pointer-events: none;
   }
   .cta-banner-text h2 {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 1.5rem;
     font-weight: 800;
     color: var(--white-pure);
@@ -357,21 +343,21 @@
     gap: 0.5rem;
     background: var(--teal);
     color: var(--navy-dark);
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-weight: 700;
     font-size: 0.9rem;
     padding: 0.85rem 1.8rem;
     border-radius: 6px;
     text-decoration: none;
     transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-    box-shadow: 0 4px 20px rgba(107,191,181,0.25);
+    box-shadow: 0 4px 20px rgba(79,140,132,0.25);
     white-space: nowrap;
     flex-shrink: 0;
   }
   .btn-primary:hover {
     background: var(--teal-light);
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(107,191,181,0.35);
+    box-shadow: 0 8px 30px rgba(79,140,132,0.35);
   }
 
   /* ─── FOOTER ─── */
@@ -388,7 +374,7 @@
     z-index: 1;
   }
   .footer-logo {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-weight: 900;
     font-size: 1.1rem;
     color: var(--white-pure);
@@ -418,14 +404,14 @@
   .nav-user-name { font-size:0.85rem; color:var(--teal-light); font-weight:600; }
   .nav-signout {
     background:transparent; border:1px solid var(--teal-border);
-    color:var(--muted); font-family:'Fira Code',monospace; font-size:0.7rem;
+    color:var(--muted); font-family:var(--font-body); font-size:0.7rem;
     padding:0.25rem 0.7rem; border-radius:4px; cursor:pointer;
     transition:all 0.2s; letter-spacing:0.04em;
   }
   .nav-signout:hover { border-color:var(--teal); color:var(--teal); }
   .nav-login-btn {
     background:var(--teal); color:var(--navy-dark);
-    font-family:'Outfit',sans-serif; font-weight:700; font-size:0.82rem;
+    font-family:var(--font-body); font-weight:700; font-size:0.82rem;
     padding:0.45rem 1.1rem; border-radius:6px; text-decoration:none;
     transition:background 0.2s;
   }
@@ -435,21 +421,21 @@
   .btn-enroll-card {
     display: inline-flex; align-items: center; gap: 0.4rem;
     background: var(--teal); color: var(--navy-dark);
-    font-family: 'Outfit', sans-serif; font-size: 0.82rem; font-weight: 700;
+    font-family: var(--font-body); font-size: 0.82rem; font-weight: 700;
     padding: 0.5rem 1.1rem; border-radius: 6px; border: none;
     cursor: pointer; text-decoration: none;
     transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-    box-shadow: 0 3px 12px rgba(107,191,181,0.25);
+    box-shadow: 0 3px 12px rgba(79,140,132,0.25);
   }
   .btn-enroll-card:hover {
     background: var(--teal-light); transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(107,191,181,0.35);
+    box-shadow: 0 6px 18px rgba(79,140,132,0.35);
   }
   .btn-enrolled {
     display: inline-flex; align-items: center; gap: 0.4rem;
-    background: rgba(74,222,128,0.12); color: var(--green);
-    border: 1px solid rgba(74,222,128,0.3);
-    font-family: 'Fira Code', monospace; font-size: 0.72rem; font-weight: 500;
+    background: rgba(79,140,132,0.12); color: var(--sage-deep);
+    border: 1px solid rgba(79,140,132,0.3);
+    font-family: var(--font-body); font-size: 0.72rem; font-weight: 500;
     padding: 0.5rem 1rem; border-radius: 6px; cursor: default;
     letter-spacing: 0.04em;
   }
@@ -457,25 +443,44 @@
     display: inline-flex; align-items: center; gap: 0.4rem;
     background: var(--teal-dim); color: var(--teal-light);
     border: 1px solid var(--teal-border);
-    font-family: 'Outfit', sans-serif; font-size: 0.82rem; font-weight: 600;
+    font-family: var(--font-body); font-size: 0.82rem; font-weight: 600;
     padding: 0.5rem 1.1rem; border-radius: 6px;
     cursor: pointer; text-decoration: none;
     transition: background 0.2s, border-color 0.2s;
   }
-  .btn-view-course:hover { background: rgba(107,191,181,0.22); border-color: var(--teal); color: var(--white-pure); }
+  .btn-view-course:hover { background: rgba(79,140,132,0.22); border-color: var(--teal); color: var(--white-pure); }
 
   /* ─── NAV MINHA ÁREA BUTTON ─── */
   .nav-minha-area {
     display: inline-flex; align-items: center; gap: 0.4rem;
     background: var(--teal-dim); border: 1px solid var(--teal-border);
-    color: var(--teal-light); font-family: 'Outfit', sans-serif;
+    color: var(--teal-light); font-family: var(--font-body);
     font-weight: 600; font-size: 0.82rem;
     padding: 0.4rem 0.9rem; border-radius: 6px; text-decoration: none;
     transition: all 0.2s;
   }
   .nav-minha-area:hover {
-    background: rgba(107,191,181,0.22); border-color: var(--teal);
+    background: rgba(79,140,132,0.22); border-color: var(--teal);
     color: var(--white-pure);
+  }
+
+  /* ─── identidade HZ: títulos na serifada da marca ─── */
+  h1, h2, h3, h4,
+  .section-title, .hero h1, .hero-title, .nav-logo, .footer-logo, .brand,
+  .stat-num, .stat-value, .big-num, .result-val, .sim-result-val,
+  .price-tag .val, .cover-title, .modal-box h3 {
+    font-family: var(--font-display) !important;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+  .nav-logo, .footer-logo, .brand { font-weight: 600; }
+
+  /* etiquetas sobre as capas escuras dos cursos */
+  .course-thumb .badge {
+    background: rgba(251,250,246,0.18);
+    color: #FBFAF6;
+    border-color: rgba(251,250,246,0.4);
+    backdrop-filter: blur(4px);
   }
 </style>
 </head>

@@ -6,22 +6,9 @@
 <title>HZ Invest — Entrar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hz-design.css">
 <style>
-  :root {
-    --navy-dark:   #120e4e;
-    --navy-mid:    #1e1875;
-    --teal:        #6bbfb5;
-    --teal-light:  #8dd4cb;
-    --teal-dim:    rgba(107,191,181,0.14);
-    --teal-border: rgba(107,191,181,0.25);
-    --white-pure:  #ffffff;
-    --muted:       rgba(196,193,230,0.55);
-    --text:        rgba(220,218,245,0.88);
-    --border:      rgba(107,191,181,0.12);
-    --green:       #4ade80;
-    --red:         #f87171;
-  }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -29,7 +16,7 @@
   body {
     background: var(--navy-dark);
     color: var(--text);
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 17px;
     line-height: 1.65;
     min-height: 100vh;
@@ -42,14 +29,14 @@
     content: '';
     position: fixed; inset: 0;
     background:
-      radial-gradient(ellipse 60% 50% at 15% 10%, rgba(107,191,181,0.08) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 60% at 85% 90%, rgba(107,191,181,0.06) 0%, transparent 60%);
+      radial-gradient(ellipse 60% 50% at 15% 10%, rgba(79,140,132,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 85% 90%, rgba(79,140,132,0.06) 0%, transparent 60%);
     pointer-events: none; z-index: 0;
   }
   body::after {
     content: '';
     position: fixed; inset: 0;
-    background-image: radial-gradient(circle, rgba(107,191,181,0.15) 1px, transparent 1px);
+    background-image: radial-gradient(circle, rgba(79,140,132,0.15) 1px, transparent 1px);
     background-size: 40px 40px;
     mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 0%, transparent 80%);
     pointer-events: none; z-index: 0; opacity: 0.28;
@@ -61,11 +48,11 @@
     padding: 0 5%; height: 70px;
     display: flex; align-items: center; justify-content: space-between;
     border-bottom: 1px solid var(--border);
-    background: rgba(18,14,78,0.5);
+    background: #F6F4EE;
     backdrop-filter: blur(16px);
   }
   .nav-logo {
-    font-family: 'Outfit', sans-serif; font-weight: 900;
+    font-family: var(--font-body); font-weight: 900;
     font-size: 1.35rem; color: var(--white-pure);
     text-decoration: none; letter-spacing: 0.04em; text-transform: uppercase;
   }
@@ -87,37 +74,37 @@
   /* ─── CARD ─── */
   .auth-card {
     width: 100%; max-width: 440px;
-    background: rgba(26,20,100,0.75);
+    background: #FBFAF6;
     border: 1px solid var(--teal-border);
     border-radius: 16px;
     padding: 2.8rem 2.5rem;
-    box-shadow: 0 0 60px rgba(107,191,181,0.1);
+    box-shadow: 0 0 60px rgba(79,140,132,0.1);
   }
 
   .auth-logo-area {
     text-align: center; margin-bottom: 2rem;
   }
   .auth-logo-area .logo-text {
-    font-family: 'Outfit', sans-serif; font-weight: 900;
+    font-family: var(--font-body); font-weight: 900;
     font-size: 1.5rem; color: var(--white-pure);
     letter-spacing: 0.05em; text-transform: uppercase;
     display: block; margin-bottom: 0.3rem;
   }
   .auth-logo-area p {
     font-size: 0.85rem; color: var(--muted);
-    font-family: 'Fira Code', monospace; letter-spacing: 0.04em;
+    font-family: var(--font-body); letter-spacing: 0.04em;
   }
 
   /* ─── TABS ─── */
   .auth-tabs {
     display: flex; margin-bottom: 2rem;
-    background: rgba(18,14,78,0.6);
+    background: #F6F4EE;
     border-radius: 8px; padding: 4px; gap: 4px;
   }
   .tab-btn {
     flex: 1; padding: 0.6rem;
     background: transparent; border: none;
-    font-family: 'Outfit', sans-serif; font-weight: 600;
+    font-family: var(--font-body); font-weight: 600;
     font-size: 0.88rem; color: var(--muted);
     border-radius: 6px; cursor: pointer;
     transition: all 0.2s;
@@ -134,34 +121,34 @@
   .form-group label {
     display: block; font-size: 0.7rem; color: var(--muted);
     margin-bottom: 0.4rem; text-transform: uppercase;
-    letter-spacing: 0.08em; font-family: 'Fira Code', monospace;
+    letter-spacing: 0.08em; font-family: var(--font-body);
   }
   .form-group input {
     width: 100%;
-    background: rgba(18,14,78,0.8);
+    background: rgba(246,244,238,0.92);
     border: 1px solid var(--border); border-radius: 8px;
     padding: 0.8rem 1rem; color: var(--white-pure);
-    font-family: 'Outfit', sans-serif; font-size: 0.95rem;
+    font-family: var(--font-body); font-size: 0.95rem;
     outline: none; transition: border-color 0.2s, box-shadow 0.2s;
   }
   .form-group input:focus {
     border-color: var(--teal);
-    box-shadow: 0 0 0 3px rgba(107,191,181,0.12);
+    box-shadow: 0 0 0 3px rgba(79,140,132,0.12);
   }
   .form-group input::placeholder { color: var(--muted); }
 
   .btn-submit {
     width: 100%; padding: 0.9rem;
     background: var(--teal); color: var(--navy-dark);
-    font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1rem;
+    font-family: var(--font-body); font-weight: 700; font-size: 1rem;
     border: none; border-radius: 8px; cursor: pointer;
     transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-    box-shadow: 0 4px 20px rgba(107,191,181,0.3);
+    box-shadow: 0 4px 20px rgba(79,140,132,0.3);
     margin-top: 0.5rem;
   }
   .btn-submit:hover {
     background: var(--teal-light); transform: translateY(-1px);
-    box-shadow: 0 8px 28px rgba(107,191,181,0.4);
+    box-shadow: 0 8px 28px rgba(79,140,132,0.4);
   }
   .btn-submit:disabled {
     opacity: 0.6; cursor: not-allowed; transform: none;
@@ -172,7 +159,7 @@
     display: flex; align-items: center; gap: 0.75rem;
     margin: 1.4rem 0;
     font-size: 0.72rem; color: var(--muted);
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
   }
   .divider::before, .divider::after {
     content: ''; flex: 1; height: 1px; background: var(--border);
@@ -183,7 +170,7 @@
     width: 100%; padding: 0.8rem;
     background: rgba(255,255,255,0.06);
     border: 1px solid var(--border); border-radius: 8px;
-    color: var(--text); font-family: 'Outfit', sans-serif;
+    color: var(--text); font-family: var(--font-body);
     font-weight: 600; font-size: 0.9rem;
     cursor: pointer; display: flex; align-items: center;
     justify-content: center; gap: 0.6rem;
@@ -202,14 +189,14 @@
   }
   .auth-msg.error {
     display: block;
-    background: rgba(248,113,113,0.12);
-    border: 1px solid rgba(248,113,113,0.3);
+    background: rgba(179,71,71,0.12);
+    border: 1px solid rgba(179,71,71,0.3);
     color: var(--red);
   }
   .auth-msg.success {
     display: block;
-    background: rgba(74,222,128,0.12);
-    border: 1px solid rgba(74,222,128,0.3);
+    background: rgba(79,140,132,0.12);
+    border: 1px solid rgba(79,140,132,0.3);
     color: var(--green);
   }
 
@@ -218,7 +205,7 @@
     display: block; text-align: right; margin-top: -0.5rem;
     margin-bottom: 1rem; font-size: 0.78rem;
     color: var(--teal); text-decoration: none;
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
     transition: color 0.2s;
   }
   .forgot-link:hover { color: var(--teal-light); }
@@ -226,7 +213,7 @@
   /* ─── LOADING SPINNER ─── */
   .spinner {
     display: inline-block; width: 16px; height: 16px;
-    border: 2px solid rgba(18,14,78,0.4);
+    border: 2px solid #F6F4EE;
     border-top-color: var(--navy-dark);
     border-radius: 50%; animation: spin 0.7s linear infinite;
     vertical-align: middle; margin-right: 6px;
@@ -254,15 +241,26 @@
   .nav-minha-area {
     display: inline-flex; align-items: center; gap: 0.4rem;
     background: var(--teal-dim); border: 1px solid var(--teal-border);
-    color: var(--teal-light); font-family: 'Outfit', sans-serif;
+    color: var(--teal-light); font-family: var(--font-body);
     font-weight: 600; font-size: 0.82rem;
     padding: 0.4rem 0.9rem; border-radius: 6px; text-decoration: none;
     transition: all 0.2s;
   }
   .nav-minha-area:hover {
-    background: rgba(107,191,181,0.22); border-color: var(--teal);
+    background: rgba(79,140,132,0.22); border-color: var(--teal);
     color: var(--white-pure);
   }
+
+  /* ─── identidade HZ: títulos na serifada da marca ─── */
+  h1, h2, h3, h4,
+  .section-title, .hero h1, .hero-title, .nav-logo, .footer-logo, .brand,
+  .stat-num, .stat-value, .big-num, .result-val, .sim-result-val,
+  .price-tag .val, .cover-title, .modal-box h3 {
+    font-family: var(--font-display) !important;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+  .nav-logo, .footer-logo, .brand { font-weight: 600; }
 </style>
 </head>
 <body>
