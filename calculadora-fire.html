@@ -6,31 +6,25 @@
 <title>Calculadora FIRE — HZ Invest</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hz-design.css">
 <style>
-  :root {
-    --navy-dark:#120e4e;--navy-mid:#1e1875;--teal:#6bbfb5;--teal-light:#8dd4cb;
-    --teal-dim:rgba(107,191,181,0.14);--teal-border:rgba(107,191,181,0.25);
-    --white:#ffffff;--muted:rgba(196,193,230,0.55);--text:rgba(220,218,245,0.88);
-    --border:rgba(107,191,181,0.12);--green:#4ade80;--amber:#fbbf24;--red:#f87171;
-    --card:rgba(26,20,100,0.6);
-  }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
-  body{background:var(--navy-dark);color:var(--text);font-family:'Outfit',sans-serif;font-size:17px;line-height:1.65;min-height:100vh;overflow-x:hidden}
-  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 15% 10%,rgba(107,191,181,0.07) 0%,transparent 60%);pointer-events:none;z-index:0}
-  body::after{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,rgba(107,191,181,0.13) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(ellipse 100% 100% at 50% 50%,black 0%,transparent 80%);pointer-events:none;z-index:0;opacity:0.25}
+  body{background:var(--navy-dark);color:var(--text);font-family:var(--font-body);font-size:17px;line-height:1.65;min-height:100vh;overflow-x:hidden}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 15% 10%,rgba(79,140,132,0.07) 0%,transparent 60%);pointer-events:none;z-index:0}
+  body::after{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,rgba(79,140,132,0.13) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(ellipse 100% 100% at 50% 50%,black 0%,transparent 80%);pointer-events:none;z-index:0;opacity:0.25}
 
-  nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;height:70px;display:flex;align-items:center;justify-content:space-between;background:rgba(18,14,78,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-  .nav-logo{font-family:'Outfit',sans-serif;font-weight:900;font-size:1.35rem;color:var(--white);text-decoration:none;letter-spacing:.04em;text-transform:uppercase}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;height:70px;display:flex;align-items:center;justify-content:space-between;background:rgba(246,244,238,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+  .nav-logo{font-family:var(--font-body);font-weight:900;font-size:1.35rem;color:var(--white);text-decoration:none;letter-spacing:.04em;text-transform:uppercase}
   .nav-back{display:inline-flex;align-items:center;gap:.4rem;color:var(--muted);text-decoration:none;font-size:.85rem;transition:color .2s}
   .nav-back:hover{color:var(--teal)}
 
   .page-wrap{max-width:1200px;margin:0 auto;padding:110px 5% 80px;position:relative;z-index:1}
 
-  .page-label{font-family:'Fira Code',monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:.6rem}
+  .page-label{font-family:var(--font-body);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:.6rem}
   .teal-line{width:40px;height:3px;background:var(--teal);border-radius:2px;margin-bottom:1.4rem;opacity:.7}
-  .page-title{font-family:'Outfit',sans-serif;font-weight:900;font-size:clamp(2rem,4vw,3rem);color:var(--white);letter-spacing:-.03em;line-height:1.1;margin-bottom:.8rem}
+  .page-title{font-family:var(--font-body);font-weight:900;font-size:clamp(2rem,4vw,3rem);color:var(--white);letter-spacing:-.03em;line-height:1.1;margin-bottom:.8rem}
   .page-title span{color:var(--teal)}
   .page-sub{font-size:1rem;color:var(--muted);font-weight:300;line-height:1.75;margin-bottom:2rem}
 
@@ -39,46 +33,46 @@
 
   /* inputs card */
   .inputs-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:2rem;display:flex;flex-direction:column;}
-  .inputs-card h3{font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;color:var(--white);margin-bottom:1.4rem;letter-spacing:-.01em}
+  .inputs-card h3{font-family:var(--font-body);font-weight:700;font-size:1rem;color:var(--white);margin-bottom:1.4rem;letter-spacing:-.01em}
   .field{margin-bottom:1.1rem}
-  .field label{display:block;font-family:'Fira Code',monospace;font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem}
+  .field label{display:block;font-family:var(--font-body);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem}
   .field-wrap{position:relative}
-  .field-prefix{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);font-family:'Fira Code',monospace;font-size:.85rem;color:var(--teal);pointer-events:none}
-  .field input,.field select{width:100%;background:rgba(18,14,78,0.8);border:1px solid var(--border);border-radius:8px;padding:.7rem 1rem .7rem 2.2rem;color:var(--white);font-family:'Fira Code',monospace;font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s;-moz-appearance:textfield}
+  .field-prefix{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);font-family:var(--font-body);font-size:.85rem;color:var(--teal);pointer-events:none}
+  .field input,.field select{width:100%;background:rgba(246,244,238,0.92);border:1px solid var(--border);border-radius:8px;padding:.7rem 1rem .7rem 2.2rem;color:var(--white);font-family:var(--font-body);font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s;-moz-appearance:textfield}
   .field input::-webkit-outer-spin-button,.field input::-webkit-inner-spin-button{-webkit-appearance:none}
-  .field input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(107,191,181,.12)}
+  .field input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(79,140,132,.12)}
   .field input.no-prefix{padding-left:1rem}
 
   .slider-wrap{margin-top:.4rem}
-  input[type=range]{width:100%;-webkit-appearance:none;height:4px;border-radius:2px;background:rgba(107,191,181,.2);outline:none;cursor:pointer}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 3px rgba(107,191,181,.2);cursor:pointer}
-  .slider-labels{display:flex;justify-content:space-between;font-family:'Fira Code',monospace;font-size:.62rem;color:var(--muted);margin-top:.3rem}
+  input[type=range]{width:100%;-webkit-appearance:none;height:4px;border-radius:2px;background:rgba(79,140,132,.2);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 3px rgba(79,140,132,.2);cursor:pointer}
+  .slider-labels{display:flex;justify-content:space-between;font-family:var(--font-body);font-size:.62rem;color:var(--muted);margin-top:.3rem}
 
   /* results card */
-  .results-card{background:var(--card);border:1px solid var(--teal-border);border-radius:14px;padding:2rem;box-shadow:0 0 40px rgba(107,191,181,.07);display:flex;flex-direction:column;}
-  .results-card h3{font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;color:var(--white);margin-bottom:1.4rem}
+  .results-card{background:var(--card);border:1px solid var(--teal-border);border-radius:14px;padding:2rem;box-shadow:0 0 40px rgba(79,140,132,.07);display:flex;flex-direction:column;}
+  .results-card h3{font-family:var(--font-body);font-weight:700;font-size:1rem;color:var(--white);margin-bottom:1.4rem}
 
-  .result-main{text-align:center;padding:1.5rem;background:rgba(107,191,181,.06);border:1px solid var(--teal-border);border-radius:10px;margin-bottom:1.5rem}
-  .result-main-label{font-family:'Fira Code',monospace;font-size:.68rem;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem}
-  .result-main-value{font-family:'Outfit',sans-serif;font-weight:900;font-size:clamp(1.8rem,3.5vw,2.8rem);color:var(--white);letter-spacing:-.03em;line-height:1}
+  .result-main{text-align:center;padding:1.5rem;background:rgba(79,140,132,.06);border:1px solid var(--teal-border);border-radius:10px;margin-bottom:1.5rem}
+  .result-main-label{font-family:var(--font-body);font-size:.68rem;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem}
+  .result-main-value{font-family:var(--font-body);font-weight:900;font-size:clamp(1.8rem,3.5vw,2.8rem);color:var(--white);letter-spacing:-.03em;line-height:1}
   .result-main-sub{font-size:.8rem;color:var(--muted);margin-top:.3rem}
 
   .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
-  .result-item{background:rgba(18,14,78,.6);border:1px solid var(--border);border-radius:8px;padding:1rem}
-  .result-item-label{font-family:'Fira Code',monospace;font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem}
-  .result-item-value{font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(.9rem,1.5vw,1.1rem);color:var(--white)}
+  .result-item{background:#F6F4EE;border:1px solid var(--border);border-radius:8px;padding:1rem}
+  .result-item-label{font-family:var(--font-body);font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem}
+  .result-item-value{font-family:var(--font-body);font-weight:800;font-size:clamp(.9rem,1.5vw,1.1rem);color:var(--white)}
   .result-item-value.green{color:var(--green)}
   .result-item-value.amber{color:var(--amber)}
 
   /* progress bar */
   .fire-progress{margin-top:auto;padding-top:1rem}
-  .fire-progress-label{display:flex;justify-content:space-between;font-family:'Fira Code',monospace;font-size:.68rem;color:var(--muted);margin-bottom:.4rem}
-  .fire-bar{height:8px;background:rgba(107,191,181,.15);border-radius:4px;overflow:hidden}
+  .fire-progress-label{display:flex;justify-content:space-between;font-family:var(--font-body);font-size:.68rem;color:var(--muted);margin-bottom:.4rem}
+  .fire-bar{height:8px;background:rgba(79,140,132,.15);border-radius:4px;overflow:hidden}
   .fire-bar-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-light));border-radius:4px;transition:width .6s ease}
 
   /* explainer */
   .explainer{margin-top:2rem;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:2rem}
-  .explainer h3{font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;color:var(--white);margin-bottom:1rem}
+  .explainer h3{font-family:var(--font-body);font-weight:700;font-size:1rem;color:var(--white);margin-bottom:1rem}
   .explainer p{font-size:.9rem;color:var(--muted);line-height:1.75;margin-bottom:.8rem}
   .explainer p:last-child{margin-bottom:0}
   .highlight{color:var(--teal);font-weight:600}
@@ -97,7 +91,7 @@
     padding: 1.1rem 1.6rem; cursor: pointer; user-select: none;
     transition: background .2s;
   }
-  .fire-acc-toggle:hover { background: rgba(107,191,181,.05); }
+  .fire-acc-toggle:hover { background: rgba(79,140,132,.05); }
   .fire-acc-left { display: flex; align-items: center; gap: .75rem; }
   .fire-acc-icon {
     width: 32px; height: 32px; border-radius: 8px;
@@ -106,12 +100,12 @@
     color: var(--teal); flex-shrink: 0;
   }
   .fire-acc-toggle h3 {
-    font-family: 'Outfit', sans-serif; font-weight: 700;
+    font-family: var(--font-body); font-weight: 700;
     font-size: .95rem; color: var(--white); margin: 0;
   }
   .fire-acc-toggle p {
     font-size: .75rem; color: var(--muted);
-    font-family: 'Fira Code', monospace; margin: .1rem 0 0;
+    font-family: var(--font-body); margin: .1rem 0 0;
   }
   .fire-acc-chevron { color: var(--teal); transition: transform .3s; flex-shrink: 0; }
   .fire-accordion.open .fire-acc-chevron { transform: rotate(180deg); }
@@ -134,6 +128,17 @@
   /* ─── PREVENT SCROLL ON INPUT FOCUS (mobile) ─── */
   input[type=number]:focus { font-size: 16px; } /* prevents iOS zoom which causes scroll */
   input[type=range] { touch-action: none; }     /* prevents page scroll while dragging */
+
+  /* ─── identidade HZ: títulos na serifada da marca ─── */
+  h1, h2, h3, h4,
+  .section-title, .hero h1, .hero-title, .nav-logo, .footer-logo, .brand,
+  .stat-num, .stat-value, .big-num, .result-val, .sim-result-val,
+  .price-tag .val, .cover-title, .modal-box h3 {
+    font-family: var(--font-display) !important;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+  .nav-logo, .footer-logo, .brand { font-weight: 600; }
 </style>
 </head>
 <body>
@@ -291,7 +296,7 @@
   <div class="explainer" id="chartSection" style="margin-top:2rem;">
     <h3 style="margin-bottom:1.2rem;">Projeção patrimonial ano a ano</h3>
     <canvas id="fireChart" style="width:100%;max-height:280px;"></canvas>
-    <p style="font-size:.75rem;color:var(--muted);margin-top:.8rem;font-family:'Fira Code',monospace;">
+    <p style="font-size:.75rem;color:var(--muted);margin-top:.8rem;font-family:var(--font-body);">
       Linha teal = patrimônio acumulado · Linha pontilhada = meta FIRE
     </p>
   </div>
@@ -329,12 +334,12 @@ function drawChart() {
   const xStep  = cW / (chartData.labels.length - 1);
 
   // Grid lines
-  ctx.strokeStyle = 'rgba(107,191,181,0.1)';
+  ctx.strokeStyle = 'rgba(79,140,132,0.1)';
   ctx.lineWidth = 1;
   for (let i = 0; i <= 4; i++) {
     const y = PAD.top + cH - (i/4) * cH;
     ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(PAD.left + cW, y); ctx.stroke();
-    ctx.fillStyle = 'rgba(196,193,230,0.4)';
+    ctx.fillStyle = 'var(--muted)';
     ctx.font = '10px Fira Code, monospace';
     ctx.textAlign = 'right';
     const v = (maxVal * i / 4);
@@ -343,7 +348,7 @@ function drawChart() {
 
   // Goal line (dashed)
   const goalY = PAD.top + cH - (chartData.goal[0] / maxVal) * cH;
-  ctx.strokeStyle = 'rgba(251,191,36,0.5)';
+  ctx.strokeStyle = 'rgba(196,138,62,0.5)';
   ctx.lineWidth = 1.5;
   ctx.setLineDash([6, 4]);
   ctx.beginPath(); ctx.moveTo(PAD.left, goalY); ctx.lineTo(PAD.left + cW, goalY); ctx.stroke();
@@ -360,13 +365,13 @@ function drawChart() {
   ctx.lineTo(PAD.left, PAD.top+cH);
   ctx.closePath();
   const grad = ctx.createLinearGradient(0, PAD.top, 0, PAD.top+cH);
-  grad.addColorStop(0, 'rgba(107,191,181,0.25)');
-  grad.addColorStop(1, 'rgba(107,191,181,0.02)');
+  grad.addColorStop(0, 'rgba(79,140,132,0.25)');
+  grad.addColorStop(1, 'rgba(79,140,132,0.02)');
   ctx.fillStyle = grad;
   ctx.fill();
 
   // Patrimony line
-  ctx.strokeStyle = '#6bbfb5';
+  ctx.strokeStyle = '#4F8C84';
   ctx.lineWidth = 2.5;
   ctx.lineJoin = 'round';
   ctx.beginPath();
@@ -378,7 +383,7 @@ function drawChart() {
   ctx.stroke();
 
   // X labels
-  ctx.fillStyle = 'rgba(196,193,230,0.4)';
+  ctx.fillStyle = 'var(--muted)';
   ctx.font = '10px Fira Code, monospace';
   ctx.textAlign = 'center';
   const step = Math.ceil(chartData.labels.length / 8);

@@ -6,26 +6,10 @@
 <title>HZ Invest — Educação Financeira e Consultoria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hz-design.css">
 
 <style>
-  :root {
-    /* HZ Invest Brand Colors — extracted from logo */
-    --navy:       #1a1464;   /* deep logo blue */
-    --navy-dark:  #120e4e;   /* darker navy for depth */
-    --navy-mid:   #1e1875;   /* mid navy for cards */
-    --navy-light: #252098;   /* lighter navy for hover states */
-    --teal:       #6bbfb5;   /* logo mountain/icon teal */
-    --teal-light: #8dd4cb;   /* lighter teal for highlights */
-    --teal-dim:   rgba(107,191,181,0.14);
-    --teal-border:rgba(107,191,181,0.25);
-    --white:      #f4f2ff;   /* soft white with navy tint */
-    --white-pure: #ffffff;
-    --muted:      rgba(196,193,230,0.55);
-    --text:       rgba(220,218,245,0.85);
-    --border:     rgba(107,191,181,0.12);
-    --green:      #4ade80;
-  }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -33,7 +17,7 @@
   body {
     background: var(--navy-dark);
     color: var(--text);
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 18px;
     line-height: 1.65;
     overflow-x: hidden;
@@ -45,9 +29,9 @@
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(107,191,181,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 60% at 80% 90%, rgba(107,191,181,0.05) 0%, transparent 60%),
-      radial-gradient(ellipse 80% 80% at 50% 50%, rgba(26,20,100,0.9) 0%, transparent 100%);
+      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(79,140,132,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 80% 90%, rgba(79,140,132,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 80% 80% at 50% 50%, #FBFAF6 0%, transparent 100%);
     pointer-events: none;
     z-index: 0;
   }
@@ -57,7 +41,7 @@
     content: '';
     position: fixed;
     inset: 0;
-    background-image: radial-gradient(circle, rgba(107,191,181,0.18) 1px, transparent 1px);
+    background-image: radial-gradient(circle, rgba(79,140,132,0.18) 1px, transparent 1px);
     background-size: 40px 40px;
     mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 0%, transparent 80%);
     pointer-events: none;
@@ -75,7 +59,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(18,14,78,0.88);
+    background: rgba(246,244,238,0.92);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
     transition: transform 0.3s ease;
@@ -85,7 +69,7 @@
   .ticker-bar.ticker-hidden { transform: translateY(-116px); }
 
   .nav-logo {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-weight: 900;
     font-size: 1.35rem;
     color: var(--white-pure);
@@ -155,7 +139,7 @@
     display: none;
     position: fixed;
     top: 70px; left: 0; right: 0;
-    background: rgba(18,14,78,0.98);
+    background: #F6F4EE;
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
     z-index: 99;
@@ -204,8 +188,8 @@
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgba(107,191,181,0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(107,191,181,0.08) 1px, transparent 1px);
+      linear-gradient(rgba(79,140,132,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,140,132,0.08) 1px, transparent 1px);
     background-size: 80px 80px;
     mask-image: radial-gradient(ellipse 70% 60% at 30% 50%, black 20%, transparent 80%);
   }
@@ -216,7 +200,7 @@
     right: -5%;
     width: 700px;
     height: 700px;
-    background: radial-gradient(circle, rgba(107,191,181,0.12) 0%, transparent 65%);
+    background: radial-gradient(circle, rgba(79,140,132,0.12) 0%, transparent 65%);
     pointer-events: none;
   }
 
@@ -234,7 +218,7 @@
     border: 1px solid var(--teal-border);
     color: var(--teal-light);
     font-size: 0.72rem;
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
     font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -252,12 +236,12 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(74,222,128,0.4); }
-    50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(74,222,128,0); }
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(79,140,132,0.4); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(79,140,132,0); }
   }
 
   h1 {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: clamp(2.8rem, 6vw, 5rem);
     font-weight: 900;
     line-height: 1.0;
@@ -293,7 +277,7 @@
     gap: 0.5rem;
     background: var(--teal);
     color: var(--navy-dark);
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-weight: 700;
     font-size: 0.9rem;
     letter-spacing: 0.01em;
@@ -301,12 +285,12 @@
     border-radius: 6px;
     text-decoration: none;
     transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-    box-shadow: 0 4px 20px rgba(107,191,181,0.25);
+    box-shadow: 0 4px 20px rgba(79,140,132,0.25);
   }
   .btn-primary:hover {
     background: var(--teal-light);
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(107,191,181,0.35);
+    box-shadow: 0 8px 30px rgba(79,140,132,0.35);
   }
 
   .btn-secondary {
@@ -315,7 +299,7 @@
     gap: 0.5rem;
     background: transparent;
     color: var(--white);
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-weight: 600;
     font-size: 0.9rem;
     padding: 0.85rem 1.8rem;
@@ -342,7 +326,7 @@
     z-index: 1;
   }
   .section-label {
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
     font-size: 0.7rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -351,7 +335,7 @@
     opacity: 0.9;
   }
   .section-title {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: clamp(1.8rem, 3.5vw, 2.8rem);
     font-weight: 800;
     color: var(--white-pure);
@@ -368,7 +352,7 @@
   }
 
   /* ─── WHAT WE OFFER ─── */
-  #oferta { background: rgba(14,10,60,0.7); }
+  #oferta { background: #F1EEE6; }
 
   .offer-grid {
     display: grid;
@@ -385,7 +369,7 @@
     .offer-card { padding: 1.6rem; }
   }
   .offer-card {
-    background: rgba(26,20,100,0.6);
+    background: #FBFAF6;
     padding: 2.2rem;
     transition: background 0.25s;
     position: relative;
@@ -399,7 +383,7 @@
     gap: 0.3rem;
     margin-top: 1.4rem;
     font-size: 0.8rem;
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
     color: var(--teal);
     letter-spacing: 0.04em;
     opacity: 0;
@@ -420,7 +404,7 @@
     transform-origin: left;
     transition: transform 0.3s ease;
   }
-  .offer-card:hover { background: rgba(30,24,117,0.9); }
+  .offer-card:hover { background: #F1EEE6; }
   .offer-card:hover::after { transform: scaleX(1); }
   .offer-icon {
     width: 48px;
@@ -436,11 +420,11 @@
     transition: background 0.25s, border-color 0.25s;
   }
   .offer-card:hover .offer-icon {
-    background: rgba(107,191,181,0.22);
-    border-color: rgba(107,191,181,0.45);
+    background: rgba(79,140,132,0.22);
+    border-color: rgba(79,140,132,0.45);
   }
   .offer-card h3 {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 1.05rem;
     font-weight: 700;
     color: var(--white-pure);
@@ -455,7 +439,7 @@
     display: inline-block;
     margin-top: 1.2rem;
     font-size: 0.68rem;
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--teal);
@@ -474,7 +458,7 @@
     margin-top: 3.5rem;
   }
   .team-card {
-    background: rgba(26,20,100,0.5);
+    background: #FBFAF6;
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 2rem 1.8rem;
@@ -487,7 +471,7 @@
   .team-card:hover {
     border-color: var(--teal-border);
     transform: translateY(-5px);
-    box-shadow: 0 20px 48px rgba(107,191,181,0.12);
+    box-shadow: 0 20px 48px rgba(79,140,132,0.12);
   }
   .team-img-wrap {
     width: 160px;
@@ -495,14 +479,14 @@
     border-radius: 50%;
     overflow: hidden;
     border: 3px solid var(--teal-border);
-    box-shadow: 0 0 0 6px rgba(107,191,181,0.07);
+    box-shadow: 0 0 0 6px rgba(79,140,132,0.07);
     margin-bottom: 1.4rem;
     flex-shrink: 0;
     transition: border-color 0.25s, box-shadow 0.25s;
   }
   .team-card:hover .team-img-wrap {
     border-color: var(--teal);
-    box-shadow: 0 0 0 6px rgba(107,191,181,0.14), 0 0 24px rgba(107,191,181,0.2);
+    box-shadow: 0 0 0 6px rgba(79,140,132,0.14), 0 0 24px rgba(79,140,132,0.2);
   }
   .team-img {
     width: 100%;
@@ -519,7 +503,7 @@
   }
   .team-info { text-align: center; }
   .team-info h3 {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 1.05rem;
     font-weight: 700;
     color: var(--white-pure);
@@ -528,7 +512,7 @@
   .team-role {
     font-size: 0.72rem;
     color: var(--teal);
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
     letter-spacing: 0.04em;
     margin-bottom: 0.9rem;
     display: inline-block;
@@ -544,7 +528,7 @@
   }
 
   /* ─── CONSULTORIA ─── */
-  #consultoria { background: rgba(14,10,60,0.7); }
+  #consultoria { background: #F1EEE6; }
 
   .consult-layout {
     display: grid;
@@ -583,14 +567,14 @@
   }
 
   .consult-box {
-    background: rgba(26,20,100,0.7);
+    background: #FBFAF6;
     border: 1px solid var(--teal-border);
     border-radius: 12px;
     padding: 2.5rem;
-    box-shadow: 0 0 40px rgba(107,191,181,0.06);
+    box-shadow: 0 0 40px rgba(79,140,132,0.06);
   }
   .consult-box h3 {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 1.4rem;
     font-weight: 800;
     color: var(--white-pure);
@@ -610,23 +594,23 @@
     margin-bottom: 0.4rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
   }
   .form-group input, .form-group select, .form-group textarea {
     width: 100%;
-    background: rgba(18,14,78,0.8);
+    background: rgba(246,244,238,0.92);
     border: 1px solid var(--border);
     border-radius: 6px;
     padding: 0.75rem 1rem;
     color: var(--white);
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.9rem;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
   .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
     border-color: var(--teal);
-    box-shadow: 0 0 0 3px rgba(107,191,181,0.1);
+    box-shadow: 0 0 0 3px rgba(79,140,132,0.1);
   }
   .form-group select option { background: var(--navy-dark); color: var(--white); }
   .form-group textarea { resize: vertical; min-height: 90px; }
@@ -635,14 +619,14 @@
   #ferramentas { background: var(--navy-dark); }
 
   .simulator {
-    background: rgba(26,20,100,0.55);
+    background: #FBFAF6;
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 2.5rem;
     margin-top: 2rem;
   }
   .sim-title {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--white-pure);
@@ -657,7 +641,7 @@
   .sim-field label {
     display: block;
     font-size: 0.7rem;
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.07em;
@@ -665,19 +649,19 @@
   }
   .sim-field input {
     width: 100%;
-    background: rgba(18,14,78,0.8);
+    background: rgba(246,244,238,0.92);
     border: 1px solid var(--border);
     border-radius: 6px;
     padding: 0.6rem 0.85rem;
     color: var(--white);
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
     font-size: 0.95rem;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
   .sim-field input:focus {
     border-color: var(--teal);
-    box-shadow: 0 0 0 3px rgba(107,191,181,0.1);
+    box-shadow: 0 0 0 3px rgba(79,140,132,0.1);
   }
   .sim-result {
     display: flex;
@@ -689,14 +673,14 @@
   .sim-result-item { flex: 1; min-width: 130px; }
   .sim-result-label {
     font-size: 0.7rem;
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.07em;
     margin-bottom: 0.35rem;
   }
   .sim-result-val {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 1.5rem;
     font-weight: 800;
     color: var(--teal-light);
@@ -710,7 +694,7 @@
     margin-top: 1.5rem;
   }
   .tool-card {
-    background: rgba(26,20,100,0.55);
+    background: #FBFAF6;
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 2rem;
@@ -730,7 +714,7 @@
   .tool-card:hover { border-color: var(--teal-border); transform: translateY(-2px); }
   .tool-card:hover::before { opacity: 1; }
   .tool-card h3 {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 1rem;
     font-weight: 700;
     color: var(--white-pure);
@@ -744,12 +728,12 @@
   }
   .tool-badge {
     font-size: 0.68rem;
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    background: rgba(74,222,128,0.1);
-    color: var(--green);
-    border: 1px solid rgba(74,222,128,0.2);
+    background: rgba(79,140,132,0.1);
+    color: var(--sage-deep);
+    border: 1px solid rgba(79,140,132,0.2);
     padding: 0.2rem 0.55rem;
     border-radius: 3px;
   }
@@ -760,7 +744,7 @@
   }
 
   /* ─── TESTIMONIALS ─── */
-  #depoimentos { background: rgba(14,10,60,0.7); }
+  #depoimentos { background: #F1EEE6; }
 
   .testi-grid {
     display: grid;
@@ -769,7 +753,7 @@
     margin-top: 3.5rem;
   }
   .testi-card {
-    background: rgba(26,20,100,0.6);
+    background: #FBFAF6;
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 2rem;
@@ -781,7 +765,7 @@
     position: absolute;
     top: 1.2rem;
     right: 1.5rem;
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 4rem;
     font-weight: 900;
     color: var(--teal);
@@ -813,14 +797,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-weight: 800;
     font-size: 0.8rem;
     color: var(--teal-light);
     flex-shrink: 0;
   }
   .testi-name {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.85rem;
     font-weight: 700;
     color: var(--white-pure);
@@ -839,11 +823,11 @@
   .cta-box {
     max-width: 600px;
     margin: 0 auto;
-    background: rgba(26,20,100,0.6);
+    background: #FBFAF6;
     border: 1px solid var(--teal-border);
     border-radius: 16px;
     padding: 4rem 3rem;
-    box-shadow: 0 0 60px rgba(107,191,181,0.08);
+    box-shadow: 0 0 60px rgba(79,140,132,0.08);
     position: relative;
     overflow: hidden;
   }
@@ -851,7 +835,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(107,191,181,0.08), transparent);
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(79,140,132,0.08), transparent);
     pointer-events: none;
   }
   .cta-box p {
@@ -865,7 +849,7 @@
   .cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
 
   /* ─── NEWSLETTER ─── */
-  #newsletter { background: rgba(14,10,60,0.7); }
+  #newsletter { background: #F1EEE6; }
   .newsletter-inner {
     display: flex;
     gap: 4rem;
@@ -877,19 +861,19 @@
   .email-form input {
     flex: 1;
     min-width: 220px;
-    background: rgba(18,14,78,0.8);
+    background: rgba(246,244,238,0.92);
     border: 1px solid var(--border);
     border-radius: 6px;
     padding: 0.75rem 1.1rem;
     color: var(--white);
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.9rem;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
   .email-form input:focus {
     border-color: var(--teal);
-    box-shadow: 0 0 0 3px rgba(107,191,181,0.1);
+    box-shadow: 0 0 0 3px rgba(79,140,132,0.1);
   }
   .email-form input::placeholder { color: var(--muted); }
 
@@ -905,7 +889,7 @@
     gap: 1.5rem;
   }
   .footer-logo {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-weight: 900;
     font-size: 1.1rem;
     color: var(--white-pure);
@@ -961,21 +945,21 @@
     position: fixed;
     inset: 0;
     z-index: 200;
-    background: rgba(10, 7, 50, 0.82);
+    background: rgba(246,244,238,0.95);
     backdrop-filter: blur(8px);
     align-items: center;
     justify-content: center;
   }
   .modal-overlay.active { display: flex; }
   .modal-box {
-    background: rgba(26, 20, 100, 0.95);
+    background: #FBFAF6;
     border: 1px solid var(--teal-border);
     border-radius: 16px;
     padding: 3rem 2.5rem;
     max-width: 440px;
     width: 90%;
     text-align: center;
-    box-shadow: 0 0 60px rgba(107,191,181,0.15);
+    box-shadow: 0 0 60px rgba(79,140,132,0.15);
     animation: modalIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
   }
   @keyframes modalIn {
@@ -993,7 +977,7 @@
     margin: 0 auto 1.5rem;
   }
   .modal-box h3 {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-size: 1.5rem;
     font-weight: 800;
     color: var(--white-pure);
@@ -1012,7 +996,7 @@
     border: none;
     border-radius: 6px;
     padding: 0.75rem 2rem;
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     font-weight: 700;
     font-size: 0.95rem;
     cursor: pointer;
@@ -1025,7 +1009,7 @@
   .nav-user-name { font-size:0.85rem; color:var(--teal-light); font-weight:600; }
   .nav-signout {
     background:transparent; border:1px solid var(--teal-border);
-    color:var(--muted); font-family:'Fira Code',monospace; font-size:0.7rem;
+    color:var(--muted); font-family:var(--font-body); font-size:0.7rem;
     padding:0.25rem 0.7rem; border-radius:4px; cursor:pointer;
     transition:all 0.2s; letter-spacing:0.04em;
   }
@@ -1034,7 +1018,7 @@
     background: transparent;
     border: 1px solid var(--teal-border);
     color: var(--teal);
-    font-family:'Outfit',sans-serif; font-weight:600; font-size:0.82rem;
+    font-family:var(--font-body); font-weight:600; font-size:0.82rem;
     padding:0.4rem 1rem; border-radius:6px; text-decoration:none;
     transition: all 0.2s;
   }
@@ -1056,7 +1040,7 @@
     top: 70px; left: 0; right: 0;
     z-index: 99;
     height: 46px;
-    background: #0a0732;
+    background: #F1EEE6;
     border-bottom: 1px solid var(--border);
     overflow: hidden;
   }
@@ -1070,7 +1054,7 @@
     gap: 0.5rem;
     padding: 0 1.8rem;
     border-right: 1px solid var(--border);
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-body);
     font-size: 0.72rem;
     letter-spacing: 0.02em;
     color: var(--muted);
@@ -1078,7 +1062,7 @@
   .ticker-name { color: var(--white-pure); font-weight: 500; }
   .ticker-price { color: var(--text); }
   .ticker-change.up   { color: var(--green); }
-  .ticker-change.down { color: #f87171; }
+  .ticker-change.down { color: #B34747; }
   .ticker-arrow { font-size: 0.6rem; }
 
   /* push hero down to account for ticker */
@@ -1088,15 +1072,26 @@
   .nav-minha-area {
     display: inline-flex; align-items: center; gap: 0.4rem;
     background: var(--teal-dim); border: 1px solid var(--teal-border);
-    color: var(--teal-light); font-family: 'Outfit', sans-serif;
+    color: var(--teal-light); font-family: var(--font-body);
     font-weight: 600; font-size: 0.82rem;
     padding: 0.4rem 0.9rem; border-radius: 6px; text-decoration: none;
     transition: all 0.2s;
   }
   .nav-minha-area:hover {
-    background: rgba(107,191,181,0.22); border-color: var(--teal);
+    background: rgba(79,140,132,0.22); border-color: var(--teal);
     color: var(--white-pure);
   }
+
+  /* ─── identidade HZ: títulos na serifada da marca ─── */
+  h1, h2, h3, h4,
+  .section-title, .hero h1, .hero-title, .nav-logo, .footer-logo, .brand,
+  .stat-num, .stat-value, .big-num, .result-val, .sim-result-val,
+  .price-tag .val, .cover-title, .modal-box h3 {
+    font-family: var(--font-display) !important;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+  .nav-logo, .footer-logo, .brand { font-weight: 600; }
 </style>
 </head>
 <body>
@@ -1126,7 +1121,7 @@
       "showSymbolLogo": false,
       "isTransparent": true,
       "displayMode": "adaptive",
-      "colorTheme": "dark",
+      "colorTheme": "light",
       "locale": "br"
     }
     </script>
@@ -1258,7 +1253,7 @@
 </section>
 
 <!-- CURSOS -->
-<section id="cursos" style="background: rgba(14,10,60,0.7);">
+<section id="cursos" style="background: #F1EEE6;">
   <div class="reveal">
     <div class="section-label">// cursos</div>
     <div class="teal-line"></div>
@@ -1271,38 +1266,38 @@
     <div style="background:rgba(14,80,74,0.25); border:1px solid var(--teal-border); border-radius:12px; overflow:hidden; display:flex; flex-direction:column;">
       <div style="height:120px; background:linear-gradient(135deg,rgba(14,80,74,0.9),rgba(26,100,94,0.8)); display:flex; align-items:center; justify-content:center; font-size:2.8rem;">💰</div>
       <div style="padding:1.4rem; flex:1; display:flex; flex-direction:column;">
-        <div style="font-family:'Fira Code',monospace; font-size:0.65rem; color:var(--teal); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Iniciante · Gratuito</div>
-        <div style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1rem; color:var(--white-pure); margin-bottom:0.5rem; line-height:1.3;">Dinheiro 101: Como Organizar Sua Vida Financeira</div>
+        <div style="font-family:var(--font-body); font-size:0.65rem; color:var(--teal); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Iniciante · Gratuito</div>
+        <div style="font-family:var(--font-body); font-weight:700; font-size:1rem; color:var(--white-pure); margin-bottom:0.5rem; line-height:1.3;">Dinheiro 101: Como Organizar Sua Vida Financeira</div>
         <div style="font-size:0.85rem; color:var(--muted); flex:1; margin-bottom:1.2rem; line-height:1.6;">Orçamento, reserva de emergência e primeiros passos — do zero.</div>
         <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:0.9rem;">
-          <span style="font-family:'Outfit',sans-serif; font-weight:800; color:var(--green);">Grátis</span>
-          <a href="dinheiro101.html" style="font-family:'Outfit',sans-serif; font-size:0.8rem; font-weight:600; color:var(--muted); text-decoration:none; border:1px solid var(--border); padding:0.4rem 0.9rem; border-radius:6px; opacity:0.6; cursor:default;">Em breve</a>
+          <span style="font-family:var(--font-body); font-weight:800; color:var(--green);">Grátis</span>
+          <a href="dinheiro101.html" style="font-family:var(--font-body); font-size:0.8rem; font-weight:600; color:var(--muted); text-decoration:none; border:1px solid var(--border); padding:0.4rem 0.9rem; border-radius:6px; opacity:0.6; cursor:default;">Em breve</a>
         </div>
       </div>
     </div>
 
-    <div style="background:rgba(26,20,100,0.5); border:1px solid var(--border); border-radius:12px; overflow:hidden; display:flex; flex-direction:column;">
-      <div style="height:120px; background:linear-gradient(135deg,rgba(26,20,100,0.9),rgba(37,32,152,0.8)); display:flex; align-items:center; justify-content:center; font-size:2.8rem;">📈</div>
+    <div style="background:#FBFAF6; border:1px solid var(--border); border-radius:12px; overflow:hidden; display:flex; flex-direction:column;">
+      <div style="height:120px; background:linear-gradient(135deg,#FBFAF6,#F1EEE6); display:flex; align-items:center; justify-content:center; font-size:2.8rem;">📈</div>
       <div style="padding:1.4rem; flex:1; display:flex; flex-direction:column;">
-        <div style="font-family:'Fira Code',monospace; font-size:0.65rem; color:var(--teal); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Iniciante · Gratuito</div>
-        <div style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1rem; color:var(--white-pure); margin-bottom:0.5rem; line-height:1.3;">Meu Primeiro Investimento: Renda Fixa sem Medo</div>
+        <div style="font-family:var(--font-body); font-size:0.65rem; color:var(--teal); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Iniciante · Gratuito</div>
+        <div style="font-family:var(--font-body); font-weight:700; font-size:1rem; color:var(--white-pure); margin-bottom:0.5rem; line-height:1.3;">Meu Primeiro Investimento: Renda Fixa sem Medo</div>
         <div style="font-size:0.85rem; color:var(--muted); flex:1; margin-bottom:1.2rem; line-height:1.6;">CDB, Tesouro Direto, LCI e LCA — sem complicação.</div>
         <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:0.9rem;">
-          <span style="font-family:'Outfit',sans-serif; font-weight:800; color:var(--green);">Grátis</span>
-          <a href="rendafixa.html" style="font-family:'Outfit',sans-serif; font-size:0.8rem; font-weight:600; color:var(--muted); text-decoration:none; border:1px solid var(--border); padding:0.4rem 0.9rem; border-radius:6px; opacity:0.6; cursor:default;">Em breve</a>
+          <span style="font-family:var(--font-body); font-weight:800; color:var(--green);">Grátis</span>
+          <a href="rendafixa.html" style="font-family:var(--font-body); font-size:0.8rem; font-weight:600; color:var(--muted); text-decoration:none; border:1px solid var(--border); padding:0.4rem 0.9rem; border-radius:6px; opacity:0.6; cursor:default;">Em breve</a>
         </div>
       </div>
     </div>
 
-    <div style="background:rgba(26,20,100,0.5); border:1px solid var(--border); border-radius:12px; overflow:hidden; display:flex; flex-direction:column;">
+    <div style="background:#FBFAF6; border:1px solid var(--border); border-radius:12px; overflow:hidden; display:flex; flex-direction:column;">
       <div style="height:120px; background:linear-gradient(135deg,rgba(60,20,100,0.9),rgba(80,30,130,0.8)); display:flex; align-items:center; justify-content:center; font-size:2.8rem;">🎯</div>
       <div style="padding:1.4rem; flex:1; display:flex; flex-direction:column;">
-        <div style="font-family:'Fira Code',monospace; font-size:0.65rem; color:var(--teal); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Iniciante · Gratuito</div>
-        <div style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1rem; color:var(--white-pure); margin-bottom:0.5rem; line-height:1.3;">Sair do Vermelho: Entenda e Elimine Suas Dívidas</div>
+        <div style="font-family:var(--font-body); font-size:0.65rem; color:var(--teal); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Iniciante · Gratuito</div>
+        <div style="font-family:var(--font-body); font-weight:700; font-size:1rem; color:var(--white-pure); margin-bottom:0.5rem; line-height:1.3;">Sair do Vermelho: Entenda e Elimine Suas Dívidas</div>
         <div style="font-size:0.85rem; color:var(--muted); flex:1; margin-bottom:1.2rem; line-height:1.6;">Dívida no cartão, cheque especial, nome sujo — diagnóstico e plano.</div>
         <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:0.9rem;">
-          <span style="font-family:'Outfit',sans-serif; font-weight:800; color:var(--green);">Grátis</span>
-          <a href="sairdovermelho.html" style="font-family:'Outfit',sans-serif; font-size:0.8rem; font-weight:600; color:var(--muted); text-decoration:none; border:1px solid var(--border); padding:0.4rem 0.9rem; border-radius:6px; opacity:0.6; cursor:default;">Em breve</a>
+          <span style="font-family:var(--font-body); font-weight:800; color:var(--green);">Grátis</span>
+          <a href="sairdovermelho.html" style="font-family:var(--font-body); font-size:0.8rem; font-weight:600; color:var(--muted); text-decoration:none; border:1px solid var(--border); padding:0.4rem 0.9rem; border-radius:6px; opacity:0.6; cursor:default;">Em breve</a>
         </div>
       </div>
     </div>
@@ -1310,7 +1305,7 @@
   </div>
 
   <div class="reveal" style="text-align:center; margin-top:2.5rem;">
-    <span style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(26,20,100,0.4); color:var(--muted); font-family:'Outfit',sans-serif; font-weight:700; font-size:0.95rem; padding:0.85rem 2rem; border-radius:8px; border:1px solid var(--border); cursor:default;">
+    <span style="display:inline-flex; align-items:center; gap:0.5rem; background:#FBFAF6; color:var(--muted); font-family:var(--font-body); font-weight:700; font-size:0.95rem; padding:0.85rem 2rem; border-radius:8px; border:1px solid var(--border); cursor:default;">
       Em breve — cursos disponíveis em breve
     </span>
   </div>
@@ -1593,7 +1588,7 @@
   <div class="modal-box">
     <div class="modal-icon">
       <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
-        <polyline points="4,12 9,17 20,6" stroke="#6bbfb5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="4,12 9,17 20,6" stroke="#4F8C84" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
     <h3>Mensagem enviada!</h3>
@@ -1747,7 +1742,7 @@ window.subscribeNewsletter = async function() {
 
   if (!email || !email.includes('@')) {
     msg.textContent = 'Por favor, insira um e-mail válido.';
-    msg.style.color = '#f87171';
+    msg.style.color = '#B34747';
     return;
   }
 
@@ -1763,15 +1758,15 @@ window.subscribeNewsletter = async function() {
     );
     input.value = '';
     btn.textContent = '✓ Inscrito!';
-    btn.style.background = '#4ade80';
-    btn.style.color = '#120e4e';
+    btn.style.background = '#4F8C84';
+    btn.style.color = '#F6F4EE';
     msg.textContent = 'Obrigado! Você receberá nosso resumo toda sexta-feira.';
-    msg.style.color = '#4ade80';
+    msg.style.color = '#4F8C84';
   } catch(e) {
     btn.disabled = false;
     btn.textContent = 'Quero receber →';
     msg.textContent = 'Erro ao inscrever. Tente novamente.';
-    msg.style.color = '#f87171';
+    msg.style.color = '#B34747';
   }
 };
 </script>
