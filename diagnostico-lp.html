@@ -532,6 +532,194 @@
   .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
   .reveal.visible { opacity: 1; transform: none; }
 
+  /* ─── GRUPOS DE ENTREGÁVEIS ─── */
+  .group { margin-top: 3.4rem; }
+  .deliver-grid.g4 { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 720px) { .deliver-grid.g4 { grid-template-columns: 1fr; } }
+  .group-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    margin-bottom: 1.6rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .group-step {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem;
+    color: var(--teal);
+    letter-spacing: 0.12em;
+    flex-shrink: 0;
+  }
+  .group-head h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--white-pure);
+    letter-spacing: -0.02em;
+  }
+
+  /* ─── PRÉVIA: TRECHO DO ARQUÉTIPO ─── */
+  .arch-sample {
+    margin-top: 1.6rem;
+    background: rgba(18,14,78,0.6);
+    border: 1px solid var(--teal-border);
+    border-radius: 10px;
+    padding: 1.6rem 1.7rem;
+  }
+  .arch-sample .tag {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.7rem;
+  }
+  .arch-sample .nome {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--white-pure);
+    margin-bottom: 0.8rem;
+  }
+  .arch-sample .quote {
+    font-size: 0.96rem;
+    line-height: 1.7;
+    color: var(--text);
+    font-weight: 300;
+    border-left: 2px solid var(--teal-border);
+    padding-left: 1rem;
+  }
+
+  /* ─── DEPOIMENTOS ─── */
+  #depoimentos { background: rgba(14,10,60,0.7); }
+  .depo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.4rem;
+    margin-top: 3rem;
+  }
+  .depo-card {
+    background: rgba(26,20,100,0.55);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.9rem 1.8rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .depo-card.exemplo { border-style: dashed; border-color: rgba(224,164,88,0.4); }
+  .depo-tag {
+    align-self: flex-start;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--amber);
+    border: 1px solid rgba(224,164,88,0.4);
+    border-radius: 4px;
+    padding: 0.15rem 0.45rem;
+    margin-bottom: 0.9rem;
+  }
+  .depo-quote {
+    font-size: 0.98rem;
+    line-height: 1.7;
+    color: var(--text);
+    font-weight: 300;
+    flex: 1;
+  }
+  .depo-autor { margin-top: 1.3rem; padding-top: 1.1rem; border-top: 1px solid var(--border); }
+  .depo-autor .nome { font-size: 0.92rem; font-weight: 600; color: var(--white-pure); }
+  .depo-autor .ctx { font-size: 0.82rem; color: var(--muted); }
+
+  /* ─── CUSTO DE NÃO SABER (ancoragem) ─── */
+  .anchor-box {
+    max-width: 620px;
+    margin: 0 auto;
+    text-align: center;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem 2.2rem;
+    background: rgba(26,20,100,0.4);
+  }
+  .anchor-box .lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--text);
+    font-weight: 300;
+  }
+  .anchor-box .num { color: var(--teal); font-weight: 700; }
+  .anchor-box .fine { display: block; margin-top: 1rem; font-size: 0.76rem; color: rgba(196,193,230,0.4); line-height: 1.6; }
+
+  /* ─── BÔNUS ─── */
+  .bonus-box {
+    position: relative;
+    max-width: 620px;
+    margin: 1.4rem auto 0;
+    background: rgba(107,191,181,0.09);
+    border: 1px solid var(--teal-border);
+    border-radius: 12px;
+    padding: 1.8rem 2rem;
+    text-align: left;
+  }
+  .bonus-tag {
+    display: inline-block;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--navy-dark);
+    background: var(--teal);
+    border-radius: 4px;
+    padding: 0.2rem 0.55rem;
+    margin-bottom: 0.9rem;
+  }
+  .bonus-box h3 { font-size: 1.15rem; font-weight: 700; color: var(--white-pure); margin-bottom: 0.6rem; }
+  .bonus-box p { font-size: 0.94rem; color: var(--text); font-weight: 300; line-height: 1.65; }
+
+  /* ─── FECHAMENTO PÓS-FAQ ─── */
+  .closing { text-align: center; padding-top: 80px; padding-bottom: 90px; }
+  .closing h2 { max-width: 640px; margin: 0 auto 1.2rem; }
+  .closing .section-sub { margin: 0 auto 2rem; }
+
+  /* ─── OFERTA / STICKY ─── */
+  .after-buy {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1.2rem;
+    max-width: 780px;
+    margin: 2.6rem auto 0;
+    position: relative;
+  }
+  .after-buy div {
+    background: rgba(26,20,100,0.5);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.1rem 1.2rem;
+    font-size: 0.86rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .after-buy strong { display: block; color: var(--white); font-weight: 600; margin-bottom: 0.25rem; font-size: 0.92rem; }
+
+  .sticky-cta {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 98;
+    background: rgba(18,14,78,0.96);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid var(--teal-border);
+    padding: 0.8rem 1rem;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+  }
+  .sticky-cta.on { transform: translateY(0); }
+  .sticky-cta .btn-primary { width: 100%; justify-content: center; padding: 0.95rem 1.5rem; }
+  @media (max-width: 860px) {
+    .sticky-cta { display: flex; }
+    body { padding-bottom: 74px; }
+  }
+
   /* aviso de configuração — visível só enquanto o checkout não estiver definido */
   .cfg-warn {
     display: none;
@@ -555,7 +743,7 @@
   <a href="index.html" class="nav-logo">HZ<span>.</span>Invest</a>
   <div class="nav-right">
     <a href="index.html" class="nav-back">← Voltar ao site</a>
-    <a href="#preco" class="btn-primary" style="padding:0.7rem 1.4rem;font-size:0.85rem;">Quero meu diagnóstico</a>
+    <a href="#oferta" class="btn-primary" style="padding:0.7rem 1.4rem;font-size:0.85rem;">Quero meu diagnóstico</a>
   </div>
 </nav>
 
@@ -565,21 +753,16 @@
   <h1>Um raio-x completo da sua vida financeira, <span class="accent">em cerca de 25 minutos</span>.</h1>
   <p class="hero-sub">
     Você responde um questionário guiado sobre renda, gastos, patrimônio, dívidas, proteção e objetivos.
-    Na hora, recebe um relatório personalizado de 13 seções — com seu score, seu arquétipo financeiro
-    e um plano de ação com os próximos 30 dias.
+    Na hora, descobre exatamente onde você está — e qual é o próximo passo certo, escrito com todas as letras.
   </p>
-  <div class="hero-price">
-    <span class="val">R$ 97</span>
-    <span class="note">pagamento único · acesso imediato</span>
-  </div>
   <div class="hero-actions">
-    <a href="#preco" class="btn-primary js-cta">Fazer meu diagnóstico</a>
+    <a href="#oferta" class="btn-primary">Quero meu diagnóstico</a>
     <a href="#entregaveis" class="btn-secondary">Ver o que está incluso</a>
   </div>
   <div class="hero-trust">
     <span><span class="dot-teal"></span> Relatório gerado na hora</span>
-    <span><span class="dot-teal"></span> Garantia de 7 dias</span>
-    <span><span class="dot-teal"></span> Feito por consultoria especializada</span>
+    <span><span class="dot-teal"></span> 25 minutos, no seu ritmo</span>
+    <span><span class="dot-teal"></span> Metodologia de consultoria especializada</span>
   </div>
 </section>
 
@@ -608,71 +791,99 @@
     <div class="section-label">// o que você recebe</div>
     <div class="teal-line"></div>
     <h2 class="section-title">Um relatório de 13 seções,<br>todo sobre <span style="color:var(--teal);">você</span></h2>
-    <p class="section-sub">Nada de conteúdo genérico. Cada número, cada texto e cada recomendação é gerado a partir das suas respostas.</p>
+    <p class="section-sub">Nada de conteúdo genérico: cada número, cada texto e cada recomendação sai das suas respostas. O relatório responde três perguntas, nesta ordem.</p>
   </div>
 
-  <div class="deliver-grid reveal">
-    <div class="deliver-card">
-      <div class="deliver-num">01</div>
-      <h3>Score geral de 0 a 100</h3>
-      <p>Uma nota única da sua saúde financeira, com o seu nível de maturidade em 5 estágios — do Ponto de Partida ao Otimizado.</p>
+  <div class="group reveal">
+    <div class="group-head">
+      <span class="group-step">01</span>
+      <h3>Onde você está hoje</h3>
     </div>
-    <div class="deliver-card">
-      <div class="deliver-num">02</div>
-      <h3>Seu arquétipo financeiro</h3>
-      <p>Qual dos 7 padrões comportamentais explica a sua relação com o dinheiro hoje — e por que ele, e não os outros.</p>
-    </div>
-    <div class="deliver-card">
-      <div class="deliver-num">03</div>
-      <h3>Percepção x realidade</h3>
-      <p>Onde a sua sensação sobre o próprio dinheiro diverge dos números reais. Costuma ser a parte que mais abre os olhos.</p>
-    </div>
-    <div class="deliver-card">
-      <div class="deliver-num">04</div>
-      <h3>Score por dimensão</h3>
-      <p>Fluxo de caixa, liquidez, endividamento, proteção, patrimônio e metas — cada um com nota, faixa e explicação.</p>
-    </div>
-    <div class="deliver-card">
-      <div class="deliver-num">05</div>
-      <h3>11 indicadores financeiros</h3>
-      <p>Taxa de poupança, meses de cobertura da reserva, comprometimento de renda, índice de solvência, cobertura de seguro e mais.</p>
-    </div>
-    <div class="deliver-card">
-      <div class="deliver-num">06</div>
-      <h3>Projeção de 10 anos</h3>
-      <p>Quanto você terá mantendo o ritmo atual e quanto teria seguindo as recomendações — a preços de hoje, já descontada a inflação.</p>
-    </div>
-    <div class="deliver-card">
-      <div class="deliver-num">07</div>
-      <h3>Plano de ação individualizado</h3>
-      <p>Para cada ponto fraco, o diagnóstico e uma ação prática concreta. E a lista do que já está bom e merece ser mantido.</p>
-    </div>
-    <div class="deliver-card">
-      <div class="deliver-num">08</div>
-      <h3>Checklist de 30 dias</h3>
-      <p>Cinco tarefas objetivas para as próximas semanas, priorizadas pelo que mais destrava a sua situação.</p>
-    </div>
-    <div class="deliver-card">
-      <div class="deliver-num">09</div>
-      <h3>Onde aplicar com segurança</h3>
-      <p>Alternativas de baixo risco e boa liquidez para a reserva e o curto prazo, como CDB 100% do CDI e Tesouro Selic.</p>
-    </div>
-    <div class="deliver-card">
-      <div class="deliver-num">10</div>
-      <h3>Glossário sem jargão</h3>
-      <p>Os sete conceitos que aparecem no relatório, explicados em português claro para consultar quando quiser.</p>
-    </div>
-    <div class="deliver-card">
-      <div class="deliver-num">11</div>
-      <h3>PDF para guardar</h3>
-      <p>Baixe o relatório completo em PDF e volte a ele sempre que precisar acompanhar a sua evolução.</p>
-    </div>
-    <div class="deliver-card">
-      <div class="deliver-num">12</div>
-      <h3>Próximo passo recomendado</h3>
-      <p>Quanto tempo de acompanhamento faz sentido pro seu caso — e por quê, com base nas dimensões críticas encontradas.</p>
+    <div class="deliver-grid g4" style="margin-top:0;">
+      <div class="deliver-card">
+        <div class="deliver-num">Score geral</div>
+        <h3>Uma nota de 0 a 100</h3>
+        <p>A saúde da sua vida financeira em um número, com o seu nível de maturidade em 5 estágios — do Ponto de Partida ao Otimizado.</p>
+      </div>
+      <div class="deliver-card">
+        <div class="deliver-num">6 dimensões</div>
+        <h3>Onde está forte e onde vaza</h3>
+        <p>Fluxo de caixa, liquidez, endividamento, proteção, patrimônio e metas — cada um com nota, faixa e a explicação do porquê.</p>
+      </div>
+      <div class="deliver-card">
+        <div class="deliver-num">11 indicadores</div>
+        <h3>Os números que importam</h3>
+        <p>Taxa de poupança, meses de cobertura da reserva, comprometimento de renda, índice de solvência, cobertura de seguro e mais.</p>
+      </div>
+      <div class="deliver-card">
+        <div class="deliver-num">Percepção x realidade</div>
+        <h3>Onde você se engana</h3>
+        <p>Os pontos em que a sua sensação sobre o próprio dinheiro diverge dos números reais. Costuma ser a parte que mais abre os olhos.</p>
+      </div>
     </div>
   </div>
+
+  <div class="group reveal">
+    <div class="group-head">
+      <span class="group-step">02</span>
+      <h3>Por que você chegou até aqui</h3>
+    </div>
+    <div class="deliver-grid g4" style="margin-top:0;">
+      <div class="deliver-card">
+        <div class="deliver-num">Arquétipo financeiro</div>
+        <h3>O padrão por trás dos números</h3>
+        <p>Qual dos 7 perfis comportamentais explica a sua relação com o dinheiro hoje — e por que ele, e não os outros seis.</p>
+      </div>
+      <div class="deliver-card">
+        <div class="deliver-num">Na sua fala</div>
+        <h3>Suas palavras no diagnóstico</h3>
+        <p>O que você escreveu sobre a sua situação, suas dores e seus sonhos entra no relatório e conversa com os números encontrados.</p>
+      </div>
+      <div class="deliver-card">
+        <div class="deliver-num">Projeção de 10 anos</div>
+        <h3>Onde esse caminho te leva</h3>
+        <p>Quanto você terá mantendo o ritmo atual e quanto teria seguindo as recomendações — a preços de hoje, já descontada a inflação.</p>
+      </div>
+      <div class="deliver-card">
+        <div class="deliver-num">Regra dos 25x</div>
+        <h3>Quanto falta pra aposentadoria</h3>
+        <p>O patrimônio necessário para sustentar o padrão de vida que você quer, e a distância exata entre ele e o que você já tem.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="group reveal">
+    <div class="group-head">
+      <span class="group-step">03</span>
+      <h3>O que fazer a partir de amanhã</h3>
+    </div>
+    <div class="deliver-grid g4" style="margin-top:0;">
+      <div class="deliver-card">
+        <div class="deliver-num">Plano de ação</div>
+        <h3>Uma ação prática por lacuna</h3>
+        <p>Para cada ponto fraco, o diagnóstico e o que fazer a respeito — na ordem certa de prioridade. E a lista do que já está bom e merece ser mantido.</p>
+      </div>
+      <div class="deliver-card">
+        <div class="deliver-num">Checklist 30 dias</div>
+        <h3>Por onde começar hoje</h3>
+        <p>Cinco tarefas objetivas para as próximas semanas, priorizadas pelo que mais destrava a sua situação específica.</p>
+      </div>
+      <div class="deliver-card">
+        <div class="deliver-num">Onde aplicar</div>
+        <h3>Alternativas seguras</h3>
+        <p>Classes de aplicação de baixo risco e boa liquidez para a reserva e o curto prazo, como CDB 100% do CDI e Tesouro Selic.</p>
+      </div>
+      <div class="deliver-card">
+        <div class="deliver-num">Próximo passo</div>
+        <h3>Quanto acompanhamento faz sentido</h3>
+        <p>Se o seu caso pede 3, 6 ou 12 meses de acompanhamento — e a justificativa, com base nas dimensões críticas encontradas.</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-sub reveal" style="margin-top:2.4rem;max-width:640px;">
+    Ainda no relatório: glossário sem jargão dos conceitos usados e download em <strong style="color:var(--white);">PDF</strong> para guardar e comparar quando você refizer o diagnóstico.
+  </p>
 </section>
 
 <!-- ─── COMO FUNCIONA ─── -->
@@ -749,6 +960,19 @@
       <div class="preview-note">Exemplo ilustrativo. O seu relatório traz os seus próprios números, textos e recomendações.</div>
     </div>
   </div>
+
+  <div class="arch-sample reveal">
+    <div class="tag">E o relatório não para nos números</div>
+    <div class="nome">Arquétipo: Adiamento do Futuro</div>
+    <div class="quote">
+      "Você tem disciplina, guarda dinheiro, se vira bem no dia a dia. O que falta não é esforço, é direção.
+      Sua taxa de poupança de 36% mostra disciplina real — mas seu progresso pra aposentadoria está em 12,4%
+      do patrimônio necessário, e suas metas ainda são ideias vagas, sem prazo ou valor definidos."
+    </div>
+    <div class="preview-note" style="margin-top:1.1rem;">
+      Trecho real gerado para um perfil de exemplo. Cada frase é montada a partir das suas respostas — nenhum texto é igual ao de outra pessoa.
+    </div>
+  </div>
 </section>
 
 <!-- ─── PARA QUEM ─── -->
@@ -776,23 +1000,68 @@
         <li>Você procura recomendação de ativos específicos para comprar</li>
         <li>Espera uma promessa de rentabilidade ou fórmula de enriquecimento</li>
         <li>Não tem 25 minutos para responder com atenção e dados reais</li>
-        <li>Quer uma consultoria completa e contínua — nesse caso, o caminho é falar direto com a gente</li>
+        <li>Quer uma consultoria completa e contínua — nesse caso, <a href="index.html#consultoria" style="color:var(--teal);">fale direto com a gente</a></li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- ─── PREÇO ─── -->
-<section id="preco">
+<!-- ─── AUTORIDADE ─── -->
+<section id="quem">
+  <div class="reveal">
+    <div class="section-label">// quem faz</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Metodologia de quem vive disso</h2>
+  </div>
+
+  <div class="author-box reveal">
+    <img class="author-img" src="https://framerusercontent.com/images/0DlZ0kmXAutFyVmhsf2IzDVYA.jpeg" alt="Elisa Schulz">
+    <div>
+      <h3>Elisa Schulz</h3>
+      <div class="author-role">Economista &amp; Mestre em Finanças</div>
+      <p>
+        O diagnóstico traduz em software o mesmo método que a HZ Invest usa no atendimento individual:
+        seis dimensões avaliadas, pesos definidos por relevância e recomendações que saem dos seus números,
+        não de um modelo genérico. É a porta de entrada para quem quer clareza antes de decidir qualquer coisa.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── DEPOIMENTOS ─── -->
+<section id="depoimentos">
+  <div class="reveal">
+    <div class="section-label">// quem já fez</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">O que dizem quem<br>passou pelo diagnóstico</h2>
+    <p class="section-sub">Relatos de quem respondeu o questionário e recebeu o relatório completo.</p>
+  </div>
+
+  <div class="depo-grid reveal" id="depoGrid"></div>
+</section>
+
+<!-- ─── OFERTA (preço só aqui, no final) ─── -->
+<section id="oferta">
   <div class="reveal" style="text-align:center;">
-    <div class="section-label" style="text-align:center;">// investimento</div>
-    <h2 class="section-title">Menos que uma consulta,<br>com você para sempre</h2>
+    <div class="section-label" style="text-align:center;">// o investimento</div>
+    <h2 class="section-title">Em 25 minutos você sai da dúvida<br>e entra no plano.</h2>
+    <p class="section-sub" style="margin:0 auto;">Um retrato honesto da sua vida financeira, com o próximo passo escrito com todas as letras — e ele fica com você para sempre.</p>
+  </div>
+
+  <div class="anchor-box reveal" style="margin-bottom:2.2rem;">
+    <div class="lead">
+      Uma reserva de <strong style="color:var(--white);">R$ 30 mil</strong> parada na poupança rende cerca de
+      <span class="num">R$ 1.200 a menos por ano</span> do que num CDB de 100% do CDI.
+      Só esse detalhe já paga o diagnóstico mais de dez vezes — e ele examina
+      <strong style="color:var(--white);">seis dimensões</strong> da sua vida financeira atrás desse tipo de vazamento.
+      <span class="fine">Comparação ilustrativa, com taxas de referência que variam conforme a Selic. Não é promessa de retorno.</span>
+    </div>
   </div>
 
   <div class="price-box reveal">
     <div class="price-tag">
       <span class="cur">R$</span><span class="val">97</span>
-      <span class="note">pagamento único · sem mensalidade</span>
+      <span class="note">pagamento único · sem mensalidade · acesso imediato</span>
     </div>
     <ul class="price-list">
       <li>Questionário guiado de 10 etapas, com salvar e continuar depois</li>
@@ -800,7 +1069,8 @@
       <li>Score geral, arquétipo financeiro e 11 indicadores</li>
       <li>Plano de ação individualizado e checklist de 30 dias</li>
       <li>Projeção patrimonial de 10 anos a preços de hoje</li>
-      <li>Download em PDF para consultar quando quiser</li>
+      <li>Download em PDF para consultar e comparar quando refizer</li>
+      <li><strong style="color:var(--white);">Bônus:</strong> 30 minutos com a consultoria da HZ para discutir o resultado</li>
     </ul>
     <a href="#" class="btn-primary js-cta" style="font-size:1rem;padding:1.1rem 2.6rem;">Quero meu diagnóstico agora</a>
     <div class="price-guarantee">
@@ -808,6 +1078,26 @@
       <a href="mailto:elisa@hzinvest.com.br" style="color:var(--teal);">elisa@hzinvest.com.br</a>.
     </div>
   </div>
+
+  <div class="bonus-box reveal">
+    <span class="bonus-tag">Bônus incluso</span>
+    <h3>30 minutos com a consultoria da HZ</h3>
+    <p>
+      Depois de receber o relatório, você agenda uma conversa de 30 minutos com a equipe de consultoria da HZ Invest
+      para tirar dúvidas sobre o que o diagnóstico encontrou e definir por onde começar. Sem custo adicional e sem compromisso de contratar nada.
+    </p>
+  </div>
+
+  <div class="after-buy reveal">
+    <div><strong>1. Pagamento</strong>Confirmação em segundos, direto no checkout.</div>
+    <div><strong>2. Acesso liberado</strong>Você já cai no questionário, sem espera nem e-mail de liberação.</div>
+    <div><strong>3. Relatório na hora</strong>Ao finalizar, ele é gerado na mesma sessão e fica disponível em PDF.</div>
+  </div>
+
+  <p class="section-sub reveal" style="margin:2rem auto 0;text-align:center;max-width:560px;font-size:0.85rem;">
+    Seus dados são usados apenas para gerar o seu diagnóstico, com acesso restrito à HZ Invest.
+    Você pode pedir acesso, correção ou exclusão quando quiser — veja a <a href="politica-privacidade.html" style="color:var(--teal);">Política de Privacidade</a>.
+  </p>
 </section>
 
 <!-- ─── FAQ ─── -->
@@ -840,40 +1130,26 @@
       <p>Suas respostas são usadas para gerar o seu relatório e ficam guardadas com acesso restrito à HZ Invest. Você pode pedir acesso, correção ou exclusão a qualquer momento. Os detalhes estão na <a href="politica-privacidade.html">Política de Privacidade</a>.</p>
     </div>
     <div class="faq-item">
+      <h3>Por que pagar, se existem planilhas de orçamento de graça?</h3>
+      <p>Planilha mostra o que entrou e o que saiu — ela não diz se a sua reserva está no tamanho certo, se o seu seguro cobre o que deveria, se o seu patrimônio está no ritmo da sua idade ou o que resolver primeiro. O diagnóstico compara os seus números com referências de planejamento e devolve prioridade, não só registro. Aliás, se o que você precisa agora é organizar o mês, temos uma <a href="planilha-orcamento.html">planilha de orçamento gratuita</a> aqui no site.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Quem analisa as minhas respostas?</h3>
+      <p>O relatório é gerado automaticamente pela metodologia desenvolvida pela HZ Invest — é por isso que ele fica pronto na hora, sem fila de espera. Não é uma análise manual caso a caso: se o que você procura é alguém olhando o seu caso pessoalmente, o caminho é o <a href="index.html#consultoria">acompanhamento individual</a>, e o próprio relatório indica se ele faz sentido pra você.</p>
+    </div>
+    <div class="faq-item">
       <h3>Posso refazer o diagnóstico mais pra frente?</h3>
       <p>Sim, e é justamente o recomendado: refazer depois de alguns meses mostra a evolução do seu score e das dimensões que você trabalhou.</p>
     </div>
   </div>
 </section>
 
-<!-- ─── AUTORIDADE ─── -->
-<section id="quem">
+<!-- ─── FECHAMENTO ─── -->
+<section class="closing">
   <div class="reveal">
-    <div class="section-label">// quem faz</div>
-    <div class="teal-line"></div>
-    <h2 class="section-title">Metodologia de quem vive disso</h2>
-  </div>
-
-  <div class="author-box reveal">
-    <img class="author-img" src="https://framerusercontent.com/images/0DlZ0kmXAutFyVmhsf2IzDVYA.jpeg" alt="Elisa Schulz">
-    <div>
-      <h3>Elisa Schulz</h3>
-      <div class="author-role">Economista &amp; Mestre em Finanças</div>
-      <p>
-        O diagnóstico traduz em software o mesmo método que a HZ Invest usa no atendimento individual:
-        seis dimensões avaliadas, pesos definidos por relevância e recomendações que saem dos seus números,
-        não de um modelo genérico. É a porta de entrada para quem quer clareza antes de decidir qualquer coisa.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- ─── CTA FINAL ─── -->
-<section class="final-cta">
-  <div class="reveal">
-    <h2 class="section-title">Em 25 minutos você sai da dúvida<br>e entra no plano.</h2>
-    <p class="section-sub">Um retrato honesto da sua vida financeira, com o próximo passo escrito com todas as letras.</p>
-    <a href="#" class="btn-primary js-cta" style="font-size:1rem;padding:1.1rem 2.6rem;">Fazer meu diagnóstico — R$ 97</a>
+    <h2 class="section-title">Ainda com dúvida sobre<br>onde você está?</h2>
+    <p class="section-sub">É exatamente isso que o diagnóstico resolve — em 25 minutos, com números seus e um plano escrito.</p>
+    <a href="#oferta" class="btn-primary" style="font-size:1rem;padding:1.1rem 2.6rem;">Quero meu diagnóstico</a>
   </div>
 </section>
 
@@ -893,6 +1169,10 @@
   </div>
 </footer>
 
+<div class="sticky-cta" id="stickyCta">
+  <a href="#oferta" class="btn-primary">Quero meu diagnóstico</a>
+</div>
+
 <div class="cfg-warn" id="cfgWarn">
   ⚠ <strong>Checkout não configurado.</strong> Abra <code>diagnostico-lp.html</code> e preencha
   <code>HZ_CHECKOUT_URL</code> com o link de pagamento. Este aviso some sozinho depois disso
@@ -909,6 +1189,39 @@
 // ─────────────────────────────────────────────────────────────
 var HZ_CHECKOUT_URL = "COLE-AQUI-O-LINK-DE-CHECKOUT";
 
+// ─────────────────────────────────────────────────────────────
+//  DEPOIMENTOS
+//  Os itens abaixo são EXEMPLOS de preenchimento (exemplo: true).
+//  Enquanto houver algum exemplo, os cards aparecem com borda
+//  tracejada, etiqueta "exemplo" e um aviso na tela — para nenhum
+//  depoimento fictício ir ao ar parecendo real.
+//
+//  Ao coletar os depoimentos reais das pessoas que fizerem o
+//  diagnóstico, troque o texto/nome/contexto e remova a linha
+//  "exemplo: true" de cada item. A seção some sozinha se a lista
+//  ficar vazia.
+// ─────────────────────────────────────────────────────────────
+var HZ_DEPOIMENTOS = [
+  {
+    texto: "[Texto do depoimento — o que a pessoa achou do diagnóstico, o que descobriu que não sabia e o que mudou depois.]",
+    nome: "Nome da pessoa",
+    contexto: "Profissão · Cidade/UF",
+    exemplo: true
+  },
+  {
+    texto: "[Texto do depoimento — bom pedir que cite um número ou uma descoberta concreta: o score, o arquétipo ou uma ação do plano que ela colocou em prática.]",
+    nome: "Nome da pessoa",
+    contexto: "Profissão · Cidade/UF",
+    exemplo: true
+  },
+  {
+    texto: "[Texto do depoimento — vale um relato de quem estava em dúvida se valia a pena e mudou de ideia depois de ler o relatório.]",
+    nome: "Nome da pessoa",
+    contexto: "Profissão · Cidade/UF",
+    exemplo: true
+  }
+];
+
 (function () {
   var configurado = HZ_CHECKOUT_URL.indexOf("COLE-AQUI") === -1 && HZ_CHECKOUT_URL.length > 8;
   var ctas = document.querySelectorAll(".js-cta");
@@ -921,7 +1234,50 @@ var HZ_CHECKOUT_URL = "COLE-AQUI-O-LINK-DE-CHECKOUT";
       ctas[i].setAttribute("href", "#preco");
     }
   }
-  if (!configurado) document.getElementById("cfgWarn").style.display = "block";
+  // ── depoimentos ──
+  var grid = document.getElementById("depoGrid");
+  var secDepo = document.getElementById("depoimentos");
+  var temExemplo = false;
+
+  if (!HZ_DEPOIMENTOS.length) {
+    secDepo.style.display = "none";
+  } else {
+    var html = "";
+    for (var d = 0; d < HZ_DEPOIMENTOS.length; d++) {
+      var dep = HZ_DEPOIMENTOS[d];
+      if (dep.exemplo) temExemplo = true;
+      html += '<div class="depo-card' + (dep.exemplo ? ' exemplo' : '') + '">' +
+        (dep.exemplo ? '<span class="depo-tag">exemplo · substituir</span>' : '') +
+        '<div class="depo-quote">"' + esc(dep.texto) + '"</div>' +
+        '<div class="depo-autor"><div class="nome">' + esc(dep.nome) + '</div>' +
+        '<div class="ctx">' + esc(dep.contexto) + '</div></div></div>';
+    }
+    grid.innerHTML = html;
+  }
+
+  var avisos = [];
+  if (!configurado) avisos.push("<strong>Checkout não configurado.</strong> Preencha <code>HZ_CHECKOUT_URL</code> com o link de pagamento.");
+  if (temExemplo) avisos.push("<strong>Depoimentos de exemplo na página.</strong> Substitua os itens de <code>HZ_DEPOIMENTOS</code> pelos relatos reais (e remova <code>exemplo: true</code>) antes de publicar.");
+  if (avisos.length) {
+    var warn = document.getElementById("cfgWarn");
+    warn.innerHTML = "⚠ " + avisos.join("<br><br>⚠ ");
+    warn.style.display = "block";
+  }
+
+  function esc(t) {
+    return String(t == null ? "" : t)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  // barra fixa de CTA no mobile: aparece depois do hero e some na seção de oferta
+  var sticky = document.getElementById("stickyCta");
+  var oferta = document.getElementById("oferta");
+  window.addEventListener("scroll", function () {
+    var passouHero = window.scrollY > 600;
+    var chegouOferta = oferta.getBoundingClientRect().top < window.innerHeight;
+    sticky.classList.toggle("on", passouHero && !chegouOferta);
+  }, { passive: true });
 
   // scroll reveal (mesmo padrão do site)
   var reveals = document.querySelectorAll(".reveal");
