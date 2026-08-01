@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Diagnóstico Financeiro — HZ Invest</title>
+<title>Diagnóstico Financeiro | HZ Invest</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -186,7 +186,7 @@ var STEP_META = {
   3: { eyebrow: "Etapa 3 de 10", title: "Despesas", desc: "Seus gastos mensais por categoria. O valor em Investimentos / Poupança conta como aporte mensal (poupança), não como gasto." },
   4: { eyebrow: "Etapa 4 de 10", title: "Patrimônio e Investimentos", desc: "Imóveis, veículos, investimentos e seu perfil como investidor. Se você tem cônjuge, informe o patrimônio do casal." },
   5: { eyebrow: "Etapa 5 de 10", title: "Dívidas", desc: "Cartão de crédito, cheque especial, empréstimos e outras dívidas em aberto." },
-  6: { eyebrow: "Etapa 6 de 10", title: "Liquidez e Reserva de Emergência", desc: "Quanto você tem guardado para imprevistos e onde está aplicado. Informe o valor mesmo que já esteja incluído nos investimentos da etapa 4 — aqui ele serve para avaliar sua liquidez." },
+  6: { eyebrow: "Etapa 6 de 10", title: "Liquidez e Reserva de Emergência", desc: "Quanto você tem guardado para imprevistos e onde está aplicado. Informe o valor mesmo que já esteja incluído nos investimentos da etapa 4. Aqui ele serve para avaliar sua liquidez." },
   7: { eyebrow: "Etapa 7 de 10", title: "Gestão de Risco (Seguros)", desc: "Seguro de vida, plano de saúde e proteção da sua renda." },
   8: { eyebrow: "Etapa 8 de 10", title: "Metas e Planejamento de Longo Prazo", desc: "Aposentadoria e outras metas financeiras de vida. Se você tem cônjuge, considere as metas do casal." },
   9: { eyebrow: "Etapa 9 de 10", title: "Situação Atual", desc: "Como você enxerga sua própria situação financeira hoje." },
@@ -388,7 +388,7 @@ function renderStep0() {
     '<div class="entregaveis">' + items + '</div>' +
     '<div class="cta-wrap">' +
     '<button type="button" class="btn-cta" data-action="start">Começar diagnóstico</button>' +
-    '<div class="cta-note">Tempo estimado: 20–30 min · você pode salvar e continuar depois</div>' +
+    '<div class="cta-note">Tempo estimado: 20 a 30 min · você pode salvar e continuar depois</div>' +
     '</div></div>';
 }
 
@@ -553,7 +553,7 @@ function renderStep8() {
   return '<div class="card"><div class="grid2">' +
     '<div><label class="f-label">Idade-alvo de aposentadoria</label><input type="number" min="0" class="f-input num" data-field="idadeAposentadoria" placeholder="Ex: 60" value="' + esc(data.idadeAposentadoria) + '"></div>' +
     '<div><label class="f-label">Gasto mensal desejado na aposentadoria</label>' + gastoField +
-    '<label class="check-label"><input type="checkbox" data-action="toggleGastoNaoSei"' + (data.gastoNaoSei ? " checked" : "") + '> Não sei — estimar como % da renda atual</label></div>' +
+    '<label class="check-label"><input type="checkbox" data-action="toggleGastoNaoSei"' + (data.gastoNaoSei ? " checked" : "") + '> Não sei, quero estimar como % da renda atual</label></div>' +
     '<div class="span2"><label class="f-label">Tem metas financeiras com prazo e valor definidos, ou são ideias vagas?</label>' + selectHtml("temMetasDefinidas", METAS_DEFINIDAS, data.temMetasDefinidas) + '</div>' +
     '<div class="span2"><label class="f-label">Já calculou quanto precisaria guardar por mês pra chegar nas metas?</label>' + selectHtml("calculouQuantoGuardar", CALCULOU_GUARDAR, data.calculouQuantoGuardar) + '</div>' +
     '</div><div class="rule-full"></div>' +
@@ -627,7 +627,7 @@ function renderStep10() {
 function renderDone() {
   return '<div class="hero done-hero"><div class="hero-glow"></div>' +
     '<div class="done-title">Diagnóstico recebido</div>' +
-    '<div class="done-text">Obrigado, ' + esc(data.nome) + '. Seu relatório personalizado está pronto — clique abaixo para visualizá-lo. Ele também fica salvo neste navegador para consultar depois.</div>' +
+    '<div class="done-text">Obrigado, ' + esc(data.nome) + '. Seu relatório personalizado está pronto. Clique abaixo para visualizá-lo. Ele também fica salvo neste navegador para consultar depois.</div>' +
     '<div class="done-text" id="sync-status" style="margin-top:14px; font-size:13.5px; color:rgba(251,250,246,0.55);"></div>' +
     '<div class="done-actions"><a class="btn-report" href="diagnostico-relatorio.html">Ver meu relatório →</a>' +
     '<button type="button" class="link-restart" data-action="restart">Refazer o diagnóstico do zero</button></div>' +
@@ -642,7 +642,7 @@ function enviarRespostas() {
     if (status === "ok" || status === "ja-enviado") {
       el.textContent = "Suas respostas foram registradas com sucesso.";
     } else if (status === "erro") {
-      el.textContent = "Não foi possível enviar suas respostas agora — elas ficam salvas neste navegador e serão reenviadas quando você abrir o relatório.";
+      el.textContent = "Não foi possível enviar suas respostas agora. Elas ficam salvas neste navegador e serão reenviadas quando você abrir o relatório.";
     }
   });
 }

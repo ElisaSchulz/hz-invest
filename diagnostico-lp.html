@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diagnóstico Financeiro — HZ Invest</title>
+<title>Diagnóstico Financeiro | HZ Invest</title>
 <meta name="description" content="Um raio-x completo da sua vida financeira em 25 minutos. Score, arquétipo financeiro, plano de ação e projeção de patrimônio num relatório personalizado de 13 seções.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -461,18 +461,48 @@
   /* ─── FAQ ─── */
   #faq { background: rgba(14,10,60,0.7); }
   .faq-list { margin-top: 3rem; max-width: 780px; }
-  .faq-item {
-    border-bottom: 1px solid var(--border);
+  .faq-item { border-bottom: 1px solid var(--border); }
+  .faq-q {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+    background: none;
+    border: none;
     padding: 1.5rem 0;
-  }
-  .faq-item h3 {
+    text-align: left;
+    font-family: 'Outfit', sans-serif;
     font-size: 1.02rem;
     font-weight: 600;
     color: var(--white-pure);
-    margin-bottom: 0.7rem;
+    cursor: pointer;
+    transition: color 0.2s;
   }
-  .faq-item p { font-size: 0.94rem; color: var(--muted); font-weight: 300; line-height: 1.7; }
-  .faq-item p a { color: var(--teal); }
+  .faq-q:hover { color: var(--teal-light); }
+  .faq-q:focus-visible { outline: 2px solid var(--teal); outline-offset: 4px; border-radius: 4px; }
+  .faq-chevron {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: var(--teal);
+    transition: transform 0.28s ease;
+  }
+  .faq-item.open .faq-chevron { transform: rotate(180deg); }
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .faq-item.open .faq-a { max-height: 520px; }
+  .faq-a p {
+    font-size: 0.94rem;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.7;
+    padding-bottom: 1.6rem;
+  }
+  .faq-a p a { color: var(--teal); }
 
   /* ─── AUTORIDADE ─── */
   .author-box {
@@ -720,7 +750,7 @@
     body { padding-bottom: 74px; }
   }
 
-  /* aviso de configuração — visível só enquanto o checkout não estiver definido */
+  /* aviso de configuração, visível só enquanto o checkout não estiver definido */
   .cfg-warn {
     display: none;
     position: fixed;
@@ -753,7 +783,7 @@
   <h1>Um raio-x completo da sua vida financeira, <span class="accent">em cerca de 25 minutos</span>.</h1>
   <p class="hero-sub">
     Você responde um questionário guiado sobre renda, gastos, patrimônio, dívidas, proteção e objetivos.
-    Na hora, descobre exatamente onde você está — e qual é o próximo passo certo, escrito com todas as letras.
+    Na hora, descobre exatamente onde você está e qual é o próximo passo certo, escrito com todas as letras.
   </p>
   <div class="hero-actions">
     <a href="#oferta" class="btn-primary">Quero meu diagnóstico</a>
@@ -772,7 +802,7 @@
     <div class="section-label">// o problema</div>
     <div class="teal-line"></div>
     <h2 class="section-title">Você já sabe que precisa<br>organizar as finanças.</h2>
-    <p class="section-sub">O que falta não é vontade — é um retrato claro de onde você está hoje e qual é o próximo passo certo. Se alguma dessas frases é sua, o diagnóstico foi feito pra você.</p>
+    <p class="section-sub">O que falta não é vontade, e sim um retrato claro de onde você está hoje e qual é o próximo passo certo. Se alguma dessas frases é sua, o diagnóstico foi feito pra você.</p>
   </div>
 
   <div class="pain-grid reveal">
@@ -803,12 +833,12 @@
       <div class="deliver-card">
         <div class="deliver-num">Score geral</div>
         <h3>Uma nota de 0 a 100</h3>
-        <p>A saúde da sua vida financeira em um número, com o seu nível de maturidade em 5 estágios — do Ponto de Partida ao Otimizado.</p>
+        <p>A saúde da sua vida financeira em um número, com o seu nível de maturidade em 5 estágios, do Ponto de Partida ao Otimizado.</p>
       </div>
       <div class="deliver-card">
         <div class="deliver-num">6 dimensões</div>
         <h3>Onde está forte e onde vaza</h3>
-        <p>Fluxo de caixa, liquidez, endividamento, proteção, patrimônio e metas — cada um com nota, faixa e a explicação do porquê.</p>
+        <p>Fluxo de caixa, liquidez, endividamento, proteção, patrimônio e metas, cada um com nota, faixa e a explicação do porquê.</p>
       </div>
       <div class="deliver-card">
         <div class="deliver-num">11 indicadores</div>
@@ -832,7 +862,7 @@
       <div class="deliver-card">
         <div class="deliver-num">Arquétipo financeiro</div>
         <h3>O padrão por trás dos números</h3>
-        <p>Qual dos 7 perfis comportamentais explica a sua relação com o dinheiro hoje — e por que ele, e não os outros seis.</p>
+        <p>Qual dos 7 perfis comportamentais explica a sua relação com o dinheiro hoje. E por que ele, e não os outros seis.</p>
       </div>
       <div class="deliver-card">
         <div class="deliver-num">Na sua fala</div>
@@ -842,7 +872,7 @@
       <div class="deliver-card">
         <div class="deliver-num">Projeção de 10 anos</div>
         <h3>Onde esse caminho te leva</h3>
-        <p>Quanto você terá mantendo o ritmo atual e quanto teria seguindo as recomendações — a preços de hoje, já descontada a inflação.</p>
+        <p>Quanto você terá mantendo o ritmo atual e quanto teria seguindo as recomendações. Tudo a preços de hoje, já descontada a inflação.</p>
       </div>
       <div class="deliver-card">
         <div class="deliver-num">Regra dos 25x</div>
@@ -861,7 +891,7 @@
       <div class="deliver-card">
         <div class="deliver-num">Plano de ação</div>
         <h3>Uma ação prática por lacuna</h3>
-        <p>Para cada ponto fraco, o diagnóstico e o que fazer a respeito — na ordem certa de prioridade. E a lista do que já está bom e merece ser mantido.</p>
+        <p>Para cada ponto fraco, o diagnóstico e o que fazer a respeito, na ordem certa de prioridade. E a lista do que já está bom e merece ser mantido.</p>
       </div>
       <div class="deliver-card">
         <div class="deliver-num">Checklist 30 dias</div>
@@ -876,7 +906,7 @@
       <div class="deliver-card">
         <div class="deliver-num">Próximo passo</div>
         <h3>Quanto acompanhamento faz sentido</h3>
-        <p>Se o seu caso pede 3, 6 ou 12 meses de acompanhamento — e a justificativa, com base nas dimensões críticas encontradas.</p>
+        <p>Se o seu caso pede 3, 6 ou 12 meses de acompanhamento, com a justificativa baseada nas dimensões críticas encontradas.</p>
       </div>
     </div>
   </div>
@@ -898,7 +928,7 @@
     <div class="step">
       <div class="step-num">01</div>
       <h3>Responda o questionário</h3>
-      <p>Dez etapas guiadas, cerca de 25 minutos. Tudo fica salvo no seu navegador — dá pra parar no meio e continuar depois de onde estava.</p>
+      <p>Dez etapas guiadas, cerca de 25 minutos. Tudo fica salvo no seu navegador, então dá pra parar no meio e continuar depois de onde estava.</p>
     </div>
     <div class="step">
       <div class="step-num">02</div>
@@ -966,11 +996,11 @@
     <div class="nome">Arquétipo: Adiamento do Futuro</div>
     <div class="quote">
       "Você tem disciplina, guarda dinheiro, se vira bem no dia a dia. O que falta não é esforço, é direção.
-      Sua taxa de poupança de 36% mostra disciplina real — mas seu progresso pra aposentadoria está em 12,4%
+      Sua taxa de poupança de 36% mostra disciplina real, mas seu progresso pra aposentadoria está em 12,4%
       do patrimônio necessário, e suas metas ainda são ideias vagas, sem prazo ou valor definidos."
     </div>
     <div class="preview-note" style="margin-top:1.1rem;">
-      Trecho real gerado para um perfil de exemplo. Cada frase é montada a partir das suas respostas — nenhum texto é igual ao de outra pessoa.
+      Trecho real gerado para um perfil de exemplo. Cada frase é montada a partir das suas respostas. Nenhum texto é igual ao de outra pessoa.
     </div>
   </div>
 </section>
@@ -988,7 +1018,7 @@
       <h3><span class="dot-teal"></span> É pra você se…</h3>
       <ul>
         <li>Você tem renda estável e quer entender se está no caminho certo</li>
-        <li>Sente que falta uma visão de conjunto — não só o extrato do mês</li>
+        <li>Sente que falta uma visão de conjunto, não só o extrato do mês</li>
         <li>Quer saber o que priorizar primeiro, com ordem e justificativa</li>
         <li>Está pensando em aposentadoria e nunca fez a conta</li>
         <li>Prefere um retrato honesto a um discurso motivacional</li>
@@ -1000,7 +1030,7 @@
         <li>Você procura recomendação de ativos específicos para comprar</li>
         <li>Espera uma promessa de rentabilidade ou fórmula de enriquecimento</li>
         <li>Não tem 25 minutos para responder com atenção e dados reais</li>
-        <li>Quer uma consultoria completa e contínua — nesse caso, <a href="index.html#consultoria" style="color:var(--teal);">fale direto com a gente</a></li>
+        <li>Quer uma consultoria completa e contínua. Nesse caso, <a href="index.html#consultoria" style="color:var(--teal);">fale direto com a gente</a></li>
       </ul>
     </div>
   </div>
@@ -1045,14 +1075,14 @@
   <div class="reveal" style="text-align:center;">
     <div class="section-label" style="text-align:center;">// o investimento</div>
     <h2 class="section-title">Em 25 minutos você sai da dúvida<br>e entra no plano.</h2>
-    <p class="section-sub" style="margin:0 auto;">Um retrato honesto da sua vida financeira, com o próximo passo escrito com todas as letras — e ele fica com você para sempre.</p>
+    <p class="section-sub" style="margin:0 auto;">Um retrato honesto da sua vida financeira, com o próximo passo escrito com todas as letras. E ele fica com você para sempre.</p>
   </div>
 
   <div class="anchor-box reveal" style="margin-bottom:2.2rem;">
     <div class="lead">
       Uma reserva de <strong style="color:var(--white);">R$ 30 mil</strong> parada na poupança rende cerca de
       <span class="num">R$ 1.200 a menos por ano</span> do que num CDB de 100% do CDI.
-      Só esse detalhe já paga o diagnóstico mais de dez vezes — e ele examina
+      Só esse detalhe já paga o diagnóstico mais de dez vezes, e ele examina
       <strong style="color:var(--white);">seis dimensões</strong> da sua vida financeira atrás desse tipo de vazamento.
       <span class="fine">Comparação ilustrativa, com taxas de referência que variam conforme a Selic. Não é promessa de retorno.</span>
     </div>
@@ -1074,7 +1104,7 @@
     </ul>
     <a href="#" class="btn-primary js-cta" style="font-size:1rem;padding:1.1rem 2.6rem;">Quero meu diagnóstico agora</a>
     <div class="price-guarantee">
-      <strong style="color:var(--white);">Garantia de 7 dias.</strong> Se o relatório não te entregar clareza, devolvemos o valor integral — basta escrever para
+      <strong style="color:var(--white);">Garantia de 7 dias.</strong> Se o relatório não te entregar clareza, devolvemos o valor integral. Basta escrever para
       <a href="mailto:elisa@hzinvest.com.br" style="color:var(--teal);">elisa@hzinvest.com.br</a>.
     </div>
   </div>
@@ -1096,7 +1126,7 @@
 
   <p class="section-sub reveal" style="margin:2rem auto 0;text-align:center;max-width:560px;font-size:0.85rem;">
     Seus dados são usados apenas para gerar o seu diagnóstico, com acesso restrito à HZ Invest.
-    Você pode pedir acesso, correção ou exclusão quando quiser — veja a <a href="politica-privacidade.html" style="color:var(--teal);">Política de Privacidade</a>.
+    Você pode pedir acesso, correção ou exclusão quando quiser. Veja a <a href="politica-privacidade.html" style="color:var(--teal);">Política de Privacidade</a>.
   </p>
 </section>
 
@@ -1109,37 +1139,77 @@
   </div>
 
   <div class="faq-list reveal">
-    <div class="faq-item">
-      <h3>Preciso entender de finanças para responder?</h3>
-      <p>Não. As perguntas são sobre a sua vida — quanto entra, quanto sai, o que você tem e o que te preocupa. Onde aparece algum termo técnico, o relatório traz um glossário em português claro.</p>
+    <div class="faq-item" data-faq>
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a1" id="faq-q1">
+        <span>Preciso entender de finanças para responder?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a" id="faq-a1" role="region" aria-labelledby="faq-q1">
+        <p>Não. As perguntas são sobre a sua vida: quanto entra, quanto sai, o que você tem e o que te preocupa. Onde aparece algum termo técnico, o relatório traz um glossário em português claro.</p>
+      </div>
     </div>
-    <div class="faq-item">
-      <h3>Preciso ter todos os números na ponta do lápis?</h3>
-      <p>Valores aproximados já geram um diagnóstico útil. Quanto mais próximos da realidade, mais preciso o resultado — e como dá para salvar e continuar depois, você pode parar para conferir um extrato e voltar.</p>
+    <div class="faq-item" data-faq>
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a2" id="faq-q2">
+        <span>Preciso ter todos os números na ponta do lápis?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a" id="faq-a2" role="region" aria-labelledby="faq-q2">
+        <p>Valores aproximados já geram um diagnóstico útil. Quanto mais próximos da realidade, mais preciso o resultado. E como dá para salvar e continuar depois, você pode parar para conferir um extrato e voltar.</p>
+      </div>
     </div>
-    <div class="faq-item">
-      <h3>Isso é uma consultoria de investimentos?</h3>
-      <p>Não. É um diagnóstico educacional e orientativo: ele mostra onde você está e o que priorizar, sem recomendar ativos específicos. Se fizer sentido seguir para um acompanhamento individualizado, o próprio relatório indica o formato e a duração.</p>
+    <div class="faq-item" data-faq>
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a3" id="faq-q3">
+        <span>Isso é uma consultoria de investimentos?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a" id="faq-a3" role="region" aria-labelledby="faq-q3">
+        <p>Não. É um diagnóstico educacional e orientativo: ele mostra onde você está e o que priorizar, sem recomendar ativos específicos. Se fizer sentido seguir para um acompanhamento individualizado, o próprio relatório indica o formato e a duração.</p>
+      </div>
     </div>
-    <div class="faq-item">
-      <h3>Em quanto tempo recebo o relatório?</h3>
-      <p>Na hora. Assim que você finaliza o questionário, o relatório é gerado e fica disponível para leitura e download em PDF.</p>
+    <div class="faq-item" data-faq>
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a4" id="faq-q4">
+        <span>Em quanto tempo recebo o relatório?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a" id="faq-a4" role="region" aria-labelledby="faq-q4">
+        <p>Na hora. Assim que você finaliza o questionário, o relatório é gerado e fica disponível para leitura e download em PDF.</p>
+      </div>
     </div>
-    <div class="faq-item">
-      <h3>O que acontece com os meus dados?</h3>
-      <p>Suas respostas são usadas para gerar o seu relatório e ficam guardadas com acesso restrito à HZ Invest. Você pode pedir acesso, correção ou exclusão a qualquer momento. Os detalhes estão na <a href="politica-privacidade.html">Política de Privacidade</a>.</p>
+    <div class="faq-item" data-faq>
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a5" id="faq-q5">
+        <span>O que acontece com os meus dados?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a" id="faq-a5" role="region" aria-labelledby="faq-q5">
+        <p>Suas respostas são usadas para gerar o seu relatório e ficam guardadas com acesso restrito à HZ Invest. Você pode pedir acesso, correção ou exclusão a qualquer momento. Os detalhes estão na <a href="politica-privacidade.html">Política de Privacidade</a>.</p>
+      </div>
     </div>
-    <div class="faq-item">
-      <h3>Por que pagar, se existem planilhas de orçamento de graça?</h3>
-      <p>Planilha mostra o que entrou e o que saiu — ela não diz se a sua reserva está no tamanho certo, se o seu seguro cobre o que deveria, se o seu patrimônio está no ritmo da sua idade ou o que resolver primeiro. O diagnóstico compara os seus números com referências de planejamento e devolve prioridade, não só registro. Aliás, se o que você precisa agora é organizar o mês, temos uma <a href="planilha-orcamento.html">planilha de orçamento gratuita</a> aqui no site.</p>
+    <div class="faq-item" data-faq>
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a6" id="faq-q6">
+        <span>Por que pagar, se existem planilhas de orçamento de graça?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a" id="faq-a6" role="region" aria-labelledby="faq-q6">
+        <p>Planilha mostra o que entrou e o que saiu. Ela não diz se a sua reserva está no tamanho certo, se o seu seguro cobre o que deveria, se o seu patrimônio está no ritmo da sua idade ou o que resolver primeiro. O diagnóstico compara os seus números com referências de planejamento e devolve prioridade, não só registro. Aliás, se o que você precisa agora é organizar o mês, temos uma <a href="planilha-orcamento.html">planilha de orçamento gratuita</a> aqui no site.</p>
+      </div>
     </div>
-    <div class="faq-item">
-      <h3>Quem analisa as minhas respostas?</h3>
-      <p>O relatório é gerado automaticamente pela metodologia desenvolvida pela HZ Invest — é por isso que ele fica pronto na hora, sem fila de espera. Não é uma análise manual caso a caso: se o que você procura é alguém olhando o seu caso pessoalmente, o caminho é o <a href="index.html#consultoria">acompanhamento individual</a>, e o próprio relatório indica se ele faz sentido pra você.</p>
+    <div class="faq-item" data-faq>
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a7" id="faq-q7">
+        <span>Quem analisa as minhas respostas?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a" id="faq-a7" role="region" aria-labelledby="faq-q7">
+        <p>O relatório é gerado automaticamente pela metodologia desenvolvida pela HZ Invest, e é por isso que ele fica pronto na hora, sem fila de espera. Não é uma análise manual caso a caso: se o que você procura é alguém olhando o seu caso pessoalmente, o caminho é o <a href="index.html#consultoria">acompanhamento individual</a>, e o próprio relatório indica se ele faz sentido pra você.</p>
+      </div>
     </div>
-    <div class="faq-item">
-      <h3>Posso refazer o diagnóstico mais pra frente?</h3>
-      <p>Sim, e é justamente o recomendado: refazer depois de alguns meses mostra a evolução do seu score e das dimensões que você trabalhou.</p>
+    <div class="faq-item" data-faq>
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a8" id="faq-q8">
+        <span>Posso refazer o diagnóstico mais pra frente?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a" id="faq-a8" role="region" aria-labelledby="faq-q8">
+        <p>Sim, e é justamente o recomendado: refazer depois de alguns meses mostra a evolução do seu score e das dimensões que você trabalhou.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -1148,7 +1218,7 @@
 <section class="closing">
   <div class="reveal">
     <h2 class="section-title">Ainda com dúvida sobre<br>onde você está?</h2>
-    <p class="section-sub">É exatamente isso que o diagnóstico resolve — em 25 minutos, com números seus e um plano escrito.</p>
+    <p class="section-sub">É exatamente isso que o diagnóstico resolve, em 25 minutos, com números seus e um plano escrito.</p>
     <a href="#oferta" class="btn-primary" style="font-size:1rem;padding:1.1rem 2.6rem;">Quero meu diagnóstico</a>
   </div>
 </section>
@@ -1193,7 +1263,7 @@ var HZ_CHECKOUT_URL = "COLE-AQUI-O-LINK-DE-CHECKOUT";
 //  DEPOIMENTOS
 //  Os itens abaixo são EXEMPLOS de preenchimento (exemplo: true).
 //  Enquanto houver algum exemplo, os cards aparecem com borda
-//  tracejada, etiqueta "exemplo" e um aviso na tela — para nenhum
+//  tracejada, etiqueta "exemplo" e um aviso na tela, para nenhum
 //  depoimento fictício ir ao ar parecendo real.
 //
 //  Ao coletar os depoimentos reais das pessoas que fizerem o
@@ -1203,19 +1273,19 @@ var HZ_CHECKOUT_URL = "COLE-AQUI-O-LINK-DE-CHECKOUT";
 // ─────────────────────────────────────────────────────────────
 var HZ_DEPOIMENTOS = [
   {
-    texto: "[Texto do depoimento — o que a pessoa achou do diagnóstico, o que descobriu que não sabia e o que mudou depois.]",
+    texto: "[Texto do depoimento: o que a pessoa achou do diagnóstico, o que descobriu que não sabia e o que mudou depois.]",
     nome: "Nome da pessoa",
     contexto: "Profissão · Cidade/UF",
     exemplo: true
   },
   {
-    texto: "[Texto do depoimento — bom pedir que cite um número ou uma descoberta concreta: o score, o arquétipo ou uma ação do plano que ela colocou em prática.]",
+    texto: "[Texto do depoimento: bom pedir que cite um número ou uma descoberta concreta: o score, o arquétipo ou uma ação do plano que ela colocou em prática.]",
     nome: "Nome da pessoa",
     contexto: "Profissão · Cidade/UF",
     exemplo: true
   },
   {
-    texto: "[Texto do depoimento — vale um relato de quem estava em dúvida se valia a pena e mudou de ideia depois de ler o relatório.]",
+    texto: "[Texto do depoimento: vale um relato de quem estava em dúvida se valia a pena e mudou de ideia depois de ler o relatório.]",
     nome: "Nome da pessoa",
     contexto: "Profissão · Cidade/UF",
     exemplo: true
@@ -1268,6 +1338,18 @@ var HZ_DEPOIMENTOS = [
     return String(t == null ? "" : t)
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  // FAQ em sanfona: clicar na pergunta abre/fecha a resposta
+  var faqs = document.querySelectorAll("[data-faq]");
+  for (var f = 0; f < faqs.length; f++) {
+    (function (item) {
+      var botao = item.querySelector(".faq-q");
+      botao.addEventListener("click", function () {
+        var aberto = item.classList.toggle("open");
+        botao.setAttribute("aria-expanded", aberto ? "true" : "false");
+      });
+    })(faqs[f]);
   }
 
   // barra fixa de CTA no mobile: aparece depois do hero e some na seção de oferta
