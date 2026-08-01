@@ -8,6 +8,19 @@
 (function () {
   "use strict";
 
+  /* ===================== Premissas de projeção ===================== */
+  // Retornos NOMINAIS anuais por classe e por perfil; a projeção converte
+  // tudo para retorno REAL (descontada a inflação), de modo que curvas e
+  // meta fiquem a preços de hoje. Ajuste os valores aqui se necessário.
+  var PREMISSAS = {
+    inflacaoAnual: 0.04,
+    nominalPorAtivo: { investPoupanca: 0.065, investRendaFixaPublica: 0.105, investRendaFixaPrivada: 0.105, investRendaVariavel: 0.13, investCripto: 0.15, investOutros: 0.09 },
+    nominalPorPerfil: { "Conservador": 0.105, "Moderado": 0.115, "Arrojado": 0.13 }
+  };
+  function taxaReal(nominal) {
+    return (1 + nominal) / (1 + PREMISSAS.inflacaoAnual) - 1;
+  }
+
   /* ===================== Textos fixos ===================== */
   var NIVEL_TEXTS = {
     1: { nome: "Ponto de Partida", contexto: "Você está no início da jornada de organização financeira. Os fundamentos ainda precisam ser construídos, um passo de cada vez." },
@@ -110,9 +123,13 @@
   }
 
   /* ===================== Cálculo do relatório (regras de negócio) ===================== */
-  function computeReport(data) {
+  // geradoEm (opcional): data ISO em que o diagnóstico foi finalizado — o
+  // relatório fica datado do momento da finalização, não da visita à página.
+  function computeReport(data, geradoEm) {
     var D = data;
     var primeiroNome = (D.nome || "").split(" ")[0] || D.nome;
+    var dataRef = geradoEm ? new Date(geradoEm) : new Date();
+    if (isNaN(dataRef.getTime())) dataRef = new Date();
 
     // ---- Dim 1: Fluxo de Caixa ----
     var rendaTotal = (D.rendaPropria || 0) + (D.temConjuge ? (D.rendaConjuge || 0) : 0) + (D.outrasRendas || []).reduce(function (a, r) { return a + (r.valor || 0); }, 0);
@@ -166,7 +183,10 @@
 
     // ---- Dim 4: Gestão de Risco ----
     var rendaAnual = rendaTotal * 12;
-    var multiploCobertura = rendaAnual > 0 ? (D.capitalSegurado || 0) / rendaAnual : 0;
+    // O seguro de vida cobre a perda da renda do titular, então o benchmark
+    // usa a renda própria (não a do casal); household só como fallback.
+    var rendaSeguroAnual = (D.rendaPropria || 0) > 0 ? (D.rendaPropria || 0) * 12 : rendaAnual;
+    var multiploCobertura = rendaSeguroAnual > 0 ? (D.capitalSegurado || 0) / rendaSeguroAnual : 0;
     var dependentes = Number(D.filhos) || 0;
     var benchmarkMultiplo = dependentes === 0 ? 4 : dependentes <= 2 ? 6.5 : 9;
     var scoreRisco1;
@@ -184,6 +204,11 @@
     var patrimonioEsperado = (idade * rendaAnual) / 10;
     var indicePatrimonio = patrimonioEsperado > 0 ? (patrimonioTotal / patrimonioEsperado) * 100 : 100;
     var scorePatrimonio = bandInterp(indicePatrimonio, [50, 100, 150]);
+    // Ajuste fino comportamental: conhecer a rentabilidade da própria carteira
+    // e investir de forma automática são preditores de acúmulo consistente.
+    var AJUSTE_CONHECIMENTO = { "Não sei": -4, "Ideia vaga": -2, "Sei aproximado": 1, "Sei exato": 3 };
+    var AJUSTE_AUTOMATICO = { "Só o que sobra": -4, "Às vezes automático": -1, "Quase sempre": 2, "Sempre automático": 4 };
+    scorePatrimonio = Math.max(0, Math.min(100, scorePatrimonio + (AJUSTE_CONHECIMENTO[D.sabeRentabilidade] || 0) + (AJUSTE_AUTOMATICO[D.investeAutomatico] || 0)));
     var concentracaoMax = patrimonioInvest > 0 ? Math.max.apply(null, INVEST_KEYS.map(function (k) { return D[k] || 0; })) / patrimonioInvest * 100 : 0;
     var rvPct = patrimonioInvest > 0 ? (((D.investRendaVariavel || 0) + (D.investCripto || 0)) / patrimonioInvest) * 100 : 0;
     var perfilAlertText = null;
@@ -196,7 +221,9 @@
     // ---- Dim 6: Metas ----
     var gastoMensalAposentadoria = D.gastoNaoSei ? rendaTotal * ((D.gastoPercent || 70) / 100) : (D.gastoMensalAposentadoria || 0);
     var patrimonioNecessario = gastoMensalAposentadoria * 12 * 25;
-    var ativosLiquidos = patrimonioInvest;
+    // A reserva de emergência tem função própria (imprevistos) e fica fora
+    // dos ativos destinados à aposentadoria — evita contar duas vezes.
+    var ativosLiquidos = Math.max(0, patrimonioInvest - (D.reservaEmergencia || 0));
     var idadeAposentadoria = Number(D.idadeAposentadoria) || idade + 20;
     var progressoAtual = patrimonioNecessario > 0 ? (ativosLiquidos / patrimonioNecessario) * 100 : 0;
     var anosParaAposentar = Math.max(1, idadeAposentadoria - idade);
@@ -206,6 +233,9 @@
     var expectedProgress = Math.max(5, Math.min(95, ((idade - 25) / Math.max(1, (idadeAposentadoria - 25))) * 100));
     var progressoRelativo = aposentadoriaAtingida ? progressoAtual : (expectedProgress > 0 ? (progressoAtual / expectedProgress) * 100 : progressoAtual);
     var scoreMetas = ativosLiquidos <= 0 ? 5 : bandInterp(progressoRelativo, [50, 100, 150]);
+    // Já ter calculado quanto guardar por mês é sinal de planejamento ativo.
+    var AJUSTE_CALCULO = { "Não": -4, "Pensei mas não calculei": -2, "Calculei aproximado": 1, "Calculei exato": 3 };
+    scoreMetas = Math.max(0, Math.min(100, scoreMetas + (AJUSTE_CALCULO[D.calculouQuantoGuardar] || 0)));
 
     // ---- Score geral ----
     var WEIGHTS = { fluxo: 0.20, liquidez: 0.15, endividamento: 0.20, risco: 0.15, patrimonio: 0.20, metas: 0.10 };
@@ -296,9 +326,10 @@
     // ---- Plano de ação (ordem fixa de prioridade) ----
     var PRIORITY_ORDER = ["fluxo", "liquidez", "endividamento", "risco", "patrimonio", "metas"];
     var DIM_NAMES = { fluxo: "Fluxo de Caixa e Orçamento", liquidez: "Liquidez e Reserva", endividamento: "Endividamento", risco: "Gestão de Risco (Seguros)", patrimonio: "Patrimônio e Investimentos", metas: "Metas e Planejamento" };
-    var gapCobertura = Math.max(0, benchmarkMultiplo - multiploCobertura) * rendaAnual;
+    var gapCobertura = Math.max(0, benchmarkMultiplo - multiploCobertura) * rendaSeguroAnual;
     var aporteNecessario = (function () {
-      var rAnual = D.perfilRisco === "Conservador" ? 0.105 : D.perfilRisco === "Arrojado" ? 0.13 : 0.115;
+      // taxa real (meta a preços de hoje → desconta a inflação do retorno)
+      var rAnual = taxaReal(PREMISSAS.nominalPorPerfil[D.perfilRisco] || PREMISSAS.nominalPorPerfil["Moderado"]);
       var rMensal = Math.pow(1 + rAnual, 1 / 12) - 1;
       var nMeses = anosParaAposentar * 12;
       var fatorFV = Math.pow(1 + rMensal, nMeses);
@@ -376,6 +407,30 @@
       }
     }
 
+    // Regra contextual: apólices sem revisão há 2+ anos entram na recomendação de risco
+    if ((D.temSeguroVida || D.temPlanoSaude) && (D.revisouApolices === "Nunca revisei" || D.revisouApolices === "Faz mais de 2 anos")) {
+      var extraRisco = " Suas apólices estão sem revisão há mais de 2 anos — coberturas desatualizadas costumam ser descobertas na pior hora; vale agendar uma revisão.";
+      var riscoPlan = actionPlan.filter(function (a) { return a.key === "risco"; })[0];
+      var riscoStrength = strengths.filter(function (s) { return s.key === "risco"; })[0];
+      if (riscoPlan) riscoPlan.texto += extraRisco;
+      else if (riscoStrength) riscoStrength.texto += extraRisco;
+    }
+
+    // Regra contextual: hábitos de investimento entram na recomendação de patrimônio
+    var extraPatrimonio = "";
+    if (D.investeAutomatico === "Só o que sobra") {
+      extraPatrimonio += " Investir \"só o que sobra\" costuma ser o maior freio de acúmulo — automatizar o aporte logo após receber a renda muda esse jogo.";
+    }
+    if (D.sabeRentabilidade === "Não sei") {
+      extraPatrimonio += " Vale também passar a acompanhar a rentabilidade da carteira — sem esse número, não dá pra saber se ela está trabalhando a seu favor.";
+    }
+    if (extraPatrimonio) {
+      var patPlan = actionPlan.filter(function (a) { return a.key === "patrimonio"; })[0];
+      var patStrength = strengths.filter(function (s) { return s.key === "patrimonio"; })[0];
+      if (patPlan) patPlan.texto += extraPatrimonio;
+      else if (patStrength) patStrength.texto += extraPatrimonio;
+    }
+
     // ---- Checklist 30 dias ----
     var checklist = [];
     if (deficit) {
@@ -412,10 +467,10 @@
     };
 
     // ---- Projeção futura ----
-    var RATE_BY_ASSET = { investPoupanca: 0.065, investRendaFixaPublica: 0.105, investRendaFixaPrivada: 0.105, investRendaVariavel: 0.13, investCripto: 0.15, investOutros: 0.09 };
-    var rateByPerfil = { "Conservador": 0.105, "Moderado": 0.115, "Arrojado": 0.13 };
-    var rPerfil = rateByPerfil[D.perfilRisco] || 0.115;
-    var rComposicaoReal = patrimonioInvest > 0 ? INVEST_KEYS.reduce(function (a, k) { return a + (D[k] || 0) * (RATE_BY_ASSET[k] || 0.09); }, 0) / patrimonioInvest : rPerfil;
+    // Projeção em termos REAIS: retornos nominais das premissas convertidos
+    // para acima da inflação, mantendo meta e curvas a preços de hoje.
+    var rPerfil = taxaReal(PREMISSAS.nominalPorPerfil[D.perfilRisco] || PREMISSAS.nominalPorPerfil["Moderado"]);
+    var rComposicaoReal = patrimonioInvest > 0 ? taxaReal(INVEST_KEYS.reduce(function (a, k) { return a + (D[k] || 0) * (PREMISSAS.nominalPorAtivo[k] || 0.09); }, 0) / patrimonioInvest) : rPerfil;
     var rAnual1 = Math.min(rPerfil, rComposicaoReal);
     var rAnual2 = rPerfil;
     var rMensal1 = Math.pow(1 + rAnual1, 1 / 12) - 1;
@@ -471,7 +526,8 @@
       { label: "Total de dívidas", value: fmt(totalDividas), sub: D.temDividas ? pct(comprometimento) + " da renda em parcelas" : "sem dívidas em aberto" },
       { label: "Patrimônio total", value: fmt(patrimonioTotal) },
       { label: "Patrimônio esperado x real", value: pct(indicePatrimonio) },
-      { label: "Cobertura de seguro de vida", value: num1(multiploCobertura) + "x", sub: "da renda anual" },
+      { label: "Cobertura de seguro de vida", value: num1(multiploCobertura) + "x", sub: "da sua renda anual" },
+      { label: "Investido para aposentadoria", value: fmt(ativosLiquidos), sub: (D.reservaEmergencia || 0) > 0 ? "não inclui a reserva de emergência" : undefined },
       { label: "Índice de solvência", value: pct(indiceSolvencia) }
     ];
 
@@ -490,7 +546,17 @@
     if (D.sabeParaOndeVaiDinheiro === "Não, tenho surpresas com frequência") {
       divergencias.push("Você relatou ter surpresas frequentes com os próprios gastos — mapear categorias com mais detalhe no dia a dia pode trazer bastante clareza sobre para onde o dinheiro está indo.");
     }
-    var insightPercepcao = { show: divergencias.length > 0, itens: divergencias.slice(0, 2) };
+    // Segurança percebida (tempo que aguentaria sem renda) × cobertura real da reserva
+    var TEMPO_PERCEBIDO_MESES = { "Dias": 0.2, "Semanas": 0.7, "Poucos meses": 3, "6+ meses": 6 };
+    var percepcaoMeses = TEMPO_PERCEBIDO_MESES[D.tempoSemRenda];
+    if (percepcaoMeses !== undefined && despesaTotal > 0) {
+      if (percepcaoMeses >= 3 && mesesCobertura < percepcaoMeses * 0.5) {
+        divergencias.push("Você acredita que manteria seu padrão de vida por " + D.tempoSemRenda.toLowerCase() + " sem renda, mas sua reserva cobre " + num1(mesesCobertura) + " meses de despesas — a segurança percebida está maior que a real.");
+      } else if (percepcaoMeses <= 0.7 && mesesCobertura >= 3) {
+        divergencias.push("Você sente que se desesperaria em " + D.tempoSemRenda.toLowerCase() + " sem renda, mas sua reserva cobre " + num1(mesesCobertura) + " meses de despesas — você está mais protegido(a) do que imagina.");
+      }
+    }
+    var insightPercepcao = { show: divergencias.length > 0, itens: divergencias.slice(0, 3) };
 
     // ---- Linhas de dimensão ----
     var DIM_CONTEXT = {
@@ -499,13 +565,26 @@
       endividamento: D.temDividas ? "Dívidas de " + fmt(totalDividas) + ", com parcelas comprometendo " + pct(comprometimento) + " da renda mensal." : "Sem dívidas em aberto no momento.",
       risco: "Cobertura de seguro de " + num1(multiploCobertura) + "x a renda anual, " + dependentes + " dependente(s), " + (D.temPlanoSaude ? "com" : "sem") + " plano de saúde.",
       patrimonio: "Patrimônio em " + pct(indicePatrimonio) + " do esperado pra sua idade e renda.",
-      metas: "Progresso de " + pct(progressoAtual, 1) + " rumo ao patrimônio necessário pra aposentadoria."
+      metas: "Progresso de " + pct(progressoAtual, 1) + " rumo ao patrimônio necessário pra aposentadoria (sem contar a reserva de emergência)."
     };
     var dimRows = PRIORITY_ORDER.map(function (key) {
       var score = Math.round(scores[key]);
       var band = bandLabel(scores[key]);
       var barColor = band === "critico" ? "#B34747" : band === "insuficiente" ? "#C48A3E" : band === "adequado" ? "#4F8C84" : "#1B1B5C";
       return { nome: DIM_NAMES[key], score: score, contexto: DIM_CONTEXT[key], barStyle: "width:" + Math.max(4, score) + "%; background:" + barColor + ";" };
+    });
+
+    // ---- Metas declaradas (aposentadoria + outras metas do formulário) ----
+    var metasDeclaradas = [{
+      titulo: "Aposentadoria aos " + idadeAposentadoria + " anos",
+      detalhe: "gasto desejado de " + fmt(gastoMensalAposentadoria) + "/mês · patrimônio-alvo de " + fmt(patrimonioNecessario) + " (regra dos 25x)"
+    }];
+    (D.outrasMetas || []).forEach(function (m) {
+      if (!m || (!m.descricao && !(m.valorEstimado > 0))) return;
+      var det = [];
+      if (m.valorEstimado > 0) det.push(fmt(m.valorEstimado));
+      if (m.prazo) det.push("prazo: " + m.prazo);
+      metasDeclaradas.push({ titulo: m.descricao || "Meta", detalhe: det.join(" · ") });
     });
 
     // ---- Alternativas seguras e mais rentáveis (CDB 100% CDI, Tesouro Selic) ----
@@ -533,7 +612,7 @@
 
     return {
       data: Object.assign({}, D, { primeiroNome: primeiroNome }),
-      dataFormatada: new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }),
+      dataFormatada: dataRef.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }),
       scoreGeral: scoreGeral, nivel: nivel, arquetipo: arquetipo,
       gaugeDash: gaugeDash, gaugeOffset: gaugeOffset,
       kpis: {
@@ -542,13 +621,14 @@
         patrimonioNecessarioDisplay: fmt(patrimonioNecessario),
         projecaoAtualDisplay: fmt(series1[series1.length - 1]),
         projecaoRecomendadaDisplay: fmt(series2[series2.length - 1]),
-        taxaRetornoDisplay: pct(rAnual1 * 100, 1) + " (atual) / " + pct(rAnual2 * 100, 1) + " (recomendado)"
+        taxaRetornoDisplay: pct(rAnual1 * 100, 1) + " (atual) / " + pct(rAnual2 * 100, 1) + " (recomendado)",
+        inflacaoDisplay: pct(PREMISSAS.inflacaoAnual * 100, 1)
       },
-      kpiHero: kpiHero, kpiRest: kpiRest, dimRows: dimRows,
+      kpiHero: kpiHero, kpiRest: kpiRest, dimRows: dimRows, metasDeclaradas: metasDeclaradas,
       chart: { points1: points1, points2: points2, dots2: dots2, targetY: targetY, targetLabel: targetLabel, targetLabelStyle: targetLabelStyle, end1Style: end1Style, end2Style: end2Style },
       actionPlan: actionPlan, hasStrengths: strengths.length > 0, strengths: strengths, investSeguro: investSeguro,
       checklist: checklist, glossario: GLOSSARIO, nextStep: nextStep, insightPercepcao: insightPercepcao,
-      vozCliente: { show: !!(D.maiorDor || D.sonhos), maiorDor: D.maiorDor, sonhos: D.sonhos },
+      vozCliente: { show: !!(D.descricaoSituacao || D.maiorDor || D.sonhos), situacao: D.descricaoSituacao, maiorDor: D.maiorDor, sonhos: D.sonhos },
       contatoMailto: "mailto:elisa@hzinvest.com.br?subject=Diagn%C3%B3stico%20Financeiro%20-%20Pr%C3%B3ximos%20passos"
     };
   }
