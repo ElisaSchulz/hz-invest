@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seu Relatório — Diagnóstico Financeiro HZ Invest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: #F6F4EE; font-family: 'Manrope', sans-serif; color: #15153F; }
+  a { color: #4F8C84; }
+  a:hover { color: #1B1B5C; }
+  ::selection { background: rgba(111,168,160,0.35); }
+
+  .btn-print { position: fixed; top: 20px; right: 20px; z-index: 999; background: #1B1B5C; color: #FBFAF6; border: none; border-radius: 6px; padding: 12px 20px; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 13px; cursor: pointer; letter-spacing: 0.02em; }
+  .btn-print:hover { background: #2A2A6E; }
+
+  section { padding: 80px 32px 88px; }
+  section.tight { padding: 56px 32px 72px; }
+  .wrap { max-width: 780px; margin: 0 auto; }
+  .wrap-wide { max-width: 900px; margin: 0 auto; }
+  .hairline { border-top: 1px solid rgba(27,27,92,0.1); }
+
+  .eyebrow-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .eyebrow-line { width: 48px; height: 2px; background: #4F8C84; flex-shrink: 0; }
+  .eyebrow-text { font-size: 11px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #4F8C84; flex: 1; }
+  .section-num { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: rgba(21,21,63,0.3); font-feature-settings: 'tnum'; flex-shrink: 0; }
+  h2 { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; color: #1B1B5C; margin: 0 0 32px; }
+
+  .navy-glow { position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(111,168,160,0.35) 0%, rgba(111,168,160,0) 70%); pointer-events: none; }
+  .card { background: #FBFAF6; border: 1px solid rgba(27,27,92,0.14); border-radius: 8px; }
+
+  .kpi-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(21,21,63,0.45); margin-bottom: 6px; }
+  .kpi-small { font-size: 16px; color: #1B1B5C; font-weight: 600; }
+  .kpi-med { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 500; color: #1B1B5C; font-feature-settings: 'tnum'; }
+
+  .cover { position: relative; overflow: hidden; background: #1B1B5C; color: #FBFAF6; min-height: 92vh; display: flex; flex-direction: column; justify-content: space-between; }
+  .cover-title { font-family: 'Fraunces', serif; font-size: 52px; font-weight: 500; line-height: 1.12; }
+  @media (max-width: 639px) {
+    section { padding: 56px 20px 64px; }
+    section.tight { padding: 44px 20px 56px; }
+    .cover-title { font-size: 36px; }
+    h2 { font-size: 26px; }
+  }
+
+  @media print {
+    .no-print { display: none !important; }
+    body { background: #fff; }
+    .card, .kpi, .dim-row, .glossary-item, .archetype-block { break-inside: avoid; }
+    @page { size: A4; margin: 16mm; }
+  }
+</style>
+</head>
+<body>
+<button class="btn-print no-print" onclick="window.print()">Baixar PDF</button>
+<div id="report"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="diagnostico-core.js"></script>
+<script>
+"use strict";
+
+// Lógica de cálculo compartilhada (diagnostico-core.js)
+var fmt = HZDiag.fmt, pct = HZDiag.pct, esc = HZDiag.esc, computeReport = HZDiag.computeReport;
+
+/* ===================== Render ===================== */
+function sectionHeader(eyebrow, num, title) {
+  return '<div class="eyebrow-wrap"><div class="eyebrow-line"></div><div class="eyebrow-text">' + eyebrow + '</div><div class="section-num">' + num + ' · 13</div></div>' +
+    '<h2>' + title + '</h2>';
+}
+
+function renderReport(R) {
+  var html = "";
+
+  // 1. Capa
+  html += '<section class="cover">' +
+    '<div class="navy-glow" style="top:-120px; right:-120px; width:420px; height:420px;"></div>' +
+    '<div style="position:relative; display:flex; align-items:center; justify-content:space-between;">' +
+    '<div style="font-family:\'Fraunces\', serif; font-size:20px; font-weight:600;">HZ <span style="font-style:italic; color:#6FA8A0;">Invest</span></div>' +
+    '<div style="font-size:11px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#6FA8A0;">Diagnóstico Financeiro</div></div>' +
+    '<div style="position:relative; max-width:640px;">' +
+    '<div style="display:flex; align-items:center; gap:12px; margin-bottom:24px;"><div style="width:48px; height:2px; background:#6FA8A0;"></div>' +
+    '<div style="font-size:11px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#6FA8A0;">Relatório Personalizado</div></div>' +
+    '<div class="cover-title">' + esc(R.data.nome) + '</div>' +
+    '<div style="margin-top:20px; font-size:16px; color:rgba(251,250,246,0.7);">' + R.dataFormatada + '</div></div>' +
+    '<div style="position:relative; font-size:12.5px; color:rgba(251,250,246,0.5);">Documento educacional e orientativo · HZ Invest Consultoria de Investimentos</div>' +
+    '</section>';
+
+  // 2. Abertura
+  html += '<section><div class="wrap">' +
+    sectionHeader("Antes de começar", "02", "Bem-vindo(a) ao seu diagnóstico, " + esc(R.data.primeiroNome) + ".") +
+    '<div style="font-size:16.5px; line-height:1.75; color:rgba(21,21,63,0.75); max-width:640px;">' +
+    '<p>Este relatório traduz tudo o que você compartilhou conosco em um retrato claro e honesto da sua vida financeira hoje — sem jargão, sem julgamento.</p>' +
+    '<p>Nas próximas páginas você vai encontrar: seu score geral e nível de maturidade financeira, seu perfil comportamental, os números centrais da sua situação, o desempenho em cada uma das 6 dimensões avaliadas, uma projeção do seu patrimônio nos próximos anos, e um plano de ação individualizado — com uma lista prática para os próximos 30 dias.</p>' +
+    '<p>Este é um retrato do momento, não uma sentença. Toda situação financeira pode evoluir com clareza e direção certas.</p>' +
+    '</div></div></section>';
+
+  // 3. Score geral
+  var insight = "";
+  if (R.insightPercepcao.show) {
+    insight = '<div style="margin-top:24px; background:rgba(196,138,62,0.1); border:1px solid rgba(196,138,62,0.3); border-radius:8px; padding:20px 24px;">' +
+      '<div style="font-size:11px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#C48A3E; margin-bottom:10px;">Percepção x Realidade</div>' +
+      R.insightPercepcao.itens.map(function (d) { return '<div style="font-size:14px; line-height:1.65; color:rgba(21,21,63,0.8); margin-bottom:8px;">' + d + '</div>'; }).join("") +
+      '</div>';
+  }
+  html += '<section class="tight hairline"><div class="wrap">' +
+    sectionHeader("Onde você está", "03", "Score Geral e Nível de Maturidade") +
+    '<div class="card" style="padding:44px; display:flex; align-items:center; gap:48px; flex-wrap:wrap;">' +
+    '<div style="flex:0 0 auto;"><svg width="160" height="160" viewBox="0 0 160 160">' +
+    '<circle cx="80" cy="80" r="68" fill="none" stroke="rgba(27,27,92,0.12)" stroke-width="14" />' +
+    '<circle cx="80" cy="80" r="68" fill="none" stroke="#4F8C84" stroke-width="14" stroke-linecap="round" stroke-dasharray="' + R.gaugeDash + '" stroke-dashoffset="' + R.gaugeOffset + '" transform="rotate(-90 80 80)" />' +
+    '<text x="80" y="88" text-anchor="middle" font-family="Fraunces, serif" font-size="42" font-weight="500" fill="#1B1B5C">' + R.scoreGeral + '</text>' +
+    '</svg></div>' +
+    '<div style="flex:1 1 260px; min-width:240px;">' +
+    '<div style="font-size:11px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#4F8C84; margin-bottom:8px;">Nível ' + R.nivel.n + ' · ' + R.nivel.nome + '</div>' +
+    '<div style="font-size:15.5px; line-height:1.7; color:rgba(21,21,63,0.75);">' + R.nivel.contexto + '</div>' +
+    '</div></div>' + insight + '</div></section>';
+
+  // 4. Resumo do perfil
+  html += '<section class="tight hairline"><div class="wrap">' +
+    sectionHeader("Contexto", "04", "Resumo do Perfil") +
+    '<div class="card" style="padding:40px;">' +
+    '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:24px 32px; margin-bottom:28px;">' +
+    '<div><div class="kpi-label">Idade</div><div class="kpi-small">' + esc(R.data.idade) + ' anos</div></div>' +
+    '<div><div class="kpi-label">Estado civil</div><div class="kpi-small">' + esc(R.data.estadoCivil) + '</div></div>' +
+    '<div><div class="kpi-label">Filhos/dependentes</div><div class="kpi-small">' + esc(R.data.filhos) + '</div></div>' +
+    '<div><div class="kpi-label">Ocupação</div><div class="kpi-small">' + esc(R.data.ocupacao) + '</div></div>' +
+    '</div>' +
+    '<div style="height:1px; background:rgba(27,27,92,0.14); margin:8px 0 28px;"></div>' +
+    '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:24px 32px;">' +
+    '<div><div class="kpi-label">Renda total mensal</div><div class="kpi-med">' + R.kpis.rendaTotalDisplay + '</div></div>' +
+    '<div><div class="kpi-label">Patrimônio total</div><div class="kpi-med">' + R.kpis.patrimonioTotalDisplay + '</div></div>' +
+    '</div></div></div></section>';
+
+  // 5. Arquétipo
+  var voz = "";
+  if (R.vozCliente.show) {
+    voz = '<div style="position:relative; margin-top:24px; border-top:1px solid rgba(251,250,246,0.15); padding-top:24px;">' +
+      '<div style="font-size:10.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#6FA8A0; margin-bottom:12px;">Na sua fala</div>' +
+      (R.vozCliente.maiorDor ? '<div style="font-family:\'Fraunces\', serif; font-style:italic; font-size:16px; line-height:1.6; color:rgba(251,250,246,0.85); margin-bottom:10px;">"' + esc(R.vozCliente.maiorDor) + '"</div>' : "") +
+      (R.vozCliente.sonhos ? '<div style="font-family:\'Fraunces\', serif; font-style:italic; font-size:16px; line-height:1.6; color:rgba(251,250,246,0.85);">"' + esc(R.vozCliente.sonhos) + '"</div>' : "") +
+      '</div>';
+  }
+  html += '<section><div class="wrap">' +
+    sectionHeader("Análise Comportamental", "05", "Seu Arquétipo Financeiro") +
+    '<div class="archetype-block" style="position:relative; overflow:hidden; background:#1B1B5C; color:#FBFAF6; border-radius:8px; padding:48px;">' +
+    '<div class="navy-glow" style="top:-70px; right:-70px; width:280px; height:280px;"></div>' +
+    '<div style="position:relative; font-size:11px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#6FA8A0; margin-bottom:14px;">Seu arquétipo</div>' +
+    '<div style="position:relative; font-family:\'Fraunces\', serif; font-style:italic; font-size:34px; color:#FBFAF6; margin-bottom:22px;">' + R.arquetipo.nome + '</div>' +
+    '<div style="position:relative; font-family:\'Fraunces\', serif; font-size:21px; line-height:1.6; color:#6FA8A0; margin-bottom:32px; max-width:620px;">“' + R.arquetipo.abertura + '”</div>' +
+    '<div style="position:relative; display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:24px; margin-bottom:24px;">' +
+    '<div style="background:rgba(251,250,246,0.06); border-radius:8px; padding:22px 24px;">' +
+    '<div style="font-size:10.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#6FA8A0; margin-bottom:10px;">Padrão identificado</div>' +
+    '<div style="font-size:14.5px; line-height:1.7; color:rgba(251,250,246,0.85);">' + R.arquetipo.padrao + '</div></div>' +
+    '<div style="background:rgba(251,250,246,0.06); border-radius:8px; padding:22px 24px;">' +
+    '<div style="font-size:10.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#6FA8A0; margin-bottom:10px;">Por que este é o seu padrão</div>' +
+    '<div style="font-size:14.5px; line-height:1.7; color:rgba(251,250,246,0.85);">' + R.arquetipo.naoOutro + '</div></div></div>' +
+    '<div style="position:relative; background:rgba(111,168,160,0.16); border-radius:8px; padding:22px 26px;">' +
+    '<div style="font-size:10.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#6FA8A0; margin-bottom:8px;">Prioridade imediata</div>' +
+    '<div style="font-size:16px; line-height:1.6; color:#FBFAF6; font-weight:500;">' + R.arquetipo.prioridade + '</div></div>' +
+    voz + '</div></div></section>';
+
+  // 6. KPIs
+  var heroCards = R.kpiHero.map(function (kpi) {
+    return '<div class="kpi" style="position:relative; overflow:hidden; background:#1B1B5C; border-radius:8px; padding:32px 30px; color:#FBFAF6;">' +
+      '<div class="navy-glow" style="top:-30px; right:-30px; width:140px; height:140px;"></div>' +
+      '<div style="position:relative; font-size:11px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#6FA8A0; margin-bottom:12px;">' + kpi.label + '</div>' +
+      '<div style="position:relative; font-family:\'Fraunces\', serif; font-size:34px; font-weight:500; font-feature-settings:\'tnum\';">' + kpi.value + '</div>' +
+      (kpi.sub ? '<div style="position:relative; font-size:12.5px; color:rgba(251,250,246,0.6); margin-top:8px;">' + kpi.sub + '</div>' : "") +
+      '</div>';
+  }).join("");
+  var restCards = R.kpiRest.map(function (kpi) {
+    return '<div class="kpi" style="position:relative; overflow:hidden; background:rgba(27,27,92,0.06); border:1px solid rgba(27,27,92,0.12); border-radius:8px; padding:18px 20px;">' +
+      '<div style="font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#4F8C84; margin-bottom:8px;">' + kpi.label + '</div>' +
+      '<div style="font-family:\'Fraunces\', serif; font-size:20px; font-weight:500; color:#1B1B5C; font-feature-settings:\'tnum\';">' + kpi.value + '</div>' +
+      (kpi.sub ? '<div style="font-size:11.5px; color:rgba(21,21,63,0.5); margin-top:4px;">' + kpi.sub + '</div>' : "") +
+      '</div>';
+  }).join("");
+  html += '<section><div class="wrap-wide">' +
+    sectionHeader("Os números por trás", "06", "KPIs Financeiros") +
+    '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin-bottom:16px;">' + heroCards + '</div>' +
+    '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:12px;">' + restCards + '</div>' +
+    '</div></section>';
+
+  // 7. Score por dimensão
+  var legend = [["Crítico", "#B34747"], ["Insuficiente", "#C48A3E"], ["Adequado", "#4F8C84"], ["Excelente", "#1B1B5C"]].map(function (b) {
+    return '<div style="display:flex; align-items:center; gap:8px; font-size:12px; color:rgba(21,21,63,0.55);"><div style="background:' + b[1] + '; width:10px; height:10px; border-radius:50%;"></div>' + b[0] + '</div>';
+  }).join("");
+  var dims = R.dimRows.map(function (d) {
+    return '<div class="dim-row" style="background:#FBFAF6; border:1px solid rgba(27,27,92,0.14); border-radius:8px; padding:26px 30px; margin-bottom:14px;">' +
+      '<div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:12px; gap:12px; flex-wrap:wrap;">' +
+      '<div style="font-family:\'Fraunces\', serif; font-size:19px; font-weight:500; color:#1B1B5C;">' + d.nome + '</div>' +
+      '<div style="font-family:\'Fraunces\', serif; font-size:19px; font-weight:500; color:#4F8C84; font-feature-settings:\'tnum\';">' + d.score + '<span style="font-size:13px; color:rgba(21,21,63,0.4);"> / 100</span></div></div>' +
+      '<div style="height:8px; border-radius:4px; background:rgba(27,27,92,0.1); overflow:hidden; margin-bottom:12px;">' +
+      '<div style="' + d.barStyle + ' height:100%; border-radius:4px;"></div></div>' +
+      '<div style="font-size:14px; color:rgba(21,21,63,0.65); line-height:1.6;">' + d.contexto + '</div></div>';
+  }).join("");
+  html += '<section><div class="wrap">' +
+    sectionHeader("Dimensão por dimensão", "07", "Score por Dimensão") +
+    '<div style="display:flex; gap:22px; flex-wrap:wrap; margin-bottom:28px; margin-top:-12px;">' + legend + '</div>' +
+    dims + '</div></section>';
+
+  // 8. Projeção
+  var dots = R.chart.dots2.map(function (dot) { return '<circle cx="' + dot.x + '" cy="' + dot.y + '" r="3.5" fill="#4F8C84" />'; }).join("");
+  html += '<section class="hairline"><div class="wrap-wide">' +
+    sectionHeader("Pra onde isso leva", "08", "Projeção Patrimonial (10 anos)") +
+    '<div style="font-size:15px; color:rgba(21,21,63,0.6); margin:-16px 0 28px; max-width:620px; line-height:1.6;">Comparação entre manter o ritmo atual e seguir as recomendações deste diagnóstico.</div>' +
+    '<div class="card" style="padding:32px;">' +
+    '<div style="position:relative;">' +
+    '<svg viewBox="0 0 640 340" style="width:100%; height:auto; display:block;">' +
+    '<line x1="0" y1="' + R.chart.targetY + '" x2="600" y2="' + R.chart.targetY + '" stroke="rgba(27,27,92,0.35)" stroke-width="1.5" stroke-dasharray="5,5" />' +
+    '<polyline points="' + R.chart.points1 + '" fill="none" stroke="rgba(27,27,92,0.45)" stroke-width="2.5" />' +
+    '<polyline points="' + R.chart.points2 + '" fill="none" stroke="#4F8C84" stroke-width="3" />' + dots +
+    '</svg>' +
+    '<div style="' + R.chart.targetLabelStyle + ' position:absolute; font-size:11px; color:#1B1B5C;">Meta: ' + R.kpis.patrimonioNecessarioDisplay + '</div>' +
+    '<div style="' + R.chart.end1Style + ' position:absolute; font-size:12px; font-weight:700; color:rgba(27,27,92,0.65); font-feature-settings:\'tnum\';">' + R.kpis.projecaoAtualDisplay + '</div>' +
+    '<div style="' + R.chart.end2Style + ' position:absolute; font-size:12px; font-weight:700; color:#4F8C84; font-feature-settings:\'tnum\';">' + R.kpis.projecaoRecomendadaDisplay + '</div>' +
+    '</div>' +
+    '<div style="display:flex; gap:28px; margin-top:4px; flex-wrap:wrap;">' +
+    '<div style="display:flex; align-items:center; gap:8px; font-size:13px; color:rgba(21,21,63,0.65);"><div style="width:20px; height:3px; background:rgba(27,27,92,0.4);"></div> Ritmo atual</div>' +
+    '<div style="display:flex; align-items:center; gap:8px; font-size:13px; color:rgba(21,21,63,0.65);"><div style="width:20px; height:3px; background:#4F8C84;"></div> Seguindo recomendações</div>' +
+    '</div>' +
+    '<div style="font-size:12.5px; color:rgba(21,21,63,0.5); margin-top:20px; line-height:1.6; border-top:1px solid rgba(27,27,92,0.14); padding-top:16px;">' +
+    'Premissas: retorno nominal anual de ' + R.kpis.taxaRetornoDisplay + ' (perfil ' + esc(R.data.perfilRisco) + '), aportes mensais conforme indicado. Projeções não constituem garantia ou promessa de retorno; são baseadas em premissas assumidas e podem não se concretizar.' +
+    '</div></div></div></section>';
+
+  // 9. Plano de ação
+  var plan = R.actionPlan.map(function (item) {
+    return '<div class="card" style="padding:32px; margin-bottom:18px;">' +
+      '<div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">' +
+      '<div style="font-family:\'Fraunces\', serif; font-style:italic; color:#4F8C84; font-size:22px;">' + item.n + '</div>' +
+      '<div style="font-family:\'Fraunces\', serif; font-size:19px; font-weight:500; color:#1B1B5C;">' + item.dimNome + '</div></div>' +
+      '<div style="font-size:15px; line-height:1.7; color:rgba(21,21,63,0.8); margin-bottom:16px;">' + item.texto + '</div>' +
+      '<div style="background:rgba(111,168,160,0.12); border-radius:6px; padding:16px 20px; font-size:14px; line-height:1.6; color:#1B1B5C;">' +
+      '<span style="font-weight:700; color:#4F8C84;">Ação prática: </span>' + item.acao + '</div></div>';
+  }).join("");
+  var strengthsHtml = "";
+  if (R.hasStrengths) {
+    strengthsHtml = '<div style="margin-top:36px;">' +
+      '<div style="font-family:\'Fraunces\', serif; font-size:19px; font-weight:500; color:#1B1B5C; margin-bottom:16px;">Pontos fortes a manter</div>' +
+      R.strengths.map(function (s) {
+        return '<div style="display:flex; gap:12px; margin-bottom:12px; align-items:baseline;">' +
+          '<div style="font-family:\'Fraunces\', serif; font-style:italic; color:#4F8C84; flex-shrink:0;">—</div>' +
+          '<div style="font-size:14.5px; line-height:1.6; color:rgba(21,21,63,0.7);"><span style="font-weight:700; color:#1B1B5C;">' + s.dimNome + ': </span>' + s.texto + '</div></div>';
+      }).join("") + '</div>';
+  }
+  html += '<section class="hairline"><div class="wrap">' +
+    sectionHeader("O que fazer", "09", "Plano de Ação Individualizado") +
+    plan + strengthsHtml + '</div></section>';
+
+  // 10. Checklist 30 dias
+  var checks = R.checklist.map(function (c) {
+    return '<div style="display:flex; align-items:flex-start; gap:16px; padding:20px 0; border-bottom:1px solid rgba(27,27,92,0.1);">' +
+      '<div style="width:22px; height:22px; border-radius:5px; border:2px solid #4F8C84; flex-shrink:0; margin-top:2px;"></div>' +
+      '<div style="font-size:15px; line-height:1.6; color:rgba(21,21,63,0.8);">' + c + '</div></div>';
+  }).join("");
+  html += '<section class="tight hairline"><div class="wrap">' +
+    sectionHeader("Comece por aqui", "10", "Checklist dos Próximos 30 Dias") +
+    '<div class="card" style="padding:12px 32px;">' + checks + '</div></div></section>';
+
+  // 11. Glossário
+  var gloss = R.glossario.map(function (g) {
+    return '<div class="glossary-item">' +
+      '<div style="font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#4F8C84; margin-bottom:8px;">' + g.termo + '</div>' +
+      '<div style="font-size:14px; line-height:1.65; color:rgba(21,21,63,0.7);">' + g.definicao + '</div></div>';
+  }).join("");
+  html += '<section class="hairline"><div class="wrap-wide">' +
+    sectionHeader("Pra consultar sempre que precisar", "11", "Glossário") +
+    '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:24px 32px;">' + gloss + '</div></div></section>';
+
+  // 12. Próximo passo
+  html += '<section class="tight hairline"><div class="wrap">' +
+    sectionHeader("Recomendação", "12", "Seu Próximo Passo") +
+    '<div class="card" style="padding:44px;">' +
+    '<div style="font-size:11px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#4F8C84; margin-bottom:12px;">Plano recomendado</div>' +
+    '<div style="font-family:\'Fraunces\', serif; font-size:34px; font-weight:500; color:#1B1B5C; margin-bottom:20px;">' + R.nextStep.duracao + '</div>' +
+    '<div style="font-size:15.5px; line-height:1.75; color:rgba(21,21,63,0.75); margin-bottom:28px; max-width:560px;">' + R.nextStep.justificativa + '</div>' +
+    '<a href="' + R.contatoMailto + '" style="display:inline-block; background:#1B1B5C; color:#FBFAF6; text-decoration:none; border-radius:6px; padding:16px 32px; font-weight:700; font-size:15px;">Agendar conversa com a HZ Invest</a>' +
+    '</div></div></section>';
+
+  // 13. Encerramento
+  html += '<section style="position:relative; overflow:hidden; background:#1B1B5C; color:#FBFAF6;">' +
+    '<div class="navy-glow" style="bottom:-100px; left:-100px; width:320px; height:320px; background:radial-gradient(circle, rgba(111,168,160,0.3) 0%, rgba(111,168,160,0) 70%);"></div>' +
+    '<div style="max-width:700px; margin:0 auto; position:relative; text-align:center;">' +
+    '<div style="font-family:\'Fraunces\', serif; font-style:italic; font-size:24px; color:#6FA8A0; margin-bottom:20px;">Obrigado pela confiança, ' + esc(R.data.primeiroNome) + '.</div>' +
+    '<div style="font-size:15.5px; line-height:1.8; color:rgba(251,250,246,0.8); margin-bottom:32px;">Esperamos que este diagnóstico tenha trazido clareza. Estamos à disposição para conversar sobre os próximos passos.</div>' +
+    '<div style="font-size:14px; color:rgba(251,250,246,0.6); margin-bottom:28px;">HZ Invest Consultoria de Investimentos · <a href="mailto:elisa@hzinvest.com.br" style="color:#6FA8A0;">elisa@hzinvest.com.br</a></div>' +
+    '<div style="height:1px; background:rgba(251,250,246,0.15); margin:0 auto 24px; max-width:400px;"></div>' +
+    '<div style="font-size:11.5px; line-height:1.7; color:rgba(251,250,246,0.45); max-width:560px; margin:0 auto;">Este diagnóstico é educacional e orientativo. Não substitui uma consultoria financeira individualizada completa. Projeções e cenários apresentados são baseados em premissas assumidas e não constituem garantia ou promessa de retorno.</div>' +
+    '</div></section>';
+
+  return html;
+}
+
+function renderEmpty() {
+  return '<section style="min-height:80vh; display:flex; align-items:center; justify-content:center;">' +
+    '<div class="card" style="padding:56px 48px; max-width:520px; text-align:center;">' +
+    '<div style="font-family:\'Fraunces\', serif; font-size:26px; font-weight:500; color:#1B1B5C; margin-bottom:16px;">Nenhum diagnóstico encontrado</div>' +
+    '<div style="font-size:15px; line-height:1.7; color:rgba(21,21,63,0.65); margin-bottom:28px;">Você ainda não finalizou o formulário de diagnóstico neste navegador. Responda o questionário para gerar seu relatório personalizado.</div>' +
+    '<a href="diagnostico.html" style="display:inline-block; background:#1B1B5C; color:#FBFAF6; text-decoration:none; border-radius:6px; padding:16px 32px; font-weight:700; font-size:15px;">Fazer o diagnóstico</a>' +
+    '</div></section>';
+}
+
+(function init() {
+  var container = document.getElementById("report");
+  var stored = null;
+  try { stored = JSON.parse(localStorage.getItem("hz_diagnostico_data") || "null"); } catch (e) {}
+  if (stored && stored.data && stored.data.nome) {
+    container.innerHTML = renderReport(computeReport(stored.data));
+    if (window.hzSupabase && hzSupabase.configurado()) {
+      hzSupabase.enviarDiagnostico().then(function () { return hzSupabase.enviarRelatorio(); });
+    }
+  } else {
+    document.querySelector(".btn-print").style.display = "none";
+    container.innerHTML = renderEmpty();
+  }
+})();
+</script>
+</body>
+</html>
