@@ -19,14 +19,14 @@
 
   .topbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 28px 64px; border-bottom: 1px solid rgba(27,27,92,0.14); }
   .brand { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: #1B1B5C; letter-spacing: 0.01em; text-decoration: none; }
-  .brand em { font-style: italic; color: #4F8C84; font-weight: 500; }
-  .topbar-label { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(21,21,63,0.45); text-align: right; }
+  .brand em { font-style: italic; color: #3E6F69; font-weight: 500; }
+  .topbar-label { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--faint); text-align: right; }
 
   .stepper { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 16px 12px; border-bottom: 1px solid rgba(27,27,92,0.14); flex-wrap: wrap; }
   .step-cell { display: flex; align-items: center; gap: 4px; }
   .step-node { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; font-feature-settings: 'tnum'; flex-shrink: 0; }
   .step-node.active { background: #1B1B5C; color: #FBFAF6; border: 1px solid #1B1B5C; }
-  .step-node.done { background: transparent; color: #4F8C84; border: 1px solid #4F8C84; }
+  .step-node.done { background: transparent; color: #3E6F69; border: 1px solid #4F8C84; }
   .step-node.todo { background: transparent; color: rgba(21,21,63,0.35); border: 1px solid rgba(27,27,92,0.2); }
   .step-line { width: 14px; height: 1px; background: rgba(27,27,92,0.2); }
 
@@ -52,7 +52,7 @@
 
   .step-eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
   .step-eyebrow-line { width: 48px; height: 2px; background: #4F8C84; flex-shrink: 0; }
-  .step-eyebrow-text { font-size: 12px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: #4F8C84; }
+  .step-eyebrow-text { font-size: 12px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: #3E6F69; }
   .step-title { font-family: 'Fraunces', serif; font-size: 34px; font-weight: 500; color: #1B1B5C; margin-bottom: 10px; }
   .step-desc { font-size: 15px; color: rgba(21,21,63,0.6); margin-bottom: 28px; max-width: 560px; line-height: 1.6; }
 
@@ -62,9 +62,9 @@
   .span2 { grid-column: span 2; }
   .grid1 { display: grid; grid-template-columns: 1fr; gap: 24px; }
 
-  .f-label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(21,21,63,0.45); margin-bottom: 8px; }
+  .f-label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
   .f-input { width: 100%; padding: 13px 14px; border: 1px solid rgba(27,27,92,0.2); border-radius: 6px; font-family: 'Manrope', sans-serif; font-size: 15px; color: #15153F; background: #FBFAF6; }
-  .f-input:focus { outline: none; border-color: #4F8C84; }
+  .f-input:focus { outline: none; border-color: #3E6F69; }
   .f-input:disabled { opacity: 0.6; }
   .f-input.num { font-feature-settings: 'tnum'; }
   .f-hint { font-size: 12.5px; color: rgba(21,21,63,0.5); margin-top: 8px; }
@@ -88,8 +88,8 @@
   .list-item { border: 1px solid rgba(27,27,92,0.14); border-radius: 8px; padding: 20px; margin-bottom: 14px; }
   .list-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
   .list-title { font-size: 13px; font-weight: 700; color: #1B1B5C; }
-  .link-remove { background: transparent; border: none; color: rgba(21,21,63,0.45); font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: underline; }
-  .link-add { display: inline-block; margin-top: 4px; background: transparent; border: none; color: #4F8C84; font-size: 14px; font-weight: 700; cursor: pointer; padding: 0; }
+  .link-remove { background: transparent; border: none; color: var(--faint); font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: underline; }
+  .link-add { display: inline-block; margin-top: 4px; background: transparent; border: none; color: #3E6F69; font-size: 14px; font-weight: 700; cursor: pointer; padding: 0; }
   .link-edit { background: transparent; border: 1px solid rgba(27,27,92,0.25); color: #1B1B5C; font-size: 12.5px; font-weight: 700; cursor: pointer; padding: 6px 14px; border-radius: 5px; }
 
   .review-card { margin-bottom: 20px; }
@@ -199,8 +199,8 @@ var STORAGE_DATA = "hz_diagnostico_data";
 /* ===================== Estado ===================== */
 function defaultData() {
   return {
-    nome: "", email: "", estado: "", cidade: "", idade: "",
-    estadoCivil: "", temConjuge: "", filhos: "", ocupacao: "",
+    nome: "", email: "", estado: "", cidade: "", dataNascimento: "",
+    estadoCivil: "", temConjuge: "", dataNascimentoConjuge: "", filhos: "", ocupacao: "",
     rendaPropria: 0, rendaConjuge: 0, outrasRendas: [],
     despesas: { alimentacao: 0, educacao: 0, impostos: 0, investimentos: 0, lazer: 0, moradia: 0, presentes: 0, saude: 0, seguros: 0, servicos: 0, transporte: 0, vestuario: 0 },
     imoveis: [], veiculos: [],
@@ -252,6 +252,33 @@ function parseCents(raw) {
   return digits === "" ? 0 : parseInt(digits, 10) / 100;
 }
 
+/* ===================== Datas de nascimento ===================== */
+// A idade usada em todos os cálculos vem da data de nascimento de quem responde.
+// A data do cônjuge é apenas informativa: não entra em nenhuma conta.
+function idadeDeData(iso) {
+  if (window.HZDiag && HZDiag.idadeEm) return HZDiag.idadeEm(iso);
+  return null;
+}
+function idadeAtual() {
+  var calc = idadeDeData(data.dataNascimento);
+  if (calc !== null) return calc;
+  var legado = Number(data.idade);
+  return legado > 0 ? legado : null;
+}
+function dataBR(iso) {
+  if (window.HZDiag && HZDiag.formatarData) return HZDiag.formatarData(iso);
+  return iso || "";
+}
+function dataMaxNascimento() {
+  return new Date().toISOString().slice(0, 10);
+}
+function idadeHint(iso, rotulo) {
+  var a = idadeDeData(iso);
+  if (iso && a === null) return '<div class="f-hint" style="color:var(--red);">Data inválida.</div>';
+  if (a === null) return "";
+  return '<div class="f-hint">' + (rotulo || "Idade") + ": " + a + (a === 1 ? " ano" : " anos") + "</div>";
+}
+
 /* ===================== Totais ===================== */
 function totals() {
   var totalRenda = (data.rendaPropria || 0) + (data.temConjuge === true ? (data.rendaConjuge || 0) : 0) + data.outrasRendas.reduce(function (a, r) { return a + (r.valor || 0); }, 0);
@@ -287,7 +314,7 @@ function requiredByStep(n) {
       ["E-mail", /\S+@\S+\.\S+/.test(data.email)],
       ["Estado", data.estado !== ""],
       ["Cidade", data.cidade.trim() !== ""],
-      ["Idade", String(data.idade) !== ""],
+      ["Data de nascimento", idadeAtual() !== null],
       ["Estado civil", data.estadoCivil !== ""],
       ["Tem cônjuge com renda própria?", data.temConjuge === true || data.temConjuge === false],
       ["Filhos / dependentes", String(data.filhos) !== ""],
@@ -398,11 +425,16 @@ function renderStep1() {
     '<div class="span2"><label class="f-label">E-mail</label><input type="email" class="f-input" data-field="email" placeholder="voce@email.com" value="' + esc(data.email) + '"></div>' +
     '<div><label class="f-label">Estado</label>' + selectHtml("estado", UF_LIST, data.estado) + '</div>' +
     '<div><label class="f-label">Cidade</label><input type="text" class="f-input" id="cidade-input" data-field="cidade" ' + (data.estado ? "" : "disabled ") + 'placeholder="' + (data.estado ? "Digite sua cidade" : "Selecione um estado primeiro") + '" value="' + esc(data.cidade) + '"></div>' +
-    '<div><label class="f-label">Idade</label><input type="number" min="0" class="f-input num" data-field="idade" placeholder="Ex: 34" value="' + esc(data.idade) + '"></div>' +
+    '<div><label class="f-label">Data de nascimento</label><input type="date" class="f-input" data-field="dataNascimento" max="' + dataMaxNascimento() + '" value="' + esc(data.dataNascimento) + '">' +
+      '<div id="hint-nascimento">' + idadeHint(data.dataNascimento) + '</div></div>' +
     '<div><label class="f-label">Estado civil</label>' + selectHtml("estadoCivil", ESTADO_CIVIL, data.estadoCivil) + '</div>' +
     '<div class="rule"></div>' +
     '<div class="span2"><label class="f-label" style="margin-bottom:10px;">Tem cônjuge com renda própria?</label>' + simNaoSeg("temConjuge", data.temConjuge) + '</div>' +
     (data.temConjuge === true ?
+      '<div><label class="f-label">Data de nascimento do cônjuge <span style="font-weight:500; opacity:0.75;">(opcional)</span></label>' +
+        '<input type="date" class="f-input" data-field="dataNascimentoConjuge" max="' + dataMaxNascimento() + '" value="' + esc(data.dataNascimentoConjuge) + '">' +
+        '<div id="hint-nascimento-conjuge">' + idadeHint(data.dataNascimentoConjuge) + '</div></div>' +
+      '<div class="f-hint" style="margin-top:0; align-self:end;">A data do cônjuge fica registrada apenas como informação. A projeção de aposentadoria usa a sua idade.</div>' +
       '<div class="span2"><div class="f-hint" style="margin-top:0;">A renda do cônjuge será perguntada na próxima etapa (Renda Mensal). Nas etapas de patrimônio e metas, considere os valores do casal.</div></div>' : "") +
     '<div class="rule"></div>' +
     '<div class="span2"><label class="f-label">Filhos / dependentes</label><input type="number" min="0" class="f-input num" data-field="filhos" placeholder="0" value="' + esc(data.filhos) + '"></div>' +
@@ -410,7 +442,7 @@ function renderStep1() {
     '<div class="rule"></div>' +
     '<div class="span2"><label class="check-label" style="margin-top:0; align-items:flex-start; font-size:13.5px; line-height:1.6;">' +
     '<input type="checkbox" data-action="toggleConsent"' + (data.consentimento ? " checked" : "") + ' style="margin-top:3px; flex-shrink:0;">' +
-    '<span>Li e concordo com a <a href="politica-privacidade.html" target="_blank" style="color:#4F8C84; font-weight:600;">Política de Privacidade</a> e autorizo o uso das minhas respostas para gerar meu diagnóstico personalizado e para contato da HZ Invest.</span>' +
+    '<span>Li e concordo com a <a href="politica-privacidade.html" target="_blank" style="color:#3E6F69; font-weight:600;">Política de Privacidade</a> e autorizo o uso das minhas respostas para gerar meu diagnóstico personalizado e para contato da HZ Invest.</span>' +
     '</label></div>' +
     '</div></div>';
 }
@@ -579,10 +611,14 @@ function renderStep10() {
   var sections = [
     { n: 1, title: "Identificação", rows: [
       ["Nome", orDash(data.nome)], ["E-mail", orDash(data.email)],
-      ["Cidade/Estado", orDash(data.cidade) + " / " + orDash(data.estado)], ["Idade", orDash(data.idade)],
-      ["Estado civil", orDash(data.estadoCivil)], ["Cônjuge com renda", simNao(data.temConjuge)],
+      ["Cidade/Estado", orDash(data.cidade) + " / " + orDash(data.estado)],
+      ["Data de nascimento", orDash(dataBR(data.dataNascimento)) + (idadeAtual() !== null ? " (" + idadeAtual() + " anos)" : "")],
+      ["Estado civil", orDash(data.estadoCivil)], ["Cônjuge com renda", simNao(data.temConjuge)]
+    ].concat(data.temConjuge === true ? [
+      ["Nascimento do cônjuge", orDash(dataBR(data.dataNascimentoConjuge))]
+    ] : []).concat([
       ["Filhos/dependentes", orDash(data.filhos)], ["Ocupação", orDash(data.ocupacao)]
-    ]},
+    ])},
     { n: 2, title: "Renda Mensal", rows: [
       ["Renda própria", fmt(data.rendaPropria)], ["Renda cônjuge", fmt(data.rendaConjuge)],
       ["Outras rendas", String(data.outrasRendas.length)], ["Total", fmt(t.totalRenda)]
@@ -710,6 +746,14 @@ function bindEvents() {
     el.addEventListener(evt, function () {
       data[el.dataset.field] = el.value;
       persist();
+      if (el.dataset.field === "dataNascimento") {
+        var h = document.getElementById("hint-nascimento");
+        if (h) h.innerHTML = idadeHint(data.dataNascimento);
+      }
+      if (el.dataset.field === "dataNascimentoConjuge") {
+        var hc = document.getElementById("hint-nascimento-conjuge");
+        if (hc) hc.innerHTML = idadeHint(data.dataNascimentoConjuge);
+      }
       if (el.dataset.field === "estado") {
         var cidade = document.getElementById("cidade-input");
         if (cidade) {

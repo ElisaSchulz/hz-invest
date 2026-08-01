@@ -24,16 +24,23 @@
   /* ── tinta e texto ── */
   --ink:           #15153F;
   --ink-strong:    #1B1B5C;
-  --text:          rgba(21,21,63,0.80);
-  --muted:         rgba(21,21,63,0.60);
-  --faint:         rgba(21,21,63,0.50);
+  /* Os níveis de opacidade abaixo foram calibrados para passar no
+     WCAG AA (4,5:1) sobre as três superfícies claras do site. */
+  --text:          rgba(21,21,63,0.84);
+  --muted:         rgba(21,21,63,0.68);
+  --faint:         rgba(21,21,63,0.62);
 
   /* ── marca ── */
   --navy:          #1B1B5C;  /* navy profundo: botões, painéis, títulos */
   --navy-deep:     #15153F;
   --navy-soft:     #2A2A6E;  /* hover de superfícies navy */
-  --sage:          #4F8C84;  /* acento principal */
-  --sage-deep:     #3E6F69;  /* acento em hover sobre fundo claro */
+  /* O sage claro é o acento da marca, mas sobre o fundo creme ele
+     rende só 3,5:1. Por isso ele fica reservado para linhas, fundos,
+     ícones e títulos grandes, e o texto pequeno usa o --sage-deep,
+     que é o mesmo tom mais fechado e chega a 5,2:1. */
+  --sage:          #4F8C84;  /* acento decorativo: linhas, fundos, ícones */
+  --sage-deep:     #3E6F69;  /* acento em texto e em botões preenchidos */
+  --sage-darker:   #2F5651;  /* hover do sage-deep */
   --sage-light:    #6FA8A0;  /* acento sobre fundo navy */
   --sage-dim:      rgba(79,140,132,0.10);
   --sage-border:   rgba(79,140,132,0.28);
@@ -44,8 +51,9 @@
 
   /* ── estados ── */
   --critico:       #B34747;
-  --alerta:        #C48A3E;
-  --bom:           #4F8C84;
+  --alerta:        #C48A3E;  /* só para fundos, anéis e barras */
+  --alerta-texto:  #8A5F22;  /* versão legível do alerta em texto */
+  --bom:           #3E6F69;
   --otimo:         #1B1B5C;
 
   /* ── tipografia ── */
@@ -65,8 +73,9 @@
   --navy-dark:   #F6F4EE;   /* era o fundo da página */
   --navy-mid:    #FBFAF6;   /* era o fundo dos cartões */
   --navy-light:  #F1EEE6;
-  --teal:        #4F8C84;   /* acento da marca, igual ao diagnostico.html */
-  --teal-light:  #3E6F69;   /* hover sobre fundo claro */
+  --teal:        #3E6F69;   /* acento da marca em texto e botões (AA) */
+  --teal-accent: #4F8C84;   /* o mesmo acento em versão clara, decorativa */
+  --teal-light:  #2F5651;   /* hover sobre fundo claro */
   --teal-dim:    rgba(79,140,132,0.10);
   --teal-border: rgba(79,140,132,0.28);
   --white:       #1B1B5C;   /* era a cor de texto forte */
@@ -112,7 +121,7 @@ h1, h2, h3, h4 {
   line-height: 1.15;
 }
 
-a { color: var(--sage); text-decoration: none; }
+a { color: var(--sage-deep); text-decoration: none; }
 a:hover { color: var(--navy); }
 ::selection { background: rgba(111,168,160,0.35); }
 
@@ -141,7 +150,7 @@ nav {
 /* seletor com elemento + classe para vencer o text-transform das páginas */
 a.nav-logo, a.footer-logo, a.brand { text-transform: none; letter-spacing: 0.01em; }
 .nav-logo span, .footer-logo span, .brand em {
-  color: var(--sage);
+  color: var(--sage-deep);
   font-style: italic;
   font-weight: 500;
 }
@@ -176,7 +185,7 @@ a.nav-logo, a.footer-logo, a.brand { text-transform: none; letter-spacing: 0.01e
   transition: background 0.2s, transform 0.15s;
 }
 .btn-primary:hover, .btn-cta:hover {
-  background: var(--sage);
+  background: var(--sage-deep);
   color: #FBFAF6;
   transform: translateY(-1px);
   box-shadow: none;
@@ -210,7 +219,7 @@ a.nav-logo, a.footer-logo, a.brand { text-transform: none; letter-spacing: 0.01e
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--sage);
+  color: var(--sage-deep);
   margin-bottom: 0.9rem;
   opacity: 1;
 }
