@@ -154,6 +154,9 @@
   <div class="container" id="app"></div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="diagnostico-core.js"></script>
 <script>
 "use strict";
 
@@ -617,9 +620,23 @@ function renderDone() {
   return '<div class="hero done-hero"><div class="hero-glow"></div>' +
     '<div class="done-title">Diagnóstico recebido</div>' +
     '<div class="done-text">Obrigado, ' + esc(data.nome) + '. Seu relatório personalizado está pronto — clique abaixo para visualizá-lo. Ele também fica salvo neste navegador para consultar depois.</div>' +
+    '<div class="done-text" id="sync-status" style="margin-top:14px; font-size:13.5px; color:rgba(251,250,246,0.55);"></div>' +
     '<div class="done-actions"><a class="btn-report" href="diagnostico-relatorio.html">Ver meu relatório →</a>' +
     '<button type="button" class="link-restart" data-action="restart">Refazer o diagnóstico do zero</button></div>' +
     '</div>';
+}
+
+function enviarRespostas() {
+  if (!window.hzSupabase || !hzSupabase.configurado()) return;
+  hzSupabase.enviarDiagnostico().then(function (status) {
+    var el = document.getElementById("sync-status");
+    if (!el) return;
+    if (status === "ok" || status === "ja-enviado") {
+      el.textContent = "Suas respostas foram registradas com sucesso.";
+    } else if (status === "erro") {
+      el.textContent = "Não foi possível enviar suas respostas agora — elas ficam salvas neste navegador e serão reenviadas quando você abrir o relatório.";
+    }
+  });
 }
 
 /* ===================== Render principal ===================== */
@@ -759,11 +776,13 @@ function bindEvents() {
           if (missing.length === 0) {
             if (step === 10) {
               try { localStorage.setItem(STORAGE_DATA, JSON.stringify({ data: data, geradoEm: new Date().toISOString() })); } catch (e) {}
+              if (window.hzSupabase) hzSupabase.novoEnvio(data.nome);
               step = 11;
             } else {
               step = Math.min(11, step + 1);
             }
             persist(); scrollTop(); render();
+            if (step === 11) enviarRespostas();
           } else {
             attempted[step] = true;
             render();
