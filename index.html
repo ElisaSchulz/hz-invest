@@ -686,8 +686,58 @@
     color: var(--teal-light);
   }
 
+  /* ─── DESTAQUE DUPLO (comunidade + diagnóstico) ─── */
+  .destaque-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+  .destaque-card {
+    background: #FBFAF6;
+    border: 1px solid var(--teal-border);
+    border-radius: 16px;
+    padding: 2.8rem 2.4rem;
+    box-shadow: 0 0 60px rgba(79,140,132,0.08);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    scroll-margin-top: 90px;
+  }
+  .destaque-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(79,140,132,0.08), transparent);
+    pointer-events: none;
+  }
+  .destaque-card > * { position: relative; z-index: 1; }
+  .destaque-card .diag-tag { align-self: flex-start; }
+  .destaque-card .section-title {
+    font-size: clamp(1.5rem, 2.4vw, 1.9rem);
+    margin-bottom: 1rem;
+  }
+  .destaque-card > p {
+    color: var(--muted);
+    font-size: 0.975rem;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+  .destaque-card .diag-list { margin: 1.5rem 0 0; }
+  .destaque-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: auto;
+    padding-top: 2rem;
+  }
+  @media (max-width: 860px) {
+    .destaque-grid { grid-template-columns: 1fr; }
+    .destaque-card { padding: 2.2rem 1.6rem; }
+  }
+
   /* ─── DIAGNÓSTICO (destaque) ─── */
-  #diagnostico { background: #F1EEE6; }
   .diag-layout {
     display: grid;
     grid-template-columns: 1.05fr 0.95fr;
@@ -920,10 +970,6 @@
   }
 
   /* ─── TELEGRAM CTA ─── */
-  #comunidade {
-    background: var(--navy-dark);
-    text-align: center;
-  }
   .cta-box {
     max-width: 600px;
     margin: 0 auto;
@@ -953,7 +999,7 @@
   .cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
 
   /* ─── NEWSLETTER ─── */
-  #newsletter { background: #F1EEE6; }
+  #newsletter { background: var(--navy-dark); }
   .newsletter-inner {
     display: flex;
     gap: 4rem;
@@ -1305,6 +1351,38 @@
   </div>
 </section>
 
+<!-- DESTAQUE DUPLO: COMUNIDADE + DIAGNÓSTICO -->
+<section id="destaque-duplo">
+  <div class="destaque-grid reveal">
+    <div class="destaque-card" id="comunidade">
+      <div class="section-label">// comunidade</div>
+      <span class="diag-tag">Telegram</span>
+      <h2 class="section-title">Pronto para levar<br>seu dinheiro a sério?</h2>
+      <p>Entre no grupo gratuito do Telegram e comece a acompanhar o mercado com quem entende do assunto. Notícias, análises e discussões sobre o mercado brasileiro e americano, todos os dias e sem jargão.</p>
+      <div class="destaque-actions">
+        <a href="https://t.me/+uMdIiepcb-E0ZWIx" class="btn-primary" target="_blank">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          Entrar no Grupo · Grátis
+        </a>
+      </div>
+    </div>
+    <div class="destaque-card" id="diagnostico">
+      <div class="section-label">// diagnóstico financeiro</div>
+      <span class="diag-tag">Novo</span>
+      <h2 class="section-title">Um raio-x da sua<br>vida financeira</h2>
+      <p>Um questionário guiado sobre renda, gastos, patrimônio, dívidas e metas. No fim, um relatório personalizado com o seu score e o que fazer nos próximos 30 dias.</p>
+      <ul class="diag-list">
+        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Score geral e nota em 6 dimensões da sua vida financeira</li>
+        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Seu arquétipo financeiro e o padrão que trava o seu dinheiro</li>
+        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Plano de ação priorizado, com uma lista prática para 30 dias</li>
+      </ul>
+      <div class="destaque-actions">
+        <a href="diagnostico-lp.html" class="btn-primary">Conhecer o diagnóstico →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- O QUE FAZEMOS -->
 <section id="oferta">
   <div class="reveal">
@@ -1542,55 +1620,6 @@
   </div>
 </section>
 
-<!-- DIAGNÓSTICO FINANCEIRO -->
-<section id="diagnostico">
-  <div class="diag-layout reveal">
-    <div>
-      <div class="section-label">// diagnóstico financeiro</div>
-      <div class="teal-line"></div>
-      <span class="diag-tag">Novo</span>
-      <h2 class="section-title">Um raio-x da sua<br>vida financeira</h2>
-      <p class="section-sub" style="margin-bottom:0;">
-        Você responde um questionário guiado sobre renda, gastos, patrimônio, dívidas, proteção e metas.
-        No fim, recebe um relatório personalizado com o seu score, o seu arquétipo financeiro e o que fazer nos próximos 30 dias.
-      </p>
-      <ul class="diag-list">
-        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Score geral e nota em 6 dimensões da sua vida financeira</li>
-        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Seu arquétipo financeiro e o padrão que trava o seu dinheiro</li>
-        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Projeção de patrimônio já descontando a inflação</li>
-        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Plano de ação priorizado, com uma lista prática para 30 dias</li>
-        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Bônus: 30 minutos de conversa com a consultoria da HZ</li>
-      </ul>
-      <div class="diag-actions">
-        <a href="diagnostico-lp.html" class="btn-primary">Conhecer o diagnóstico →</a>
-        <span class="nota">Cerca de 25 minutos para responder. Garantia de 7 dias.</span>
-      </div>
-    </div>
-    <div class="diag-card">
-      <h3>Como funciona</h3>
-      <p>Do questionário ao relatório, sem planilha e sem reunião obrigatória.</p>
-      <div class="diag-steps">
-        <div class="diag-step">
-          <span class="n">1</span>
-          <div><strong>Você responde</strong><span>10 etapas guiadas, com salvamento automático. Dá para parar e voltar depois.</span></div>
-        </div>
-        <div class="diag-step">
-          <span class="n">2</span>
-          <div><strong>A gente calcula</strong><span>Suas respostas viram score, arquétipo, projeções e comparações com referências de mercado.</span></div>
-        </div>
-        <div class="diag-step">
-          <span class="n">3</span>
-          <div><strong>Você recebe o relatório</strong><span>Um documento personalizado, escrito com os seus números, pronto para guardar e revisitar.</span></div>
-        </div>
-        <div class="diag-step">
-          <span class="n">4</span>
-          <div><strong>Conversamos</strong><span>30 minutos com a consultoria da HZ para tirar dúvidas sobre o que o relatório apontou.</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- FERRAMENTAS -->
 <section id="ferramentas">
   <div class="reveal">
@@ -1692,22 +1721,6 @@
           <div class="testi-title-role">Membro há 6 meses a 1 ano</div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- TELEGRAM CTA -->
-<section id="comunidade">
-  <div class="cta-box reveal">
-    <div class="section-label" style="position:relative;z-index:1;">// comunidade</div>
-    <h2 class="section-title" style="position:relative;z-index:1;">Pronto para levar<br>seu dinheiro a sério?</h2>
-    <p>Entre no grupo gratuito do Telegram agora e comece a acompanhar o mercado com quem entende do assunto.</p>
-    <div class="cta-actions">
-      <a href="https://t.me/+uMdIiepcb-E0ZWIx" class="btn-primary" target="_blank">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-        Entrar no Telegram · Grátis
-      </a>
-      <a href="#consultoria" class="btn-secondary">Falar com especialista</a>
     </div>
   </div>
 </section>
