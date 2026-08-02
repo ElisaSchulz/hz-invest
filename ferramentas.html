@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HZ Invest · Ferramentas e Simuladores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hz-design.css">
+
+<style>
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy-dark);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  /* ─── ANIMATED BACKGROUND ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(79,140,132,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 80% 90%, rgba(79,140,132,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 80% 80% at 50% 50%, #FBFAF6 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* geometric dot pattern */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(79,140,132,0.18) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 0%, transparent 80%);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 12%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(246,244,238,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    transition: transform 0.3s ease;
+  }
+
+  .nav-logo {
+    font-family: var(--font-body);
+    font-weight: 900;
+    font-size: 1.35rem;
+    color: var(--white-pure);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--teal);
+    color: var(--navy-dark);
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.01em;
+    padding: 0.85rem 1.8rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(79,140,132,0.25);
+  }
+
+  .btn-primary:hover {
+    background: var(--teal-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(79,140,132,0.35);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    color: var(--white);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.85rem 1.8rem;
+    border-radius: 6px;
+    border: 1px solid var(--teal-border);
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--teal);
+    background: var(--teal-dim);
+    color: var(--teal-light);
+  }
+
+  /* ─── SECTION HELPERS ─── */
+  section {
+    position: relative;
+    padding: 100px 12%;
+    z-index: 1;
+  }
+
+  .section-label {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 1rem;
+    opacity: 0.9;
+  }
+
+  .section-title {
+    font-family: var(--font-body);
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 800;
+    color: var(--white-pure);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+  }
+
+  .section-sub {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 500px;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  /* ─── SIMULATOR ─── */
+  #ferramentas { background: var(--navy-dark); }
+
+  .simulator {
+    background: #FBFAF6;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.5rem;
+    margin-top: 2rem;
+  }
+
+  .sim-title {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--white-pure);
+    margin-bottom: 1.5rem;
+  }
+
+  .sim-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .sim-field label {
+    display: block;
+    font-size: 0.7rem;
+    font-family: var(--font-body);
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.35rem;
+  }
+
+  .sim-field input {
+    width: 100%;
+    background: rgba(246,244,238,0.92);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.6rem 0.85rem;
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .sim-field input:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(79,140,132,0.1);
+  }
+
+  .sim-result {
+    display: flex;
+    gap: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .sim-result-item { flex: 1; min-width: 130px; }
+
+  .sim-result-label {
+    font-size: 0.7rem;
+    font-family: var(--font-body);
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.35rem;
+  }
+
+  .sim-result-val {
+    font-family: var(--font-body);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--teal-light);
+  }
+
+  /* ─── TOOLS GRID ─── */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .tool-card {
+    background: #FBFAF6;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+
+  .tool-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--teal), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .tool-card:hover { border-color: var(--teal-border); transform: translateY(-2px); }
+
+  .tool-card:hover::before { opacity: 1; }
+
+  .tool-card h3 {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--white-pure);
+    margin-bottom: 0.5rem;
+  }
+
+  .tool-card p {
+    font-size: 0.975rem;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 1.2rem;
+  }
+
+  .tool-badge {
+    font-size: 0.68rem;
+    font-family: var(--font-body);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: rgba(79,140,132,0.1);
+    color: var(--sage-deep);
+    border: 1px solid rgba(79,140,132,0.2);
+    padding: 0.2rem 0.55rem;
+    border-radius: 3px;
+  }
+
+  .tool-badge.soon {
+    background: var(--teal-dim);
+    color: var(--teal);
+    border-color: var(--teal-border);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--navy-dark);
+    border-top: 1px solid var(--border);
+    padding: 3rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .footer-logo {
+    font-family: var(--font-body);
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: var(--white-pure);
+    text-decoration: none;
+  }
+
+  .footer-logo span { color: var(--teal); }
+
+  footer p {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+  .footer-links a {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--teal); }
+
+  /* ─── TEAL DIVIDER ─── */
+  .teal-line {
+    width: 40px;
+    height: 3px;
+    background: var(--teal);
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 1.5rem; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    section { padding: 70px 6%; }
+    .hero { padding: 110px 6% 70px; }
+    .hero-stats { gap: 2rem; }
+    .consult-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+    .sim-row { grid-template-columns: 1fr; }
+    footer { flex-direction: column; text-align: center; }
+    .cta-box { padding: 2.5rem 1.5rem; }
+    /* Ticker mobile: taller to avoid content being cut */
+    .ticker-bar { height: 80px; }
+    .ticker-bar .tradingview-widget-container,
+    .ticker-bar .tradingview-widget-container__widget { height: 80px !important; }
+    .ticker-bar .tradingview-widget-container { height: 80px; }
+    .hero { padding-top: calc(110px + 80px) !important; }
+  }
+
+  /* ─── NAV USER PILL ─── */
+  #nav-user-pill { display:none; align-items:center; gap:0.75rem; }
+
+  .nav-user-name { font-size:0.85rem; color:var(--teal-light); font-weight:600; }
+
+  .nav-signout {
+    background:transparent; border:1px solid var(--teal-border);
+    color:var(--muted); font-family:var(--font-body); font-size:0.7rem;
+    padding:0.25rem 0.7rem; border-radius:4px; cursor:pointer;
+    transition:all 0.2s; letter-spacing:0.04em;
+  }
+
+  .nav-signout:hover { border-color:var(--teal); color:var(--teal); }
+
+  .nav-login-btn {
+    background: transparent;
+    border: 1px solid var(--teal-border);
+    color: var(--teal);
+    font-family:var(--font-body); font-weight:600; font-size:0.82rem;
+    padding:0.4rem 1rem; border-radius:6px; text-decoration:none;
+    transition: all 0.2s;
+  }
+
+  .nav-login-btn:hover { background:var(--teal-dim); color:var(--teal-light); border-color:var(--teal); }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ─── identidade HZ: títulos na serifada da marca ─── */
+  h1, h2, h3, h4,
+  .section-title, .hero h1, .hero-title, .nav-logo, .footer-logo, .brand,
+  .stat-num, .stat-value, .big-num, .result-val, .sim-result-val,
+  .price-tag .val, .cover-title, .modal-box h3 {
+    font-family: var(--font-display) !important;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+
+  .nav-logo, .footer-logo, .brand { font-weight: 600; }
+
+  .nav-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--teal);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: color 0.2s, gap 0.2s;
+  }
+  .nav-back:hover { color: var(--teal-light); gap: 0.7rem; }
+
+  /* rodapé no fim da página mesmo quando o conteúdo é curto */
+  body { min-height: 100vh; display: flex; flex-direction: column; }
+  body > section { flex: 1 0 auto; }
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">HZ <span>Invest</span></a>
+  <div style="display:flex;align-items:center;gap:1.5rem;">
+    <a href="index.html" class="nav-back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      Voltar ao início
+    </a>
+    <div id="nav-user-pill"></div>
+  </div>
+</nav>
+
+<section id="ferramentas">
+  <div class="reveal">
+    <div class="section-label">// ferramentas</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Simule, calcule<br>e planeje grátis</h2>
+    <p class="section-sub">Ferramentas práticas para visualizar o poder dos seus investimentos ao longo do tempo.</p>
+  </div>
+
+  <div class="simulator reveal">
+    <div class="sim-title">Simulador de Juros Compostos</div>
+    <div class="sim-row">
+      <div class="sim-field">
+        <label>Aporte inicial (R$)</label>
+        <input type="number" id="sim-inicial" value="1000" oninput="calcSim()">
+      </div>
+      <div class="sim-field">
+        <label>Aporte mensal (R$)</label>
+        <input type="number" id="sim-mensal" value="500" oninput="calcSim()">
+      </div>
+      <div class="sim-field">
+        <label>Taxa anual (%)</label>
+        <input type="number" id="sim-taxa" value="12" step="0.1" oninput="calcSim()">
+      </div>
+      <div class="sim-field">
+        <label>Período (anos)</label>
+        <input type="number" id="sim-anos" value="10" oninput="calcSim()">
+      </div>
+      <div class="sim-field">
+        <label>Inflação anual (%)</label>
+        <input type="number" id="sim-inflacao" value="4.5" step="0.1" oninput="calcSim()">
+      </div>
+    </div>
+    <div class="sim-result">
+      <div class="sim-result-item">
+        <div class="sim-result-label">Total investido</div>
+        <div class="sim-result-val" id="res-investido">—</div>
+      </div>
+      <div class="sim-result-item">
+        <div class="sim-result-label">Valor final bruto</div>
+        <div class="sim-result-val" id="res-final">—</div>
+      </div>
+      <div class="sim-result-item">
+        <div class="sim-result-label">Ganho em juros</div>
+        <div class="sim-result-val" id="res-juros">—</div>
+      </div>
+      <div class="sim-result-item">
+        <div class="sim-result-label">Valor real (inflação)</div>
+        <div class="sim-result-val" id="res-real">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tools-grid reveal">
+    <a class="tool-card" href="calculadora-fire.html" style="text-decoration:none;display:block;">
+      <h3 style="color:var(--white-pure)">Calculadora de FIRE</h3>
+      <p>Descubra quanto você precisa acumular para viver de renda e em quantos anos pode alcançar a independência financeira.</p>
+      <span class="tool-badge" style="background:var(--teal-dim);color:var(--teal);border-color:var(--teal-border);">Abrir →</span>
+    </a>
+    <a class="tool-card" href="comparador-investimentos.html" style="text-decoration:none;display:block;">
+      <h3 style="color:var(--white-pure)">Comparador de Investimentos</h3>
+      <p>Compare CDB, LCI, LCA, Tesouro Direto e ações lado a lado com rentabilidade líquida já descontando IR e inflação.</p>
+      <span class="tool-badge" style="background:var(--teal-dim);color:var(--teal);border-color:var(--teal-border);">Abrir →</span>
+    </a>
+    <a class="tool-card" href="planilha-orcamento.html" style="text-decoration:none;display:block;">
+      <h3 style="color:var(--white-pure)">Planilha de Orçamento</h3>
+      <p>Template mensal para mapear receitas, despesas e metas de poupança. Use direto no site ou exporte para Excel.</p>
+      <span class="tool-badge" style="background:var(--teal-dim);color:var(--teal);border-color:var(--teal-border);">Abrir →</span>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="index.html" class="footer-logo">HZ <span>Invest</span></a>
+  <p>© 2025 HZ Invest · Todos os direitos reservados</p>
+  <div class="footer-links">
+    <a href="https://t.me/+uMdIiepcb-E0ZWIx" target="_blank">Telegram</a>
+    <a href="consultoria.html">Consultoria</a>
+    <a href="ferramentas.html">Ferramentas</a>
+  </div>
+</footer>
+
+<script>
+  // ─── SCROLL REVEAL ───
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+  // ─── SIMULATOR ───
+  function fmt(n) {
+    return 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function calcSim() {
+    const P  = parseFloat(document.getElementById('sim-inicial').value)  || 0;
+    const M  = parseFloat(document.getElementById('sim-mensal').value)   || 0;
+    const r  = (parseFloat(document.getElementById('sim-taxa').value)    || 0) / 100;
+    const n  = (parseInt(document.getElementById('sim-anos').value)      || 0) * 12;
+    const ri = (parseFloat(document.getElementById('sim-inflacao').value)|| 0) / 100;
+
+    const rm = Math.pow(1 + r, 1/12) - 1;
+    let total = P * Math.pow(1 + rm, n);
+    if (rm > 0) total += M * (Math.pow(1 + rm, n) - 1) / rm;
+    else total += M * n;
+
+    const investido = P + M * n;
+    const juros = total - investido;
+    const realFactor = Math.pow(1 + ri, -(parseInt(document.getElementById('sim-anos').value) || 0));
+    const real = total * realFactor;
+
+    document.getElementById('res-investido').textContent = fmt(investido);
+    document.getElementById('res-final').textContent     = fmt(total);
+    document.getElementById('res-juros').textContent     = fmt(juros);
+    document.getElementById('res-real').textContent      = fmt(real);
+  }
+  calcSim();
+</script>
+
+<!-- Firebase Auth (module) -->
+<script type="module">
+  import { bindNavUser } from './auth.js';
+  bindNavUser();
+</script>
+
+</body>
+</html>
