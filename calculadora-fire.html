@@ -59,7 +59,9 @@
   .field input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(79,140,132,.12)}
   .field input.no-prefix{padding-left:1rem;padding-right:3.4rem}
 
-  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+  /* align-items:end mantém os dois campos alinhados quando um rótulo
+     quebra em duas linhas e o outro não (acontece em telas estreitas). */
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;align-items:end}
 
   .slider-wrap{margin-top:.4rem}
   input[type=range]{width:100%;-webkit-appearance:none;height:4px;border-radius:2px;background:rgba(79,140,132,.2);outline:none;cursor:pointer}
@@ -94,6 +96,12 @@
   .result-main-sub{font-size:.8rem;color:var(--muted);margin-top:.35rem;line-height:1.5}
   .result-main-nominal{font-size:.75rem;color:var(--muted);margin-top:.5rem;padding-top:.5rem;border-top:1px dashed var(--teal-border);line-height:1.5}
   .result-main-nominal b{color:var(--white);font-weight:700}
+
+  /* segundo número de destaque: o aporte mensal necessário */
+  .result-aporte{display:flex;align-items:baseline;flex-wrap:wrap;gap:.2rem .8rem;padding:1rem 1.2rem;background:var(--navy);border-radius:10px;margin-bottom:1.2rem}
+  .result-aporte-label{font-family:var(--font-body);font-size:.66rem;color:var(--sage-light);letter-spacing:.09em;text-transform:uppercase;flex:1 1 100%}
+  .result-aporte-value{font-family:var(--font-body);font-weight:900;font-size:clamp(1.4rem,2.6vw,1.9rem);color:#FBFAF6;letter-spacing:-.02em;line-height:1.15}
+  .result-aporte-sub{font-size:.78rem;color:rgba(251,250,246,.72);line-height:1.5}
 
   .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem}
   .result-item{background:#F6F4EE;border:1px solid var(--border);border-radius:8px;padding:1rem}
@@ -216,7 +224,7 @@
   <div class="page-label">// ferramentas · calculadora</div>
   <div class="teal-line"></div>
   <h1 class="page-title">Calculadora <span>FIRE</span></h1>
-  <p class="page-sub">Descubra quanto você precisa acumular para viver de renda — mantendo o patrimônio para sempre ou consumindo-o ao longo de um período definido — e em quantos anos pode chegar lá.</p>
+  <p class="page-sub">Diga com quanto quer viver e em que idade quer parar. A calculadora devolve o patrimônio necessário e quanto você precisa guardar por mês para chegar lá — mantendo o patrimônio para sempre ou consumindo-o ao longo de um período definido.</p>
 
   <!-- ─── SELETOR DE ESTRATÉGIA ─── -->
   <div class="mode-picker">
@@ -270,6 +278,13 @@ Com 4%: 1 ÷ 0,04 = 25 × a despesa anual</span>
 i = taxa real mensal · n = nº de meses de renda</span>
       <p>Nesta calculadora os saques são feitos <span class="highlight">no início de cada mês</span> (você precisa do dinheiro para viver o mês), e o saldo restante continua rendendo. Por isso a fórmula é a de uma anuidade antecipada, com o fator <code>(1 + i)</code> no final.</p>
 
+      <h4>De onde sai o aporte mensal necessário</h4>
+      <p>Definido o patrimônio-alvo, a calculadora resolve a conta ao contrário: dado o que você já tem hoje, quanto falta guardar todo mês até a idade em que quer parar. O patrimônio atual cresce sozinho no período e só a diferença precisa vir de aportes.</p>
+      <span class="formula">Aporte mensal = [Alvo − Patrimônio atual × (1 + i)^n] × i ÷ [(1 + i)^n − 1]
+
+i = taxa real mensal · n = meses até a aposentadoria</span>
+      <p>Os aportes são considerados <span class="highlight">no fim de cada mês</span> e o resultado sai em reais de hoje. Na prática isso significa que, para manter o plano, o valor guardado precisa ser corrigido pela inflação todo ano — guardar R$ 6.409 fixos por quinze anos não é a mesma coisa. Se o resultado der zero, é porque o patrimônio que você já tem chega ao alvo sozinho, apenas com o rendimento real do período.</p>
+
       <h4>Qual estratégia escolher?</h4>
       <ul>
         <li><strong style="color:var(--white)">Renda perpétua</strong> faz sentido se você quer deixar herança, tem histórico de longevidade na família, se aposenta muito cedo (o prazo é longo demais para estimar) ou simplesmente prefere a margem de segurança máxima.</li>
@@ -315,14 +330,15 @@ Retorno real   = (1 + Retorno líquido) ÷ (1 + Inflação) − 1</span>
             <span class="field-suffix">anos</span>
           </div>
         </div>
-        <div class="field only-consumo">
-          <label>Quero parar aos</label>
+        <div class="field">
+          <label>Quero me aposentar aos</label>
           <div class="field-wrap">
             <input type="number" inputmode="numeric" class="no-prefix" id="idadeAlvo" value="60" min="20" max="95" oninput="calc()">
             <span class="field-suffix">anos</span>
           </div>
         </div>
       </div>
+      <div class="field-hint" id="hint-prazo" style="margin:-.6rem 0 1.1rem">Você tem 15 anos para acumular.</div>
 
       <div class="field only-perpetuo">
         <label>Despesas mensais desejadas (R$)</label>
@@ -357,15 +373,6 @@ Retorno real   = (1 + Retorno líquido) ÷ (1 + Inflação) − 1</span>
           <span class="field-prefix">R$</span>
           <input type="number" inputmode="decimal" id="patrimonio" value="50000" oninput="calc()">
         </div>
-      </div>
-
-      <div class="field">
-        <label>Aporte mensal (R$)</label>
-        <div class="field-wrap">
-          <span class="field-prefix">R$</span>
-          <input type="number" inputmode="decimal" id="aporte" value="2000" oninput="calc()">
-        </div>
-        <div class="field-hint">Quanto você consegue investir todo mês até parar de trabalhar.</div>
       </div>
 
       <div class="divider-label">Premissas de mercado</div>
@@ -425,6 +432,14 @@ Retorno real   = (1 + Retorno líquido) ÷ (1 + Inflação) − 1</span>
             </div>
             <div class="field-hint">Deixe em zero para consumir todo o patrimônio. Qualquer valor acima disso é o que sobra como herança, em poder de compra de hoje.</div>
           </div>
+          <div class="field">
+            <label>Aporte que você já faz hoje (R$)</label>
+            <div class="field-wrap">
+              <span class="field-prefix">R$</span>
+              <input type="number" inputmode="decimal" id="aporteAtual" value="0" oninput="calc()">
+            </div>
+            <div class="field-hint">Opcional. Preencha para comparar o que você já guarda com o aporte necessário e ver o tamanho da diferença. Deixe em zero para ignorar.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -440,22 +455,28 @@ Retorno real   = (1 + Retorno líquido) ÷ (1 + Inflação) − 1</span>
           <div class="result-main-nominal" id="res-nominal"></div>
         </div>
 
+        <div class="result-aporte">
+          <div class="result-aporte-label">para chegar lá, você precisa aportar</div>
+          <div class="result-aporte-value" id="res-aporte-nec">—</div>
+          <div class="result-aporte-sub" id="res-aporte-nec-sub"></div>
+        </div>
+
         <div class="status-box status-ok" id="res-status" style="display:none"></div>
 
         <!-- resultados do modo PERPÉTUO -->
         <div class="result-grid only-perpetuo">
           <div class="result-item">
-            <div class="result-item-label">Anos até o FIRE</div>
-            <div class="result-item-value green" id="res-anos">—</div>
-            <div class="result-item-note" id="res-anos-note"></div>
+            <div class="result-item-label">Prazo de acumulação</div>
+            <div class="result-item-value" id="p-prazo">—</div>
+            <div class="result-item-note" id="p-prazo-note"></div>
           </div>
           <div class="result-item">
-            <div class="result-item-label">Renda mensal passiva</div>
-            <div class="result-item-value" id="res-renda">—</div>
-            <div class="result-item-note">sem tocar no principal</div>
+            <div class="result-item-label">Renda mensal vitalícia</div>
+            <div class="result-item-value green" id="res-renda">—</div>
+            <div class="result-item-note">sem nunca tocar no principal</div>
           </div>
           <div class="result-item">
-            <div class="result-item-label">Total aportado até lá</div>
+            <div class="result-item-label">Total que você vai aportar</div>
             <div class="result-item-value" id="res-investido">—</div>
             <div class="result-item-note" id="res-investido-note"></div>
           </div>
@@ -470,41 +491,41 @@ Retorno real   = (1 + Retorno líquido) ÷ (1 + Inflação) − 1</span>
             <div class="result-item-note">patrimônio ÷ despesas anuais</div>
           </div>
           <div class="result-item">
-            <div class="result-item-label">Aporte p/ antecipar 5 anos</div>
-            <div class="result-item-value" id="res-aporte-ideal">—</div>
-            <div class="result-item-note" id="res-aporte-ideal-note">quanto precisaria poupar por mês</div>
+            <div class="result-item-label">Se consumisse o patrimônio</div>
+            <div class="result-item-value" id="p-alternativa">—</div>
+            <div class="result-item-note" id="p-alternativa-note"></div>
           </div>
         </div>
 
         <!-- resultados do modo CONSUMO -->
         <div class="result-grid only-consumo">
           <div class="result-item">
-            <div class="result-item-label">Aporte mensal necessário</div>
-            <div class="result-item-value green" id="c-aporte">—</div>
-            <div class="result-item-note" id="c-aporte-note"></div>
-          </div>
-          <div class="result-item">
-            <div class="result-item-label">Você terá com o aporte atual</div>
-            <div class="result-item-value" id="c-projetado">—</div>
-            <div class="result-item-note" id="c-projetado-note"></div>
-          </div>
-          <div class="result-item">
-            <div class="result-item-label">Renda possível com o plano atual</div>
-            <div class="result-item-value" id="c-renda-possivel">—</div>
-            <div class="result-item-note" id="c-renda-possivel-note"></div>
+            <div class="result-item-label">Prazo de acumulação</div>
+            <div class="result-item-value" id="c-prazo">—</div>
+            <div class="result-item-note" id="c-prazo-note"></div>
           </div>
           <div class="result-item">
             <div class="result-item-label">Total que você vai sacar</div>
-            <div class="result-item-value" id="c-total-sacado">—</div>
+            <div class="result-item-value green" id="c-total-sacado">—</div>
             <div class="result-item-note" id="c-total-sacado-note"></div>
           </div>
           <div class="result-item">
+            <div class="result-item-label">Total que você vai aportar</div>
+            <div class="result-item-value" id="c-investido">—</div>
+            <div class="result-item-note" id="c-investido-note"></div>
+          </div>
+          <div class="result-item">
+            <div class="result-item-label">Juros reais gerados</div>
+            <div class="result-item-value amber" id="c-juros">—</div>
+            <div class="result-item-note" id="c-juros-note"></div>
+          </div>
+          <div class="result-item">
             <div class="result-item-label">Taxa de saque no 1º ano</div>
-            <div class="result-item-value amber" id="c-taxa-saque">—</div>
+            <div class="result-item-value" id="c-taxa-saque">—</div>
             <div class="result-item-note">saque anual ÷ patrimônio na largada</div>
           </div>
           <div class="result-item">
-            <div class="result-item-label">Se fosse renda perpétua</div>
+            <div class="result-item-label" id="c-sexto-label">Se fosse renda perpétua</div>
             <div class="result-item-value" id="c-perpetuo">—</div>
             <div class="result-item-note" id="c-perpetuo-note"></div>
           </div>
@@ -537,12 +558,13 @@ Retorno real   = (1 + Retorno líquido) ÷ (1 + Inflação) − 1</span>
   <!-- ─── GRÁFICO ─── -->
   <div class="explainer" id="chartSection" style="margin-top:2rem;">
     <h3 style="margin-bottom:.3rem;">Trajetória do patrimônio</h3>
-    <p style="font-size:.82rem;margin-bottom:1.2rem;">Simulação com o seu aporte atual, em poder de compra de hoje.</p>
+    <p style="font-size:.82rem;margin-bottom:1.2rem;">Simulação com o aporte necessário, em poder de compra de hoje.</p>
     <canvas id="fireChart" style="width:100%;max-height:300px;"></canvas>
     <div class="chart-legend">
-      <span><i class="lg-swatch" style="border-top-color:#4F8C84"></i> Patrimônio acumulado</span>
+      <span><i class="lg-swatch" style="border-top-color:#4F8C84"></i> Plano com o aporte necessário</span>
       <span><i class="lg-swatch" style="border-top-color:#C48A3E;border-top-style:dashed"></i> <span id="lg-meta">Meta FIRE</span></span>
-      <span class="only-consumo"><i class="lg-swatch" style="border-top-color:rgba(21,21,63,.35);border-top-style:dotted"></i> Início da renda</span>
+      <span id="lg-atual" style="display:none"><i class="lg-swatch" style="border-top-color:rgba(21,21,63,.45);border-top-style:dashed"></i> Ritmo do aporte que você já faz</span>
+      <span><i class="lg-swatch" style="border-top-color:rgba(21,21,63,.35);border-top-style:dotted"></i> Início da renda</span>
     </div>
   </div>
 
@@ -669,16 +691,6 @@ function saqueSustentavel(capital, i, n, heranca){
   if(Math.abs(i) < EPS) return liquido / n;
   return liquido * i / ((1 - Math.pow(1 + i, -n)) * (1 + i));
 }
-/** Por quantos meses um capital sustenta um saque mensal. Infinity se for perpétuo. */
-function duracaoDoCapital(capital, saque, i){
-  if(saque <= 0) return Infinity;
-  if(capital <= 0) return 0;
-  if(Math.abs(i) < EPS) return capital / saque;
-  const k = capital * i / (saque * (1 + i));
-  if(k >= 1) return Infinity;           // o rendimento sozinho cobre o saque
-  return -Math.log(1 - k) / Math.log(1 + i);
-}
-
 /**
  * Simulação mês a mês: primeiro a fase de acumulação, depois a de saques.
  * Devolve os pontos anuais do gráfico e as linhas da tabela.
@@ -716,24 +728,15 @@ function simular(p0, aporte, i, mesesAcumulo, saque, mesesRenda){
   return { pontos, linhas, esgotouMes, saldoFinal:saldo, totalAportado, totalSacado, totalRendimento };
 }
 
-/** Meses até o patrimônio alcançar um alvo, aportando todo mês. Null se não alcançar. */
-function mesesAte(alvo, p0, aporte, i, limite){
-  if(p0 >= alvo) return 0;
-  let saldo = p0;
-  for(let m = 1; m <= limite; m++){
-    saldo = saldo * (1 + i) + aporte;
-    if(saldo >= alvo) return m;
-  }
-  return null;
-}
-
 /* ════════════════════════════════════════════════════════════
    GRÁFICO (canvas puro)
    ════════════════════════════════════════════════════════════ */
-let chartState = { pontos:[], meta:0, idadeInicial:0, mesInicioRenda:null, mesEsgota:null, mesMarco:null };
+let chartState = { pontos:[], pontosAtual:null, meta:0, idadeInicial:0,
+                   mesInicioRenda:null, mesEsgota:null, mesMarco:null };
 
 const COR = {
   linha:  '#4F8C84',
+  atual:  'rgba(21,21,63,0.45)',
   meta:   '#C48A3E',
   grade:  'rgba(27,27,92,0.10)',
   texto:  'rgba(21,21,63,0.62)',
@@ -754,12 +757,19 @@ function drawChart(){
   ctx.scale(dpr, dpr);
   ctx.clearRect(0, 0, W, H);
 
+  const legAtual = document.getElementById('lg-atual');
+  if(legAtual) legAtual.style.display = chartState.pontosAtual ? 'inline-flex' : 'none';
+
   const PAD = { top:18, right:18, bottom:34, left:64 };
   const cW = W - PAD.left - PAD.right;
   const cH = H - PAD.top - PAD.bottom;
 
   const pts = chartState.pontos;
-  const maxSaldo = Math.max(...pts.map(p => p.saldo), chartState.meta);
+  const ptsAtual = chartState.pontosAtual;
+  const maxSaldo = Math.max(
+    ...pts.map(p => p.saldo),
+    ...(ptsAtual ? ptsAtual.map(p => p.saldo) : []),
+    chartState.meta);
   const maxVal = maxSaldo > 0 ? maxSaldo * 1.08 : 1;
   const ultimoMes = pts[pts.length-1].mes || 1;
 
@@ -808,11 +818,21 @@ function drawChart(){
   grad.addColorStop(1, 'rgba(79,140,132,0.02)');
   ctx.fillStyle = grad; ctx.fill();
 
-  // curva
+  // curva do plano necessário
   ctx.strokeStyle = COR.linha; ctx.lineWidth = 2.5; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
   ctx.beginPath();
   pts.forEach((p,k) => { const x = X(p.mes), y = Y(p.saldo); k===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y); });
   ctx.stroke();
+
+  // curva do ritmo atual, quando a pessoa informou quanto já aporta
+  if(ptsAtual){
+    ctx.strokeStyle = COR.atual; ctx.lineWidth = 1.8;
+    ctx.setLineDash([5,4]);
+    ctx.beginPath();
+    ptsAtual.forEach((p,k) => { const x = X(p.mes), y = Y(p.saldo); k===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y); });
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
 
   // ponto de esgotamento
   if(chartState.mesEsgota !== null){
@@ -908,8 +928,6 @@ function reajustarAcordeoes(){
 /* ════════════════════════════════════════════════════════════
    CÁLCULO PRINCIPAL
    ════════════════════════════════════════════════════════════ */
-const LIMITE_MESES = 720; // 60 anos de acumulação
-
 function num(id, padrao){
   const v = parseFloat(document.getElementById(id).value);
   return isFinite(v) ? v : (padrao || 0);
@@ -930,12 +948,17 @@ function setStatus(tipo, html){
 
 function calc(){
   /* ── leitura dos campos ── */
-  const idade    = Math.max(0, Math.round(num('idade', 30)));
-  const patAtual = Math.max(0, num('patrimonio'));
-  const aporte   = Math.max(0, num('aporte'));
-  const bruto    = num('retorno', 10) / 100;
-  const inflacao = num('inflacao', 4.5) / 100;
-  const custos   = num('custos', 0) / 100;
+  const idade       = Math.max(0, Math.round(num('idade', 30)));
+  const patAtual    = Math.max(0, num('patrimonio'));
+  const aporteAtual = Math.max(0, num('aporteAtual'));
+  const bruto       = num('retorno', 10) / 100;
+  const inflacao    = num('inflacao', 4.5) / 100;
+  const custos      = num('custos', 0) / 100;
+  let   idadeAlvo   = Math.round(num('idadeAlvo', 60));
+
+  if(idadeAlvo < idade) idadeAlvo = idade;   // quem já passou da idade-alvo não acumula mais
+  const anosAcumulo  = idadeAlvo - idade;
+  const mesesAcumulo = anosAcumulo * 12;
 
   /* ── premissas derivadas ── */
   const retReal = taxaReal(bruto, custos, inflacao);
@@ -948,184 +971,221 @@ function calc(){
   document.getElementById('lbl-real-formula').textContent = custos > 0
     ? `Bruto ${pct(bruto)} − custos ${pct(custos,0)} = ${pct(bruto*(1-custos))} líquido; descontada a inflação de ${pct(inflacao)}, sobram ${pct(retReal)} de ganho real ao ano.`
     : `(1 + ${pct(bruto)}) ÷ (1 + ${pct(inflacao)}) − 1 — é o ganho acima da inflação, e é com ele que toda a projeção é feita.`;
+  document.getElementById('hint-prazo').textContent = anosAcumulo > 0
+    ? `Você tem ${plural(anosAcumulo,'ano','anos')} para acumular, dos ${idade} aos ${idadeAlvo}.`
+    : 'Você já está na idade em que quer se aposentar, então não há fase de acumulação.';
 
-  if(modo === 'perpetuo') calcPerpetuo(idade, patAtual, aporte, inflacao, retReal, i);
-  else                    calcConsumo(idade, patAtual, aporte, inflacao, retReal, i);
+  const ctx = { idade, idadeAlvo, anosAcumulo, mesesAcumulo, patAtual, aporteAtual, inflacao, retReal, i };
+  if(modo === 'perpetuo') calcPerpetuo(ctx);
+  else                    calcConsumo(ctx);
+}
+
+/**
+ * Preenche o bloco de destaque do aporte mensal necessário — o resultado
+ * principal da ferramenta — e devolve os números do plano para quem chamou.
+ */
+function preencherAporte(meta, ctx){
+  const { patAtual, mesesAcumulo, anosAcumulo, idade, idadeAlvo, i } = ctx;
+  const cru = aporteNecessario(meta, patAtual, i, mesesAcumulo);
+  const aporteNec = isFinite(cru) ? Math.max(0, cru) : Infinity;
+  const jaTem = patAtual >= meta;
+
+  const elValor = document.getElementById('res-aporte-nec');
+  const elSub   = document.getElementById('res-aporte-nec-sub');
+
+  if(anosAcumulo <= 0){
+    elValor.textContent = '—';
+    elSub.textContent = `Você quer parar aos ${idadeAlvo} e já tem ${idade}: não sobra tempo de acumulação. Aumente a idade de aposentadoria para ver o aporte necessário.`;
+  } else if(jaTem){
+    elValor.textContent = 'R$ 0/mês';
+    elSub.textContent = 'O patrimônio que você já tem cobre a meta sozinho, só com o rendimento real do período.';
+  } else {
+    elValor.textContent = fmt(aporteNec) + '/mês';
+    elSub.textContent = `todo mês durante ${plural(anosAcumulo,'ano','anos')}, dos ${idade} aos ${idadeAlvo} — em reais de hoje`;
+  }
+  return { aporteNec: jaTem ? 0 : aporteNec, jaTem };
+}
+
+/**
+ * Frase de comparação entre o aporte necessário e o que a pessoa já guarda.
+ * Só aparece quando o campo opcional de aporte atual está preenchido.
+ */
+function compararAporte(aporteNec, meta, ctx){
+  const { aporteAtual, patAtual, mesesAcumulo, i } = ctx;
+  if(aporteAtual <= 0 || !isFinite(aporteNec) || mesesAcumulo <= 0) return '';
+  const dif = aporteNec - aporteAtual;
+  if(dif < 1){
+    const projetado = valorFuturo(patAtual, aporteAtual, i, mesesAcumulo);
+    return ` Você já aporta <b>${fmt(aporteAtual)}/mês</b>, mais do que o necessário: no ritmo atual chegaria com <b>${fmt(projetado)}</b>, ${fmt(projetado - meta)} acima da meta.`;
+  }
+  const projetado = valorFuturo(patAtual, aporteAtual, i, mesesAcumulo);
+  return ` Você aporta <b>${fmt(aporteAtual)}/mês</b> hoje, então faltam <b>${fmt(dif)}/mês</b>. Mantendo o ritmo atual você chegaria com ${fmt(projetado)} em vez de ${fmt(meta)}.`;
 }
 
 /* ─────────────── MODO 1: RENDA PERPÉTUA ─────────────── */
-function calcPerpetuo(idade, patAtual, aporte, inflacao, retReal, i){
+function calcPerpetuo(ctx){
+  const { idade, idadeAlvo, anosAcumulo, mesesAcumulo, patAtual, aporteAtual, inflacao, retReal, i } = ctx;
   const despMes = Math.max(0, num('despesas'));
   const saque   = num('saque', 4) / 100;
 
-  const despAnual = despMes * 12;
-  const meta      = saque > 0 ? despAnual / saque : Infinity;
+  const despAnual    = despMes * 12;
+  const meta         = saque > 0 ? despAnual / saque : Infinity;
   const multiploAlvo = saque > 0 ? 1 / saque : Infinity;
 
   document.getElementById('lbl-saque').textContent = pct(saque);
   document.getElementById('hint-saque').textContent =
     `Múltiplo necessário: ${multiploAlvo.toFixed(0)}× a despesa anual (1 ÷ ${pct(saque)}).`;
 
-  const mesesFire = isFinite(meta) ? mesesAte(meta, patAtual, aporte, i, LIMITE_MESES) : null;
-  const alcanca   = mesesFire !== null;
-  const anosFire  = alcanca ? mesesFire/12 : Infinity;
-  const idadeFire = alcanca ? idade + Math.round(anosFire) : null;
+  /* ── o aporte necessário é o resultado principal ── */
+  const { aporteNec, jaTem } = preencherAporte(meta, ctx);
 
-  /* Depois do FIRE, mostramos 30 anos vivendo da renda: se a taxa de saque
+  /* Depois de parar, projetamos 30 anos vivendo da renda: se a taxa de saque
      for menor que a taxa real, o patrimônio continua crescendo mesmo com saques. */
-  const mesesAcumulo = alcanca ? mesesFire : LIMITE_MESES;
-  const mesesRenda   = alcanca ? 360 : 0;
-  const sim = simular(patAtual, aporte, i, mesesAcumulo, despMes, mesesRenda);
-  // Zerar exatamente no último mês é o desfecho planejado, não uma falha:
-  // só marcamos "acabou" quando o dinheiro some antes do fim do horizonte.
-  const esgotouAntes = sim.esgotouMes !== null && sim.esgotouMes < mesesAcumulo + mesesRenda
+  const MESES_RENDA = 360;
+  const aportePlano = isFinite(aporteNec) ? aporteNec : 0;
+  const sim = simular(patAtual, aportePlano, i, mesesAcumulo, despMes, MESES_RENDA);
+  const esgotouAntes = sim.esgotouMes !== null && sim.esgotouMes < mesesAcumulo + MESES_RENDA
     ? sim.esgotouMes : null;
 
+  const simAtual = aporteAtual > 0 && mesesAcumulo > 0
+    ? simular(patAtual, aporteAtual, i, mesesAcumulo, despMes, MESES_RENDA) : null;
+
   chartState = {
-    pontos: sim.pontos, meta: isFinite(meta) ? meta : 0, idadeInicial: idade,
-    mesInicioRenda: alcanca ? mesesFire : null,
-    mesEsgota: esgotouAntes, mesMarco: alcanca ? mesesFire : null
+    pontos: sim.pontos, pontosAtual: simAtual ? simAtual.pontos : null,
+    meta: isFinite(meta) ? meta : 0, idadeInicial: idade,
+    mesInicioRenda: mesesAcumulo, mesEsgota: esgotouAntes, mesMarco: mesesAcumulo
   };
   drawChart();
-  renderTabela(sim.linhas, idade, alcanca ? mesesFire : null);
+  renderTabela(sim.linhas, idade, mesesAcumulo);
 
   /* ── números ── */
-  const patNoFire = alcanca ? valorFuturo(patAtual, aporte, i, mesesFire) : sim.pontos[sim.pontos.length-1].saldo;
-  const totalAportado = aporte * (alcanca ? mesesFire : LIMITE_MESES);
-  const juros = Math.max(0, patNoFire - patAtual - totalAportado);
-  const share = patNoFire > 0 ? juros / patNoFire : 0;
-  const progresso = isFinite(meta) && meta > 0 ? Math.min(100, Math.round((patAtual/meta)*100)) : 0;
-  const multiploHoje = despAnual > 0 ? patAtual/despAnual : 0;
+  const patNoAlvo     = valorFuturo(patAtual, aportePlano, i, mesesAcumulo);
+  const totalAportado = aportePlano * mesesAcumulo;
+  const juros         = Math.max(0, patNoAlvo - patAtual - totalAportado);
+  const share         = patNoAlvo > 0 ? juros / patNoAlvo : 0;
+  const progresso     = isFinite(meta) && meta > 0 ? Math.min(100, Math.round((patAtual/meta)*100)) : 0;
+  const multiploHoje  = despAnual > 0 ? patAtual/despAnual : 0;
+  const nominal       = isFinite(meta) && anosAcumulo > 0 ? meta * Math.pow(1+inflacao, anosAcumulo) : null;
+  // Quanto custaria a mesma renda consumindo o patrimônio em 30 anos
+  const metaConsumo   = capitalNecessario(despMes, i, MESES_RENDA, 0);
+  const economia      = isFinite(meta) && meta > 0 ? 1 - metaConsumo/meta : 0;
 
-  const nominal = isFinite(meta) && alcanca ? meta * Math.pow(1+inflacao, anosFire) : null;
-
-  /* aporte para antecipar 5 anos */
-  let aporteAntecipar = null;
-  if(alcanca && mesesFire > 12){
-    const alvoMeses = Math.max(12, mesesFire - 60);
-    const necessario = aporteNecessario(meta, patAtual, i, alvoMeses);
-    if(isFinite(necessario) && necessario > 0) aporteAntecipar = necessario;
-  }
-
-  document.getElementById('res-main-label').textContent = 'patrimônio necessário';
+  document.getElementById('res-main-label').textContent =
+    anosAcumulo > 0 ? `patrimônio necessário aos ${idadeAlvo} anos` : 'patrimônio necessário';
   document.getElementById('res-fire').textContent = isFinite(meta) ? fmt(meta) : '—';
   document.getElementById('res-fire-sub').textContent =
     `${multiploAlvo.toFixed(0)}× sua despesa anual de ${fmt(despAnual)}, com saque de ${pct(saque)} ao ano`;
   document.getElementById('res-nominal').innerHTML = nominal
-    ? `Em valor de face daqui a ${Math.round(anosFire)} anos, com inflação de ${pct(inflacao)}, isso equivale a <b>${fmt(nominal)}</b>.`
+    ? `Em valor de face daqui a ${anosAcumulo} anos, com inflação de ${pct(inflacao)}, isso equivale a <b>${fmt(nominal)}</b> — e a renda de ${fmt(despMes)} valerá <b>${fmt(despMes*Math.pow(1+inflacao,anosAcumulo))}</b>/mês na mesma data.`
     : 'Valor em poder de compra de hoje.';
 
-  document.getElementById('res-anos').textContent = alcanca ? fmtAnosCurto(anosFire) : '> 60 anos';
-  document.getElementById('res-anos').className = 'result-item-value ' + (alcanca ? 'green' : 'red');
-  document.getElementById('res-anos-note').textContent = alcanca
-    ? (mesesFire === 0 ? 'você já atingiu a meta' : `você chega aos ${idadeFire} anos`)
-    : 'não alcançado com este aporte';
+  document.getElementById('p-prazo').textContent = anosAcumulo > 0 ? plural(anosAcumulo,'ano','anos') : '—';
+  document.getElementById('p-prazo-note').textContent = anosAcumulo > 0
+    ? `dos ${idade} aos ${idadeAlvo} anos` : 'sem tempo de acumulação';
 
   document.getElementById('res-renda').textContent = fmt(despMes)+'/mês';
+
   document.getElementById('res-investido').textContent = fmt(patAtual + totalAportado);
-  document.getElementById('res-investido-note').textContent = alcanca
-    ? `patrimônio atual + ${fmt(aporte)}/mês por ${fmtAnosCurto(anosFire)}`
-    : 'patrimônio atual + aportes no período simulado';
+  document.getElementById('res-investido-note').textContent = anosAcumulo > 0 && aportePlano > 0
+    ? `patrimônio atual + ${fmt(aportePlano)}/mês por ${plural(anosAcumulo,'ano','anos')}`
+    : 'só o patrimônio que você já tem';
 
   document.getElementById('res-juros').textContent = fmt(juros);
-  document.getElementById('res-juros-note').textContent = patNoFire > 0
-    ? `${pct(share,0)} do patrimônio final vem de juros`
-    : '';
+  document.getElementById('res-juros-note').textContent = patNoAlvo > 0
+    ? `${pct(share,0)} do patrimônio final vem de juros` : '';
 
   document.getElementById('res-multiplo').textContent =
     despAnual > 0 ? multiploHoje.toFixed(1).replace('.',',')+'×' : '—';
 
-  document.getElementById('res-aporte-ideal').textContent = !alcanca ? '—'
-    : mesesFire === 0 ? 'Meta atingida!'
-    : aporteAntecipar ? fmt(aporteAntecipar)+'/mês' : 'já é imediato';
-  document.getElementById('res-aporte-ideal-note').textContent =
-    aporteAntecipar && aporte > 0 && aporteAntecipar - aporte >= 1
-      ? `${fmt(aporteAntecipar - aporte)}/mês a mais que hoje`
-      : 'quanto precisaria poupar por mês';
+  document.getElementById('p-alternativa').textContent = fmt(metaConsumo);
+  document.getElementById('p-alternativa-note').textContent = economia > 0
+    ? `${pct(economia,0)} menos, gastando tudo em 30 anos` : 'gastando todo o patrimônio em 30 anos';
 
-  document.getElementById('res-pct-label').textContent = 'Progresso em direção ao FIRE';
+  document.getElementById('res-pct-label').textContent = 'Progresso em direção à meta';
   document.getElementById('res-pct').textContent = progresso+'%';
   document.getElementById('res-bar').style.width = progresso+'%';
 
-  /* ── status e resumo ── */
-  if(!alcanca){
-    setStatus('bad', `Com <b>${fmt(aporte)}/mês</b> você não alcança ${fmt(meta)} nem em 60 anos. Aumente o aporte, reduza a despesa-alvo ou considere a estratégia de consumir o patrimônio, que exige bem menos capital.`);
+  /* ── status ── */
+  const comparativo = compararAporte(aporteNec, meta, ctx);
+  if(jaTem){
+    setStatus('ok', `Com <b>${fmt(patAtual)}</b> você já tem o patrimônio necessário para viver de ${fmt(despMes)}/mês sacando ${pct(saque)} ao ano. Não precisa de mais nenhum aporte.`);
+  } else if(anosAcumulo <= 0){
+    setStatus('warn', `Você quer parar aos ${idadeAlvo} e já tem ${idade} anos, mas faltam <b>${fmt(meta - patAtual)}</b> para a meta. Sem tempo de acumulação não há aporte que resolva: seria preciso adiar a aposentadoria ou reduzir a despesa-alvo.`);
   } else if(saque > retReal){
-    setStatus('warn', `A sua taxa de saque (<b>${pct(saque)}</b>) é maior que a taxa real de retorno (<b>${pct(retReal)}</b>). Nesse cenário o patrimônio encolhe todo ano e a renda não é de fato perpétua — o gráfico mostra a queda depois do ponto FIRE.`);
+    setStatus('warn', `A sua taxa de saque (<b>${pct(saque)}</b>) é maior que a taxa real de retorno (<b>${pct(retReal)}</b>). Nesse cenário o patrimônio encolhe todo ano e a renda não é de fato perpétua — o gráfico mostra a queda depois dos ${idadeAlvo} anos.` + comparativo);
   } else {
-    setStatus('ok', `Sacando <b>${pct(saque)}</b> ao ano com retorno real de <b>${pct(retReal)}</b>, o patrimônio continua crescendo mesmo enquanto você vive dele. A renda é sustentável e sobra herança.`);
+    setStatus('ok', `Sacando <b>${pct(saque)}</b> ao ano com retorno real de <b>${pct(retReal)}</b>, o patrimônio continua crescendo mesmo enquanto você vive dele. A renda é sustentável e sobra herança.` + comparativo);
   }
 
-  const abre = `Para viver com <b>${fmt(despMes)}</b> por mês sem nunca tocar no principal, você precisa de <b>${fmt(meta)}</b> — ${multiploAlvo.toFixed(0)} vezes a sua despesa anual.`;
-  let resumo;
-  if(!alcanca){
-    resumo = `Para viver com <b>${fmt(despMes)}</b> por mês sem tocar no principal seriam necessários <b>${fmt(meta)}</b>. Com <b>${fmt(aporte)}</b> de aporte mensal e retorno real de ${pct(retReal)} ao ano, essa meta não é alcançada dentro de 60 anos. Vale testar a estratégia de consumir o patrimônio, que costuma exigir de 30% a 45% menos capital.`;
-  } else if(mesesFire === 0){
-    resumo = `${abre} Com <b>${fmt(patAtual)}</b> acumulados, <b>você já atingiu esse número</b> aos ${idade} anos e pode viver de renda a partir de agora.`;
+  /* ── resumo em texto ── */
+  let resumo = `Para se aposentar aos <b>${idadeAlvo} anos</b> e viver com <b>${fmt(despMes)}</b> por mês sem nunca tocar no principal, você precisa de <b>${fmt(meta)}</b> — ${multiploAlvo.toFixed(0)} vezes a sua despesa anual, em poder de compra de hoje.`;
+  if(jaTem){
+    resumo += ` Com <b>${fmt(patAtual)}</b> acumulados, <b>você já atingiu esse número</b> e pode viver de renda a partir de agora.`;
+  } else if(anosAcumulo > 0){
+    resumo += ` Saindo de <b>${fmt(patAtual)}</b> hoje e contando com um retorno real de ${pct(retReal)} ao ano, isso exige aportes de <b>${fmt(aporteNec)}</b> por mês pelos próximos ${plural(anosAcumulo,'ano','anos')}. Desse patrimônio final, ${fmt(juros)} vêm de juros e ${fmt(patAtual + totalAportado)} do seu bolso.`;
   } else {
-    resumo = `${abre} Saindo de <b>${fmt(patAtual)}</b> e aportando <b>${fmt(aporte)}</b> por mês, com retorno real de ${pct(retReal)} ao ano, você chega lá em <b>${fmtAnos(anosFire)}</b>, aos <b>${idadeFire} anos</b>. Desse total, ${fmt(juros)} vêm de juros e ${fmt(patAtual + totalAportado)} do seu bolso.`;
+    resumo += ` Como você já está na idade em que quer parar, não há tempo de acumulação: faltam ${fmt(meta - patAtual)} e seria preciso adiar a aposentadoria.`;
+  }
+  if(economia > 0){
+    resumo += ` Se aceitasse consumir o patrimônio em 30 anos em vez de preservá-lo, a mesma renda exigiria <b>${fmt(metaConsumo)}</b> — ${pct(economia,0)} a menos.`;
   }
   document.getElementById('res-resumo').innerHTML = resumo;
 }
 
 /* ─────────────── MODO 2: CONSUMIR O PATRIMÔNIO ─────────────── */
-function calcConsumo(idade, patAtual, aporte, inflacao, retReal, i){
+function calcConsumo(ctx){
+  const { idade, idadeAlvo, anosAcumulo, mesesAcumulo, patAtual, aporteAtual, inflacao, retReal, i } = ctx;
   const rendaMes = Math.max(0, num('rendaAlvo'));
   const heranca  = Math.max(0, num('heranca'));
-  let idadeAlvo  = Math.round(num('idadeAlvo', 60));
   const duracao  = Math.max(1, Math.round(num('duracao', 30)));
 
-  if(idadeAlvo < idade) idadeAlvo = idade;    // já parou de trabalhar
-  const anosAcumulo  = idadeAlvo - idade;
-  const mesesAcumulo = anosAcumulo * 12;
-  const mesesRenda   = duracao * 12;
-  const idadeFinal   = idadeAlvo + duracao;
+  const mesesRenda = duracao * 12;
+  const idadeFinal = idadeAlvo + duracao;
 
   document.getElementById('lbl-duracao').textContent = duracao + ' anos';
   document.getElementById('hint-duracao').textContent =
     `A renda vai dos ${idadeAlvo} aos ${idadeFinal} anos.`;
 
   /* ── o número: valor presente dos saques na data da aposentadoria ── */
-  const meta = capitalNecessario(rendaMes, i, mesesRenda, heranca);
+  const meta    = capitalNecessario(rendaMes, i, mesesRenda, heranca);
   const nominal = meta * Math.pow(1 + inflacao, anosAcumulo);
 
-  /* ── comparações ── */
-  const projetado = valorFuturo(patAtual, aporte, i, mesesAcumulo);
-  const aporteIdeal = aporteNecessario(meta, patAtual, i, mesesAcumulo);
-  const rendaPossivel = saqueSustentavel(projetado, i, mesesRenda, heranca);
-  const totalSacado = rendaMes * mesesRenda;
-  const taxaSaque1 = meta > 0 ? (rendaMes*12)/meta : 0;
-  const metaPerpetua = retReal > 0 ? (rendaMes*12)/0.04 : Infinity;   // referência da regra dos 4%
-  const economia = isFinite(metaPerpetua) && metaPerpetua > 0 ? 1 - meta/metaPerpetua : 0;
+  /* ── o aporte necessário é o resultado principal ── */
+  const { aporteNec, jaTem } = preencherAporte(meta, ctx);
 
-  /* ── simulação com o aporte real do usuário ── */
-  const sim = simular(patAtual, aporte, i, mesesAcumulo, rendaMes, mesesRenda);
+  /* ── simulação do plano necessário ── */
+  const aportePlano = isFinite(aporteNec) ? aporteNec : 0;
+  const sim = simular(patAtual, aportePlano, i, mesesAcumulo, rendaMes, mesesRenda);
   // Zerar no último mês é justamente o objetivo deste modo; só é problema
   // quando o dinheiro acaba antes do fim do período planejado.
   const esgotouAntes = sim.esgotouMes !== null && sim.esgotouMes < mesesAcumulo + mesesRenda
     ? sim.esgotouMes : null;
+
+  const simAtual = aporteAtual > 0 && mesesAcumulo > 0
+    ? simular(patAtual, aporteAtual, i, mesesAcumulo, rendaMes, mesesRenda) : null;
+
   chartState = {
-    pontos: sim.pontos, meta: meta, idadeInicial: idade,
+    pontos: sim.pontos, pontosAtual: simAtual ? simAtual.pontos : null,
+    meta: meta, idadeInicial: idade,
     mesInicioRenda: mesesAcumulo, mesEsgota: esgotouAntes, mesMarco: null
   };
   drawChart();
   renderTabela(sim.linhas, idade, mesesAcumulo);
 
-  const sobra = projetado - meta;
-  const progresso = meta > 0 ? Math.min(100, Math.round((projetado/meta)*100)) : 0;
-  // Meia casa percentual de folga: sem isso, digitar o aporte já arredondado
-  // (R$ 6.409 em vez de R$ 6.409,37) faria a página acusar falta de R$ 75 e
-  // sugerir "aporte R$ 6.409 em vez de R$ 6.409".
-  const tolerancia = Math.max(1, meta * 0.005);
-  const naMeta = sobra >= -tolerancia;
-  const difAporte = Math.abs(aporteIdeal - aporte);
-
-  /* quanto tempo a renda desejada realmente dura com o que ele vai ter */
-  const mesesDuram = duracaoDoCapital(projetado, rendaMes, i);
-  const idadeAcaba = isFinite(mesesDuram) ? idadeAlvo + Math.floor(mesesDuram/12) : null;
+  /* ── números ── */
+  const totalSacado   = rendaMes * mesesRenda;
+  const totalAportado = aportePlano * mesesAcumulo;
+  const patNoAlvo     = valorFuturo(patAtual, aportePlano, i, mesesAcumulo);
+  const juros         = Math.max(0, patNoAlvo - patAtual - totalAportado);
+  const share         = patNoAlvo > 0 ? juros / patNoAlvo : 0;
+  const taxaSaque1    = meta > 0 ? (rendaMes*12)/meta : 0;
+  const metaPerpetua  = (rendaMes*12)/0.04;            // referência da regra dos 4%
+  const economia      = metaPerpetua > 0 ? 1 - meta/metaPerpetua : 0;
+  const progresso     = meta > 0 ? Math.min(100, Math.round((patAtual/meta)*100)) : 0;
 
   /* ── preenchimento ── */
-  document.getElementById('res-main-label').textContent = `patrimônio necessário aos ${idadeAlvo} anos`;
+  document.getElementById('res-main-label').textContent =
+    anosAcumulo > 0 ? `patrimônio necessário aos ${idadeAlvo} anos` : 'patrimônio necessário';
   document.getElementById('res-fire').textContent = fmt(meta);
   document.getElementById('res-fire-sub').textContent =
     `para receber ${fmt(rendaMes)}/mês por ${duracao} anos` +
@@ -1134,68 +1194,59 @@ function calcConsumo(idade, patAtual, aporte, inflacao, retReal, i){
     ? `Em valor de face daqui a ${anosAcumulo} anos, com inflação de ${pct(inflacao)}, isso equivale a <b>${fmt(nominal)}</b> — e a renda de ${fmt(rendaMes)} valerá <b>${fmt(rendaMes*Math.pow(1+inflacao,anosAcumulo))}</b>/mês na mesma data.`
     : 'Valor em poder de compra de hoje.';
 
-  document.getElementById('c-aporte').textContent = anosAcumulo <= 0 ? '—'
-    : aporteIdeal <= 0 ? 'R$ 0' : fmt(aporteIdeal)+'/mês';
-  document.getElementById('c-aporte').className = 'result-item-value ' + (naMeta ? 'green' : 'amber');
-  document.getElementById('c-aporte-note').textContent = anosAcumulo <= 0
-    ? 'você já está na idade-alvo'
-    : aporteIdeal <= 0 ? 'seu patrimônio atual já basta'
-    : difAporte < 1 ? 'é exatamente o que você já aporta'
-    : aporteIdeal < aporte ? `${fmt(difAporte)}/mês a menos que você já faz`
-    : `${fmt(difAporte)}/mês a mais que os ${fmt(aporte)} de hoje`;
-
-  document.getElementById('c-projetado').textContent = fmt(projetado);
-  document.getElementById('c-projetado').className = 'result-item-value ' + (naMeta ? 'green' : 'red');
-  document.getElementById('c-projetado-note').textContent = sobra >= 0
-    ? `${fmt(sobra)} acima da meta`
-    : naMeta ? 'praticamente na meta'
-    : `faltam ${fmt(-sobra)} para a meta`;
-
-  document.getElementById('c-renda-possivel').textContent = fmt(rendaPossivel)+'/mês';
-  document.getElementById('c-renda-possivel').className = 'result-item-value ' +
-    (rendaPossivel >= rendaMes ? 'green' : 'amber');
-  document.getElementById('c-renda-possivel-note').textContent =
-    `por ${duracao} anos, com o aporte de ${fmt(aporte)}/mês`;
+  document.getElementById('c-prazo').textContent = anosAcumulo > 0 ? plural(anosAcumulo,'ano','anos') : '—';
+  document.getElementById('c-prazo-note').textContent = anosAcumulo > 0
+    ? `dos ${idade} aos ${idadeAlvo} anos` : 'sem tempo de acumulação';
 
   document.getElementById('c-total-sacado').textContent = fmt(totalSacado);
   document.getElementById('c-total-sacado-note').textContent =
     `${fmt(rendaMes)} × ${mesesRenda} meses, em reais de hoje`;
 
+  document.getElementById('c-investido').textContent = fmt(patAtual + totalAportado);
+  document.getElementById('c-investido-note').textContent = anosAcumulo > 0 && aportePlano > 0
+    ? `patrimônio atual + ${fmt(aportePlano)}/mês por ${plural(anosAcumulo,'ano','anos')}`
+    : 'só o patrimônio que você já tem';
+
+  document.getElementById('c-juros').textContent = fmt(juros);
+  document.getElementById('c-juros-note').textContent = patNoAlvo > 0
+    ? `${pct(share,0)} do patrimônio final vem de juros` : '';
+
   document.getElementById('c-taxa-saque').textContent = pct(taxaSaque1);
   document.getElementById('c-taxa-saque').className = 'result-item-value ' +
     (taxaSaque1 <= retReal ? 'green' : 'amber');
 
-  document.getElementById('c-perpetuo').textContent = isFinite(metaPerpetua) ? fmt(metaPerpetua) : '—';
+  document.getElementById('c-perpetuo').textContent = fmt(metaPerpetua);
   document.getElementById('c-perpetuo-note').textContent = economia > 0
     ? `consumir o patrimônio custa ${pct(economia,0)} menos`
     : 'referência pela regra dos 4%';
 
-  document.getElementById('res-pct-label').textContent = `Projeção aos ${idadeAlvo} anos vs. meta`;
+  document.getElementById('res-pct-label').textContent = 'Progresso em direção à meta';
   document.getElementById('res-pct').textContent = progresso+'%';
   document.getElementById('res-bar').style.width = progresso+'%';
 
   /* ── status ── */
-  if(anosAcumulo <= 0 && patAtual < meta){
-    setStatus('warn', `Você já está na idade em que quer parar, e o patrimônio atual de <b>${fmt(patAtual)}</b> está <b>${fmt(meta-patAtual)}</b> abaixo do necessário. Com o que tem hoje, a renda sustentável por ${duracao} anos é de <b>${fmt(saqueSustentavel(patAtual, i, mesesRenda, heranca))}</b>/mês.`);
-  } else if(naMeta){
-    setStatus('ok', `Mantendo <b>${fmt(aporte)}/mês</b>, você chega aos ${idadeAlvo} anos com <b>${fmt(projetado)}</b> — o suficiente para ${fmt(rendaMes)}/mês por ${duracao} anos${heranca>0?` e ainda deixar ${fmt(heranca)}`:''}. ` +
-      (sobra >= tolerancia ? `Sobram <b>${fmt(sobra)}</b> de margem.` : `O plano fecha praticamente no limite, sem margem de sobra.`));
+  const comparativo = compararAporte(aporteNec, meta, ctx);
+  if(jaTem){
+    setStatus('ok', `Com <b>${fmt(patAtual)}</b> você já tem o patrimônio necessário para receber ${fmt(rendaMes)}/mês por ${duracao} anos${heranca>0?` e ainda deixar ${fmt(heranca)}`:''}. Não precisa de mais nenhum aporte.`);
+  } else if(anosAcumulo <= 0){
+    setStatus('warn', `Você quer parar aos ${idadeAlvo} e já tem ${idade} anos, mas faltam <b>${fmt(meta - patAtual)}</b> para a meta. Sem tempo de acumulação, o que dá para fazer é adiar a aposentadoria, encurtar o período de renda ou viver com <b>${fmt(saqueSustentavel(patAtual, i, mesesRenda, heranca))}</b>/mês, que é o que o patrimônio atual sustenta por ${duracao} anos.`);
   } else if(esgotouAntes !== null){
-    setStatus('bad', `Com o aporte atual o dinheiro <b>acaba aos ${idade + Math.floor(esgotouAntes/12)} anos</b>, ${idadeFinal - (idade + Math.floor(esgotouAntes/12))} anos antes do previsto. Para fechar a conta, o aporte precisa subir para <b>${fmt(aporteIdeal)}/mês</b> — ou a renda desejada cair para <b>${fmt(rendaPossivel)}/mês</b>.`);
+    setStatus('bad', `Mesmo com o aporte necessário o dinheiro acaba aos ${idade + Math.floor(esgotouAntes/12)} anos. Revise as premissas: com retorno real de ${pct(retReal)} ao ano essa combinação de renda e prazo não fecha.`);
   } else {
-    setStatus('warn', `Faltam <b>${fmt(-sobra)}</b> para a meta. Você tem três saídas: aportar <b>${fmt(aporteIdeal)}/mês</b> em vez de ${fmt(aporte)}, viver com <b>${fmt(rendaPossivel)}/mês</b> em vez de ${fmt(rendaMes)}, ou adiar a parada para além dos ${idadeAlvo} anos.`);
+    setStatus('ok', `Aportando <b>${fmt(aporteNec)}/mês</b> por ${plural(anosAcumulo,'ano','anos')}, você chega aos ${idadeAlvo} anos com <b>${fmt(meta)}</b> e consegue sacar ${fmt(rendaMes)}/mês até os ${idadeFinal}${heranca>0?`, ainda deixando ${fmt(heranca)}`:', zerando exatamente no fim'}.` + comparativo);
   }
 
   /* ── resumo em texto ── */
   let resumo = `Para se aposentar aos <b>${idadeAlvo} anos</b> e receber <b>${fmt(rendaMes)}</b> por mês durante <b>${duracao} anos</b> — ou seja, dos ${idadeAlvo} aos ${idadeFinal} — ${heranca>0?`deixando ${fmt(heranca)} no final`:`terminando sem nenhum patrimônio`}, você precisa ter <b>${fmt(meta)}</b> na data da aposentadoria, em poder de compra de hoje.`;
-  if(anosAcumulo > 0){
-    resumo += ` Saindo de <b>${fmt(patAtual)}</b> hoje e contando com um retorno real de ${pct(retReal)} ao ano, isso exige aportes de <b>${fmt(Math.max(0,aporteIdeal))}</b> por mês pelos próximos ${anosAcumulo} anos.`;
+  if(jaTem){
+    resumo += ` Com <b>${fmt(patAtual)}</b> acumulados, <b>você já atingiu esse número</b> e não precisa de mais aportes.`;
+  } else if(anosAcumulo > 0){
+    resumo += ` Saindo de <b>${fmt(patAtual)}</b> hoje e contando com um retorno real de ${pct(retReal)} ao ano, isso exige aportes de <b>${fmt(aporteNec)}</b> por mês pelos próximos ${plural(anosAcumulo,'ano','anos')}.`;
+  } else {
+    resumo += ` Como você já está na idade em que quer parar, não há tempo de acumulação: faltam ${fmt(meta - patAtual)}.`;
   }
-  if(isFinite(metaPerpetua) && economia > 0){
+  if(economia > 0){
     resumo += ` Para comparação: manter essa mesma renda para sempre, sem tocar no principal, exigiria <b>${fmt(metaPerpetua)}</b> — ${pct(economia,0)} a mais.`;
-  }
-  if(isFinite(mesesDuram) && idadeAcaba !== null && !naMeta){
-    resumo += ` Do jeito que o plano está hoje, o dinheiro duraria até os <b>${idadeAcaba} anos</b>.`;
   }
   document.getElementById('res-resumo').innerHTML = resumo;
 }
