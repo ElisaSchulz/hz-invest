@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HZ Invest · Consultoria Personalizada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hz-design.css">
+
+<style>
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy-dark);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  /* ─── ANIMATED BACKGROUND ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(79,140,132,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 80% 90%, rgba(79,140,132,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 80% 80% at 50% 50%, #FBFAF6 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* geometric dot pattern */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(79,140,132,0.18) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 0%, transparent 80%);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 12%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(246,244,238,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    transition: transform 0.3s ease;
+  }
+
+  .nav-logo {
+    font-family: var(--font-body);
+    font-weight: 900;
+    font-size: 1.35rem;
+    color: var(--white-pure);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--teal);
+    color: var(--navy-dark);
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.01em;
+    padding: 0.85rem 1.8rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(79,140,132,0.25);
+  }
+
+  .btn-primary:hover {
+    background: var(--teal-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(79,140,132,0.35);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    color: var(--white);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.85rem 1.8rem;
+    border-radius: 6px;
+    border: 1px solid var(--teal-border);
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--teal);
+    background: var(--teal-dim);
+    color: var(--teal-light);
+  }
+
+  /* ─── SECTION HELPERS ─── */
+  section {
+    position: relative;
+    padding: 100px 12%;
+    z-index: 1;
+  }
+
+  .section-label {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 1rem;
+    opacity: 0.9;
+  }
+
+  .section-title {
+    font-family: var(--font-body);
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 800;
+    color: var(--white-pure);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+  }
+
+  .section-sub {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 500px;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  /* ─── CONSULTORIA ─── */
+  #consultoria { background: #F1EEE6; }
+
+  .consult-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+    margin-top: 3.5rem;
+  }
+
+  .consult-list { list-style: none; margin-top: 1.8rem; }
+
+  .consult-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 1rem;
+    color: var(--text);
+    transition: color 0.2s;
+  }
+
+  .consult-list li:hover { color: var(--white); }
+
+  .consult-list li:last-child { border-bottom: none; }
+
+  .check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    border-radius: 50%;
+    background: var(--teal-dim);
+    border: 1.5px solid var(--teal);
+    color: var(--teal);
+    font-size: 0.65rem;
+    margin-top: 0.18rem;
+    flex-shrink: 0;
+  }
+
+  .consult-box {
+    background: #FBFAF6;
+    border: 1px solid var(--teal-border);
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 0 40px rgba(79,140,132,0.06);
+  }
+
+  .consult-box h3 {
+    font-family: var(--font-body);
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--white-pure);
+    margin-bottom: 0.5rem;
+  }
+
+  .consult-box p {
+    font-size: 0.875rem;
+    color: var(--muted);
+    margin-bottom: 1.8rem;
+    line-height: 1.7;
+  }
+
+  .form-group { margin-bottom: 1rem; }
+
+  .form-group label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: var(--font-body);
+  }
+
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    background: rgba(246,244,238,0.92);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(79,140,132,0.1);
+  }
+
+  .form-group select option { background: var(--navy-dark); color: var(--white); }
+
+  .form-group textarea { resize: vertical; min-height: 90px; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--navy-dark);
+    border-top: 1px solid var(--border);
+    padding: 3rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .footer-logo {
+    font-family: var(--font-body);
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: var(--white-pure);
+    text-decoration: none;
+  }
+
+  .footer-logo span { color: var(--teal); }
+
+  footer p {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+  .footer-links a {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--teal); }
+
+  /* ─── TEAL DIVIDER ─── */
+  .teal-line {
+    width: 40px;
+    height: 3px;
+    background: var(--teal);
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 1.5rem; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    section { padding: 70px 6%; }
+    .hero { padding: 110px 6% 70px; }
+    .hero-stats { gap: 2rem; }
+    .consult-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+    .sim-row { grid-template-columns: 1fr; }
+    footer { flex-direction: column; text-align: center; }
+    .cta-box { padding: 2.5rem 1.5rem; }
+    /* Ticker mobile: taller to avoid content being cut */
+    .ticker-bar { height: 80px; }
+    .ticker-bar .tradingview-widget-container,
+    .ticker-bar .tradingview-widget-container__widget { height: 80px !important; }
+    .ticker-bar .tradingview-widget-container { height: 80px; }
+    .hero { padding-top: calc(110px + 80px) !important; }
+  }
+
+  /* ─── THANK YOU MODAL ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(246,244,238,0.95);
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal-box {
+    background: #FBFAF6;
+    border: 1px solid var(--teal-border);
+    border-radius: 16px;
+    padding: 3rem 2.5rem;
+    max-width: 440px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(79,140,132,0.15);
+    animation: modalIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.88) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--teal-dim);
+    border: 2px solid var(--teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+  }
+
+  .modal-box h3 {
+    font-family: var(--font-body);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--white-pure);
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+
+  .modal-box p {
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .modal-close {
+    background: var(--teal);
+    color: var(--navy-dark);
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem 2rem;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .modal-close:hover { background: var(--teal-light); transform: translateY(-1px); }
+
+  /* ─── NAV USER PILL ─── */
+  #nav-user-pill { display:none; align-items:center; gap:0.75rem; }
+
+  .nav-user-name { font-size:0.85rem; color:var(--teal-light); font-weight:600; }
+
+  .nav-signout {
+    background:transparent; border:1px solid var(--teal-border);
+    color:var(--muted); font-family:var(--font-body); font-size:0.7rem;
+    padding:0.25rem 0.7rem; border-radius:4px; cursor:pointer;
+    transition:all 0.2s; letter-spacing:0.04em;
+  }
+
+  .nav-signout:hover { border-color:var(--teal); color:var(--teal); }
+
+  .nav-login-btn {
+    background: transparent;
+    border: 1px solid var(--teal-border);
+    color: var(--teal);
+    font-family:var(--font-body); font-weight:600; font-size:0.82rem;
+    padding:0.4rem 1rem; border-radius:6px; text-decoration:none;
+    transition: all 0.2s;
+  }
+
+  .nav-login-btn:hover { background:var(--teal-dim); color:var(--teal-light); border-color:var(--teal); }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ─── identidade HZ: títulos na serifada da marca ─── */
+  h1, h2, h3, h4,
+  .section-title, .hero h1, .hero-title, .nav-logo, .footer-logo, .brand,
+  .stat-num, .stat-value, .big-num, .result-val, .sim-result-val,
+  .price-tag .val, .cover-title, .modal-box h3 {
+    font-family: var(--font-display) !important;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+
+  .nav-logo, .footer-logo, .brand { font-weight: 600; }
+
+  .nav-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--teal);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: color 0.2s, gap 0.2s;
+  }
+  .nav-back:hover { color: var(--teal-light); gap: 0.7rem; }
+
+  /* rodapé no fim da página mesmo quando o conteúdo é curto */
+  body { min-height: 100vh; display: flex; flex-direction: column; }
+  body > section { flex: 1 0 auto; }
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">HZ <span>Invest</span></a>
+  <div style="display:flex;align-items:center;gap:1.5rem;">
+    <a href="index.html" class="nav-back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      Voltar ao início
+    </a>
+    <div id="nav-user-pill"></div>
+  </div>
+</nav>
+
+<section id="consultoria">
+  <div class="consult-layout reveal">
+    <div>
+      <div class="section-label">// consultoria</div>
+      <div class="teal-line"></div>
+      <h2 class="section-title">Seu dinheiro merece<br>atenção especializada</h2>
+      <p class="section-sub" style="margin-bottom:2rem;">Consultoria financeira personalizada com acompanhamento real.</p>
+      <ul class="consult-list">
+        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Diagnóstico completo da sua situação financeira atual</li>
+        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Planejamento de carteira alinhado ao seu perfil e objetivos</li>
+        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Orientação sobre renda fixa, variável e fundos</li>
+        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Estratégias para reserva de emergência e proteção patrimonial</li>
+        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Planejamento de aposentadoria e metas de longo prazo</li>
+        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Relatório mensal consolidado da sua carteira</li>
+        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Reuniões mensais de acompanhamento e revisão</li>
+        <li><span class="check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Suporte direto por WhatsApp com os especialistas</li>
+      </ul>
+    </div>
+    <div class="consult-box">
+      <h3>Agendar uma conversa</h3>
+      <p>Preencha seus dados e entraremos em contato para uma primeira conversa sem compromisso. Totalmente gratuita.</p>
+      <form action="https://formsubmit.co/elisacmazzo@gmail.com" method="POST" style="display:contents">
+        <input type="hidden" name="_subject" value="Nova consulta · HZ Invest">
+        <input type="hidden" name="_captcha" value="false">
+        <div class="form-group">
+          <label>Seu nome</label>
+          <input type="text" name="nome" placeholder="Como você se chama?" required>
+        </div>
+        <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" name="email" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+          <label>WhatsApp / Telefone</label>
+          <input type="tel" name="telefone" placeholder="(11) 99999-9999" required>
+        </div>
+        <div class="form-group">
+          <label>O que você busca?</label>
+          <select name="objetivo" required>
+            <option value="" disabled selected>Selecione uma opção</option>
+            <optgroup label="Organização e base financeira">
+              <option>Organizar minha vida financeira</option>
+              <option>Sair das dívidas</option>
+              <option>Reserva de emergência</option>
+            </optgroup>
+            <optgroup label="Investimentos">
+              <option>Começar a investir</option>
+              <option>Crescimento patrimonial</option>
+              <option>Investir no mercado americano</option>
+              <option>Diversificar minha carteira atual</option>
+              <option>Renda passiva e independência financeira</option>
+            </optgroup>
+            <optgroup label="Planejamento">
+              <option>Planejamento de aposentadoria</option>
+              <option>Comprar imóvel / financiamento</option>
+              <option>Planejamento para filhos / família</option>
+            </optgroup>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Mensagem (opcional)</label>
+          <textarea name="mensagem" placeholder="Conte um pouco sobre sua situação..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%; justify-content:center; border:none; cursor:pointer; font-size:0.95rem;">
+          Quero uma conversa gratuita →
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- THANK YOU MODAL -->
+<div class="modal-overlay" id="modalObrigado">
+  <div class="modal-box">
+    <div class="modal-icon">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+        <polyline points="4,12 9,17 20,6" stroke="#4F8C84" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h3>Mensagem enviada!</h3>
+    <p>Obrigado pelo seu contato. Recebemos as suas informações e entraremos em contato em breve para agendar a sua conversa gratuita.<br><br>Enquanto isso, fique à vontade para explorar o nosso conteúdo no Telegram e no Instagram. 😊</p>
+    <button class="modal-close" onclick="document.getElementById('modalObrigado').classList.remove('active')">Fechar</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="index.html" class="footer-logo">HZ <span>Invest</span></a>
+  <p>© 2025 HZ Invest · Todos os direitos reservados</p>
+  <div class="footer-links">
+    <a href="https://t.me/+uMdIiepcb-E0ZWIx" target="_blank">Telegram</a>
+    <a href="consultoria.html">Consultoria</a>
+    <a href="ferramentas.html">Ferramentas</a>
+  </div>
+</footer>
+
+<script>
+  // ─── SCROLL REVEAL ───
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+  // ─── FORM INTERCEPT → MODAL ───
+  const consultForm = document.querySelector('#consultoria form');
+  if (consultForm) {
+    consultForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const data = new FormData(this);
+      try {
+        await fetch(this.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } });
+      } catch(_) {}
+      this.reset();
+      document.getElementById('modalObrigado').classList.add('active');
+    });
+  }
+
+  // close modal on overlay click
+  document.getElementById('modalObrigado').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('active');
+  });
+</script>
+
+<!-- Firebase Auth (module) -->
+<script type="module">
+  import { bindNavUser } from './auth.js';
+  bindNavUser();
+</script>
+
+</body>
+</html>
