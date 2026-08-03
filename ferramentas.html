@@ -76,6 +76,121 @@
     text-transform: uppercase;
   }
 
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    align-items: center;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  .nav-cta {
+    background: var(--teal) !important;
+    color: var(--navy-dark) !important;
+    padding: 0.5rem 1.25rem !important;
+    border-radius: 6px !important;
+    font-weight: 700 !important;
+    transition: background 0.2s, transform 0.15s !important;
+  }
+
+  .nav-cta:hover {
+    background: var(--teal-light) !important;
+    color: var(--navy-dark) !important;
+    transform: translateY(-1px);
+  }
+
+  /* ─── HAMBURGER MENU (mobile) ─── */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+    z-index: 200;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--white-pure);
+    border-radius: 2px;
+    transition: all 0.3s;
+    transform-origin: center;
+  }
+
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 70px; left: 0; right: 0;
+    background: #F6F4EE;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    z-index: 99;
+    padding: 1.5rem 2rem;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .mobile-menu.open { display: flex; }
+
+  .mobile-menu a, .mobile-menu .mobile-pill {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.2s;
+    display: block;
+  }
+
+  .mobile-menu a:hover { color: var(--white-pure); }
+
+  .mobile-menu a:last-child { border-bottom: none; }
+
+  .mobile-menu .mobile-cta {
+    margin-top: 1rem;
+    background: var(--teal);
+    color: var(--navy-dark) !important;
+    text-align: center;
+    padding: 0.85rem !important;
+    border-radius: 8px;
+    font-weight: 700 !important;
+    border-bottom: none !important;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  /* Com o link do Diagnóstico o menu passou a ter sete itens, então
+     entre 769px e 1200px ele precisa de espaçamento mais apertado
+     para não estourar a barra. */
+  @media (min-width: 769px) and (max-width: 1200px) {
+    nav { padding: 0 4%; }
+    .nav-links { gap: 1.1rem; }
+    .nav-links a { font-size: 0.85rem; }
+    .nav-cta { padding: 0.55rem 1rem; }
+  }
+
   .btn-primary {
     display: inline-flex;
     align-items: center;
@@ -416,17 +531,6 @@
 
   .nav-logo, .footer-logo, .brand { font-weight: 600; }
 
-  .nav-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--teal);
-    text-decoration: none;
-    font-size: 0.875rem;
-    font-weight: 600;
-    transition: color 0.2s, gap 0.2s;
-  }
-  .nav-back:hover { color: var(--teal-light); gap: 0.7rem; }
 
   /* rodapé no fim da página mesmo quando o conteúdo é curto */
   body { min-height: 100vh; display: flex; flex-direction: column; }
@@ -439,14 +543,36 @@
 <!-- NAV -->
 <nav>
   <a href="index.html" class="nav-logo">HZ <span>Invest</span></a>
-  <div style="display:flex;align-items:center;gap:1.5rem;">
-    <a href="index.html" class="nav-back">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-      Voltar ao início
-    </a>
-    <div id="nav-user-pill"></div>
-  </div>
+  <ul class="nav-links">
+    <li><a href="index.html#mais-recursos">O que fazemos</a></li>
+    <li><a href="cursos.html">Cursos</a></li>
+    <li><a href="equipe.html">Equipe</a></li>
+    <li><a href="consultoria.html">Consultoria</a></li>
+    <li><a href="index.html#diagnostico">Diagnóstico</a></li>
+    <li><a href="ferramentas.html">Ferramentas</a></li>
+    <li><a href="depoimentos.html">Depoimentos</a></li>
+    <li><a href="https://t.me/+uMdIiepcb-E0ZWIx" class="nav-cta" target="_blank">Entrar no Grupo</a></li>
+    <li><div id="nav-user-pill"></div></li>
+  </ul>
+  <!-- Hamburger (mobile only) -->
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html#mais-recursos">O que fazemos</a>
+  <a href="cursos.html">Cursos</a>
+  <a href="equipe.html">Equipe</a>
+  <a href="consultoria.html">Consultoria</a>
+  <a href="index.html#diagnostico">Diagnóstico</a>
+  <a href="ferramentas.html">Ferramentas</a>
+  <a href="depoimentos.html">Depoimentos</a>
+  <div id="mobile-user-pill" style="padding:.85rem 0;border-bottom:1px solid var(--border);"></div>
+  <a href="login.html" style="color:var(--teal-light);font-weight:600;">Entrar / Cadastrar</a>
+  <a href="https://t.me/+uMdIiepcb-E0ZWIx" class="mobile-cta" target="_blank" onclick="closeMenu()">Entrar no Grupo</a>
+</div>
 
 <section id="ferramentas">
   <div class="reveal">
@@ -525,6 +651,7 @@
   <p>© 2025 HZ Invest · Todos os direitos reservados</p>
   <div class="footer-links">
     <a href="https://t.me/+uMdIiepcb-E0ZWIx" target="_blank">Telegram</a>
+    <a href="https://instagram.com/hz_invest" target="_blank">Instagram</a>
     <a href="consultoria.html">Consultoria</a>
     <a href="ferramentas.html">Ferramentas</a>
   </div>
@@ -569,6 +696,18 @@
     document.getElementById('res-real').textContent      = fmt(real);
   }
   calcSim();
+
+// ── HAMBURGER MENU ────────────────────────────────────────────────────────────
+function toggleMenu() {
+  const btn  = document.getElementById('hamburger');
+  const menu = document.getElementById('mobileMenu');
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobileMenu').classList.remove('open');
+}
 </script>
 
 <!-- Firebase Auth (module) -->
