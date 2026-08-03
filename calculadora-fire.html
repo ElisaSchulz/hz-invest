@@ -126,6 +126,29 @@
   .fire-bar{height:8px;background:rgba(79,140,132,.15);border-radius:4px;overflow:hidden}
   .fire-bar-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-light));border-radius:4px;transition:width .6s ease}
 
+  /* ─── conversão reais de hoje × valores de face ─── */
+  .conv-card{margin-top:2rem;background:var(--card);border:1px solid var(--teal-border);border-radius:14px;padding:1.6rem 1.8rem}
+  .conv-head{display:flex;gap:1rem;align-items:flex-start;margin-bottom:1.3rem}
+  .conv-icon{width:34px;height:34px;border-radius:9px;background:var(--teal-dim);border:1px solid var(--teal-border);display:flex;align-items:center;justify-content:center;color:var(--teal);flex-shrink:0}
+  .conv-head h4{font-family:var(--font-display);font-weight:500;font-size:.95rem;color:var(--white);margin:0 0 .2rem}
+  .conv-head p{font-size:.85rem;color:var(--muted);line-height:1.6;margin:0}
+  .conv-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:center}
+  .conv-col{background:#F6F4EE;border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem}
+  .conv-col-futuro{background:rgba(79,140,132,.07);border-color:var(--teal-border)}
+  .conv-col-label{font-family:var(--font-body);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:.7rem;font-weight:700}
+  .conv-row{display:flex;justify-content:space-between;align-items:baseline;gap:.8rem;padding:.4rem 0;border-bottom:1px dashed var(--border)}
+  .conv-row:last-child{border-bottom:none}
+  .conv-row span{font-size:.8rem;color:var(--muted);line-height:1.4}
+  .conv-row span i{font-style:normal;opacity:.75;font-size:.74rem}
+  .conv-row b{font-family:var(--font-body);font-weight:800;font-size:.98rem;color:var(--white);white-space:nowrap}
+  .conv-seta{color:var(--teal);display:flex;align-items:center;justify-content:center}
+  .conv-note{font-size:.84rem;color:var(--muted);line-height:1.7;margin-top:1.1rem}
+  .conv-note b{color:var(--white);font-weight:700}
+  @media(max-width:768px){
+    .conv-grid{grid-template-columns:1fr}
+    .conv-seta{transform:rotate(90deg);padding:.2rem 0}
+  }
+
   /* resumo em texto */
   .summary-card{margin-top:2rem;background:var(--card);border:1px solid var(--teal-border);border-radius:14px;padding:1.6rem 1.8rem;display:flex;gap:1rem;align-items:flex-start}
   .summary-icon{width:34px;height:34px;border-radius:9px;background:var(--teal-dim);border:1px solid var(--teal-border);display:flex;align-items:center;justify-content:center;color:var(--teal);flex-shrink:0}
@@ -147,7 +170,10 @@
 
   /* tabela ano a ano */
   .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  table.year-table{width:100%;border-collapse:collapse;font-family:var(--font-body);font-size:.8rem;min-width:620px}
+  table.year-table{width:100%;border-collapse:collapse;font-family:var(--font-body);font-size:.8rem;min-width:760px}
+  /* a coluna de valor de face é anotação: fica separada por uma linha e em tom mais leve */
+  table.year-table .col-face{border-left:1px solid var(--border-strong);color:var(--muted)}
+  table.year-table th.col-face{color:var(--teal)}
   table.year-table th{text-align:right;font-weight:700;font-size:.64rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding:.55rem .6rem;border-bottom:1px solid var(--border-strong);white-space:nowrap}
   table.year-table th:first-child,table.year-table td:first-child{text-align:left}
   table.year-table td{text-align:right;padding:.5rem .6rem;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap}
@@ -298,8 +324,13 @@ i = taxa real mensal · n = meses até a aposentadoria</span>
 Retorno real   = (1 + Retorno líquido) ÷ (1 + Inflação) − 1</span>
       <p>Com 10% brutos, 0% de custos e 4,5% de inflação, a taxa real fica em aproximadamente <span class="highlight">5,3% ao ano</span>. A segunda fórmula é a equação de Fisher — subtrair a inflação direto do retorno (10% − 4,5% = 5,5%) superestima o resultado, ainda que pouco. Todos os valores da página são projetados com essa taxa real.</p>
 
-      <h4>Tudo em poder de compra de hoje</h4>
-      <p>Como o motor roda em taxa real, <span class="highlight">todos os valores estão em reais de hoje</span>. Quando a calculadora diz que você precisa de R$ 1,8 milhão daqui a 15 anos, significa "R$ 1,8 milhão com o poder de compra que esse dinheiro tem hoje". O valor de face no futuro será maior — e a calculadora mostra esse valor nominal logo abaixo do número principal, corrigido pela inflação que você escolheu. A vantagem de raciocinar em valores reais é que a renda mensal que você digita continua comprando a mesma coisa do primeiro ao último ano da aposentadoria.</p>
+      <h4>Reais de hoje e valores de face: a mesma coisa, em duas escalas</h4>
+      <p>Esta é a parte que mais gera confusão, então vale devagar. Quando você digita que quer uma renda de <span class="highlight">R$ 10.000 por mês</span>, está dizendo "quero viver com o que R$ 10.000 compram <em>hoje</em>". Mas a inflação não para: com <span class="highlight">5% ao ano durante 15 anos</span>, os preços ficam 2,08 vezes maiores. Para manter aquele mesmo padrão de vida, daqui a 15 anos você vai precisar sacar <span class="highlight">R$ 20.789 por mês</span>, não R$ 10.000.</p>
+      <p>Ou seja: o objetivo não é acumular um patrimônio que pague R$ 10.000 por mês lá na frente — é acumular um patrimônio que pague <span class="highlight">os R$ 10.000 de hoje corrigidos pela inflação do período</span>. É isso que a calculadora faz.</p>
+      <span class="formula">Renda na data-alvo = Renda de hoje × (1 + inflação)^anos
+R$ 20.789 = R$ 10.000 × (1,05)^15</span>
+      <p>Para não obrigar ninguém a fazer essa conta de cabeça, a página inteira trabalha em <span class="highlight">reais de hoje</span> — é o efeito de projetar pela taxa real em vez da nominal. O patrimônio-alvo, o aporte e a renda aparecem todos na escala de hoje, que é a única em que dá para julgar se o número faz sentido. O quadro <em>"O mesmo dinheiro, nas duas datas"</em>, logo abaixo dos resultados, mostra os três valores convertidos lado a lado, e a última coluna da tabela ano a ano traz o saldo em valores de face de cada ano.</p>
+      <p>Duas consequências práticas que costumam passar batido. A primeira: <span class="highlight">o aporte também precisa ser corrigido</span>. Se o resultado diz R$ 6.409 por mês, guardar R$ 6.409 fixos por quinze anos não cumpre o plano — esse valor tem que subir com a inflação todo ano. A segunda: <span class="highlight">o saque continua subindo depois da aposentadoria</span>. O primeiro saque não é igual ao último; ambos compram a mesma coisa, mas o número cresce ano a ano até o fim do período.</p>
 
       <h4>Taxa de saque e a regra dos 4%</h4>
       <p>Em 1998, pesquisadores da Universidade de Trinity analisaram décadas de dados do mercado americano e concluíram que uma carteira diversificada suportava saques de 4% ao ano por 30 anos com altíssima probabilidade de sucesso. Daí vem o número 25×. Para o Brasil, onde a instabilidade é maior, muitos especialistas trabalham com <span class="highlight">3% a 3,5%</span>, o que eleva o múltiplo para 29× a 33× e aumenta a margem de segurança.</p>
@@ -544,6 +575,39 @@ Retorno real   = (1 + Retorno líquido) ÷ (1 + Inflação) − 1</span>
     </div>
   </div>
 
+  <!-- ─── CONVERSÃO: REAIS DE HOJE × VALORES DE FACE ─── -->
+  <div class="conv-card" id="convCard">
+    <div class="conv-head">
+      <div class="conv-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+      </div>
+      <div>
+        <h4>O mesmo dinheiro, nas duas datas</h4>
+        <p id="conv-sub">—</p>
+      </div>
+    </div>
+
+    <div class="conv-grid">
+      <div class="conv-col">
+        <div class="conv-col-label" id="conv-label-hoje">hoje</div>
+        <div class="conv-row"><span id="conv-lbl-renda">Renda mensal desejada</span><b id="conv-renda-hoje">—</b></div>
+        <div class="conv-row"><span>Patrimônio necessário</span><b id="conv-pat-hoje">—</b></div>
+        <div class="conv-row"><span>Aporte mensal <i>no 1º ano</i></span><b id="conv-ap-hoje">—</b></div>
+      </div>
+      <div class="conv-seta" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+      <div class="conv-col conv-col-futuro">
+        <div class="conv-col-label" id="conv-label-futuro">—</div>
+        <div class="conv-row"><span id="conv-lbl-renda2">Renda mensal desejada</span><b id="conv-renda-fut">—</b></div>
+        <div class="conv-row"><span>Patrimônio necessário</span><b id="conv-pat-fut">—</b></div>
+        <div class="conv-row"><span>Aporte mensal <i>no último ano</i></span><b id="conv-ap-fut">—</b></div>
+      </div>
+    </div>
+
+    <p class="conv-note" id="conv-note">—</p>
+  </div>
+
   <!-- ─── RESUMO EM TEXTO ─── -->
   <div class="summary-card">
     <div class="summary-icon">
@@ -593,12 +657,13 @@ Retorno real   = (1 + Retorno líquido) ÷ (1 + Inflação) − 1</span>
               <th>Saques</th>
               <th>Rendimento real</th>
               <th>Saldo final</th>
+              <th class="col-face">Saldo em valor de face</th>
             </tr>
           </thead>
           <tbody id="year-table-body"></tbody>
         </table>
       </div>
-      <p class="table-legend">Valores em reais de hoje. As linhas destacadas em âmbar são os anos em que você já está vivendo da renda. A linha com borda mais forte marca o ano em que a fase de saques começa.</p>
+      <p class="table-legend">As cinco primeiras colunas de valores estão <b style="color:var(--white)">em reais de hoje</b>, o poder de compra que o dinheiro tem agora. A última coluna mostra <b style="color:var(--white)">o mesmo saldo em dinheiro daquele ano</b>, corrigido pela inflação que você escolheu — é o número que apareceria no extrato. As linhas em âmbar são os anos em que você já está vivendo da renda, e a de borda mais forte marca o ano em que os saques começam.</p>
     </div>
   </div>
 
@@ -865,12 +930,15 @@ function drawChart(){
 /* ════════════════════════════════════════════════════════════
    TABELA ANO A ANO
    ════════════════════════════════════════════════════════════ */
-function renderTabela(linhas, idadeInicial, mesInicioRenda){
+function renderTabela(linhas, idadeInicial, mesInicioRenda, inflacao){
   const tbody = document.getElementById('year-table-body');
   const html = linhas.map(l => {
-    const idade = idadeInicial + Math.round(l.mesFim/12);
+    const anos  = Math.round(l.mesFim/12);
+    const idade = idadeInicial + anos;
     const marco = mesInicioRenda !== null && l.mesFim === mesInicioRenda;
     const cls = [l.fase === 'renda' ? 'phase-renda' : '', marco ? 'milestone' : ''].filter(Boolean).join(' ');
+    // Mesmo saldo, expresso no dinheiro daquele ano.
+    const face = l.fim * Math.pow(1 + inflacao, anos);
     return `<tr class="${cls}">
       <td>${idade} anos</td>
       <td>${fmt(l.ini)}</td>
@@ -878,9 +946,10 @@ function renderTabela(linhas, idadeInicial, mesInicioRenda){
       <td class="${l.saques>0?'neg':''}">${l.saques>0?'−'+fmt(l.saques):'—'}</td>
       <td class="${l.rendimento>0?'pos':''}">${fmt(l.rendimento)}</td>
       <td><b>${fmt(l.fim)}</b></td>
+      <td class="col-face">${fmt(face)}</td>
     </tr>`;
   }).join('');
-  tbody.innerHTML = html || '<tr><td colspan="6" style="text-align:center;color:var(--muted)">Sem projeção para as premissas atuais.</td></tr>';
+  tbody.innerHTML = html || '<tr><td colspan="7" style="text-align:center;color:var(--muted)">Sem projeção para as premissas atuais.</td></tr>';
   // O número de linhas muda conforme as premissas; se a tabela estiver
   // aberta, a altura precisa acompanhar.
   ajustarAltura(document.getElementById('tableAccordion'), '.fire-acc-body');
@@ -1007,6 +1076,52 @@ function preencherAporte(meta, ctx){
 }
 
 /**
+ * Traduz os três números do plano — renda, patrimônio e aporte — dos reais
+ * de hoje para os valores de face na data da aposentadoria. É a parte que
+ * mais confunde quem lê o resultado, então ganha um quadro só dela.
+ *
+ * @param anosAteFim anos entre hoje e o último mês de renda, usado para
+ *        mostrar que o saque continua subindo durante a aposentadoria.
+ */
+function preencherConversao(rendaMes, meta, aporteNec, ctx, rotuloRenda, anosAteFim){
+  const card = document.getElementById('convCard');
+  const { anosAcumulo, idade, idadeAlvo, inflacao } = ctx;
+
+  // Sem prazo de acumulação não há duas datas para comparar.
+  if(anosAcumulo <= 0){ card.style.display = 'none'; return; }
+  card.style.display = '';
+
+  const fator     = Math.pow(1 + inflacao, anosAcumulo);
+  const anoBase   = new Date().getFullYear();
+  const anoAlvo   = anoBase + anosAcumulo;
+  const temAporte = isFinite(aporteNec) && aporteNec > 0;
+  const rendaFut  = rendaMes * fator;
+
+  document.getElementById('conv-sub').textContent =
+    `Com inflação de ${pct(inflacao)} ao ano, tudo custará ${fator.toFixed(2).replace('.',',')}× mais daqui a ${plural(anosAcumulo,'ano','anos')}. Os dois lados abaixo compram a mesma coisa.`;
+
+  document.getElementById('conv-label-hoje').textContent   = `hoje · ${anoBase} · ${idade} anos`;
+  document.getElementById('conv-label-futuro').textContent = `na aposentadoria · ${anoAlvo} · ${idadeAlvo} anos`;
+  document.getElementById('conv-lbl-renda').textContent  = rotuloRenda;
+  document.getElementById('conv-lbl-renda2').textContent = rotuloRenda;
+
+  document.getElementById('conv-renda-hoje').textContent = fmt(rendaMes);
+  document.getElementById('conv-renda-fut').textContent  = fmt(rendaFut);
+  document.getElementById('conv-pat-hoje').textContent   = fmt(meta);
+  document.getElementById('conv-pat-fut').textContent    = fmt(meta * fator);
+  document.getElementById('conv-ap-hoje').textContent    = temAporte ? fmt(aporteNec) : 'R$ 0';
+  document.getElementById('conv-ap-fut').textContent     = temAporte ? fmt(aporteNec * fator) : 'R$ 0';
+
+  const rendaFinal = rendaMes * Math.pow(1 + inflacao, anosAteFim);
+  let nota = `Receber <b>${fmt(rendaFut)}</b> em ${anoAlvo} é viver exatamente como quem recebe <b>${fmt(rendaMes)}</b> hoje. A calculadora raciocina em reais de hoje para você não precisar adivinhar o valor do dinheiro lá na frente — mas são os valores de ${anoAlvo} que vão aparecer no seu extrato.`;
+  if(temAporte){
+    nota += ` Vale o mesmo para o aporte: guardar <b>${fmt(aporteNec)}</b> fixos durante ${plural(anosAcumulo,'ano','anos')} não cumpre o plano — o valor precisa ser reajustado pela inflação todo ano, chegando a <b>${fmt(aporteNec*fator)}</b> no último.`;
+  }
+  nota += ` E o saque não para de subir depois da aposentadoria: aos ${idade + anosAteFim} anos, manter esse mesmo padrão de vida vai custar <b>${fmt(rendaFinal)}</b> por mês.`;
+  document.getElementById('conv-note').innerHTML = nota;
+}
+
+/**
  * Frase de comparação entre o aporte necessário e o que a pessoa já guarda.
  * Só aparece quando o campo opcional de aporte atual está preenchido.
  */
@@ -1056,7 +1171,7 @@ function calcPerpetuo(ctx){
     mesInicioRenda: mesesAcumulo, mesEsgota: esgotouAntes, mesMarco: mesesAcumulo
   };
   drawChart();
-  renderTabela(sim.linhas, idade, mesesAcumulo);
+  renderTabela(sim.linhas, idade, mesesAcumulo, inflacao);
 
   /* ── números ── */
   const patNoAlvo     = valorFuturo(patAtual, aportePlano, i, mesesAcumulo);
@@ -1065,7 +1180,6 @@ function calcPerpetuo(ctx){
   const share         = patNoAlvo > 0 ? juros / patNoAlvo : 0;
   const progresso     = isFinite(meta) && meta > 0 ? Math.min(100, Math.round((patAtual/meta)*100)) : 0;
   const multiploHoje  = despAnual > 0 ? patAtual/despAnual : 0;
-  const nominal       = isFinite(meta) && anosAcumulo > 0 ? meta * Math.pow(1+inflacao, anosAcumulo) : null;
   // Quanto custaria a mesma renda consumindo o patrimônio em 30 anos
   const metaConsumo   = capitalNecessario(despMes, i, MESES_RENDA, 0);
   const economia      = isFinite(meta) && meta > 0 ? 1 - metaConsumo/meta : 0;
@@ -1075,9 +1189,10 @@ function calcPerpetuo(ctx){
   document.getElementById('res-fire').textContent = isFinite(meta) ? fmt(meta) : '—';
   document.getElementById('res-fire-sub').textContent =
     `${multiploAlvo.toFixed(0)}× sua despesa anual de ${fmt(despAnual)}, com saque de ${pct(saque)} ao ano`;
-  document.getElementById('res-nominal').innerHTML = nominal
-    ? `Em valor de face daqui a ${anosAcumulo} anos, com inflação de ${pct(inflacao)}, isso equivale a <b>${fmt(nominal)}</b> — e a renda de ${fmt(despMes)} valerá <b>${fmt(despMes*Math.pow(1+inflacao,anosAcumulo))}</b>/mês na mesma data.`
+  document.getElementById('res-nominal').innerHTML = anosAcumulo > 0
+    ? `Em <b>reais de hoje</b>. O equivalente em valores de ${new Date().getFullYear()+anosAcumulo} está no quadro logo abaixo dos resultados.`
     : 'Valor em poder de compra de hoje.';
+  preencherConversao(despMes, meta, aporteNec, ctx, 'Despesa mensal desejada', anosAcumulo + MESES_RENDA/12);
 
   document.getElementById('p-prazo').textContent = anosAcumulo > 0 ? plural(anosAcumulo,'ano','anos') : '—';
   document.getElementById('p-prazo-note').textContent = anosAcumulo > 0
@@ -1147,8 +1262,7 @@ function calcConsumo(ctx){
     `A renda vai dos ${idadeAlvo} aos ${idadeFinal} anos.`;
 
   /* ── o número: valor presente dos saques na data da aposentadoria ── */
-  const meta    = capitalNecessario(rendaMes, i, mesesRenda, heranca);
-  const nominal = meta * Math.pow(1 + inflacao, anosAcumulo);
+  const meta = capitalNecessario(rendaMes, i, mesesRenda, heranca);
 
   /* ── o aporte necessário é o resultado principal ── */
   const { aporteNec, jaTem } = preencherAporte(meta, ctx);
@@ -1170,7 +1284,7 @@ function calcConsumo(ctx){
     mesInicioRenda: mesesAcumulo, mesEsgota: esgotouAntes, mesMarco: null
   };
   drawChart();
-  renderTabela(sim.linhas, idade, mesesAcumulo);
+  renderTabela(sim.linhas, idade, mesesAcumulo, inflacao);
 
   /* ── números ── */
   const totalSacado   = rendaMes * mesesRenda;
@@ -1191,8 +1305,9 @@ function calcConsumo(ctx){
     `para receber ${fmt(rendaMes)}/mês por ${duracao} anos` +
     (heranca > 0 ? `, deixando ${fmt(heranca)} no final` : `, terminando sem patrimônio`);
   document.getElementById('res-nominal').innerHTML = anosAcumulo > 0
-    ? `Em valor de face daqui a ${anosAcumulo} anos, com inflação de ${pct(inflacao)}, isso equivale a <b>${fmt(nominal)}</b> — e a renda de ${fmt(rendaMes)} valerá <b>${fmt(rendaMes*Math.pow(1+inflacao,anosAcumulo))}</b>/mês na mesma data.`
+    ? `Em <b>reais de hoje</b>. O equivalente em valores de ${new Date().getFullYear()+anosAcumulo} está no quadro logo abaixo dos resultados.`
     : 'Valor em poder de compra de hoje.';
+  preencherConversao(rendaMes, meta, aporteNec, ctx, 'Renda mensal desejada', anosAcumulo + duracao);
 
   document.getElementById('c-prazo').textContent = anosAcumulo > 0 ? plural(anosAcumulo,'ano','anos') : '—';
   document.getElementById('c-prazo-note').textContent = anosAcumulo > 0
