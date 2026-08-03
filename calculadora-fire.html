@@ -28,41 +28,89 @@
   .page-title span{color:var(--teal)}
   .page-sub{font-size:1rem;color:var(--muted);font-weight:300;line-height:1.75;margin-bottom:2rem}
 
+  /* ─── SELETOR DE ESTRATÉGIA ─── */
+  .mode-picker{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}
+  .mode-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.3rem;cursor:pointer;transition:border-color .2s,background .2s,box-shadow .2s;text-align:left;font-family:var(--font-body);width:100%}
+  .mode-card:hover{border-color:var(--teal-border);background:rgba(79,140,132,.04)}
+  .mode-card.active{border-color:var(--teal);background:rgba(79,140,132,.07);box-shadow:0 0 30px rgba(79,140,132,.09)}
+  .mode-card-head{display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem}
+  .mode-radio{width:16px;height:16px;border-radius:50%;border:2px solid var(--teal-border);flex-shrink:0;position:relative;transition:border-color .2s}
+  .mode-card.active .mode-radio{border-color:var(--teal)}
+  .mode-card.active .mode-radio::after{content:'';position:absolute;inset:2px;border-radius:50%;background:var(--teal)}
+  .mode-card h4{font-family:var(--font-display);font-weight:500;font-size:.98rem;color:var(--white);margin:0;letter-spacing:-.01em}
+  .mode-card p{font-size:.8rem;color:var(--muted);line-height:1.55;margin:0}
+  .mode-card .mode-tag{display:inline-block;margin-top:.55rem;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);background:var(--teal-dim);border:1px solid var(--teal-border);border-radius:5px;padding:.15rem .45rem}
+
   /* layout */
   .tool-layout{display:grid;grid-template-columns:1fr 1.1fr;gap:2.5rem;align-items:stretch}
 
   /* inputs card */
   .inputs-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:2rem;display:flex;flex-direction:column;}
-  .inputs-card h3{font-family:var(--font-body);font-weight:700;font-size:1rem;color:var(--white);margin-bottom:1.4rem;letter-spacing:-.01em}
+  .inputs-card h3{font-family:var(--font-body);font-weight:700;font-size:1rem;color:var(--white);margin-bottom:.3rem;letter-spacing:-.01em}
+  .inputs-card .card-note{font-size:.78rem;color:var(--muted);margin-bottom:1.3rem;line-height:1.5}
   .field{margin-bottom:1.1rem}
   .field label{display:block;font-family:var(--font-body);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem}
+  .field-hint{font-size:.72rem;color:var(--muted);line-height:1.5;margin-top:.3rem;opacity:.85}
   .field-wrap{position:relative}
   .field-prefix{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);font-family:var(--font-body);font-size:.85rem;color:var(--teal);pointer-events:none}
+  .field-suffix{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);font-family:var(--font-body);font-size:.78rem;color:var(--muted);pointer-events:none}
   .field input,.field select{width:100%;background:rgba(246,244,238,0.92);border:1px solid var(--border);border-radius:8px;padding:.7rem 1rem .7rem 2.2rem;color:var(--white);font-family:var(--font-body);font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s;-moz-appearance:textfield}
   .field input::-webkit-outer-spin-button,.field input::-webkit-inner-spin-button{-webkit-appearance:none}
   .field input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(79,140,132,.12)}
-  .field input.no-prefix{padding-left:1rem}
+  .field input.no-prefix{padding-left:1rem;padding-right:3.4rem}
+
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
 
   .slider-wrap{margin-top:.4rem}
   input[type=range]{width:100%;-webkit-appearance:none;height:4px;border-radius:2px;background:rgba(79,140,132,.2);outline:none;cursor:pointer}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 3px rgba(79,140,132,.2);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border:none;border-radius:50%;background:var(--teal);cursor:pointer}
   .slider-labels{display:flex;justify-content:space-between;font-family:var(--font-body);font-size:.62rem;color:var(--muted);margin-top:.3rem}
+
+  .divider-label{display:flex;align-items:center;gap:.7rem;margin:1.4rem 0 1.1rem;font-family:var(--font-body);font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:var(--teal)}
+  .divider-label::after{content:'';flex:1;height:1px;background:var(--teal-border)}
+
+  .real-rate-box{background:rgba(79,140,132,.07);border:1px solid var(--teal-border);border-radius:8px;padding:.8rem 1rem;margin-bottom:1.1rem}
+  .real-rate-box .rr-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem}
+  .real-rate-box .rr-label{font-family:var(--font-body);font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .real-rate-box .rr-value{font-family:var(--font-display);font-weight:600;font-size:1.15rem;color:var(--green)}
+  .real-rate-box .rr-formula{font-size:.7rem;color:var(--muted);margin-top:.25rem;line-height:1.5}
+
+  /* premissas avançadas */
+  .adv{border-top:1px solid var(--border);margin-top:.6rem;padding-top:.9rem}
+  .adv-toggle{display:flex;align-items:center;gap:.45rem;background:none;border:none;padding:0;cursor:pointer;font-family:var(--font-body);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--teal)}
+  .adv-toggle svg{transition:transform .3s}
+  .adv.open .adv-toggle svg{transform:rotate(180deg)}
+  .adv-body{max-height:0;overflow:hidden;transition:max-height .35s ease,margin .3s}
+  .adv.open .adv-body{max-height:600px;margin-top:1rem}
 
   /* results card */
   .results-card{background:var(--card);border:1px solid var(--teal-border);border-radius:14px;padding:2rem;box-shadow:0 0 40px rgba(79,140,132,.07);display:flex;flex-direction:column;}
   .results-card h3{font-family:var(--font-body);font-weight:700;font-size:1rem;color:var(--white);margin-bottom:1.4rem}
 
-  .result-main{text-align:center;padding:1.5rem;background:rgba(79,140,132,.06);border:1px solid var(--teal-border);border-radius:10px;margin-bottom:1.5rem}
+  .result-main{text-align:center;padding:1.5rem;background:rgba(79,140,132,.06);border:1px solid var(--teal-border);border-radius:10px;margin-bottom:1.2rem}
   .result-main-label{font-family:var(--font-body);font-size:.68rem;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem}
   .result-main-value{font-family:var(--font-body);font-weight:900;font-size:clamp(1.8rem,3.5vw,2.8rem);color:var(--white);letter-spacing:-.03em;line-height:1}
-  .result-main-sub{font-size:.8rem;color:var(--muted);margin-top:.3rem}
+  .result-main-sub{font-size:.8rem;color:var(--muted);margin-top:.35rem;line-height:1.5}
+  .result-main-nominal{font-size:.75rem;color:var(--muted);margin-top:.5rem;padding-top:.5rem;border-top:1px dashed var(--teal-border);line-height:1.5}
+  .result-main-nominal b{color:var(--white);font-weight:700}
 
-  .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+  .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem}
   .result-item{background:#F6F4EE;border:1px solid var(--border);border-radius:8px;padding:1rem}
   .result-item-label{font-family:var(--font-body);font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem}
   .result-item-value{font-family:var(--font-body);font-weight:800;font-size:clamp(.9rem,1.5vw,1.1rem);color:var(--white)}
+  .result-item-note{font-size:.7rem;color:var(--muted);margin-top:.2rem;line-height:1.45}
   .result-item-value.green{color:var(--green)}
   .result-item-value.amber{color:var(--amber)}
+  .result-item-value.red{color:var(--red)}
+
+  /* status / alerta */
+  .status-box{border-radius:10px;padding:.95rem 1.1rem;margin-bottom:1.2rem;font-size:.85rem;line-height:1.6;display:flex;gap:.7rem;align-items:flex-start}
+  .status-box svg{flex-shrink:0;margin-top:.2rem}
+  .status-box b{font-weight:700}
+  .status-ok{background:rgba(62,111,105,.09);border:1px solid rgba(62,111,105,.3);color:var(--green)}
+  .status-warn{background:rgba(196,138,62,.10);border:1px solid rgba(196,138,62,.32);color:var(--amber)}
+  .status-bad{background:rgba(158,59,59,.09);border:1px solid rgba(158,59,59,.28);color:var(--red)}
 
   /* progress bar */
   .fire-progress{margin-top:auto;padding-top:1rem}
@@ -70,64 +118,78 @@
   .fire-bar{height:8px;background:rgba(79,140,132,.15);border-radius:4px;overflow:hidden}
   .fire-bar-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-light));border-radius:4px;transition:width .6s ease}
 
-  /* explainer */
+  /* resumo em texto */
+  .summary-card{margin-top:2rem;background:var(--card);border:1px solid var(--teal-border);border-radius:14px;padding:1.6rem 1.8rem;display:flex;gap:1rem;align-items:flex-start}
+  .summary-icon{width:34px;height:34px;border-radius:9px;background:var(--teal-dim);border:1px solid var(--teal-border);display:flex;align-items:center;justify-content:center;color:var(--teal);flex-shrink:0}
+  .summary-card h4{font-family:var(--font-display);font-weight:500;font-size:.95rem;color:var(--white);margin:0 0 .4rem}
+  .summary-card p{font-size:.92rem;color:var(--text);line-height:1.75;margin:0}
+  .summary-card p b{color:var(--white);font-weight:700}
+
+  /* explainer / cartões genéricos */
   .explainer{margin-top:2rem;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:2rem}
   .explainer h3{font-family:var(--font-body);font-weight:700;font-size:1rem;color:var(--white);margin-bottom:1rem}
   .explainer p{font-size:.9rem;color:var(--muted);line-height:1.75;margin-bottom:.8rem}
   .explainer p:last-child{margin-bottom:0}
   .highlight{color:var(--teal);font-weight:600}
 
+  /* legenda do gráfico */
+  .chart-legend{display:flex;flex-wrap:wrap;gap:1.2rem;margin-top:.9rem;font-size:.75rem;color:var(--muted);font-family:var(--font-body)}
+  .chart-legend span{display:inline-flex;align-items:center;gap:.4rem}
+  .lg-swatch{width:18px;height:0;border-top-width:3px;border-top-style:solid;display:inline-block}
 
-  /* ─── COLLAPSIBLE EXPLAINER ─── */
-  .fire-accordion {
-    background: var(--card);
-    border: 1px solid var(--teal-border);
-    border-radius: 14px;
-    overflow: hidden;
-    margin-bottom: 2rem;
-  }
-  .fire-acc-toggle {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1.1rem 1.6rem; cursor: pointer; user-select: none;
-    transition: background .2s;
-  }
-  .fire-acc-toggle:hover { background: rgba(79,140,132,.05); }
-  .fire-acc-left { display: flex; align-items: center; gap: .75rem; }
-  .fire-acc-icon {
-    width: 32px; height: 32px; border-radius: 8px;
-    background: var(--teal-dim); border: 1px solid var(--teal-border);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--teal); flex-shrink: 0;
-  }
-  .fire-acc-toggle h3 {
-    font-family: var(--font-body); font-weight: 700;
-    font-size: .95rem; color: var(--white); margin: 0;
-  }
-  .fire-acc-toggle p {
-    font-size: .75rem; color: var(--muted);
-    font-family: var(--font-body); margin: .1rem 0 0;
-  }
-  .fire-acc-chevron { color: var(--teal); transition: transform .3s; flex-shrink: 0; }
-  .fire-accordion.open .fire-acc-chevron { transform: rotate(180deg); }
-  .fire-acc-body {
-    max-height: 0; overflow: hidden;
-    transition: max-height .4s ease, padding .3s;
-    padding: 0 1.6rem;
-  }
-  .fire-accordion.open .fire-acc-body {
-    max-height: 900px;
-    padding: 0 1.6rem 1.6rem;
-  }
-  .fire-acc-body p { font-size: .9rem; color: var(--muted); line-height: 1.75; margin-bottom: .8rem; }
-  .fire-acc-body p:last-child { margin-bottom: 0; }
+  /* tabela ano a ano */
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table.year-table{width:100%;border-collapse:collapse;font-family:var(--font-body);font-size:.8rem;min-width:620px}
+  table.year-table th{text-align:right;font-weight:700;font-size:.64rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding:.55rem .6rem;border-bottom:1px solid var(--border-strong);white-space:nowrap}
+  table.year-table th:first-child,table.year-table td:first-child{text-align:left}
+  table.year-table td{text-align:right;padding:.5rem .6rem;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap}
+  table.year-table tr.phase-renda td{background:rgba(196,138,62,.06)}
+  table.year-table tr.milestone td{border-bottom:2px solid var(--teal-border);font-weight:700;color:var(--white)}
+  table.year-table td.pos{color:var(--green)}
+  table.year-table td.neg{color:var(--amber)}
+  .table-legend{font-size:.73rem;color:var(--muted);margin-top:.8rem;line-height:1.6}
+
+  /* ─── ACORDEÕES ─── */
+  .fire-accordion{background:var(--card);border:1px solid var(--teal-border);border-radius:14px;overflow:hidden;margin-bottom:2rem}
+  .fire-accordion.mt{margin-top:2rem;margin-bottom:0}
+  .fire-acc-toggle{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.6rem;cursor:pointer;user-select:none;transition:background .2s;gap:1rem}
+  .fire-acc-toggle:hover{background:rgba(79,140,132,.05)}
+  .fire-acc-left{display:flex;align-items:center;gap:.75rem}
+  .fire-acc-icon{width:32px;height:32px;border-radius:8px;background:var(--teal-dim);border:1px solid var(--teal-border);display:flex;align-items:center;justify-content:center;color:var(--teal);flex-shrink:0}
+  .fire-acc-toggle h3{font-family:var(--font-body);font-weight:700;font-size:.95rem;color:var(--white);margin:0}
+  .fire-acc-toggle p{font-size:.75rem;color:var(--muted);font-family:var(--font-body);margin:.1rem 0 0}
+  .fire-acc-chevron{color:var(--teal);transition:transform .3s;flex-shrink:0}
+  .fire-accordion.open .fire-acc-chevron{transform:rotate(180deg)}
+  /* O padding NÃO entra na transição de propósito: ele precisa já estar
+     valendo no instante em que o JS mede o scrollHeight do corpo. */
+  .fire-acc-body{max-height:0;overflow:hidden;transition:max-height .45s ease;padding:0 1.6rem}
+  .fire-accordion.open .fire-acc-body{max-height:4000px;padding:0 1.6rem 1.6rem}
+  .fire-acc-body p{font-size:.9rem;color:var(--muted);line-height:1.75;margin-bottom:.8rem}
+  .fire-acc-body p:last-child{margin-bottom:0}
+  .fire-acc-body h4{font-family:var(--font-display);font-weight:500;font-size:.95rem;color:var(--white);margin:1.5rem 0 .6rem}
+  .fire-acc-body h4:first-child{margin-top:0}
+  .fire-acc-body ul{margin:0 0 .9rem 1.1rem}
+  .fire-acc-body li{font-size:.88rem;color:var(--muted);line-height:1.7;margin-bottom:.4rem}
+  .formula{display:block;background:rgba(79,140,132,.07);border:1px solid var(--teal-border);border-left:3px solid var(--teal);border-radius:6px;padding:.7rem .9rem;margin:.6rem 0 .9rem;font-family:'Fira Code',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.78rem;color:var(--white);line-height:1.7;overflow-x:auto;white-space:pre-wrap}
 
   footer{position:relative;z-index:1;background:var(--navy-dark);border-top:1px solid var(--border);padding:2rem 5%;text-align:center;font-size:.78rem;color:var(--muted)}
 
-  @media(max-width:768px){.tool-layout{grid-template-columns:1fr}.result-grid{grid-template-columns:1fr}.page-wrap{padding:90px 5% 60px}}
+  /* Esconde o que não pertence ao modo ativo sem mexer no display natural
+     de cada elemento (a grade de resultados precisa continuar sendo grid). */
+  body[data-modo="perpetuo"] .only-consumo,
+  body[data-modo="consumo"] .only-perpetuo{display:none !important}
+
+  @media(max-width:768px){
+    .tool-layout{grid-template-columns:1fr}
+    .result-grid{grid-template-columns:1fr}
+    .mode-picker{grid-template-columns:1fr}
+    .page-wrap{padding:90px 5% 60px}
+    .summary-card{flex-direction:column;gap:.7rem}
+  }
 
   /* ─── PREVENT SCROLL ON INPUT FOCUS (mobile) ─── */
-  input[type=number]:focus { font-size: 16px; } /* prevents iOS zoom which causes scroll */
-  input[type=range] { touch-action: none; }     /* prevents page scroll while dragging */
+  input[type=number]:focus{font-size:16px}
+  input[type=range]{touch-action:none}
 
   /* ─── identidade HZ: títulos na serifada da marca ─── */
   h1, h2, h3, h4,
@@ -141,7 +203,7 @@
   .nav-logo, .footer-logo, .brand { font-weight: 600; }
 </style>
 </head>
-<body>
+<body data-modo="perpetuo">
 <nav>
   <a href="index.html" class="nav-logo">HZ <span>Invest</span></a>
   <a href="ferramentas.html" class="nav-back">
@@ -154,46 +216,139 @@
   <div class="page-label">// ferramentas · calculadora</div>
   <div class="teal-line"></div>
   <h1 class="page-title">Calculadora <span>FIRE</span></h1>
-  <p class="page-sub">Descubra quanto você precisa acumular para viver de renda e em quantos anos pode alcançar a independência financeira.</p>
+  <p class="page-sub">Descubra quanto você precisa acumular para viver de renda — mantendo o patrimônio para sempre ou consumindo-o ao longo de um período definido — e em quantos anos pode chegar lá.</p>
 
-  <!-- FIRE EXPLAINER ACCORDION -->
+  <!-- ─── SELETOR DE ESTRATÉGIA ─── -->
+  <div class="mode-picker">
+    <button type="button" class="mode-card active" id="modo-perpetuo" onclick="setModo('perpetuo')">
+      <div class="mode-card-head">
+        <span class="mode-radio"></span>
+        <h4>Renda perpétua</h4>
+      </div>
+      <p>Você vive apenas dos rendimentos. O patrimônio permanece intacto para sempre e vira herança. É o FIRE clássico, da regra dos 4%.</p>
+      <span class="mode-tag">patrimônio preservado</span>
+    </button>
+
+    <button type="button" class="mode-card" id="modo-consumo" onclick="setModo('consumo')">
+      <div class="mode-card-head">
+        <span class="mode-radio"></span>
+        <h4>Consumir o patrimônio</h4>
+      </div>
+      <p>Você define por quantos anos quer viver da renda e o patrimônio é gasto até zerar (ou até sobrar o valor de herança que você escolher). Exige bem menos capital.</p>
+      <span class="mode-tag">patrimônio consumido</span>
+    </button>
+  </div>
+
+  <!-- ─── EXPLICAÇÃO DA METODOLOGIA ─── -->
   <div class="fire-accordion" id="fireAccordion">
-    <div class="fire-acc-toggle" onclick="toggleFireExplainer()">
+    <div class="fire-acc-toggle" onclick="toggleAcordeon('fireAccordion')">
       <div class="fire-acc-left">
         <div class="fire-acc-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         </div>
         <div>
           <h3>Como funciona o cálculo FIRE?</h3>
-          <p>Clique para entender a metodologia por trás dos resultados</p>
+          <p>Metodologia, fórmulas e premissas por trás de cada número</p>
         </div>
       </div>
       <svg class="fire-acc-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
     <div class="fire-acc-body">
-      <p><strong style="color:var(--white)">O que é FIRE?</strong> O movimento <span class="highlight">FIRE (Financial Independence, Retire Early)</span> defende que qualquer pessoa pode parar de depender de um salário se construir um patrimônio suficiente para gerar renda passiva. Não se trata de ficar rico, e sim de ter <span class="highlight">liberdade de escolha</span> sobre como gastar seu tempo.</p>
 
-      <p><strong style="color:var(--white)">A Regra dos 4% e o número 25×</strong>. Em 1998, pesquisadores da Universidade de Trinity (EUA) analisaram décadas de dados de mercado e concluíram que uma carteira diversificada aguenta saques de até <span class="highlight">4% ao ano</span> indefinidamente sem se esgotar. Isso significa que seu patrimônio precisa ser de <span class="highlight">25 vezes suas despesas anuais</span> (porque 1 ÷ 4% = 25). Exemplo: se você gasta R$ 5.000/mês (R$ 60.000/ano), precisa de R$ 1.500.000 investidos.</p>
+      <h4>O que é FIRE?</h4>
+      <p>O movimento <span class="highlight">FIRE (Financial Independence, Retire Early)</span> defende que qualquer pessoa pode parar de depender de um salário se construir um patrimônio suficiente para sustentar seu padrão de vida. Não se trata de ficar rico, e sim de ter <span class="highlight">liberdade de escolha</span> sobre como gastar seu tempo.</p>
 
-      <p><strong style="color:var(--white)">Taxa de retorno bruta vs. real</strong>. O retorno bruto é o que seu investimento rende no papel (ex: 10% ao ano). Mas a inflação corrói esse ganho. A taxa real é o que sobra depois da inflação, calculada como: <span class="highlight">(1 + retorno bruto) ÷ (1 + inflação) − 1</span>. Com 10% bruto e 4,5% de inflação, a taxa real é aproximadamente 5,3%. É com essa taxa que a calculadora simula o crescimento do seu patrimônio em poder de compra.</p>
+      <h4>Duas estratégias, dois números muito diferentes</h4>
+      <p><strong style="color:var(--white)">1. Renda perpétua (patrimônio preservado).</strong> Você saca por ano apenas uma fração pequena do patrimônio — a taxa de saque —, de modo que o rendimento real reponha o que foi retirado. O capital dura indefinidamente e é deixado como herança. É o modelo do FIRE clássico.</p>
+      <span class="formula">Patrimônio necessário = Despesa anual ÷ Taxa de saque
+Com 4%: 1 ÷ 0,04 = 25 × a despesa anual</span>
 
-      <p><strong style="color:var(--white)">Taxa de saque</strong>. Quanto você retira do patrimônio por ano para viver. 4% é o padrão conservador do Trinity Study. Para o Brasil, onde a instabilidade econômica é maior, muitos especialistas recomendam trabalhar com <span class="highlight">3% ou 3,5%</span>, o que aumenta o patrimônio necessário mas dá mais margem de segurança. Se a taxa de saque for 3%, o múltiplo necessário sobe para 33×.</p>
+      <p><strong style="color:var(--white)">2. Consumir o patrimônio (depleção programada).</strong> Você aceita gastar o principal ao longo de um prazo definido — 25, 30, 40 anos — terminando com zero (ou com a herança que quiser deixar). Como o capital não precisa ser eterno, o valor exigido cai bastante: normalmente <span class="highlight">30% a 45% menos</span> que a renda perpétua. É o cálculo de valor presente de uma série de saques, o mesmo usado por planos de previdência.</p>
+      <span class="formula">Patrimônio necessário = Renda mensal × [1 − (1 + i)^−n] ÷ i × (1 + i)
+        + Herança desejada ÷ (1 + i)^n
 
-      <p><strong style="color:var(--white)">Múltiplo de despesas</strong>. É uma forma rápida de saber onde você está na jornada. Divide seu patrimônio atual pelas suas despesas anuais. Resultado 5× significa que você cobre 5 anos de gastos. O objetivo FIRE fica em 25× (ou mais, dependendo da taxa de saque escolhida).</p>
+i = taxa real mensal · n = nº de meses de renda</span>
+      <p>Nesta calculadora os saques são feitos <span class="highlight">no início de cada mês</span> (você precisa do dinheiro para viver o mês), e o saldo restante continua rendendo. Por isso a fórmula é a de uma anuidade antecipada, com o fator <code>(1 + i)</code> no final.</p>
+
+      <h4>Qual estratégia escolher?</h4>
+      <ul>
+        <li><strong style="color:var(--white)">Renda perpétua</strong> faz sentido se você quer deixar herança, tem histórico de longevidade na família, se aposenta muito cedo (o prazo é longo demais para estimar) ou simplesmente prefere a margem de segurança máxima.</li>
+        <li><strong style="color:var(--white)">Consumir o patrimônio</strong> faz sentido se você começa a investir mais tarde, não tem herdeiros ou não pretende deixar patrimônio, tem outras fontes de renda garantidas (INSS, aluguel, previdência) ou quer uma meta realista em vez de uma meta inalcançável.</li>
+      </ul>
+      <p>Uma observação importante: consumir o patrimônio não é imprudente, é uma escolha. O que é imprudente é <span class="highlight">subestimar o prazo</span>. Se você projeta 30 anos de renda a partir dos 60 e vive até os 95, os últimos cinco anos ficam sem cobertura. Por isso vale calcular até uma idade generosa — 95 ou 100 anos.</p>
+
+      <h4>Taxa de retorno bruta, líquida e real</h4>
+      <p>O retorno bruto é o que o investimento rende no papel. Dele saem os custos e o imposto de renda, e o que sobra ainda é corroído pela inflação. A calculadora faz os dois descontos, nesta ordem:</p>
+      <span class="formula">Retorno líquido = Retorno bruto × (1 − alíquota de custos e IR)
+Retorno real   = (1 + Retorno líquido) ÷ (1 + Inflação) − 1</span>
+      <p>Com 10% brutos, 0% de custos e 4,5% de inflação, a taxa real fica em aproximadamente <span class="highlight">5,3% ao ano</span>. A segunda fórmula é a equação de Fisher — subtrair a inflação direto do retorno (10% − 4,5% = 5,5%) superestima o resultado, ainda que pouco. Todos os valores da página são projetados com essa taxa real.</p>
+
+      <h4>Tudo em poder de compra de hoje</h4>
+      <p>Como o motor roda em taxa real, <span class="highlight">todos os valores estão em reais de hoje</span>. Quando a calculadora diz que você precisa de R$ 1,8 milhão daqui a 15 anos, significa "R$ 1,8 milhão com o poder de compra que esse dinheiro tem hoje". O valor de face no futuro será maior — e a calculadora mostra esse valor nominal logo abaixo do número principal, corrigido pela inflação que você escolheu. A vantagem de raciocinar em valores reais é que a renda mensal que você digita continua comprando a mesma coisa do primeiro ao último ano da aposentadoria.</p>
+
+      <h4>Taxa de saque e a regra dos 4%</h4>
+      <p>Em 1998, pesquisadores da Universidade de Trinity analisaram décadas de dados do mercado americano e concluíram que uma carteira diversificada suportava saques de 4% ao ano por 30 anos com altíssima probabilidade de sucesso. Daí vem o número 25×. Para o Brasil, onde a instabilidade é maior, muitos especialistas trabalham com <span class="highlight">3% a 3,5%</span>, o que eleva o múltiplo para 29× a 33× e aumenta a margem de segurança.</p>
+      <p>Repare que a regra dos 4% original é um estudo sobre <em>30 anos</em>, e não sobre a eternidade. Se a sua taxa de saque for menor que a taxa real de retorno da carteira, o patrimônio cresce mesmo com você sacando — é o que o gráfico mostra depois do ponto FIRE.</p>
+
+      <h4>O que este modelo não considera</h4>
+      <ul>
+        <li><strong style="color:var(--white)">Sequência de retornos.</strong> A calculadora usa um retorno constante. Na vida real, uma queda forte de mercado logo nos primeiros anos de saque danifica o plano muito mais do que a mesma queda dez anos depois.</li>
+        <li><strong style="color:var(--white)">Renda de INSS, aluguéis ou previdência.</strong> Se você terá outras rendas, desconte-as da renda mensal desejada antes de digitar.</li>
+        <li><strong style="color:var(--white)">Gastos que mudam com a idade.</strong> Saúde tende a pesar mais no fim; viagens, no começo.</li>
+        <li><strong style="color:var(--white)">Impostos detalhados.</strong> O campo de custos e IR aplica uma alíquota média sobre o retorno, o que é uma aproximação — a tributação real depende do produto, do prazo e do momento do resgate.</li>
+      </ul>
+      <p>Use o resultado como um alvo de planejamento, não como uma promessa. Revisar as premissas uma vez por ano vale mais do que acertar a terceira casa decimal hoje.</p>
     </div>
   </div>
 
   <div class="tool-layout">
-    <!-- INPUTS -->
+    <!-- ─── INPUTS ─── -->
     <div class="inputs-card">
       <h3>Seus dados</h3>
+      <p class="card-note">Informe os valores em reais de hoje. A calculadora corrige tudo pela inflação automaticamente.</p>
 
-      <div class="field">
-        <label>Despesas mensais atuais (R$)</label>
+      <div class="field-row">
+        <div class="field">
+          <label>Sua idade hoje</label>
+          <div class="field-wrap">
+            <input type="number" inputmode="numeric" class="no-prefix" id="idade" value="45" min="10" max="90" oninput="calc()">
+            <span class="field-suffix">anos</span>
+          </div>
+        </div>
+        <div class="field only-consumo">
+          <label>Quero parar aos</label>
+          <div class="field-wrap">
+            <input type="number" inputmode="numeric" class="no-prefix" id="idadeAlvo" value="60" min="20" max="95" oninput="calc()">
+            <span class="field-suffix">anos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field only-perpetuo">
+        <label>Despesas mensais desejadas (R$)</label>
         <div class="field-wrap">
           <span class="field-prefix">R$</span>
           <input type="number" inputmode="decimal" id="despesas" value="5000" oninput="calc()">
         </div>
+        <div class="field-hint">Quanto você quer gastar por mês depois de parar de trabalhar, em poder de compra de hoje.</div>
+      </div>
+
+      <div class="field only-consumo">
+        <label>Renda mensal desejada (R$)</label>
+        <div class="field-wrap">
+          <span class="field-prefix">R$</span>
+          <input type="number" inputmode="decimal" id="rendaAlvo" value="10000" oninput="calc()">
+        </div>
+        <div class="field-hint">Quanto você quer receber por mês durante a aposentadoria, em poder de compra de hoje.</div>
+      </div>
+
+      <div class="field only-consumo">
+        <label>Duração da renda: <span id="lbl-duracao" style="color:var(--teal)">30 anos</span></label>
+        <div class="slider-wrap">
+          <input type="range" id="duracao" min="5" max="50" step="1" value="30" oninput="calc()">
+          <div class="slider-labels"><span>5 anos</span><span>30 anos</span><span>50 anos</span></div>
+        </div>
+        <div class="field-hint" id="hint-duracao">A renda vai dos 60 aos 90 anos.</div>
       </div>
 
       <div class="field">
@@ -210,72 +365,148 @@
           <span class="field-prefix">R$</span>
           <input type="number" inputmode="decimal" id="aporte" value="2000" oninput="calc()">
         </div>
+        <div class="field-hint">Quanto você consegue investir todo mês até parar de trabalhar.</div>
       </div>
+
+      <div class="divider-label">Premissas de mercado</div>
 
       <div class="field">
         <label>Retorno bruto anual da carteira: <span id="lbl-retorno" style="color:var(--teal)">10%</span></label>
         <div class="slider-wrap">
-          <input type="range" id="retorno" min="1" max="20" step="0.5" value="10" oninput="document.getElementById('lbl-retorno').textContent=this.value+'%';updateRealRate();calc()">
+          <input type="range" id="retorno" min="1" max="20" step="0.5" value="10" oninput="calc()">
           <div class="slider-labels"><span>1%</span><span>10%</span><span>20%</span></div>
         </div>
       </div>
 
       <div class="field">
-        <label>Inflação anual estimada: <span id="lbl-inflacao" style="color:var(--teal)">4.5%</span></label>
+        <label>Inflação anual estimada: <span id="lbl-inflacao" style="color:var(--teal)">4,5%</span></label>
         <div class="slider-wrap">
-          <input type="range" id="inflacao" min="2" max="12" step="0.5" value="4.5" oninput="document.getElementById('lbl-inflacao').textContent=this.value+'%';updateRealRate();calc()">
+          <input type="range" id="inflacao" min="2" max="12" step="0.5" value="4.5" oninput="calc()">
           <div class="slider-labels"><span>2%</span><span>6%</span><span>12%</span></div>
         </div>
       </div>
 
-      <div class="field">
-        <label>Taxa de retorno real (calculada): <span id="lbl-real" style="color:var(--green);font-weight:700">5.3%</span></label>
+      <div class="real-rate-box">
+        <div class="rr-top">
+          <span class="rr-label">Taxa de retorno real</span>
+          <span class="rr-value" id="lbl-real">5,3%</span>
+        </div>
+        <div class="rr-formula" id="lbl-real-formula">(1 + 10,0%) ÷ (1 + 4,5%) − 1 — é o ganho acima da inflação, e é com ele que toda a projeção é feita.</div>
       </div>
 
-      <div class="field">
+      <div class="field only-perpetuo">
         <label>Taxa de saque anual (regra dos 4%): <span id="lbl-saque" style="color:var(--teal)">4%</span></label>
         <div class="slider-wrap">
-          <input type="range" id="saque" min="2" max="6" step="0.5" value="4" oninput="document.getElementById('lbl-saque').textContent=this.value+'%';calc()">
-          <div class="slider-labels"><span>2% conservador</span><span>4% padrão</span><span>6%</span></div>
+          <input type="range" id="saque" min="2" max="6" step="0.25" value="4" oninput="calc()">
+          <div class="slider-labels"><span>2% conservador</span><span>4% padrão</span><span>6% agressivo</span></div>
+        </div>
+        <div class="field-hint" id="hint-saque">Múltiplo necessário: 25× a despesa anual.</div>
+      </div>
+
+      <div class="adv" id="advBox">
+        <button type="button" class="adv-toggle" onclick="toggleAcordeon('advBox','.adv-body')">
+          Premissas avançadas
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="adv-body">
+          <div class="field">
+            <label>Custos e IR sobre o rendimento: <span id="lbl-custos" style="color:var(--teal)">0%</span></label>
+            <div class="slider-wrap">
+              <input type="range" id="custos" min="0" max="30" step="1" value="0" oninput="calc()">
+              <div class="slider-labels"><span>0%</span><span>15% (renda fixa)</span><span>30%</span></div>
+            </div>
+            <div class="field-hint">Alíquota média aplicada sobre o retorno bruto antes do desconto da inflação. 15% aproxima o IR de longo prazo da renda fixa; 0% aproxima uma carteira de ações com poucos resgates.</div>
+          </div>
+          <div class="field only-consumo">
+            <label>Patrimônio a deixar no final (R$)</label>
+            <div class="field-wrap">
+              <span class="field-prefix">R$</span>
+              <input type="number" inputmode="decimal" id="heranca" value="0" oninput="calc()">
+            </div>
+            <div class="field-hint">Deixe em zero para consumir todo o patrimônio. Qualquer valor acima disso é o que sobra como herança, em poder de compra de hoje.</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- RESULTS -->
+    <!-- ─── RESULTADOS ─── -->
     <div>
       <div class="results-card">
-        <h3>Seu número FIRE</h3>
+        <h3 id="res-title">Seu número FIRE</h3>
         <div class="result-main">
-          <div class="result-main-label">patrimônio necessário</div>
+          <div class="result-main-label" id="res-main-label">patrimônio necessário</div>
           <div class="result-main-value" id="res-fire">—</div>
           <div class="result-main-sub" id="res-fire-sub"></div>
+          <div class="result-main-nominal" id="res-nominal"></div>
         </div>
-        <div class="result-grid">
+
+        <div class="status-box status-ok" id="res-status" style="display:none"></div>
+
+        <!-- resultados do modo PERPÉTUO -->
+        <div class="result-grid only-perpetuo">
           <div class="result-item">
-            <div class="result-item-label">Anos até FIRE</div>
+            <div class="result-item-label">Anos até o FIRE</div>
             <div class="result-item-value green" id="res-anos">—</div>
+            <div class="result-item-note" id="res-anos-note"></div>
           </div>
           <div class="result-item">
             <div class="result-item-label">Renda mensal passiva</div>
             <div class="result-item-value" id="res-renda">—</div>
+            <div class="result-item-note">sem tocar no principal</div>
           </div>
           <div class="result-item">
-            <div class="result-item-label">Total investido</div>
+            <div class="result-item-label">Total aportado até lá</div>
             <div class="result-item-value" id="res-investido">—</div>
+            <div class="result-item-note" id="res-investido-note"></div>
           </div>
           <div class="result-item">
-            <div class="result-item-label">Juros gerados</div>
+            <div class="result-item-label">Juros reais gerados</div>
             <div class="result-item-value amber" id="res-juros">—</div>
+            <div class="result-item-note" id="res-juros-note"></div>
           </div>
           <div class="result-item">
-            <div class="result-item-label">Múltiplo de despesas</div>
+            <div class="result-item-label">Múltiplo de despesas hoje</div>
             <div class="result-item-value" id="res-multiplo">—</div>
-            <div style="font-size:.7rem;color:var(--muted);margin-top:.2rem;">patrimônio ÷ desp. anuais</div>
+            <div class="result-item-note">patrimônio ÷ despesas anuais</div>
           </div>
           <div class="result-item">
-            <div class="result-item-label">Aporte para antecipar 5 anos</div>
+            <div class="result-item-label">Aporte p/ antecipar 5 anos</div>
             <div class="result-item-value" id="res-aporte-ideal">—</div>
-            <div style="font-size:.7rem;color:var(--muted);margin-top:.2rem;">quanto precisaria poupar</div>
+            <div class="result-item-note" id="res-aporte-ideal-note">quanto precisaria poupar por mês</div>
+          </div>
+        </div>
+
+        <!-- resultados do modo CONSUMO -->
+        <div class="result-grid only-consumo">
+          <div class="result-item">
+            <div class="result-item-label">Aporte mensal necessário</div>
+            <div class="result-item-value green" id="c-aporte">—</div>
+            <div class="result-item-note" id="c-aporte-note"></div>
+          </div>
+          <div class="result-item">
+            <div class="result-item-label">Você terá com o aporte atual</div>
+            <div class="result-item-value" id="c-projetado">—</div>
+            <div class="result-item-note" id="c-projetado-note"></div>
+          </div>
+          <div class="result-item">
+            <div class="result-item-label">Renda possível com o plano atual</div>
+            <div class="result-item-value" id="c-renda-possivel">—</div>
+            <div class="result-item-note" id="c-renda-possivel-note"></div>
+          </div>
+          <div class="result-item">
+            <div class="result-item-label">Total que você vai sacar</div>
+            <div class="result-item-value" id="c-total-sacado">—</div>
+            <div class="result-item-note" id="c-total-sacado-note"></div>
+          </div>
+          <div class="result-item">
+            <div class="result-item-label">Taxa de saque no 1º ano</div>
+            <div class="result-item-value amber" id="c-taxa-saque">—</div>
+            <div class="result-item-note">saque anual ÷ patrimônio na largada</div>
+          </div>
+          <div class="result-item">
+            <div class="result-item-label">Se fosse renda perpétua</div>
+            <div class="result-item-value" id="c-perpetuo">—</div>
+            <div class="result-item-note" id="c-perpetuo-note"></div>
           </div>
         </div>
 
@@ -283,7 +514,7 @@
 
         <div class="fire-progress">
           <div class="fire-progress-label">
-            <span>Progresso em direção ao FIRE</span>
+            <span id="res-pct-label">Progresso em direção ao FIRE</span>
             <span id="res-pct">0%</span>
           </div>
           <div class="fire-bar"><div class="fire-bar-fill" id="res-bar" style="width:0%"></div></div>
@@ -292,13 +523,61 @@
     </div>
   </div>
 
-  <!-- PROJECTION CHART -->
+  <!-- ─── RESUMO EM TEXTO ─── -->
+  <div class="summary-card">
+    <div class="summary-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    </div>
+    <div>
+      <h4>O seu plano em uma frase</h4>
+      <p id="res-resumo">—</p>
+    </div>
+  </div>
+
+  <!-- ─── GRÁFICO ─── -->
   <div class="explainer" id="chartSection" style="margin-top:2rem;">
-    <h3 style="margin-bottom:1.2rem;">Projeção patrimonial ano a ano</h3>
-    <canvas id="fireChart" style="width:100%;max-height:280px;"></canvas>
-    <p style="font-size:.75rem;color:var(--muted);margin-top:.8rem;font-family:var(--font-body);">
-      Linha teal = patrimônio acumulado · Linha pontilhada = meta FIRE
-    </p>
+    <h3 style="margin-bottom:.3rem;">Trajetória do patrimônio</h3>
+    <p style="font-size:.82rem;margin-bottom:1.2rem;">Simulação com o seu aporte atual, em poder de compra de hoje.</p>
+    <canvas id="fireChart" style="width:100%;max-height:300px;"></canvas>
+    <div class="chart-legend">
+      <span><i class="lg-swatch" style="border-top-color:#4F8C84"></i> Patrimônio acumulado</span>
+      <span><i class="lg-swatch" style="border-top-color:#C48A3E;border-top-style:dashed"></i> <span id="lg-meta">Meta FIRE</span></span>
+      <span class="only-consumo"><i class="lg-swatch" style="border-top-color:rgba(21,21,63,.35);border-top-style:dotted"></i> Início da renda</span>
+    </div>
+  </div>
+
+  <!-- ─── TABELA ANO A ANO ─── -->
+  <div class="fire-accordion mt" id="tableAccordion">
+    <div class="fire-acc-toggle" onclick="toggleAcordeon('tableAccordion')">
+      <div class="fire-acc-left">
+        <div class="fire-acc-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+        </div>
+        <div>
+          <h3>Ver a simulação ano a ano</h3>
+          <p>Saldo, aportes, saques e rendimento de cada ano</p>
+        </div>
+      </div>
+      <svg class="fire-acc-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="fire-acc-body">
+      <div class="table-scroll">
+        <table class="year-table">
+          <thead>
+            <tr>
+              <th>Idade</th>
+              <th>Saldo inicial</th>
+              <th>Aportes</th>
+              <th>Saques</th>
+              <th>Rendimento real</th>
+              <th>Saldo final</th>
+            </tr>
+          </thead>
+          <tbody id="year-table-body"></tbody>
+        </table>
+      </div>
+      <p class="table-legend">Valores em reais de hoje. As linhas destacadas em âmbar são os anos em que você já está vivendo da renda. A linha com borda mais forte marca o ano em que a fase de saques começa.</p>
+    </div>
   </div>
 
 </div>
@@ -306,186 +585,634 @@
 <footer>© 2025 HZ Invest · Todos os direitos reservados · Não é recomendação de investimento</footer>
 
 <script>
-function fmt(n){return'R$ '+n.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0})}
-function fmtAnos(n){return n===Infinity||isNaN(n)?'∞':n.toFixed(1)+' anos'}
+/* ════════════════════════════════════════════════════════════
+   FORMATAÇÃO
+   ════════════════════════════════════════════════════════════ */
+function fmt(n){
+  if(!isFinite(n)) return '—';
+  return 'R$ '+Math.round(n).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
+}
+function fmtCurto(v){
+  const a = Math.abs(v);
+  if(a >= 1e6) return (v/1e6).toFixed(a>=1e7?0:1).replace('.',',')+'M';
+  if(a >= 1e3) return (v/1e3).toFixed(0)+'k';
+  return v.toFixed(0);
+}
+function pct(n,casas){ return (n*100).toFixed(casas===undefined?1:casas).replace('.',',')+'%'; }
+function plural(n,s,p){ return n===1 ? '1 '+s : n+' '+p; }
+/** Prazo por extenso, para textos corridos: "26 anos e 1 mês". */
+function fmtAnos(a){
+  if(!isFinite(a)) return '∞';
+  if(a <= 0) return 'agora';
+  let anos = Math.floor(a);
+  let meses = Math.round((a-anos)*12);
+  if(meses === 12){ anos++; meses = 0; }
+  if(anos === 0) return plural(meses,'mês','meses');
+  if(meses === 0) return plural(anos,'ano','anos');
+  return plural(anos,'ano','anos')+' e '+plural(meses,'mês','meses');
+}
+/** Versão compacta, para os cartões estreitos de resultado: "26a 1m". */
+function fmtAnosCurto(a){
+  if(!isFinite(a)) return '∞';
+  if(a <= 0) return 'agora';
+  let anos = Math.floor(a);
+  let meses = Math.round((a-anos)*12);
+  if(meses === 12){ anos++; meses = 0; }
+  if(anos === 0) return meses+'m';
+  if(meses === 0) return plural(anos,'ano','anos');
+  return anos+'a '+meses+'m';
+}
 
-// Simple canvas bar chart — no library needed
-let chartData = { labels:[], patrimony:[], goal:[] };
+/* ════════════════════════════════════════════════════════════
+   MOTOR FINANCEIRO
+   Tudo roda em taxa REAL, ou seja, em poder de compra de hoje.
+   ════════════════════════════════════════════════════════════ */
+const EPS = 1e-9;
 
-function drawChart() {
+/** Retorno real anual a partir do bruto, dos custos/IR e da inflação. */
+function taxaReal(bruto, custos, inflacao){
+  const liquido = bruto * (1 - custos);
+  return (1 + liquido) / (1 + inflacao) - 1;
+}
+/** Converte taxa anual em mensal equivalente (juros compostos). */
+function paraMensal(anual){ return Math.pow(1 + anual, 1/12) - 1; }
+
+/** Valor futuro de um saldo inicial somado a aportes no fim de cada mês. */
+function valorFuturo(p0, aporte, i, n){
+  if(n <= 0) return p0;
+  if(Math.abs(i) < EPS) return p0 + aporte * n;
+  const g = Math.pow(1 + i, n);
+  return p0 * g + aporte * (g - 1) / i;
+}
+/** Aporte mensal necessário para sair de p0 e chegar a `alvo` em n meses. */
+function aporteNecessario(alvo, p0, i, n){
+  if(n <= 0) return Infinity;
+  if(Math.abs(i) < EPS) return (alvo - p0) / n;
+  const g = Math.pow(1 + i, n);
+  return (alvo - p0 * g) * i / (g - 1);
+}
+/** Valor presente de n saques mensais feitos no INÍCIO de cada mês. */
+function vpSaques(saque, i, n){
+  if(n <= 0) return 0;
+  if(Math.abs(i) < EPS) return saque * n;
+  return saque * (1 - Math.pow(1 + i, -n)) / i * (1 + i);
+}
+/** Capital necessário para n saques mensais deixando `heranca` no final. */
+function capitalNecessario(saque, i, n, heranca){
+  return vpSaques(saque, i, n) + (heranca > 0 ? heranca * Math.pow(1 + i, -n) : 0);
+}
+/** Saque mensal sustentável a partir de um capital, por n meses, deixando `heranca`. */
+function saqueSustentavel(capital, i, n, heranca){
+  if(n <= 0) return 0;
+  const liquido = capital - (heranca > 0 ? heranca * Math.pow(1 + i, -n) : 0);
+  if(liquido <= 0) return 0;
+  if(Math.abs(i) < EPS) return liquido / n;
+  return liquido * i / ((1 - Math.pow(1 + i, -n)) * (1 + i));
+}
+/** Por quantos meses um capital sustenta um saque mensal. Infinity se for perpétuo. */
+function duracaoDoCapital(capital, saque, i){
+  if(saque <= 0) return Infinity;
+  if(capital <= 0) return 0;
+  if(Math.abs(i) < EPS) return capital / saque;
+  const k = capital * i / (saque * (1 + i));
+  if(k >= 1) return Infinity;           // o rendimento sozinho cobre o saque
+  return -Math.log(1 - k) / Math.log(1 + i);
+}
+
+/**
+ * Simulação mês a mês: primeiro a fase de acumulação, depois a de saques.
+ * Devolve os pontos anuais do gráfico e as linhas da tabela.
+ */
+function simular(p0, aporte, i, mesesAcumulo, saque, mesesRenda){
+  let saldo = p0;
+  const pontos = [{ mes:0, saldo:saldo }];
+  const linhas = [];
+  const total = mesesAcumulo + mesesRenda;
+  let esgotouMes = null, totalAportado = 0, totalSacado = 0, totalRendimento = 0;
+  let ini = saldo, apoAno = 0, saqAno = 0, rendAno = 0;
+
+  for(let m = 1; m <= total; m++){
+    if(m <= mesesAcumulo){
+      const rend = saldo * i;
+      saldo += rend + aporte;
+      rendAno += rend; apoAno += aporte;
+      totalRendimento += rend; totalAportado += aporte;
+    } else {
+      const s = Math.min(saque, Math.max(0, saldo));   // saque no início do mês
+      saldo -= s;
+      const rend = saldo * i;
+      saldo += rend;
+      saqAno += s; rendAno += rend;
+      totalSacado += s; totalRendimento += rend;
+      if(saldo <= 0.005 && esgotouMes === null){ saldo = 0; esgotouMes = m; }
+    }
+    if(m % 12 === 0 || m === total){
+      linhas.push({ mesFim:m, ini:ini, aportes:apoAno, saques:saqAno, rendimento:rendAno, fim:saldo,
+                    fase: m <= mesesAcumulo ? 'acumulo' : 'renda' });
+      pontos.push({ mes:m, saldo:saldo });
+      ini = saldo; apoAno = 0; saqAno = 0; rendAno = 0;
+    }
+  }
+  return { pontos, linhas, esgotouMes, saldoFinal:saldo, totalAportado, totalSacado, totalRendimento };
+}
+
+/** Meses até o patrimônio alcançar um alvo, aportando todo mês. Null se não alcançar. */
+function mesesAte(alvo, p0, aporte, i, limite){
+  if(p0 >= alvo) return 0;
+  let saldo = p0;
+  for(let m = 1; m <= limite; m++){
+    saldo = saldo * (1 + i) + aporte;
+    if(saldo >= alvo) return m;
+  }
+  return null;
+}
+
+/* ════════════════════════════════════════════════════════════
+   GRÁFICO (canvas puro)
+   ════════════════════════════════════════════════════════════ */
+let chartState = { pontos:[], meta:0, idadeInicial:0, mesInicioRenda:null, mesEsgota:null, mesMarco:null };
+
+const COR = {
+  linha:  '#4F8C84',
+  meta:   '#C48A3E',
+  grade:  'rgba(27,27,92,0.10)',
+  texto:  'rgba(21,21,63,0.62)',
+  marco:  'rgba(21,21,63,0.35)',
+  alerta: '#9E3B3B'
+};
+
+function drawChart(){
   const canvas = document.getElementById('fireChart');
-  if (!canvas || !chartData.labels.length) return;
+  if(!canvas || !chartState.pontos.length) return;
   const dpr = window.devicePixelRatio || 1;
   const W = canvas.offsetWidth || 700;
-  const H = 240;
-  canvas.width  = W * dpr;
-  canvas.height = H * dpr;
-  canvas.style.width  = W + 'px';
-  canvas.style.height = H + 'px';
+  const H = 260;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W+'px'; canvas.style.height = H+'px';
   const ctx = canvas.getContext('2d');
+  ctx.setTransform(1,0,0,1,0,0);
   ctx.scale(dpr, dpr);
   ctx.clearRect(0, 0, W, H);
 
-  const PAD = { top:20, right:20, bottom:36, left:72 };
+  const PAD = { top:18, right:18, bottom:34, left:64 };
   const cW = W - PAD.left - PAD.right;
-  const cH = H - PAD.top  - PAD.bottom;
+  const cH = H - PAD.top - PAD.bottom;
 
-  const maxVal = Math.max(...chartData.patrimony, chartData.goal[0] * 1.1);
-  const xStep  = cW / (chartData.labels.length - 1);
+  const pts = chartState.pontos;
+  const maxSaldo = Math.max(...pts.map(p => p.saldo), chartState.meta);
+  const maxVal = maxSaldo > 0 ? maxSaldo * 1.08 : 1;
+  const ultimoMes = pts[pts.length-1].mes || 1;
 
-  // Grid lines
-  ctx.strokeStyle = 'rgba(79,140,132,0.1)';
-  ctx.lineWidth = 1;
-  for (let i = 0; i <= 4; i++) {
-    const y = PAD.top + cH - (i/4) * cH;
+  const X = mes => PAD.left + (mes / ultimoMes) * cW;
+  const Y = val => PAD.top + cH - (Math.min(Math.max(val,0), maxVal) / maxVal) * cH;
+
+  // grade + eixo Y
+  ctx.font = '10px Manrope, system-ui, sans-serif';
+  ctx.strokeStyle = COR.grade; ctx.lineWidth = 1;
+  ctx.fillStyle = COR.texto; ctx.textAlign = 'right';
+  for(let k = 0; k <= 4; k++){
+    const y = PAD.top + cH - (k/4) * cH;
     ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(PAD.left + cW, y); ctx.stroke();
-    ctx.fillStyle = 'var(--muted)';
-    ctx.font = '10px Fira Code, monospace';
-    ctx.textAlign = 'right';
-    const v = (maxVal * i / 4);
-    ctx.fillText(v >= 1e6 ? (v/1e6).toFixed(1)+'M' : v >= 1e3 ? (v/1e3).toFixed(0)+'k' : v.toFixed(0), PAD.left - 6, y + 4);
+    ctx.fillText(fmtCurto(maxVal * k / 4), PAD.left - 8, y + 3.5);
   }
 
-  // Goal line (dashed)
-  const goalY = PAD.top + cH - (chartData.goal[0] / maxVal) * cH;
-  ctx.strokeStyle = 'rgba(196,138,62,0.5)';
-  ctx.lineWidth = 1.5;
-  ctx.setLineDash([6, 4]);
-  ctx.beginPath(); ctx.moveTo(PAD.left, goalY); ctx.lineTo(PAD.left + cW, goalY); ctx.stroke();
-  ctx.setLineDash([]);
+  // marco vertical: início da fase de renda
+  if(chartState.mesInicioRenda !== null && chartState.mesInicioRenda > 0 && chartState.mesInicioRenda < ultimoMes){
+    const x = X(chartState.mesInicioRenda);
+    ctx.strokeStyle = COR.marco; ctx.lineWidth = 1.2;
+    ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(x, PAD.top); ctx.lineTo(x, PAD.top + cH); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = COR.texto; ctx.textAlign = 'center'; ctx.font = '9.5px Manrope, system-ui, sans-serif';
+    const idadeMarco = chartState.idadeInicial + Math.round(chartState.mesInicioRenda/12);
+    ctx.fillText(idadeMarco + ' anos', x, PAD.top - 5);
+  }
 
-  // Area fill under patrimony line
+  // linha da meta
+  if(chartState.meta > 0 && chartState.meta <= maxVal){
+    const y = Y(chartState.meta);
+    ctx.strokeStyle = COR.meta; ctx.lineWidth = 1.5;
+    ctx.setLineDash([6,4]);
+    ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(PAD.left + cW, y); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // área sob a curva
   ctx.beginPath();
-  chartData.patrimony.forEach((v, i) => {
-    const x = PAD.left + i * xStep;
-    const y = PAD.top + cH - (Math.min(v, maxVal) / maxVal) * cH;
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-  });
-  ctx.lineTo(PAD.left + (chartData.patrimony.length-1)*xStep, PAD.top+cH);
-  ctx.lineTo(PAD.left, PAD.top+cH);
+  pts.forEach((p,k) => { const x = X(p.mes), y = Y(p.saldo); k===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y); });
+  ctx.lineTo(X(pts[pts.length-1].mes), PAD.top + cH);
+  ctx.lineTo(PAD.left, PAD.top + cH);
   ctx.closePath();
-  const grad = ctx.createLinearGradient(0, PAD.top, 0, PAD.top+cH);
-  grad.addColorStop(0, 'rgba(79,140,132,0.25)');
+  const grad = ctx.createLinearGradient(0, PAD.top, 0, PAD.top + cH);
+  grad.addColorStop(0, 'rgba(79,140,132,0.26)');
   grad.addColorStop(1, 'rgba(79,140,132,0.02)');
-  ctx.fillStyle = grad;
-  ctx.fill();
+  ctx.fillStyle = grad; ctx.fill();
 
-  // Patrimony line
-  ctx.strokeStyle = '#4F8C84';
-  ctx.lineWidth = 2.5;
-  ctx.lineJoin = 'round';
+  // curva
+  ctx.strokeStyle = COR.linha; ctx.lineWidth = 2.5; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
   ctx.beginPath();
-  chartData.patrimony.forEach((v, i) => {
-    const x = PAD.left + i * xStep;
-    const y = PAD.top + cH - (Math.min(v, maxVal) / maxVal) * cH;
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-  });
+  pts.forEach((p,k) => { const x = X(p.mes), y = Y(p.saldo); k===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y); });
   ctx.stroke();
 
-  // X labels
-  ctx.fillStyle = 'var(--muted)';
-  ctx.font = '10px Fira Code, monospace';
-  ctx.textAlign = 'center';
-  const step = Math.ceil(chartData.labels.length / 8);
-  chartData.labels.forEach((lbl, i) => {
-    if (i % step === 0 || i === chartData.labels.length-1) {
-      ctx.fillText(lbl, PAD.left + i*xStep, H - 8);
-    }
-  });
+  // ponto de esgotamento
+  if(chartState.mesEsgota !== null){
+    const x = X(chartState.mesEsgota), y = Y(0);
+    ctx.fillStyle = COR.alerta;
+    ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI*2); ctx.fill();
+    ctx.textAlign = x > PAD.left + cW*0.75 ? 'right' : 'left';
+    ctx.font = '9.5px Manrope, system-ui, sans-serif';
+    ctx.fillText('acaba aos ' + (chartState.idadeInicial + Math.round(chartState.mesEsgota/12)),
+                 x + (x > PAD.left + cW*0.75 ? -7 : 7), y - 8);
+  }
+
+  // marco de chegada à meta (modo perpétuo)
+  if(chartState.mesMarco !== null && chartState.meta > 0 && chartState.meta <= maxVal){
+    const x = X(chartState.mesMarco), y = Y(chartState.meta);
+    ctx.fillStyle = COR.meta;
+    ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI*2); ctx.fill();
+  }
+
+  // eixo X em idades
+  ctx.fillStyle = COR.texto; ctx.textAlign = 'center'; ctx.font = '10px Manrope, system-ui, sans-serif';
+  const totalAnos = Math.round(ultimoMes/12);
+  const passo = Math.max(1, Math.ceil(totalAnos / 8));
+  for(let a = 0; a <= totalAnos; a += passo){
+    ctx.fillText(chartState.idadeInicial + a, X(a*12), H - 10);
+  }
+  if(totalAnos % passo !== 0) ctx.fillText(chartState.idadeInicial + totalAnos, X(totalAnos*12), H - 10);
 }
 
-function updateRealRate() {
-  const bruto = parseFloat(document.getElementById('retorno').value)/100;
-  const infl  = parseFloat(document.getElementById('inflacao').value)/100;
-  const real  = ((1 + bruto) / (1 + infl) - 1) * 100;
-  document.getElementById('lbl-real').textContent = real.toFixed(1) + '%';
+/* ════════════════════════════════════════════════════════════
+   TABELA ANO A ANO
+   ════════════════════════════════════════════════════════════ */
+function renderTabela(linhas, idadeInicial, mesInicioRenda){
+  const tbody = document.getElementById('year-table-body');
+  const html = linhas.map(l => {
+    const idade = idadeInicial + Math.round(l.mesFim/12);
+    const marco = mesInicioRenda !== null && l.mesFim === mesInicioRenda;
+    const cls = [l.fase === 'renda' ? 'phase-renda' : '', marco ? 'milestone' : ''].filter(Boolean).join(' ');
+    return `<tr class="${cls}">
+      <td>${idade} anos</td>
+      <td>${fmt(l.ini)}</td>
+      <td class="${l.aportes>0?'pos':''}">${l.aportes>0?fmt(l.aportes):'—'}</td>
+      <td class="${l.saques>0?'neg':''}">${l.saques>0?'−'+fmt(l.saques):'—'}</td>
+      <td class="${l.rendimento>0?'pos':''}">${fmt(l.rendimento)}</td>
+      <td><b>${fmt(l.fim)}</b></td>
+    </tr>`;
+  }).join('');
+  tbody.innerHTML = html || '<tr><td colspan="6" style="text-align:center;color:var(--muted)">Sem projeção para as premissas atuais.</td></tr>';
+  // O número de linhas muda conforme as premissas; se a tabela estiver
+  // aberta, a altura precisa acompanhar.
+  ajustarAltura(document.getElementById('tableAccordion'), '.fire-acc-body');
+}
+
+/* ════════════════════════════════════════════════════════════
+   MODO
+   ════════════════════════════════════════════════════════════ */
+let modo = 'perpetuo';
+function setModo(m){
+  modo = m;
+  document.body.setAttribute('data-modo', m);
+  document.getElementById('modo-perpetuo').classList.toggle('active', m === 'perpetuo');
+  document.getElementById('modo-consumo').classList.toggle('active', m === 'consumo');
+  document.getElementById('res-title').textContent =
+    m === 'perpetuo' ? 'Seu número FIRE' : 'Seu número na aposentadoria';
+  document.getElementById('lg-meta').textContent =
+    m === 'perpetuo' ? 'Meta FIRE' : 'Patrimônio necessário';
+  calc();
+  reajustarAcordeoes();   // os campos exclusivos de cada modo mudam as alturas
+}
+
+/* ════════════════════════════════════════════════════════════
+   ACORDEÕES
+   A altura é medida na hora em vez de usar um max-height fixo:
+   o texto da metodologia passa de 4000px em telas estreitas e
+   a tabela muda de tamanho conforme as premissas.
+   ════════════════════════════════════════════════════════════ */
+function ajustarAltura(container, seletorCorpo){
+  const corpo = container.querySelector(seletorCorpo);
+  if(!corpo) return;
+  corpo.style.maxHeight = container.classList.contains('open') ? corpo.scrollHeight + 'px' : '';
+}
+function toggleAcordeon(id, seletorCorpo){
+  const container = document.getElementById(id);
+  container.classList.toggle('open');
+  ajustarAltura(container, seletorCorpo || '.fire-acc-body');
+}
+function reajustarAcordeoes(){
+  ajustarAltura(document.getElementById('fireAccordion'), '.fire-acc-body');
+  ajustarAltura(document.getElementById('tableAccordion'), '.fire-acc-body');
+  ajustarAltura(document.getElementById('advBox'), '.adv-body');
+}
+
+/* ════════════════════════════════════════════════════════════
+   CÁLCULO PRINCIPAL
+   ════════════════════════════════════════════════════════════ */
+const LIMITE_MESES = 720; // 60 anos de acumulação
+
+function num(id, padrao){
+  const v = parseFloat(document.getElementById(id).value);
+  return isFinite(v) ? v : (padrao || 0);
+}
+
+function setStatus(tipo, html){
+  const box = document.getElementById('res-status');
+  if(!html){ box.style.display = 'none'; return; }
+  const icones = {
+    ok:'<circle cx="12" cy="12" r="10"/><polyline points="9 12 11.5 14.5 16 9.5"/>',
+    warn:'<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+    bad:'<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>'
+  };
+  box.className = 'status-box status-' + tipo;
+  box.style.display = 'flex';
+  box.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+icones[tipo]+'</svg><div>'+html+'</div>';
 }
 
 function calc(){
-  const despMes  = parseFloat(document.getElementById('despesas').value)||0;
-  const patAtual = parseFloat(document.getElementById('patrimonio').value)||0;
-  const aporte   = parseFloat(document.getElementById('aporte').value)||0;
-  const bruto    = parseFloat(document.getElementById('retorno').value)/100;
-  const inflacao = parseFloat(document.getElementById('inflacao').value)/100;
-  const saque    = parseFloat(document.getElementById('saque').value)/100;
+  /* ── leitura dos campos ── */
+  const idade    = Math.max(0, Math.round(num('idade', 30)));
+  const patAtual = Math.max(0, num('patrimonio'));
+  const aporte   = Math.max(0, num('aporte'));
+  const bruto    = num('retorno', 10) / 100;
+  const inflacao = num('inflacao', 4.5) / 100;
+  const custos   = num('custos', 0) / 100;
 
-  // Derive real rate from bruto and inflation
-  const retReal = (1 + bruto) / (1 + inflacao) - 1;
+  /* ── premissas derivadas ── */
+  const retReal = taxaReal(bruto, custos, inflacao);
+  const i = paraMensal(retReal);
+
+  document.getElementById('lbl-retorno').textContent  = pct(bruto);
+  document.getElementById('lbl-inflacao').textContent = pct(inflacao);
+  document.getElementById('lbl-custos').textContent   = pct(custos, 0);
+  document.getElementById('lbl-real').textContent     = pct(retReal);
+  document.getElementById('lbl-real-formula').textContent = custos > 0
+    ? `Bruto ${pct(bruto)} − custos ${pct(custos,0)} = ${pct(bruto*(1-custos))} líquido; descontada a inflação de ${pct(inflacao)}, sobram ${pct(retReal)} de ganho real ao ano.`
+    : `(1 + ${pct(bruto)}) ÷ (1 + ${pct(inflacao)}) − 1 — é o ganho acima da inflação, e é com ele que toda a projeção é feita.`;
+
+  if(modo === 'perpetuo') calcPerpetuo(idade, patAtual, aporte, inflacao, retReal, i);
+  else                    calcConsumo(idade, patAtual, aporte, inflacao, retReal, i);
+}
+
+/* ─────────────── MODO 1: RENDA PERPÉTUA ─────────────── */
+function calcPerpetuo(idade, patAtual, aporte, inflacao, retReal, i){
+  const despMes = Math.max(0, num('despesas'));
+  const saque   = num('saque', 4) / 100;
 
   const despAnual = despMes * 12;
-  const fireNum   = despAnual / saque;
-  const rendaMes  = (fireNum * saque) / 12;
-  const rm = Math.pow(1+retReal,1/12)-1;
+  const meta      = saque > 0 ? despAnual / saque : Infinity;
+  const multiploAlvo = saque > 0 ? 1 / saque : Infinity;
 
-  // Year-by-year simulation
-  let pat = patAtual;
-  const years = []; const pats = [];
-  years.push('Hoje'); pats.push(pat);
+  document.getElementById('lbl-saque').textContent = pct(saque);
+  document.getElementById('hint-saque').textContent =
+    `Múltiplo necessário: ${multiploAlvo.toFixed(0)}× a despesa anual (1 ÷ ${pct(saque)}).`;
 
-  let meses = 0;
-  const MAX = 600;
-  while(pat < fireNum && meses < MAX){
-    pat = pat*(1+rm)+aporte;
-    meses++;
-    if (meses % 12 === 0) { years.push('Ano '+(meses/12)); pats.push(pat); }
-  }
-  // Add a few years after FIRE for the chart
-  for (let extra = 1; extra <= 5 && pats.length <= 55; extra++) {
-    pat = pat*(1+rm)+aporte;
-    years.push('+'+(extra)); pats.push(pat);
-  }
+  const mesesFire = isFinite(meta) ? mesesAte(meta, patAtual, aporte, i, LIMITE_MESES) : null;
+  const alcanca   = mesesFire !== null;
+  const anosFire  = alcanca ? mesesFire/12 : Infinity;
+  const idadeFire = alcanca ? idade + Math.round(anosFire) : null;
 
-  chartData = { labels: years, patrimony: pats, goal: Array(years.length).fill(fireNum) };
+  /* Depois do FIRE, mostramos 30 anos vivendo da renda: se a taxa de saque
+     for menor que a taxa real, o patrimônio continua crescendo mesmo com saques. */
+  const mesesAcumulo = alcanca ? mesesFire : LIMITE_MESES;
+  const mesesRenda   = alcanca ? 360 : 0;
+  const sim = simular(patAtual, aporte, i, mesesAcumulo, despMes, mesesRenda);
+  // Zerar exatamente no último mês é o desfecho planejado, não uma falha:
+  // só marcamos "acabou" quando o dinheiro some antes do fim do horizonte.
+  const esgotouAntes = sim.esgotouMes !== null && sim.esgotouMes < mesesAcumulo + mesesRenda
+    ? sim.esgotouMes : null;
+
+  chartState = {
+    pontos: sim.pontos, meta: isFinite(meta) ? meta : 0, idadeInicial: idade,
+    mesInicioRenda: alcanca ? mesesFire : null,
+    mesEsgota: esgotouAntes, mesMarco: alcanca ? mesesFire : null
+  };
   drawChart();
+  renderTabela(sim.linhas, idade, alcanca ? mesesFire : null);
 
-  const anos = meses/12;
-  const totalInvestido = patAtual + aporte*meses;
-  const juros = pats[pats.length-5] - totalInvestido;
-  const pct   = Math.min(100, Math.round((patAtual/fireNum)*100));
+  /* ── números ── */
+  const patNoFire = alcanca ? valorFuturo(patAtual, aporte, i, mesesFire) : sim.pontos[sim.pontos.length-1].saldo;
+  const totalAportado = aporte * (alcanca ? mesesFire : LIMITE_MESES);
+  const juros = Math.max(0, patNoFire - patAtual - totalAportado);
+  const share = patNoFire > 0 ? juros / patNoFire : 0;
+  const progresso = isFinite(meta) && meta > 0 ? Math.min(100, Math.round((patAtual/meta)*100)) : 0;
+  const multiploHoje = despAnual > 0 ? patAtual/despAnual : 0;
 
-  // Múltiplo: patrimônio atual / despesas anuais
-  const multiplo = despAnual > 0 ? (patAtual / despAnual).toFixed(1) : '—';
+  const nominal = isFinite(meta) && alcanca ? meta * Math.pow(1+inflacao, anosFire) : null;
 
-  // Aporte necessário para antecipar em 5 anos (meses - 60)
-  const mesesFaster = Math.max(1, meses - 60);
-  const rmF = rm;
-  const aporteAntecipar = fireNum > patAtual && mesesFaster > 0
-    ? Math.max(0, Math.round(
-        (fireNum - patAtual * Math.pow(1+rmF, mesesFaster)) /
-        ((Math.pow(1+rmF, mesesFaster) - 1) / rmF)
-      ))
-    : 0;
+  /* aporte para antecipar 5 anos */
+  let aporteAntecipar = null;
+  if(alcanca && mesesFire > 12){
+    const alvoMeses = Math.max(12, mesesFire - 60);
+    const necessario = aporteNecessario(meta, patAtual, i, alvoMeses);
+    if(isFinite(necessario) && necessario > 0) aporteAntecipar = necessario;
+  }
 
-  document.getElementById('res-fire').textContent       = fmt(fireNum);
-  document.getElementById('res-fire-sub').textContent   = `com saque de ${(saque*100).toFixed(1)}% ao ano`;
-  document.getElementById('res-anos').textContent       = meses>=MAX?'> 50 anos':fmtAnos(anos);
-  document.getElementById('res-renda').textContent      = fmt(rendaMes)+'/mês';
-  document.getElementById('res-investido').textContent  = fmt(totalInvestido);
-  document.getElementById('res-juros').textContent      = fmt(Math.max(0, juros));
-  document.getElementById('res-multiplo').textContent   = multiplo + '×';
-  document.getElementById('res-aporte-ideal').textContent = aporteAntecipar > 0 ? fmt(aporteAntecipar)+'/mês' : pct>=100 ? 'Meta atingida!' : '—';
-  document.getElementById('res-pct').textContent        = pct+'%';
-  document.getElementById('res-bar').style.width        = pct+'%';
+  document.getElementById('res-main-label').textContent = 'patrimônio necessário';
+  document.getElementById('res-fire').textContent = isFinite(meta) ? fmt(meta) : '—';
+  document.getElementById('res-fire-sub').textContent =
+    `${multiploAlvo.toFixed(0)}× sua despesa anual de ${fmt(despAnual)}, com saque de ${pct(saque)} ao ano`;
+  document.getElementById('res-nominal').innerHTML = nominal
+    ? `Em valor de face daqui a ${Math.round(anosFire)} anos, com inflação de ${pct(inflacao)}, isso equivale a <b>${fmt(nominal)}</b>.`
+    : 'Valor em poder de compra de hoje.';
+
+  document.getElementById('res-anos').textContent = alcanca ? fmtAnosCurto(anosFire) : '> 60 anos';
+  document.getElementById('res-anos').className = 'result-item-value ' + (alcanca ? 'green' : 'red');
+  document.getElementById('res-anos-note').textContent = alcanca
+    ? (mesesFire === 0 ? 'você já atingiu a meta' : `você chega aos ${idadeFire} anos`)
+    : 'não alcançado com este aporte';
+
+  document.getElementById('res-renda').textContent = fmt(despMes)+'/mês';
+  document.getElementById('res-investido').textContent = fmt(patAtual + totalAportado);
+  document.getElementById('res-investido-note').textContent = alcanca
+    ? `patrimônio atual + ${fmt(aporte)}/mês por ${fmtAnosCurto(anosFire)}`
+    : 'patrimônio atual + aportes no período simulado';
+
+  document.getElementById('res-juros').textContent = fmt(juros);
+  document.getElementById('res-juros-note').textContent = patNoFire > 0
+    ? `${pct(share,0)} do patrimônio final vem de juros`
+    : '';
+
+  document.getElementById('res-multiplo').textContent =
+    despAnual > 0 ? multiploHoje.toFixed(1).replace('.',',')+'×' : '—';
+
+  document.getElementById('res-aporte-ideal').textContent = !alcanca ? '—'
+    : mesesFire === 0 ? 'Meta atingida!'
+    : aporteAntecipar ? fmt(aporteAntecipar)+'/mês' : 'já é imediato';
+  document.getElementById('res-aporte-ideal-note').textContent =
+    aporteAntecipar && aporte > 0 && aporteAntecipar - aporte >= 1
+      ? `${fmt(aporteAntecipar - aporte)}/mês a mais que hoje`
+      : 'quanto precisaria poupar por mês';
+
+  document.getElementById('res-pct-label').textContent = 'Progresso em direção ao FIRE';
+  document.getElementById('res-pct').textContent = progresso+'%';
+  document.getElementById('res-bar').style.width = progresso+'%';
+
+  /* ── status e resumo ── */
+  if(!alcanca){
+    setStatus('bad', `Com <b>${fmt(aporte)}/mês</b> você não alcança ${fmt(meta)} nem em 60 anos. Aumente o aporte, reduza a despesa-alvo ou considere a estratégia de consumir o patrimônio, que exige bem menos capital.`);
+  } else if(saque > retReal){
+    setStatus('warn', `A sua taxa de saque (<b>${pct(saque)}</b>) é maior que a taxa real de retorno (<b>${pct(retReal)}</b>). Nesse cenário o patrimônio encolhe todo ano e a renda não é de fato perpétua — o gráfico mostra a queda depois do ponto FIRE.`);
+  } else {
+    setStatus('ok', `Sacando <b>${pct(saque)}</b> ao ano com retorno real de <b>${pct(retReal)}</b>, o patrimônio continua crescendo mesmo enquanto você vive dele. A renda é sustentável e sobra herança.`);
+  }
+
+  const abre = `Para viver com <b>${fmt(despMes)}</b> por mês sem nunca tocar no principal, você precisa de <b>${fmt(meta)}</b> — ${multiploAlvo.toFixed(0)} vezes a sua despesa anual.`;
+  let resumo;
+  if(!alcanca){
+    resumo = `Para viver com <b>${fmt(despMes)}</b> por mês sem tocar no principal seriam necessários <b>${fmt(meta)}</b>. Com <b>${fmt(aporte)}</b> de aporte mensal e retorno real de ${pct(retReal)} ao ano, essa meta não é alcançada dentro de 60 anos. Vale testar a estratégia de consumir o patrimônio, que costuma exigir de 30% a 45% menos capital.`;
+  } else if(mesesFire === 0){
+    resumo = `${abre} Com <b>${fmt(patAtual)}</b> acumulados, <b>você já atingiu esse número</b> aos ${idade} anos e pode viver de renda a partir de agora.`;
+  } else {
+    resumo = `${abre} Saindo de <b>${fmt(patAtual)}</b> e aportando <b>${fmt(aporte)}</b> por mês, com retorno real de ${pct(retReal)} ao ano, você chega lá em <b>${fmtAnos(anosFire)}</b>, aos <b>${idadeFire} anos</b>. Desse total, ${fmt(juros)} vêm de juros e ${fmt(patAtual + totalAportado)} do seu bolso.`;
+  }
+  document.getElementById('res-resumo').innerHTML = resumo;
 }
-updateRealRate();
-calc();
-window.addEventListener('resize', drawChart);
 
-function toggleFireExplainer() {
-  document.getElementById('fireAccordion').classList.toggle('open');
+/* ─────────────── MODO 2: CONSUMIR O PATRIMÔNIO ─────────────── */
+function calcConsumo(idade, patAtual, aporte, inflacao, retReal, i){
+  const rendaMes = Math.max(0, num('rendaAlvo'));
+  const heranca  = Math.max(0, num('heranca'));
+  let idadeAlvo  = Math.round(num('idadeAlvo', 60));
+  const duracao  = Math.max(1, Math.round(num('duracao', 30)));
+
+  if(idadeAlvo < idade) idadeAlvo = idade;    // já parou de trabalhar
+  const anosAcumulo  = idadeAlvo - idade;
+  const mesesAcumulo = anosAcumulo * 12;
+  const mesesRenda   = duracao * 12;
+  const idadeFinal   = idadeAlvo + duracao;
+
+  document.getElementById('lbl-duracao').textContent = duracao + ' anos';
+  document.getElementById('hint-duracao').textContent =
+    `A renda vai dos ${idadeAlvo} aos ${idadeFinal} anos.`;
+
+  /* ── o número: valor presente dos saques na data da aposentadoria ── */
+  const meta = capitalNecessario(rendaMes, i, mesesRenda, heranca);
+  const nominal = meta * Math.pow(1 + inflacao, anosAcumulo);
+
+  /* ── comparações ── */
+  const projetado = valorFuturo(patAtual, aporte, i, mesesAcumulo);
+  const aporteIdeal = aporteNecessario(meta, patAtual, i, mesesAcumulo);
+  const rendaPossivel = saqueSustentavel(projetado, i, mesesRenda, heranca);
+  const totalSacado = rendaMes * mesesRenda;
+  const taxaSaque1 = meta > 0 ? (rendaMes*12)/meta : 0;
+  const metaPerpetua = retReal > 0 ? (rendaMes*12)/0.04 : Infinity;   // referência da regra dos 4%
+  const economia = isFinite(metaPerpetua) && metaPerpetua > 0 ? 1 - meta/metaPerpetua : 0;
+
+  /* ── simulação com o aporte real do usuário ── */
+  const sim = simular(patAtual, aporte, i, mesesAcumulo, rendaMes, mesesRenda);
+  // Zerar no último mês é justamente o objetivo deste modo; só é problema
+  // quando o dinheiro acaba antes do fim do período planejado.
+  const esgotouAntes = sim.esgotouMes !== null && sim.esgotouMes < mesesAcumulo + mesesRenda
+    ? sim.esgotouMes : null;
+  chartState = {
+    pontos: sim.pontos, meta: meta, idadeInicial: idade,
+    mesInicioRenda: mesesAcumulo, mesEsgota: esgotouAntes, mesMarco: null
+  };
+  drawChart();
+  renderTabela(sim.linhas, idade, mesesAcumulo);
+
+  const sobra = projetado - meta;
+  const progresso = meta > 0 ? Math.min(100, Math.round((projetado/meta)*100)) : 0;
+  // Meia casa percentual de folga: sem isso, digitar o aporte já arredondado
+  // (R$ 6.409 em vez de R$ 6.409,37) faria a página acusar falta de R$ 75 e
+  // sugerir "aporte R$ 6.409 em vez de R$ 6.409".
+  const tolerancia = Math.max(1, meta * 0.005);
+  const naMeta = sobra >= -tolerancia;
+  const difAporte = Math.abs(aporteIdeal - aporte);
+
+  /* quanto tempo a renda desejada realmente dura com o que ele vai ter */
+  const mesesDuram = duracaoDoCapital(projetado, rendaMes, i);
+  const idadeAcaba = isFinite(mesesDuram) ? idadeAlvo + Math.floor(mesesDuram/12) : null;
+
+  /* ── preenchimento ── */
+  document.getElementById('res-main-label').textContent = `patrimônio necessário aos ${idadeAlvo} anos`;
+  document.getElementById('res-fire').textContent = fmt(meta);
+  document.getElementById('res-fire-sub').textContent =
+    `para receber ${fmt(rendaMes)}/mês por ${duracao} anos` +
+    (heranca > 0 ? `, deixando ${fmt(heranca)} no final` : `, terminando sem patrimônio`);
+  document.getElementById('res-nominal').innerHTML = anosAcumulo > 0
+    ? `Em valor de face daqui a ${anosAcumulo} anos, com inflação de ${pct(inflacao)}, isso equivale a <b>${fmt(nominal)}</b> — e a renda de ${fmt(rendaMes)} valerá <b>${fmt(rendaMes*Math.pow(1+inflacao,anosAcumulo))}</b>/mês na mesma data.`
+    : 'Valor em poder de compra de hoje.';
+
+  document.getElementById('c-aporte').textContent = anosAcumulo <= 0 ? '—'
+    : aporteIdeal <= 0 ? 'R$ 0' : fmt(aporteIdeal)+'/mês';
+  document.getElementById('c-aporte').className = 'result-item-value ' + (naMeta ? 'green' : 'amber');
+  document.getElementById('c-aporte-note').textContent = anosAcumulo <= 0
+    ? 'você já está na idade-alvo'
+    : aporteIdeal <= 0 ? 'seu patrimônio atual já basta'
+    : difAporte < 1 ? 'é exatamente o que você já aporta'
+    : aporteIdeal < aporte ? `${fmt(difAporte)}/mês a menos que você já faz`
+    : `${fmt(difAporte)}/mês a mais que os ${fmt(aporte)} de hoje`;
+
+  document.getElementById('c-projetado').textContent = fmt(projetado);
+  document.getElementById('c-projetado').className = 'result-item-value ' + (naMeta ? 'green' : 'red');
+  document.getElementById('c-projetado-note').textContent = sobra >= 0
+    ? `${fmt(sobra)} acima da meta`
+    : naMeta ? 'praticamente na meta'
+    : `faltam ${fmt(-sobra)} para a meta`;
+
+  document.getElementById('c-renda-possivel').textContent = fmt(rendaPossivel)+'/mês';
+  document.getElementById('c-renda-possivel').className = 'result-item-value ' +
+    (rendaPossivel >= rendaMes ? 'green' : 'amber');
+  document.getElementById('c-renda-possivel-note').textContent =
+    `por ${duracao} anos, com o aporte de ${fmt(aporte)}/mês`;
+
+  document.getElementById('c-total-sacado').textContent = fmt(totalSacado);
+  document.getElementById('c-total-sacado-note').textContent =
+    `${fmt(rendaMes)} × ${mesesRenda} meses, em reais de hoje`;
+
+  document.getElementById('c-taxa-saque').textContent = pct(taxaSaque1);
+  document.getElementById('c-taxa-saque').className = 'result-item-value ' +
+    (taxaSaque1 <= retReal ? 'green' : 'amber');
+
+  document.getElementById('c-perpetuo').textContent = isFinite(metaPerpetua) ? fmt(metaPerpetua) : '—';
+  document.getElementById('c-perpetuo-note').textContent = economia > 0
+    ? `consumir o patrimônio custa ${pct(economia,0)} menos`
+    : 'referência pela regra dos 4%';
+
+  document.getElementById('res-pct-label').textContent = `Projeção aos ${idadeAlvo} anos vs. meta`;
+  document.getElementById('res-pct').textContent = progresso+'%';
+  document.getElementById('res-bar').style.width = progresso+'%';
+
+  /* ── status ── */
+  if(anosAcumulo <= 0 && patAtual < meta){
+    setStatus('warn', `Você já está na idade em que quer parar, e o patrimônio atual de <b>${fmt(patAtual)}</b> está <b>${fmt(meta-patAtual)}</b> abaixo do necessário. Com o que tem hoje, a renda sustentável por ${duracao} anos é de <b>${fmt(saqueSustentavel(patAtual, i, mesesRenda, heranca))}</b>/mês.`);
+  } else if(naMeta){
+    setStatus('ok', `Mantendo <b>${fmt(aporte)}/mês</b>, você chega aos ${idadeAlvo} anos com <b>${fmt(projetado)}</b> — o suficiente para ${fmt(rendaMes)}/mês por ${duracao} anos${heranca>0?` e ainda deixar ${fmt(heranca)}`:''}. ` +
+      (sobra >= tolerancia ? `Sobram <b>${fmt(sobra)}</b> de margem.` : `O plano fecha praticamente no limite, sem margem de sobra.`));
+  } else if(esgotouAntes !== null){
+    setStatus('bad', `Com o aporte atual o dinheiro <b>acaba aos ${idade + Math.floor(esgotouAntes/12)} anos</b>, ${idadeFinal - (idade + Math.floor(esgotouAntes/12))} anos antes do previsto. Para fechar a conta, o aporte precisa subir para <b>${fmt(aporteIdeal)}/mês</b> — ou a renda desejada cair para <b>${fmt(rendaPossivel)}/mês</b>.`);
+  } else {
+    setStatus('warn', `Faltam <b>${fmt(-sobra)}</b> para a meta. Você tem três saídas: aportar <b>${fmt(aporteIdeal)}/mês</b> em vez de ${fmt(aporte)}, viver com <b>${fmt(rendaPossivel)}/mês</b> em vez de ${fmt(rendaMes)}, ou adiar a parada para além dos ${idadeAlvo} anos.`);
+  }
+
+  /* ── resumo em texto ── */
+  let resumo = `Para se aposentar aos <b>${idadeAlvo} anos</b> e receber <b>${fmt(rendaMes)}</b> por mês durante <b>${duracao} anos</b> — ou seja, dos ${idadeAlvo} aos ${idadeFinal} — ${heranca>0?`deixando ${fmt(heranca)} no final`:`terminando sem nenhum patrimônio`}, você precisa ter <b>${fmt(meta)}</b> na data da aposentadoria, em poder de compra de hoje.`;
+  if(anosAcumulo > 0){
+    resumo += ` Saindo de <b>${fmt(patAtual)}</b> hoje e contando com um retorno real de ${pct(retReal)} ao ano, isso exige aportes de <b>${fmt(Math.max(0,aporteIdeal))}</b> por mês pelos próximos ${anosAcumulo} anos.`;
+  }
+  if(isFinite(metaPerpetua) && economia > 0){
+    resumo += ` Para comparação: manter essa mesma renda para sempre, sem tocar no principal, exigiria <b>${fmt(metaPerpetua)}</b> — ${pct(economia,0)} a mais.`;
+  }
+  if(isFinite(mesesDuram) && idadeAcaba !== null && !naMeta){
+    resumo += ` Do jeito que o plano está hoje, o dinheiro duraria até os <b>${idadeAcaba} anos</b>.`;
+  }
+  document.getElementById('res-resumo').innerHTML = resumo;
 }
-</script>
 
-<script>
-// Prevent page scroll when interacting with number inputs and sliders
+/* ════════════════════════════════════════════════════════════
+   INICIALIZAÇÃO
+   ════════════════════════════════════════════════════════════ */
+setModo('perpetuo');
+window.addEventListener('resize', () => { drawChart(); reajustarAcordeoes(); });
+
+// Evita que a roda do mouse altere números e sliders sem querer
 document.querySelectorAll('input[type=number], input[type=range]').forEach(el => {
-  el.addEventListener('wheel', e => e.preventDefault(), { passive: false });
+  el.addEventListener('wheel', e => e.preventDefault(), { passive:false });
   el.addEventListener('touchmove', e => {
-    // Only prevent if the touch started on this element
-    if (document.activeElement === el) e.stopPropagation();
-  }, { passive: true });
-  // Select all text on focus so user can type immediately without clearing
-  if (el.type === 'number') {
+    if(document.activeElement === el) e.stopPropagation();
+  }, { passive:true });
+  if(el.type === 'number'){
     el.addEventListener('focus', () => setTimeout(() => el.select(), 50));
   }
 });
