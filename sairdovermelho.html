@@ -754,17 +754,14 @@
     if (!isOpen) module.classList.add('open');
   }
 
-  // ─── ANIMATE PROGRESS BAR ON LOAD ───
-  setTimeout(() => {
-    updateProgressBar('dinheiro101');
-  }, 800);
 </script>
 
 <!-- Firebase Auth (module) -->
 <script type="module">
-  import { auth, bindNavUser, onAuthStateChanged, doc, setDoc, getDoc, db } from './auth.js';
+  import { auth, bindNavUser, onAuthStateChanged, updateProgressBar, doc, setDoc, getDoc, db } from './auth.js';
 
   bindNavUser();
+  updateProgressBar('sairdovermelho', 17);
 
   // ── Wait for Firebase auth to resolve, then return user (or null) ─────────
   // This eliminates all race conditions — we never read auth.currentUser directly.
