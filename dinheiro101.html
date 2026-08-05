@@ -771,17 +771,14 @@
     if (!isOpen) module.classList.add('open');
   }
 
-  // ─── ANIMATE PROGRESS BAR ON LOAD ───
-  setTimeout(() => {
-    updateProgressBar('dinheiro101');
-  }, 800);
 </script>
 
 <!-- Firebase Auth (module) -->
 <script type="module">
-  import { auth, bindNavUser, onAuthStateChanged } from './auth.js';
+  import { auth, bindNavUser, onAuthStateChanged, updateProgressBar } from './auth.js';
 
   bindNavUser();
+  updateProgressBar('dinheiro101', 18);
 
   // Button simply goes to the player — auth is handled inside the player page
   window.doEnroll = function() {

@@ -1107,8 +1107,9 @@
     <span class="bonus-tag">Bônus incluso</span>
     <h3>30 minutos com a consultoria da HZ</h3>
     <p>
-      Depois de receber o relatório, você agenda uma conversa de 30 minutos com a equipe de consultoria da HZ Invest
-      para tirar dúvidas sobre o que o diagnóstico encontrou e definir por onde começar. Sem custo adicional e sem compromisso de contratar nada.
+      Depois de receber o relatório, a equipe de consultoria da HZ Invest entra em contato pelo e-mail que você informou
+      para combinar uma conversa de 30 minutos, tirar dúvidas sobre o que o diagnóstico encontrou e definir por onde começar.
+      Sem custo adicional e sem compromisso de contratar nada.
     </p>
   </div>
 
@@ -1255,36 +1256,29 @@ var HZ_CHECKOUT_URL = "COLE-AQUI-O-LINK-DE-CHECKOUT";
 
 // ─────────────────────────────────────────────────────────────
 //  DEPOIMENTOS
-//  Os itens abaixo são EXEMPLOS de preenchimento (exemplo: true).
-//  Enquanto houver algum exemplo, os cards aparecem com borda
-//  tracejada, etiqueta "exemplo" e um aviso na tela, para nenhum
-//  depoimento fictício ir ao ar parecendo real.
+//  A lista está vazia de propósito: enquanto não houver depoimento
+//  real, a seção inteira não aparece na página. É melhor não ter
+//  seção de depoimentos do que ter uma com texto de exemplo.
 //
-//  Ao coletar os depoimentos reais das pessoas que fizerem o
-//  diagnóstico, troque o texto/nome/contexto e remova a linha
-//  "exemplo: true" de cada item. A seção some sozinha se a lista
-//  ficar vazia.
+//  Ao coletar os relatos das primeiras pessoas que fizerem o
+//  diagnóstico, preencha a lista no formato abaixo. Se você deixar
+//  "exemplo: true" num item, ele aparece com borda tracejada,
+//  etiqueta "exemplo" e um aviso na tela, para nada fictício ir ao
+//  ar parecendo real.
+//
+//  var HZ_DEPOIMENTOS = [
+//    {
+//      texto: "O que a pessoa achou, o que descobriu que não sabia e o que mudou depois.",
+//      nome: "Nome da pessoa",
+//      contexto: "Profissão · Cidade/UF"
+//    }
+//  ];
+//
+//  Vale pedir que o relato cite algo concreto: o score, o arquétipo
+//  ou uma ação do plano que a pessoa colocou em prática. Depoimento
+//  genérico convence menos que um número.
 // ─────────────────────────────────────────────────────────────
-var HZ_DEPOIMENTOS = [
-  {
-    texto: "[Texto do depoimento: o que a pessoa achou do diagnóstico, o que descobriu que não sabia e o que mudou depois.]",
-    nome: "Nome da pessoa",
-    contexto: "Profissão · Cidade/UF",
-    exemplo: true
-  },
-  {
-    texto: "[Texto do depoimento: bom pedir que cite um número ou uma descoberta concreta: o score, o arquétipo ou uma ação do plano que ela colocou em prática.]",
-    nome: "Nome da pessoa",
-    contexto: "Profissão · Cidade/UF",
-    exemplo: true
-  },
-  {
-    texto: "[Texto do depoimento: vale um relato de quem estava em dúvida se valia a pena e mudou de ideia depois de ler o relatório.]",
-    nome: "Nome da pessoa",
-    contexto: "Profissão · Cidade/UF",
-    exemplo: true
-  }
-];
+var HZ_DEPOIMENTOS = [];
 
 (function () {
   var configurado = HZ_CHECKOUT_URL.indexOf("COLE-AQUI") === -1 && HZ_CHECKOUT_URL.length > 8;

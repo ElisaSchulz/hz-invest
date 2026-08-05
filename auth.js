@@ -94,17 +94,35 @@ export async function loadProgress(courseId) {
   });
 }
 
-async function _renderProgress(courseId, uid) {
-  const ref  = doc(db, 'progress', uid, 'courses', courseId);
-  const snap = await getDoc(ref);
-  const data = snap.exists() ? snap.data() : {};
-  const total     = document.querySelectorAll('.lesson[data-id]').length;
-  const completed = Object.keys(data).filter(k => data[k]).length;
-  const pct = total ? Math.round((completed / total) * 100) : 0;
+/**
+ * Barra de progresso das páginas de apresentação do curso.
+ *
+ * Diferente do player, essas páginas não listam as aulas, então o total
+ * não dá para contar no DOM: ele vem por parâmetro. Sem usuário logado a
+ * barra fica em 0%, que é o estado correto para quem ainda não começou.
+ */
+export function updateProgressBar(courseId, totalLessons) {
+  onAuthStateChanged(auth, user => {
+    if (!user) return _pintarProgresso(0);
+    _renderProgress(courseId, user.uid, totalLessons);
+  });
+}
+
+function _pintarProgresso(pct) {
   const fill  = document.getElementById('progressFill');
   const label = document.getElementById('progressPct');
   if (fill)  fill.style.width  = pct + '%';
   if (label) label.textContent = pct + '%';
+}
+
+async function _renderProgress(courseId, uid, totalLessons) {
+  const ref  = doc(db, 'progress', uid, 'courses', courseId);
+  const snap = await getDoc(ref);
+  const data = snap.exists() ? snap.data() : {};
+  const total     = totalLessons || document.querySelectorAll('.lesson[data-id]').length;
+  const completed = Object.keys(data).filter(k => data[k]).length;
+  const pct = total ? Math.min(100, Math.round((completed / total) * 100)) : 0;
+  _pintarProgresso(pct);
   Object.keys(data).forEach(id => {
     const el = document.querySelector(`.lesson[data-id="${id}"]`);
     if (el) el.classList.add('completed');
