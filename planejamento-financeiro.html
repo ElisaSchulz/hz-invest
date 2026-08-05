@@ -1,0 +1,1943 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HZ Invest · Planejamento Financeiro</title>
+<meta name="description" content="Acompanhamento financeiro com prazo fechado de 3, 6 ou 12 meses, organizado em três trilhas: Organização Financeira, Investimentos e Planejamento Patrimonial. Sessões com consultor e entregáveis documentados.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hz-design.css">
+
+<style>
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+
+  body {
+    background: var(--navy-dark);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  /* ─── FUNDO ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(79,140,132,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 80% 90%, rgba(79,140,132,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 80% 80% at 50% 50%, #FBFAF6 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(79,140,132,0.18) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 0%, transparent 80%);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 12%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(246,244,238,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--font-body);
+    font-weight: 900;
+    font-size: 1.35rem;
+    color: var(--white-pure);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    align-items: center;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  .nav-cta {
+    background: var(--teal) !important;
+    color: var(--navy-dark) !important;
+    padding: 0.5rem 1.25rem !important;
+    border-radius: 6px !important;
+    font-weight: 700 !important;
+    transition: background 0.2s, transform 0.15s !important;
+  }
+
+  .nav-cta:hover {
+    background: var(--teal-light) !important;
+    color: var(--navy-dark) !important;
+    transform: translateY(-1px);
+  }
+
+  /* ─── HAMBURGER (mobile) ─── */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+    z-index: 200;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--white-pure);
+    border-radius: 2px;
+    transition: all 0.3s;
+    transform-origin: center;
+  }
+
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 70px; left: 0; right: 0;
+    background: #F6F4EE;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    z-index: 99;
+    padding: 1.5rem 2rem;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .mobile-menu.open { display: flex; }
+
+  .mobile-menu a, .mobile-menu .mobile-pill {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.2s;
+    display: block;
+  }
+
+  .mobile-menu a:hover { color: var(--white-pure); }
+  .mobile-menu a:last-child { border-bottom: none; }
+
+  .mobile-menu .mobile-cta {
+    margin-top: 1rem;
+    background: var(--teal);
+    color: var(--navy-dark) !important;
+    text-align: center;
+    padding: 0.85rem !important;
+    border-radius: 8px;
+    font-weight: 700 !important;
+    border-bottom: none !important;
+  }
+
+  @media (min-width: 769px) and (max-width: 1200px) {
+    nav { padding: 0 4%; }
+    .nav-links { gap: 1.1rem; }
+    .nav-links a { font-size: 0.85rem; }
+    .nav-cta { padding: 0.55rem 1rem; }
+  }
+
+  /* ─── BOTÕES ─── */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--teal);
+    color: var(--navy-dark);
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 1rem 2.2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(79,140,132,0.25);
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    background: var(--teal-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(79,140,132,0.35);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    color: var(--white);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 1rem 2rem;
+    border-radius: 6px;
+    border: 1px solid var(--teal-border);
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .btn-secondary:hover { border-color: var(--teal); background: var(--teal-dim); color: var(--teal-light); }
+
+  /* ─── SEÇÕES ─── */
+  section {
+    position: relative;
+    padding: 100px 12%;
+    z-index: 1;
+  }
+
+  .section-label {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 1rem;
+    opacity: 0.9;
+  }
+
+  .section-title {
+    font-family: var(--font-body);
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 800;
+    color: var(--white-pure);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+  }
+
+  .section-sub {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 620px;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  .teal-line { width: 48px; height: 2px; background: var(--teal); margin-bottom: 1.4rem; }
+
+  /* ─── HERO ─── */
+  .hero { padding-top: 150px; padding-bottom: 90px; text-align: center; }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    background: var(--teal-dim);
+    border: 1px solid var(--teal-border);
+    color: var(--teal-light);
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.45rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 2rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.2rem, 5.2vw, 4rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--white-pure);
+    margin: 0 auto 1.5rem;
+    max-width: 900px;
+  }
+
+  .hero h1 .accent { color: var(--teal); }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 660px;
+    margin: 0 auto 2.2rem;
+    font-weight: 300;
+    line-height: 1.75;
+  }
+
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+  .hero-trust {
+    margin-top: 1.8rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+    display: flex;
+    gap: 1.4rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero-trust span { display: inline-flex; align-items: center; gap: 0.4rem; }
+
+  .dot-teal { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+
+  /* ─── PROBLEMA ─── */
+  #problema { background: #F1EEE6; }
+
+  .pain-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 3rem;
+  }
+
+  .pain-card {
+    background: #FBFAF6;
+    padding: 1.8rem 1.6rem;
+    font-size: 0.98rem;
+    line-height: 1.6;
+    font-weight: 300;
+    position: relative;
+  }
+
+  .pain-card .q {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: var(--teal);
+    margin-bottom: 0.7rem;
+  }
+
+  /* ─── COMO FUNCIONA: TRILHA × PRAZO ─── */
+  .axis-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.4rem;
+    margin-top: 3rem;
+  }
+
+  .axis-card {
+    background: #FBFAF6;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.1rem 2rem;
+  }
+
+  .axis-card .axis-tag {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--navy-dark);
+    background: var(--teal);
+    border-radius: 4px;
+    padding: 0.2rem 0.55rem;
+    margin-bottom: 1rem;
+  }
+
+  .axis-card h3 { font-size: 1.2rem; font-weight: 700; color: var(--white-pure); margin-bottom: 0.6rem; }
+
+  .axis-card p { font-size: 0.95rem; color: var(--muted); font-weight: 300; line-height: 1.7; }
+
+  .axis-note {
+    margin-top: 1.6rem;
+    border-left: 2px solid var(--teal-border);
+    padding-left: 1.1rem;
+    font-size: 0.95rem;
+    color: var(--text);
+    font-weight: 300;
+    line-height: 1.7;
+    max-width: 720px;
+  }
+
+  /* ─── TRILHAS ─── */
+  #trilhas { background: #F1EEE6; }
+
+  .trilha-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 1.4rem;
+    margin-top: 3rem;
+  }
+
+  .trilha-card {
+    background: #FBFAF6;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.1rem 1.9rem;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+
+  .trilha-card:hover { border-color: var(--teal-border); transform: translateY(-2px); }
+
+  .trilha-num {
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.7rem;
+  }
+
+  .trilha-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--white-pure); margin-bottom: 1rem; }
+
+  .trilha-para {
+    font-size: 0.92rem;
+    color: var(--text);
+    font-weight: 300;
+    line-height: 1.65;
+    background: var(--teal-dim);
+    border: 1px solid var(--teal-border);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1.3rem;
+  }
+
+  .trilha-para strong { color: var(--sage-deep); font-weight: 700; display: block; margin-bottom: 0.2rem; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .trilha-list { list-style: none; margin-top: auto; }
+
+  .trilha-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0.55rem 0;
+    font-size: 0.94rem;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.55;
+  }
+
+  .check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 19px;
+    height: 19px;
+    min-width: 19px;
+    border-radius: 50%;
+    background: var(--teal-dim);
+    border: 1.5px solid var(--teal);
+    color: var(--teal);
+    margin-top: 0.24rem;
+    flex-shrink: 0;
+  }
+
+  /* ─── MATRIZ: TABS + PLANOS ─── */
+  .tabs {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-top: 2.6rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.1rem;
+  }
+
+  .tab {
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 0.6rem 1.3rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab:hover { border-color: var(--teal-border); color: var(--white-pure); }
+
+  .tab[aria-selected="true"] {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: var(--navy-dark);
+    font-weight: 700;
+  }
+
+  .tab:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+  .panel[hidden] { display: none; }
+
+  .panel-intro {
+    margin-top: 1.8rem;
+    font-size: 0.98rem;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.7;
+    max-width: 680px;
+  }
+
+  .plan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 1.4rem;
+    margin-top: 1.8rem;
+    align-items: stretch;
+  }
+
+  .plan-card {
+    background: #FBFAF6;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem 1.8rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .plan-card.destaque { border-color: var(--teal-border); box-shadow: 0 0 40px rgba(79,140,132,0.08); }
+
+  .plan-flag {
+    position: absolute;
+    top: -11px;
+    left: 1.8rem;
+    font-family: var(--font-body);
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--navy-dark);
+    background: var(--teal);
+    border-radius: 4px;
+    padding: 0.25rem 0.6rem;
+  }
+
+  .plan-prazo {
+    font-family: var(--font-display);
+    font-size: 1.9rem;
+    font-weight: 600;
+    color: var(--white-pure);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .plan-sessoes {
+    font-size: 0.82rem;
+    color: var(--teal);
+    font-weight: 600;
+    margin-top: 0.5rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .plan-bloco { margin-top: 1.2rem; }
+
+  .plan-bloco h4 {
+    font-family: var(--font-body) !important;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .plan-bloco p { font-size: 0.94rem; color: var(--text); font-weight: 300; line-height: 1.6; }
+
+  .plan-bloco ul { list-style: none; }
+
+  .plan-bloco li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.35rem 0;
+    font-size: 0.92rem;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.55;
+  }
+
+  .plan-bloco li::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--teal);
+    margin-top: 0.55rem;
+    flex-shrink: 0;
+  }
+
+  .plan-mais {
+    font-size: 0.78rem;
+    color: var(--sage-deep);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.55rem;
+  }
+
+  .plan-porque {
+    margin-top: auto;
+    padding-top: 1.4rem;
+  }
+
+  .plan-porque .box {
+    background: var(--teal-dim);
+    border: 1px solid var(--teal-border);
+    border-radius: 8px;
+    padding: 0.95rem 1.1rem;
+    font-size: 0.88rem;
+    color: var(--text);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  .plan-porque .box strong {
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sage-deep);
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  /* ─── PADRÃO 3/6/12 ─── */
+  #padrao { background: #F1EEE6; }
+
+  .padrao-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.4rem;
+    margin-top: 3rem;
+  }
+
+  .padrao-card {
+    background: #FBFAF6;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.9rem 1.7rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .padrao-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--teal), transparent);
+  }
+
+  .padrao-card .step {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--white-pure);
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+
+  .padrao-card p { font-size: 0.95rem; color: var(--muted); font-weight: 300; line-height: 1.7; }
+
+  /* ─── COMPORTAMENTO ─── */
+  .comport-list { margin-top: 3rem; max-width: 860px; }
+
+  .comport-item {
+    display: grid;
+    grid-template-columns: 210px 1fr;
+    gap: 2rem;
+    padding: 1.6rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .comport-item:last-child { border-bottom: none; }
+
+  .comport-nome {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--white-pure);
+    line-height: 1.3;
+  }
+
+  .comport-autor { display: block; font-family: var(--font-body); font-size: 0.78rem; color: var(--teal); font-weight: 500; margin-top: 0.25rem; letter-spacing: 0.02em; }
+
+  .comport-texto { font-size: 0.97rem; color: var(--muted); font-weight: 300; line-height: 1.75; }
+
+  .quote-box {
+    max-width: 760px;
+    margin: 3rem 0 0;
+    background: #FBFAF6;
+    border: 1px solid var(--teal-border);
+    border-radius: 12px;
+    padding: 2rem 2.2rem;
+  }
+
+  .quote-box p {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    font-weight: 500;
+    color: var(--white-pure);
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+  }
+
+  /* ─── ESCOLHA ─── */
+  #escolha { background: #F1EEE6; }
+
+  .escolha-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.4rem;
+    margin-top: 3rem;
+  }
+
+  .escolha-card {
+    background: #FBFAF6;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.1rem 2rem;
+  }
+
+  .escolha-card h3 { font-size: 1.15rem; font-weight: 700; color: var(--white-pure); margin-bottom: 1.2rem; }
+
+  .rule-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.93rem;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.55;
+  }
+
+  .rule-row:last-child { border-bottom: none; }
+
+  .rule-key {
+    flex-shrink: 0;
+    min-width: 82px;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--sage-deep);
+    background: var(--teal-dim);
+    border: 1px solid var(--teal-border);
+    border-radius: 4px;
+    padding: 0.28rem 0.5rem;
+    text-align: center;
+  }
+
+  .escolha-fine {
+    margin-top: 1.2rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  .escolha-cta { margin-top: 2.4rem; }
+
+  /* ─── JORNADA ─── */
+  .jornada {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 3rem;
+  }
+
+  .jornada div {
+    background: #FBFAF6;
+    padding: 1.7rem 1.5rem;
+  }
+
+  .jornada .num {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--teal);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .jornada strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--white-pure);
+    margin-bottom: 0.4rem;
+  }
+
+  .jornada p { font-size: 0.88rem; color: var(--muted); font-weight: 300; line-height: 1.6; }
+
+  /* ─── FAQ ─── */
+  #faq { background: #F1EEE6; }
+
+  .faq-list { margin-top: 3rem; max-width: 780px; }
+
+  .faq-item { border-bottom: 1px solid var(--border); }
+
+  .faq-q {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+    background: none;
+    border: none;
+    padding: 1.5rem 0;
+    text-align: left;
+    font-family: var(--font-body);
+    font-size: 1.02rem;
+    font-weight: 600;
+    color: var(--white-pure);
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .faq-q:hover { color: var(--teal-light); }
+  .faq-q:focus-visible { outline: 2px solid var(--teal); outline-offset: 4px; border-radius: 4px; }
+
+  .faq-chevron {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: var(--teal);
+    transition: transform 0.28s ease;
+  }
+
+  .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+  .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+
+  .faq-item.open .faq-a { max-height: 620px; }
+
+  .faq-a p {
+    font-size: 0.94rem;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.7;
+    padding-bottom: 1.6rem;
+  }
+
+  .faq-a p a { color: var(--teal); }
+
+  /* ─── FORMULÁRIO ─── */
+  .contato-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+    margin-top: 3rem;
+  }
+
+  .contato-box {
+    background: #FBFAF6;
+    border: 1px solid var(--teal-border);
+    border-radius: 12px;
+    padding: 2.4rem;
+    box-shadow: 0 0 40px rgba(79,140,132,0.06);
+  }
+
+  .contato-box h3 { font-size: 1.35rem; font-weight: 700; color: var(--white-pure); margin-bottom: 0.5rem; }
+
+  .contato-box > p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.7rem; line-height: 1.7; }
+
+  .form-group { margin-bottom: 1rem; }
+
+  .form-group label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: var(--font-body);
+  }
+
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    background: rgba(246,244,238,0.92);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(79,140,132,0.1);
+  }
+
+  .form-group textarea { resize: vertical; min-height: 90px; }
+
+  .contato-list { list-style: none; margin-top: 1.8rem; }
+
+  .contato-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.95rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.97rem;
+    color: var(--text);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  .contato-list li:last-child { border-bottom: none; }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(246,244,238,0.95);
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal-box {
+    background: #FBFAF6;
+    border: 1px solid var(--teal-border);
+    border-radius: 16px;
+    padding: 3rem 2.5rem;
+    max-width: 440px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(79,140,132,0.15);
+    animation: modalIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.88) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--teal-dim);
+    border: 2px solid var(--teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+  }
+
+  .modal-box h3 { font-size: 1.5rem; font-weight: 800; color: var(--white-pure); margin-bottom: 0.75rem; }
+
+  .modal-box p { color: var(--muted); font-size: 1rem; line-height: 1.7; margin-bottom: 2rem; }
+
+  .modal-close {
+    background: var(--teal);
+    color: var(--navy-dark);
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem 2rem;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .modal-close:hover { background: var(--teal-light); transform: translateY(-1px); }
+
+  /* ─── RODAPÉ ─── */
+  footer {
+    background: var(--navy-dark);
+    border-top: 1px solid var(--border);
+    padding: 3rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .footer-logo {
+    font-family: var(--font-body);
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: var(--white-pure);
+    text-decoration: none;
+  }
+
+  .footer-logo span { color: var(--teal); }
+
+  footer p { font-size: 0.78rem; color: var(--muted); }
+
+  .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+  .footer-links a { font-size: 0.8rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+
+  .footer-links a:hover { color: var(--teal); }
+
+  /* ─── STICKY CTA (mobile) ─── */
+  .sticky-cta {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 98;
+    background: #F6F4EE;
+    backdrop-filter: blur(16px);
+    border-top: 1px solid var(--teal-border);
+    padding: 0.8rem 1rem;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sticky-cta.on { transform: translateY(0); }
+  .sticky-cta .btn-primary { width: 100%; justify-content: center; padding: 0.95rem 1.5rem; }
+
+  /* ─── NAV USER PILL ─── */
+  #nav-user-pill { display:none; align-items:center; gap:0.75rem; }
+
+  .nav-user-name { font-size:0.85rem; color:var(--teal-light); font-weight:600; }
+
+  .nav-signout {
+    background:transparent; border:1px solid var(--teal-border);
+    color:var(--muted); font-family:var(--font-body); font-size:0.7rem;
+    padding:0.25rem 0.7rem; border-radius:4px; cursor:pointer;
+    transition:all 0.2s; letter-spacing:0.04em;
+  }
+
+  .nav-signout:hover { border-color:var(--teal); color:var(--teal); }
+
+  .nav-login-btn {
+    background: transparent;
+    border: 1px solid var(--teal-border);
+    color: var(--teal);
+    font-family:var(--font-body); font-weight:600; font-size:0.82rem;
+    padding:0.4rem 1rem; border-radius:6px; text-decoration:none;
+    transition: all 0.2s;
+  }
+
+  .nav-login-btn:hover { background:var(--teal-dim); color:var(--teal-light); border-color:var(--teal); }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ─── RESPONSIVO ─── */
+  @media (max-width: 900px) {
+    .axis-grid, .escolha-grid, .contato-layout { grid-template-columns: 1fr; gap: 1.4rem; }
+    .contato-layout { gap: 2.5rem; }
+    .comport-item { grid-template-columns: 1fr; gap: 0.6rem; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 1.5rem; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    section { padding: 70px 6%; }
+    .hero { padding: 120px 6% 70px; }
+    footer { flex-direction: column; text-align: center; }
+    .sticky-cta { display: flex; }
+    body { padding-bottom: 74px; }
+    .contato-box { padding: 1.8rem 1.5rem; }
+  }
+
+  /* ─── identidade HZ: títulos na serifada da marca ─── */
+  h1, h2, h3, h4,
+  .section-title, .hero h1, .hero-title, .nav-logo, .footer-logo, .brand,
+  .stat-num, .stat-value, .big-num, .plan-prazo, .modal-box h3 {
+    font-family: var(--font-display) !important;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+
+  .nav-logo, .footer-logo, .brand { font-weight: 600; }
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">HZ <span>Invest</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html#mais-recursos">O que fazemos</a></li>
+    <li><a href="cursos.html">Cursos</a></li>
+    <li><a href="equipe.html">Equipe</a></li>
+    <li><a href="consultoria.html">Consultoria</a></li>
+    <li><a href="index.html#diagnostico">Diagnóstico</a></li>
+    <li><a href="ferramentas.html">Ferramentas</a></li>
+    <li><a href="depoimentos.html">Depoimentos</a></li>
+    <li><a href="https://t.me/+uMdIiepcb-E0ZWIx" class="nav-cta" target="_blank">Entrar no Grupo</a></li>
+    <li><div id="nav-user-pill"></div></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html#mais-recursos">O que fazemos</a>
+  <a href="cursos.html">Cursos</a>
+  <a href="equipe.html">Equipe</a>
+  <a href="consultoria.html">Consultoria</a>
+  <a href="index.html#diagnostico">Diagnóstico</a>
+  <a href="ferramentas.html">Ferramentas</a>
+  <a href="depoimentos.html">Depoimentos</a>
+  <div id="mobile-user-pill" style="padding:.85rem 0;border-bottom:1px solid var(--border);"></div>
+  <a href="login.html" style="color:var(--teal-light);font-weight:600;">Entrar / Cadastrar</a>
+  <a href="https://t.me/+uMdIiepcb-E0ZWIx" class="mobile-cta" target="_blank" onclick="closeMenu()">Entrar no Grupo</a>
+</div>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-badge"><span class="dot-teal"></span> Planejamento Financeiro HZ</div>
+  <h1>Um plano com data para começar <span class="accent">e data para terminar</span>.</h1>
+  <p class="hero-sub">
+    Acompanhamento mensal com prazo fechado: 3, 6 ou 12 meses. Você escolhe a trilha certa
+    para o ponto em que está hoje, sabe desde o primeiro dia quando o plano termina e sai com
+    entregáveis no papel, não só com boas intenções.
+  </p>
+  <div class="hero-actions">
+    <a href="#planos" class="btn-primary">Ver as trilhas e prazos</a>
+    <a href="diagnostico-lp.html" class="btn-secondary">Começar pelo diagnóstico</a>
+  </div>
+  <div class="hero-trust">
+    <span><span class="dot-teal"></span> Prazo fechado, sem fidelidade indefinida</span>
+    <span><span class="dot-teal"></span> Sessões com consultor, não só conteúdo</span>
+    <span><span class="dot-teal"></span> Entregáveis documentados em cada plano</span>
+  </div>
+</section>
+
+<!-- ─── PROBLEMA ─── -->
+<section id="problema">
+  <div class="reveal">
+    <div class="section-label">// o problema</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">O plano não falha na hora<br>de montar. Falha depois.</h2>
+    <p class="section-sub">Quase todo mundo já montou um orçamento em janeiro. O que quase ninguém tem é alguém marcando o encontro de março. Se alguma dessas frases é sua, o planejamento com acompanhamento foi feito pra você.</p>
+  </div>
+
+  <div class="pain-grid reveal">
+    <div class="pain-card"><span class="q">01</span>"Já montei planilha três vezes. Nunca passei do segundo mês."</div>
+    <div class="pain-card"><span class="q">02</span>"Sei que preciso de reserva de emergência, mas nunca chego na meta."</div>
+    <div class="pain-card"><span class="q">03</span>"Tenho dívidas em lugares diferentes e não sei qual atacar primeiro."</div>
+    <div class="pain-card"><span class="q">04</span>"Consigo guardar, mas não sei se estou investindo do jeito certo."</div>
+    <div class="pain-card"><span class="q">05</span>"Montei a carteira uma vez e nunca mais revisei."</div>
+    <div class="pain-card"><span class="q">06</span>"Já invisto, mas nunca olhei tributação, aposentadoria ou sucessão."</div>
+  </div>
+</section>
+
+<!-- ─── COMO FUNCIONA ─── -->
+<section id="como">
+  <div class="reveal">
+    <div class="section-label">// como o serviço é organizado</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Duas decisões, e só duas:<br>a trilha e o prazo</h2>
+    <p class="section-sub">São escolhas independentes. Uma diz respeito ao <em>que</em> vai ser trabalhado; a outra, a <em>quanto</em> acompanhamento você recebe enquanto trabalha nisso.</p>
+  </div>
+
+  <div class="axis-grid reveal">
+    <div class="axis-card">
+      <span class="axis-tag">Trilha</span>
+      <h3>Define <em>o que</em> será trabalhado</h3>
+      <p>Depende de onde você já está hoje. Quem ainda não tem reserva de emergência não precisa do mesmo conteúdo de quem já investe há anos. São três trilhas, e o diagnóstico indica qual é a sua.</p>
+    </div>
+    <div class="axis-card">
+      <span class="axis-tag">Prazo</span>
+      <h3>Define <em>quanto</em> acompanhamento</h3>
+      <p>3, 6 ou 12 meses. Mais meses não significam mais conteúdo empilhado: significam mais execução guiada, mais ajuste de rota e mais revisão formal do que já foi construído.</p>
+    </div>
+  </div>
+
+  <p class="axis-note reveal">
+    É por isso que o prazo não é um "nível". Uma pessoa organizando as contas pela primeira vez pode
+    precisar de 12 meses; uma pessoa com patrimônio consolidado pode resolver o que precisa em 3.
+    O que muda entre um e outro é a trilha, não a duração.
+  </p>
+</section>
+
+<!-- ─── TRILHAS ─── -->
+<section id="trilhas">
+  <div class="reveal">
+    <div class="section-label">// as 3 trilhas</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Cada trilha começa<br>onde você está</h2>
+    <p class="section-sub">As trilhas são cumulativas na prática: quem termina a primeira costuma seguir para a seguinte. Mas você entra direto no ponto que corresponde à sua situação atual.</p>
+  </div>
+
+  <div class="trilha-grid reveal">
+    <div class="trilha-card">
+      <div class="trilha-num">Trilha 1</div>
+      <h3>Organização Financeira</h3>
+      <div class="trilha-para">
+        <strong>Para quem</strong>
+        ainda não tem reserva de emergência consolidada ou organização financeira básica.
+      </div>
+      <ul class="trilha-list">
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Diagnóstico financeiro completo</li>
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Orçamento e controle de gastos</li>
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Estruturação e reforço da reserva de emergência</li>
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Organização e priorização de dívidas, se houver</li>
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Primeiros hábitos e rotina financeira</li>
+      </ul>
+    </div>
+
+    <div class="trilha-card">
+      <div class="trilha-num">Trilha 2</div>
+      <h3>Investimentos</h3>
+      <div class="trilha-para">
+        <strong>Para quem</strong>
+        já tem reserva de emergência consolidada, mas quer direção clara sobre os próximos passos.
+      </div>
+      <ul class="trilha-list">
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Definição de metas de curto e médio prazo</li>
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Perfil de investidor</li>
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Composição de carteira</li>
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Gestão de risco e seguros</li>
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Rebalanceamento da carteira</li>
+      </ul>
+    </div>
+
+    <div class="trilha-card">
+      <div class="trilha-num">Trilha 3</div>
+      <h3>Planejamento Patrimonial</h3>
+      <div class="trilha-para">
+        <strong>Para quem</strong>
+        já investe e quer avançar para otimização e proteção patrimonial.
+      </div>
+      <ul class="trilha-list">
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Planejamento tributário</li>
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Projeção de aposentadoria</li>
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Planejamento sucessório básico</li>
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Diversificação avançada de investimentos</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MATRIZ TRILHA × PRAZO ─── -->
+<section id="planos">
+  <div class="reveal">
+    <div class="section-label">// trilha × prazo</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">O que muda em<br>3, 6 e 12 meses</h2>
+    <p class="section-sub">Escolha a trilha para ver o foco, o número de sessões e os entregáveis de cada prazo. Os planos mais longos incluem tudo o que vem antes.</p>
+  </div>
+
+  <div class="tabs reveal" role="tablist" aria-label="Trilhas de planejamento financeiro">
+    <button class="tab" role="tab" id="tab-t1" aria-controls="painel-t1" aria-selected="true" data-tab="t1" type="button">Organização Financeira</button>
+    <button class="tab" role="tab" id="tab-t2" aria-controls="painel-t2" aria-selected="false" data-tab="t2" type="button">Investimentos</button>
+    <button class="tab" role="tab" id="tab-t3" aria-controls="painel-t3" aria-selected="false" data-tab="t3" type="button">Planejamento Patrimonial</button>
+  </div>
+
+  <!-- Trilha 1 -->
+  <div class="panel reveal" id="painel-t1" role="tabpanel" aria-labelledby="tab-t1" tabindex="0">
+    <p class="panel-intro">
+      <strong>Organização Financeira</strong> — para quem ainda não tem reserva de emergência
+      consolidada ou organização financeira básica.
+    </p>
+    <div class="plan-grid">
+
+      <div class="plan-card">
+        <div class="plan-prazo">3 meses</div>
+        <div class="plan-sessoes">3 sessões · quinzenais ou mensais</div>
+        <div class="plan-bloco">
+          <h4>Foco</h4>
+          <p>Diagnóstico, orçamento, reserva de emergência e dívidas.</p>
+        </div>
+        <div class="plan-bloco">
+          <h4>Entregáveis</h4>
+          <ul>
+            <li>Relatório de diagnóstico financeiro em PDF</li>
+            <li>Planilha de orçamento personalizada</li>
+            <li>Plano de reserva de emergência com meta e prazo</li>
+          </ul>
+        </div>
+        <div class="plan-porque">
+          <div class="box"><strong>Por que este prazo</strong>Plano fechado, com checkpoint único no final.</div>
+        </div>
+      </div>
+
+      <div class="plan-card destaque">
+        <span class="plan-flag">Mais escolhido</span>
+        <div class="plan-prazo">6 meses</div>
+        <div class="plan-sessoes">6 sessões mensais</div>
+        <div class="plan-bloco">
+          <h4>Foco</h4>
+          <p class="plan-mais">Tudo do plano de 3 meses, mais:</p>
+          <p>Execução acompanhada mês a mês, ajuste de rota e hábitos consolidados.</p>
+        </div>
+        <div class="plan-bloco">
+          <h4>Entregáveis adicionais</h4>
+          <ul>
+            <li>Check-ins mensais com dashboard de progresso</li>
+            <li>Registro de ajustes de rota</li>
+            <li>Revisão de hábitos ao final do plano</li>
+          </ul>
+        </div>
+        <div class="plan-porque">
+          <div class="box"><strong>Por que vale mais meses</strong>Reserva de emergência é maratona, não sprint. O acompanhamento é o que evita o abandono no meio do caminho.</div>
+        </div>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-prazo">12 meses</div>
+        <div class="plan-sessoes">12 sessões mensais + revisão trimestral</div>
+        <div class="plan-bloco">
+          <h4>Foco</h4>
+          <p class="plan-mais">Tudo do plano de 6 meses, mais:</p>
+          <p>Entrada na Trilha 2, com perfil de investidor e primeiras metas.</p>
+        </div>
+        <div class="plan-bloco">
+          <h4>Entregáveis adicionais</h4>
+          <ul>
+            <li>Relatório de perfil de investidor</li>
+            <li>Proposta inicial de composição de carteira</li>
+            <li>Plano de transição para a Trilha 2</li>
+          </ul>
+        </div>
+        <div class="plan-porque">
+          <div class="box"><strong>Por que vale mais meses</strong>Você sai não só organizado, mas já começando a investir.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Trilha 2 -->
+  <div class="panel reveal" id="painel-t2" role="tabpanel" aria-labelledby="tab-t2" tabindex="0" hidden>
+    <p class="panel-intro">
+      <strong>Investimentos</strong> — para quem já tem reserva de emergência consolidada,
+      mas quer direção clara sobre os próximos passos.
+    </p>
+    <div class="plan-grid">
+
+      <div class="plan-card">
+        <div class="plan-prazo">3 meses</div>
+        <div class="plan-sessoes">3 sessões</div>
+        <div class="plan-bloco">
+          <h4>Foco</h4>
+          <p>Metas, perfil de investidor e composição de carteira.</p>
+        </div>
+        <div class="plan-bloco">
+          <h4>Entregáveis</h4>
+          <ul>
+            <li>Relatório de metas priorizadas</li>
+            <li>Resultado do perfil de investidor</li>
+            <li>Proposta de composição de carteira em documento</li>
+          </ul>
+        </div>
+        <div class="plan-porque">
+          <div class="box"><strong>Por que este prazo</strong>Entrega o plano de alocação pronto.</div>
+        </div>
+      </div>
+
+      <div class="plan-card destaque">
+        <span class="plan-flag">Mais escolhido</span>
+        <div class="plan-prazo">6 meses</div>
+        <div class="plan-sessoes">6 sessões mensais</div>
+        <div class="plan-bloco">
+          <h4>Foco</h4>
+          <p class="plan-mais">Tudo do plano de 3 meses, mais:</p>
+          <p>Acompanhamento de execução, rebalanceamento e proteção com seguros.</p>
+        </div>
+        <div class="plan-bloco">
+          <h4>Entregáveis adicionais</h4>
+          <ul>
+            <li>Acompanhamento mensal de execução</li>
+            <li>Relatório de rebalanceamento trimestral</li>
+            <li>Checklist de proteção e seguros</li>
+          </ul>
+        </div>
+        <div class="plan-porque">
+          <div class="box"><strong>Por que vale mais meses</strong>O mercado muda. Uma carteira sem rebalanceamento periódico perde a tese original com a qual foi montada.</div>
+        </div>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-prazo">12 meses</div>
+        <div class="plan-sessoes">12 sessões mensais + revisão trimestral</div>
+        <div class="plan-bloco">
+          <h4>Foco</h4>
+          <p class="plan-mais">Tudo do plano de 6 meses, mais:</p>
+          <p>Camada inicial de planejamento tributário e revisão de metas no meio do caminho.</p>
+        </div>
+        <div class="plan-bloco">
+          <h4>Entregáveis adicionais</h4>
+          <ul>
+            <li>Relatório inicial de eficiência tributária</li>
+            <li>Sessão de revisão de metas no meio do plano</li>
+            <li>Relatório de progresso anual</li>
+          </ul>
+        </div>
+        <div class="plan-porque">
+          <div class="box"><strong>Por que vale mais meses</strong>Acompanha você por um ciclo fiscal completo, incluindo a declaração de IR.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Trilha 3 -->
+  <div class="panel reveal" id="painel-t3" role="tabpanel" aria-labelledby="tab-t3" tabindex="0" hidden>
+    <p class="panel-intro">
+      <strong>Planejamento Patrimonial</strong> — para quem já investe e quer avançar para
+      otimização e proteção patrimonial.
+    </p>
+    <div class="plan-grid">
+
+      <div class="plan-card">
+        <div class="plan-prazo">3 meses</div>
+        <div class="plan-sessoes">3 sessões</div>
+        <div class="plan-bloco">
+          <h4>Foco</h4>
+          <p>Planejamento tributário e projeção de aposentadoria.</p>
+        </div>
+        <div class="plan-bloco">
+          <h4>Entregáveis</h4>
+          <ul>
+            <li>Relatório de planejamento tributário</li>
+            <li>Projeção de aposentadoria em documento e planilha</li>
+          </ul>
+        </div>
+        <div class="plan-porque">
+          <div class="box"><strong>Por que este prazo</strong>Relatório técnico para decisões pontuais.</div>
+        </div>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-prazo">6 meses</div>
+        <div class="plan-sessoes">6 sessões mensais</div>
+        <div class="plan-bloco">
+          <h4>Foco</h4>
+          <p class="plan-mais">Tudo do plano de 3 meses, mais:</p>
+          <p>Planejamento sucessório básico e diversificação avançada.</p>
+        </div>
+        <div class="plan-bloco">
+          <h4>Entregáveis adicionais</h4>
+          <ul>
+            <li>Plano sucessório básico</li>
+            <li>Proposta de diversificação avançada</li>
+            <li>Revisão trimestral formal documentada</li>
+          </ul>
+        </div>
+        <div class="plan-porque">
+          <div class="box"><strong>Por que vale mais meses</strong>Reestruturação patrimonial tem efeitos que só aparecem depois de alguns meses, e é aí que o ajuste precisa acontecer.</div>
+        </div>
+      </div>
+
+      <div class="plan-card destaque">
+        <span class="plan-flag">Recomendado</span>
+        <div class="plan-prazo">12 meses</div>
+        <div class="plan-sessoes">12 sessões mensais + 4 revisões trimestrais</div>
+        <div class="plan-bloco">
+          <h4>Foco</h4>
+          <p class="plan-mais">Tudo do plano de 6 meses, mais:</p>
+          <p>Acompanhamento anual completo, com revisão trimestral formal e relatório anual consolidado.</p>
+        </div>
+        <div class="plan-bloco">
+          <h4>Entregáveis adicionais</h4>
+          <ul>
+            <li>Relatório anual consolidado</li>
+            <li>4 revisões trimestrais registradas</li>
+            <li>Plano de ação para o próximo ciclo</li>
+          </ul>
+        </div>
+        <div class="plan-porque">
+          <div class="box"><strong>Por que vale mais meses</strong>É o único formato que cobre um ano fiscal inteiro. Tributário e sucessório só fazem sentido com essa visão.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── PADRÃO 3/6/12 ─── -->
+<section id="padrao">
+  <div class="reveal">
+    <div class="section-label">// o padrão que se repete</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">O que você compra<br>em cada prazo</h2>
+    <p class="section-sub">Independentemente da trilha, a diferença entre 3, 6 e 12 meses é sempre a mesma.</p>
+  </div>
+
+  <div class="padrao-grid reveal">
+    <div class="padrao-card">
+      <span class="step">3 meses</span>
+      <p>Plano fechado e entregue. Você sai com os documentos e a rota definida, com pouco acompanhamento de execução.</p>
+    </div>
+    <div class="padrao-card">
+      <span class="step">6 meses</span>
+      <p>Plano <em>mais</em> execução ativa. É exatamente aqui que a maioria dos planos financeiros morre quando não há apoio.</p>
+    </div>
+    <div class="padrao-card">
+      <span class="step">12 meses</span>
+      <p>Execução, revisão trimestral formal e entrada na trilha seguinte. A sensação é de progresso contínuo, e não de "terminei, e agora?".</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── COMPORTAMENTO ─── -->
+<section id="comportamento">
+  <div class="reveal">
+    <div class="section-label">// por que acompanhamento funciona</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Não é falta de disciplina.<br>É como o cérebro decide.</h2>
+    <p class="section-sub">Décadas de pesquisa em economia comportamental explicam por que planos financeiros feitos sozinhos são abandonados, e por que checkpoint marcado com outra pessoa muda o resultado.</p>
+  </div>
+
+  <div class="comport-list reveal">
+    <div class="comport-item">
+      <div class="comport-nome">Present bias e desconto hiperbólico<span class="comport-autor">Laibson</span></div>
+      <div class="comport-texto">O cérebro prioriza a recompensa imediata sobre o benefício futuro. É por isso que o orçamento é montado em janeiro e abandonado em março. O acompanhamento é a estrutura externa que compensa esse viés.</div>
+    </div>
+    <div class="comport-item">
+      <div class="comport-nome">Implementation intentions<span class="comport-autor">Gollwitzer</span></div>
+      <div class="comport-texto">Metas viram ação quando têm gatilho e checkpoint definidos, não quando ficam só na intenção vaga. É a base científica do valor de ter encontros marcados com um consultor.</div>
+    </div>
+    <div class="comport-item">
+      <div class="comport-nome">Aversão à perda<span class="comport-autor">Kahneman &amp; Tversky</span></div>
+      <div class="comport-texto">Não perder o progresso já construído motiva mais do que a promessa de ganhar mais resultado. É o que sustenta a continuidade nos planos de 6 e 12 meses.</div>
+    </div>
+    <div class="comport-item">
+      <div class="comport-nome">Consistência e compromisso<span class="comport-autor">Cialdini</span></div>
+      <div class="comport-texto">Compromisso verbal ou escrito assumido em sessão aumenta a chance de execução. Por isso cada sessão fecha com você declarando qual é o próximo passo.</div>
+    </div>
+    <div class="comport-item">
+      <div class="comport-nome">Planning fallacy</div>
+      <div class="comport-texto">As pessoas subestimam sistematicamente o tempo e o esforço necessários para executar um plano financeiro sozinhas. O acompanhamento corrige essa distorção com checkpoints realistas.</div>
+    </div>
+  </div>
+
+  <div class="quote-box reveal">
+    <p>"Não é falta de vontade — é como o cérebro prioriza o curto prazo. O acompanhamento existe para sustentar a decisão que você já tomou."</p>
+  </div>
+</section>
+
+<!-- ─── COMO ESCOLHER ─── -->
+<section id="escolha">
+  <div class="reveal">
+    <div class="section-label">// como escolher</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">O diagnóstico indica<br>a trilha e o prazo</h2>
+    <p class="section-sub">Você não precisa adivinhar. O diagnóstico financeiro avalia seis dimensões da sua vida financeira e devolve a combinação que faz mais sentido para o seu caso.</p>
+  </div>
+
+  <div class="escolha-grid reveal">
+    <div class="escolha-card">
+      <h3>A trilha vem de onde você está</h3>
+      <div class="rule-row">
+        <span class="rule-key">Trilha 1</span>
+        <span>Ainda sem reserva de emergência consolidada</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-key">Trilha 2</span>
+        <span>Reserva pronta, mas sem direção clara sobre o que fazer com o que sobra</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-key">Trilha 3</span>
+        <span>Já investe e quer otimizar tributação, aposentadoria e proteção patrimonial</span>
+      </div>
+    </div>
+
+    <div class="escolha-card">
+      <h3>O prazo vem da gravidade do quadro</h3>
+      <div class="rule-row">
+        <span class="rule-key">12 meses</span>
+        <span>Duas ou mais dimensões em nível crítico</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-key">6 meses</span>
+        <span>Uma dimensão em crítico, ou de duas a três em insuficiente</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-key">3 meses</span>
+        <span>Nenhuma dimensão em crítico e no máximo uma ou duas em insuficiente</span>
+      </div>
+      <p class="escolha-fine">
+        Em caso de divergência entre a faixa de renda e a contagem de dimensões críticas,
+        prevalece o prazo mais longo: a situação técnica real pesa mais do que a suposição
+        feita pela renda.
+      </p>
+    </div>
+  </div>
+
+  <div class="escolha-cta reveal">
+    <a href="diagnostico-lp.html" class="btn-primary">Fazer o diagnóstico financeiro →</a>
+  </div>
+</section>
+
+<!-- ─── JORNADA ─── -->
+<section id="jornada">
+  <div class="reveal">
+    <div class="section-label">// como funciona na prática</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Do primeiro contato<br>à entrega final</h2>
+    <p class="section-sub">O desenho abaixo é o fluxo padrão. A aplicação prática se ajusta às particularidades de cada caso.</p>
+  </div>
+
+  <div class="jornada reveal">
+    <div>
+      <span class="num">01</span>
+      <strong>Conversa inicial</strong>
+      <p>Um contato sem compromisso para entender a sua situação e responder às suas dúvidas sobre o serviço.</p>
+    </div>
+    <div>
+      <span class="num">02</span>
+      <strong>Diagnóstico</strong>
+      <p>O raio-x da sua vida financeira, que indica qual trilha e qual prazo fazem mais sentido pra você.</p>
+    </div>
+    <div>
+      <span class="num">03</span>
+      <strong>Trilha e prazo</strong>
+      <p>Você escolhe a combinação, sabendo desde o início quantas sessões terá e o que vai receber.</p>
+    </div>
+    <div>
+      <span class="num">04</span>
+      <strong>Sessões</strong>
+      <p>Encontros mensais (ou quinzenais no plano de 3 meses), cada um fechando com o próximo passo definido.</p>
+    </div>
+    <div>
+      <span class="num">05</span>
+      <strong>Entrega e próximo ciclo</strong>
+      <p>Os entregáveis ficam com você. Ao final, avaliamos juntos se faz sentido seguir para a trilha seguinte.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ─── -->
+<section id="faq">
+  <div class="reveal">
+    <div class="section-label">// dúvidas frequentes</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Perguntas que costumam vir antes</h2>
+  </div>
+
+  <div class="faq-list reveal">
+    <div class="faq-item" data-faq>
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a1" id="faq-q1">
+        <span>Quanto custa?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a" id="faq-a1" role="region" aria-labelledby="faq-q1">
+        <p>O serviço tem mensalidade e prazo fechado, então dá para estimar o valor total desde o começo: você sabe quantos meses vai pagar e quando o plano termina. O valor mensal varia conforme a trilha e o prazo, e é apresentado na conversa inicial, depois de entendermos o seu caso.</p>
+      </div>
+    </div>
+    <div class="faq-item" data-faq>
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a2" id="faq-q2">
+        <span>Preciso ter muito dinheiro investido para contratar?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a" id="faq-a2" role="region" aria-labelledby="faq-q2">
+        <p>Não. O planejamento financeiro foi desenhado justamente para quem quer organizar a vida financeira, com ou sem patrimônio acumulado. A Trilha 1 começa do zero: orçamento, reserva de emergência e dívidas.</p>
+      </div>
+    </div>
+    <div class="faq-item" data-faq>
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a3" id="faq-q3">
+        <span>Qual a diferença entre isso e a consultoria de investimentos?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a" id="faq-a3" role="region" aria-labelledby="faq-q3">
+        <p>O planejamento financeiro organiza a sua vida financeira num prazo fechado, com começo, meio e fim definidos. A <a href="consultoria.html">consultoria</a> é o acompanhamento contínuo de patrimônio já constituído, com gestão de carteira e relatórios recorrentes. Muita gente começa pelo planejamento e migra para a consultoria depois.</p>
+      </div>
+    </div>
+    <div class="faq-item" data-faq>
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a4" id="faq-q4">
+        <span>Como escolho entre 3, 6 e 12 meses?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a" id="faq-a4" role="region" aria-labelledby="faq-q4">
+        <p>O <a href="diagnostico-lp.html">diagnóstico financeiro</a> indica o prazo a partir das dimensões que aparecem em nível crítico ou insuficiente. Como regra geral: 3 meses entregam o plano pronto, 6 meses acrescentam execução acompanhada, e 12 meses acrescentam revisão trimestral formal e a entrada na trilha seguinte.</p>
+      </div>
+    </div>
+    <div class="faq-item" data-faq>
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a5" id="faq-q5">
+        <span>Posso mudar de trilha no meio do plano?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a" id="faq-a5" role="region" aria-labelledby="faq-q5">
+        <p>A trilha é definida no início, a partir do seu ponto de partida, e o plano é construído em cima dela. O que acontece naturalmente é a transição para a trilha seguinte ao final do plano: no formato de 12 meses da Trilha 1, por exemplo, essa transição já está incluída nos entregáveis.</p>
+      </div>
+    </div>
+    <div class="faq-item" data-faq>
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a6" id="faq-q6">
+        <span>O que exatamente eu recebo no fim?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a" id="faq-a6" role="region" aria-labelledby="faq-q6">
+        <p>Documentos, não apenas conversas. Cada combinação de trilha e prazo tem entregáveis definidos, listados na seção de planos acima: relatórios, planilhas, propostas de carteira, planos de reserva e registros das revisões. Eles ficam com você depois que o plano termina.</p>
+      </div>
+    </div>
+    <div class="faq-item" data-faq>
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a7" id="faq-q7">
+        <span>Vocês indicam ativos específicos para eu comprar?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a" id="faq-a7" role="region" aria-labelledby="faq-q7">
+        <p>O planejamento trabalha em nível de estrutura: perfil de investidor, metas, composição de carteira por classe de ativo, gestão de risco e rebalanceamento. Recomendação individualizada de ativos é atividade de consultoria de valores mobiliários e segue o escopo do <a href="consultoria.html">acompanhamento de investimentos</a>.</p>
+      </div>
+    </div>
+    <div class="faq-item" data-faq>
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a8" id="faq-q8">
+        <span>E se eu já fiz o diagnóstico?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a" id="faq-a8" role="region" aria-labelledby="faq-q8">
+        <p>Melhor ainda: o seu relatório já traz o prazo recomendado e as dimensões que precisam de atenção. É só nos contar no formulário abaixo, e a conversa inicial começa desse ponto.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTATO ─── -->
+<section id="contato">
+  <div class="contato-layout">
+    <div class="reveal">
+      <div class="section-label">// próximo passo</div>
+      <div class="teal-line"></div>
+      <h2 class="section-title">Comece com uma<br>conversa sem compromisso</h2>
+      <p class="section-sub">Nessa primeira conversa a gente entende a sua situação, indica a trilha e o prazo que fazem sentido e apresenta os valores. Sem cobrança e sem obrigação de contratar.</p>
+      <ul class="contato-list">
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Você sabe o ticket total antes de começar, porque o prazo é fechado</li>
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Sessões com consultor de verdade, com data marcada</li>
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Entregáveis documentados, que continuam seus depois do plano</li>
+        <li><span class="check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Se ainda não souber a trilha, o diagnóstico define pra você</li>
+      </ul>
+    </div>
+
+    <div class="contato-box reveal">
+      <h3>Falar sobre o planejamento</h3>
+      <p>Preencha seus dados e entramos em contato para a conversa inicial. Se você ainda não sabe qual trilha ou prazo escolher, tudo bem: é justamente o que a conversa resolve.</p>
+      <form action="https://formsubmit.co/elisacmazzo@gmail.com" method="POST">
+        <input type="hidden" name="_subject" value="Novo interesse · Planejamento Financeiro HZ">
+        <input type="hidden" name="_captcha" value="false">
+        <div class="form-group">
+          <label for="pf-nome">Seu nome</label>
+          <input id="pf-nome" type="text" name="nome" placeholder="Como você se chama?" required>
+        </div>
+        <div class="form-group">
+          <label for="pf-email">E-mail</label>
+          <input id="pf-email" type="email" name="email" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+          <label for="pf-tel">WhatsApp / Telefone</label>
+          <input id="pf-tel" type="tel" name="telefone" placeholder="(11) 99999-9999" required>
+        </div>
+        <div class="form-group">
+          <label for="pf-trilha">Qual trilha parece a sua?</label>
+          <select id="pf-trilha" name="trilha" required>
+            <option value="" disabled selected>Selecione uma opção</option>
+            <option>Trilha 1 · Organização Financeira</option>
+            <option>Trilha 2 · Investimentos</option>
+            <option>Trilha 3 · Planejamento Patrimonial</option>
+            <option>Ainda não sei, quero orientação</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="pf-prazo">Prazo que você imagina</label>
+          <select id="pf-prazo" name="prazo" required>
+            <option value="" disabled selected>Selecione uma opção</option>
+            <option>3 meses</option>
+            <option>6 meses</option>
+            <option>12 meses</option>
+            <option>Ainda não sei</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="pf-msg">Mensagem (opcional)</label>
+          <textarea id="pf-msg" name="mensagem" placeholder="Conte um pouco sobre a sua situação, ou cole o resultado do seu diagnóstico..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%; justify-content:center;">
+          Quero conversar sobre o meu plano →
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- STICKY CTA (mobile) -->
+<div class="sticky-cta" id="stickyCta">
+  <a href="#contato" class="btn-primary">Falar sobre o meu plano</a>
+</div>
+
+<!-- MODAL DE AGRADECIMENTO -->
+<div class="modal-overlay" id="modalObrigado">
+  <div class="modal-box">
+    <div class="modal-icon">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+        <polyline points="4,12 9,17 20,6" stroke="#4F8C84" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h3>Mensagem enviada!</h3>
+    <p>Recebemos as suas informações e entraremos em contato em breve para agendar a conversa inicial sobre o seu planejamento financeiro.<br><br>Enquanto isso, se quiser adiantar o caminho, o diagnóstico financeiro já indica a trilha e o prazo do seu caso. 😊</p>
+    <button class="modal-close" onclick="document.getElementById('modalObrigado').classList.remove('active')">Fechar</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="index.html" class="footer-logo">HZ <span>Invest</span></a>
+  <p>© 2025 HZ Invest · Todos os direitos reservados</p>
+  <div class="footer-links">
+    <a href="https://t.me/+uMdIiepcb-E0ZWIx" target="_blank">Telegram</a>
+    <a href="https://instagram.com/hz_invest" target="_blank">Instagram</a>
+    <a href="planejamento-financeiro.html">Planejamento</a>
+    <a href="consultoria.html">Consultoria</a>
+    <a href="ferramentas.html">Ferramentas</a>
+  </div>
+</footer>
+
+<script>
+  // ─── SCROLL REVEAL ───
+  var reveals = document.querySelectorAll('.reveal');
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(function (el) { observer.observe(el); });
+
+  // ─── TABS DAS TRILHAS ───
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+
+  function abrirTrilha(id) {
+    tabs.forEach(function (t) {
+      var ativo = t.dataset.tab === id;
+      t.setAttribute('aria-selected', ativo ? 'true' : 'false');
+      var painel = document.getElementById('painel-' + t.dataset.tab);
+      painel.hidden = !ativo;
+      // o painel recém-exibido pode ainda estar com a animação de reveal pendente
+      if (ativo) painel.classList.add('visible');
+    });
+  }
+
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () { abrirTrilha(t.dataset.tab); });
+    // setas do teclado navegam entre as abas, como manda o padrão de tablist
+    t.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      var i = tabs.indexOf(t);
+      var proximo = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      proximo.focus();
+      abrirTrilha(proximo.dataset.tab);
+    });
+  });
+
+  // ─── FAQ EM SANFONA ───
+  var faqs = document.querySelectorAll('[data-faq]');
+  Array.prototype.forEach.call(faqs, function (item) {
+    var botao = item.querySelector('.faq-q');
+    botao.addEventListener('click', function () {
+      var aberto = item.classList.toggle('open');
+      botao.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+    });
+  });
+
+  // ─── BARRA FIXA DE CTA (mobile) ───
+  var sticky = document.getElementById('stickyCta');
+  var contato = document.getElementById('contato');
+  window.addEventListener('scroll', function () {
+    var passouHero = window.scrollY > 600;
+    var chegouContato = contato.getBoundingClientRect().top < window.innerHeight;
+    sticky.classList.toggle('on', passouHero && !chegouContato);
+  }, { passive: true });
+
+  // ─── FORMULÁRIO → MODAL ───
+  var form = document.querySelector('#contato form');
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var data = new FormData(this);
+      try {
+        await fetch(this.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } });
+      } catch (_) {}
+      this.reset();
+      document.getElementById('modalObrigado').classList.add('active');
+    });
+  }
+
+  document.getElementById('modalObrigado').addEventListener('click', function (e) {
+    if (e.target === this) this.classList.remove('active');
+  });
+
+  // ─── MENU MOBILE ───
+  function toggleMenu() {
+    var btn  = document.getElementById('hamburger');
+    var menu = document.getElementById('mobileMenu');
+    btn.classList.toggle('open');
+    menu.classList.toggle('open');
+  }
+  function closeMenu() {
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('mobileMenu').classList.remove('open');
+  }
+  window.toggleMenu = toggleMenu;
+  window.closeMenu = closeMenu;
+</script>
+
+<!-- Firebase Auth (module) -->
+<script type="module">
+  import { bindNavUser } from './auth.js';
+  bindNavUser();
+</script>
+
+</body>
+</html>
