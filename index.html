@@ -731,11 +731,20 @@
   /* Com o link do Diagnóstico o menu passou a ter sete itens, então
      entre 769px e 1200px ele precisa de espaçamento mais apertado
      para não estourar a barra. */
-  @media (min-width: 769px) and (max-width: 1200px) {
+  /* Com o botão de login o menu chega a nove itens e pede cerca de
+     1220px só de conteúdo (medido com fontes de fallback, o pior caso).
+     Entre 1251px e 1700px ele ainda cabe apertando o espaçamento; abaixo
+     disso não cabe, e insistir só faria os rótulos quebrarem no meio ou
+     vazarem a barra. Então até 1250px o menu vira hambúrguer, que já
+     lista tudo. */
+  @media (min-width: 1251px) and (max-width: 1700px) {
     nav { padding: 0 4%; }
-    .nav-links { gap: 1.1rem; }
-    .nav-links a { font-size: 0.85rem; }
-    .nav-cta { padding: 0.55rem 1rem; }
+    .nav-links { gap: 1.4rem; }
+  }
+
+  @media (max-width: 1250px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
   }
 
   @media (max-width: 768px) {

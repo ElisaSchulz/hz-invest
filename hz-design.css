@@ -164,6 +164,19 @@ a.nav-logo, a.footer-logo, a.brand { text-transform: none; letter-spacing: 0.01e
 }
 .nav-links a:hover { color: var(--navy); }
 
+/* Os itens da barra são rótulos curtos e nunca devem quebrar no meio:
+   sem isso o flex os comprime e "Entrar no Grupo" vira duas linhas
+   dentro de uma barra de altura fixa, transbordando o próprio botão.
+   Quem cede espaço é o espaçamento entre os itens, nos media queries
+   de cada página, não o texto. */
+.nav-logo, .nav-links a, .nav-cta, .nav-login-btn, .nav-user-name {
+  white-space: nowrap;
+}
+.nav-logo, .nav-cta, .nav-login-btn { flex-shrink: 0; }
+/* como o logo e o menu são distribuídos por space-between, nas larguras
+   mais apertadas eles chegam a se encostar; o gap garante o respiro */
+nav { gap: 2rem; }
+
 /* ── botões ─────────────────────────────────────────────── */
 .btn-primary, .btn-cta {
   display: inline-flex;
