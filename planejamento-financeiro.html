@@ -176,11 +176,20 @@
     border-bottom: none !important;
   }
 
-  @media (min-width: 769px) and (max-width: 1200px) {
+  /* Com o botão de login o menu chega a nove itens e pede cerca de
+     1220px só de conteúdo (medido com fontes de fallback, o pior caso).
+     Entre 1251px e 1700px ele ainda cabe apertando o espaçamento; abaixo
+     disso não cabe, e insistir só faria os rótulos quebrarem no meio ou
+     vazarem a barra. Então até 1250px o menu vira hambúrguer, que já
+     lista tudo. */
+  @media (min-width: 1251px) and (max-width: 1700px) {
     nav { padding: 0 4%; }
-    .nav-links { gap: 1.1rem; }
-    .nav-links a { font-size: 0.85rem; }
-    .nav-cta { padding: 0.55rem 1rem; }
+    .nav-links { gap: 1.4rem; }
+  }
+
+  @media (max-width: 1250px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
   }
 
   /* ─── BOTÕES ─── */
@@ -529,24 +538,6 @@
     padding: 2rem 1.8rem;
     display: flex;
     flex-direction: column;
-    position: relative;
-  }
-
-  .plan-card.destaque { border-color: var(--teal-border); box-shadow: 0 0 40px rgba(79,140,132,0.08); }
-
-  .plan-flag {
-    position: absolute;
-    top: -11px;
-    left: 1.8rem;
-    font-family: var(--font-body);
-    font-size: 0.62rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: var(--navy-dark);
-    background: var(--teal);
-    border-radius: 4px;
-    padding: 0.25rem 0.6rem;
   }
 
   .plan-prazo {
@@ -1157,7 +1148,7 @@
   </div>
   <div class="hero-trust">
     <span><span class="dot-teal"></span> Você escolhe o ponto de partida</span>
-    <span><span class="dot-teal"></span> Sessões com consultor, não só conteúdo</span>
+    <span><span class="dot-teal"></span> Uma reunião por mês com consultor</span>
     <span><span class="dot-teal"></span> Entregáveis documentados em cada etapa</span>
   </div>
 </section>
@@ -1276,7 +1267,7 @@
     <div class="section-label">// trilha × prazo</div>
     <div class="teal-line"></div>
     <h2 class="section-title">O que muda em<br>3, 6 e 12 meses</h2>
-    <p class="section-sub">Escolha a trilha para ver o foco, o número de sessões e os entregáveis de cada etapa. As etapas mais longas incluem tudo o que vem antes, e nenhuma delas precisa ser a última.</p>
+    <p class="section-sub">Em qualquer trilha e qualquer duração, o ritmo é o mesmo: <strong>uma reunião por mês</strong>. O que muda é por quantos meses esse encontro acontece e o que cabe em cada um deles. Escolha a trilha para ver o foco e os entregáveis de cada etapa — as mais longas incluem tudo o que vem antes, e nenhuma delas precisa ser a última.</p>
   </div>
 
   <div class="tabs reveal" role="tablist" aria-label="Trilhas de planejamento financeiro">
@@ -1295,7 +1286,7 @@
 
       <div class="plan-card">
         <div class="plan-prazo">3 meses</div>
-        <div class="plan-sessoes">3 sessões · quinzenais ou mensais</div>
+        <div class="plan-sessoes">3 sessões · 1 reunião por mês</div>
         <div class="plan-bloco">
           <h4>Foco</h4>
           <p>Diagnóstico, orçamento, reserva de emergência e dívidas.</p>
@@ -1313,10 +1304,9 @@
         </div>
       </div>
 
-      <div class="plan-card destaque">
-        <span class="plan-flag">Mais escolhido</span>
+      <div class="plan-card">
         <div class="plan-prazo">6 meses</div>
-        <div class="plan-sessoes">6 sessões mensais</div>
+        <div class="plan-sessoes">6 sessões · 1 reunião por mês</div>
         <div class="plan-bloco">
           <h4>Foco</h4>
           <p class="plan-mais">Tudo do plano de 3 meses, mais:</p>
@@ -1337,7 +1327,7 @@
 
       <div class="plan-card">
         <div class="plan-prazo">12 meses</div>
-        <div class="plan-sessoes">12 sessões mensais + revisão trimestral</div>
+        <div class="plan-sessoes">12 sessões · 1 reunião por mês, com revisão trimestral formal</div>
         <div class="plan-bloco">
           <h4>Foco</h4>
           <p class="plan-mais">Tudo do plano de 6 meses, mais:</p>
@@ -1369,7 +1359,7 @@
 
       <div class="plan-card">
         <div class="plan-prazo">3 meses</div>
-        <div class="plan-sessoes">3 sessões</div>
+        <div class="plan-sessoes">3 sessões · 1 reunião por mês</div>
         <div class="plan-bloco">
           <h4>Foco</h4>
           <p>Metas, perfil de investidor e composição de carteira.</p>
@@ -1387,10 +1377,9 @@
         </div>
       </div>
 
-      <div class="plan-card destaque">
-        <span class="plan-flag">Mais escolhido</span>
+      <div class="plan-card">
         <div class="plan-prazo">6 meses</div>
-        <div class="plan-sessoes">6 sessões mensais</div>
+        <div class="plan-sessoes">6 sessões · 1 reunião por mês</div>
         <div class="plan-bloco">
           <h4>Foco</h4>
           <p class="plan-mais">Tudo do plano de 3 meses, mais:</p>
@@ -1411,7 +1400,7 @@
 
       <div class="plan-card">
         <div class="plan-prazo">12 meses</div>
-        <div class="plan-sessoes">12 sessões mensais + revisão trimestral</div>
+        <div class="plan-sessoes">12 sessões · 1 reunião por mês, com revisão trimestral formal</div>
         <div class="plan-bloco">
           <h4>Foco</h4>
           <p class="plan-mais">Tudo do plano de 6 meses, mais:</p>
@@ -1443,7 +1432,7 @@
 
       <div class="plan-card">
         <div class="plan-prazo">3 meses</div>
-        <div class="plan-sessoes">3 sessões</div>
+        <div class="plan-sessoes">3 sessões · 1 reunião por mês</div>
         <div class="plan-bloco">
           <h4>Foco</h4>
           <p>Planejamento tributário e projeção de aposentadoria.</p>
@@ -1462,7 +1451,7 @@
 
       <div class="plan-card">
         <div class="plan-prazo">6 meses</div>
-        <div class="plan-sessoes">6 sessões mensais</div>
+        <div class="plan-sessoes">6 sessões · 1 reunião por mês</div>
         <div class="plan-bloco">
           <h4>Foco</h4>
           <p class="plan-mais">Tudo do plano de 3 meses, mais:</p>
@@ -1481,10 +1470,9 @@
         </div>
       </div>
 
-      <div class="plan-card destaque">
-        <span class="plan-flag">Recomendado</span>
+      <div class="plan-card">
         <div class="plan-prazo">12 meses</div>
-        <div class="plan-sessoes">12 sessões mensais + 4 revisões trimestrais</div>
+        <div class="plan-sessoes">12 sessões · 1 reunião por mês, com 4 revisões trimestrais formais</div>
         <div class="plan-bloco">
           <h4>Foco</h4>
           <p class="plan-mais">Tudo do plano de 6 meses, mais:</p>
@@ -1645,12 +1633,12 @@
     <div>
       <span class="num">03</span>
       <strong>Trilha e prazo</strong>
-      <p>Você escolhe a combinação, sabendo desde o início quantas sessões terá e o que vai receber.</p>
+      <p>Você escolhe a combinação, sabendo desde o início quantas reuniões terá e o que vai receber.</p>
     </div>
     <div>
       <span class="num">04</span>
       <strong>Sessões</strong>
-      <p>Encontros mensais (ou quinzenais no plano de 3 meses), cada um fechando com o próximo passo definido.</p>
+      <p>Uma reunião por mês, do primeiro ao último mês da etapa, cada uma fechando com o próximo passo definido.</p>
     </div>
     <div>
       <span class="num">05</span>
