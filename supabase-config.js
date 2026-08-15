@@ -6,11 +6,13 @@
 //
 //  COMO CONFIGURAR:
 //  1. Rode o script `supabase-setup.sql` no SQL Editor do painel
-//     do Supabase (uma única vez).
+//     do Supabase (pode rodar de novo sempre que quiser).
 //  2. Preencha as duas constantes abaixo com os dados do seu
 //     projeto (painel do Supabase > Settings > API):
 //     - Project URL  → HZ_SUPABASE_URL
 //     - anon public  → HZ_SUPABASE_ANON_KEY
+//  3. Abra `supabase-teste.html` no navegador para conferir se a
+//     tabela e o bucket estão respondendo.
 //
 //  A chave "anon" é pública por definição — a segurança vem das
 //  políticas de RLS criadas pelo setup: visitantes só conseguem
@@ -36,14 +38,34 @@ var HZ_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
   var K_SYNC = "hz_diagnostico_sync";      // "ok" quando as respostas já foram gravadas
   var K_UPLOAD = "hz_diagnostico_upload";  // "ok" quando o relatório já foi enviado
 
+  // Último erro real devolvido pelo Supabase, exposto em hzSupabase.ultimoErro()
+  // para a página de teste conseguir dizer o que está faltando configurar.
+  var ultimoErro = null;
+
+  function mensagemDeErro(err) {
+    if (!err) return null;
+    var partes = [err.message, err.details, err.hint, err.code].filter(Boolean);
+    return partes.join(" · ") || "erro desconhecido";
+  }
+
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
 
   function configurado() {
-    return HZ_SUPABASE_URL.indexOf("SEU-PROJETO") === -1 &&
-      HZ_SUPABASE_ANON_KEY.indexOf("COLE-AQUI") === -1 &&
-      HZ_SUPABASE_ANON_KEY.length > 20;
+    return /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(String(HZ_SUPABASE_URL).trim()) &&
+      String(HZ_SUPABASE_ANON_KEY).trim().length > 40;
+  }
+
+  // Repete uma promessa que resolve em "erro", com espera crescente.
+  // Perder o relatório por uma oscilação de rede é o pior desfecho aqui.
+  function comRetentativa(fn, tentativas, esperaMs) {
+    return fn().then(function (r) {
+      if (r !== "erro" || tentativas <= 1) return r;
+      return new Promise(function (resolve) {
+        setTimeout(function () { resolve(comRetentativa(fn, tentativas - 1, esperaMs * 2)); }, esperaMs);
+      });
+    });
   }
 
   var _client = null;
@@ -83,10 +105,47 @@ var HZ_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
     return { id: id, arquivo: arquivo };
   }
 
+  // Só números finitos vão para as colunas numéricas da tabela.
+  function numero(v) {
+    var n = Number(v);
+    return isFinite(n) ? n : null;
+  }
+
+  // Monta as colunas de resumo a partir do relatório calculado, para que a
+  // tabela do Supabase seja legível sem abrir o JSON de respostas.
+  function resumoDoRelatorio(stored) {
+    if (!window.HZDiag || !window.HZDiag.computeReport) return {};
+    var R = window.HZDiag.computeReport(stored.data, stored.geradoEm);
+    var A = R.aposentadoria || {};
+    return {
+      score: R.scoreGeral,
+      nivel: R.nivel.nome,
+      arquetipo: R.arquetipo.nome,
+      idade_aposentadoria: numero(A.idadeAposentadoria),
+      estrategia: A.estrategiaLabel || null,
+      renda_desejada: numero(stored.data.gastoMensalAposentadoria),
+      patrimonio_necessario: numero(R.valores && R.valores.patrimonioNecessario),
+      aporte_necessario: numero(R.valores && R.valores.aporteNecessario),
+      aporte_atual: numero(R.valores && R.valores.aporteAtual),
+      resumo: {
+        geradoEm: stored.geradoEm || null,
+        idade: R.data.idade,
+        rendaTotal: R.kpis.rendaTotalDisplay,
+        patrimonioTotal: R.kpis.patrimonioTotalDisplay,
+        patrimonioNecessario: R.kpis.patrimonioNecessarioDisplay,
+        aporteNecessario: R.kpis.aporteNecessarioDisplay,
+        aporteAtual: R.kpis.aporteAtualDisplay,
+        rendaSustentavel: R.kpis.rendaSustentavelDisplay,
+        veredito: A.veredito ? A.veredito.tipo : null,
+        dimensoes: R.dimRows.map(function (d) { return { nome: d.nome, score: d.score }; })
+      }
+    };
+  }
+
   // Grava as respostas do formulário na tabela `diagnosticos`.
-  // Idempotente: reenvia com o mesmo id não duplica (conflito = já enviado).
+  // Idempotente: reenviar com o mesmo id não duplica (conflito = já enviado).
   // Retorna: "ok" | "ja-enviado" | "nao-configurado" | "sem-dados" | "erro"
-  function hzEnviarDiagnostico() {
+  function enviarDiagnosticoUmaVez() {
     var sb = client();
     if (!sb) return Promise.resolve("nao-configurado");
     if (lsGet(K_SYNC) === "ok") return Promise.resolve("ja-enviado");
@@ -103,13 +162,9 @@ var HZ_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
       arquivo = novo.arquivo;
     }
 
+    // O resumo é um extra: se o cálculo falhar, as respostas ainda vão.
     var resumo = {};
-    try {
-      if (window.HZDiag) {
-        var R = window.HZDiag.computeReport(stored.data);
-        resumo = { score: R.scoreGeral, nivel: R.nivel.nome, arquetipo: R.arquetipo.nome };
-      }
-    } catch (e) {}
+    try { resumo = resumoDoRelatorio(stored); } catch (e) { ultimoErro = String(e && e.message || e); }
 
     var linha = Object.assign({
       id: id,
@@ -124,15 +179,20 @@ var HZ_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
         lsSet(K_SYNC, "ok");
         return "ok";
       }
+      ultimoErro = mensagemDeErro(res.error);
       return "erro";
-    }, function () { return "erro"; });
+    }, function (e) { ultimoErro = String(e && e.message || e); return "erro"; });
+  }
+
+  function hzEnviarDiagnostico() {
+    return comRetentativa(enviarDiagnosticoUmaVez, 3, 1500);
   }
 
   // Envia um retrato estático da página do relatório (HTML) para o
   // bucket `relatorios` do Storage. Deve ser chamada na página do
   // relatório, depois de renderizado.
   // Retorna: "ok" | "ja-enviado" | "nao-configurado" | "sem-dados" | "erro"
-  function hzEnviarRelatorio() {
+  function enviarRelatorioUmaVez() {
     var sb = client();
     if (!sb) return Promise.resolve("nao-configurado");
     if (lsGet(K_UPLOAD) === "ok") return Promise.resolve("ja-enviado");
@@ -140,9 +200,11 @@ var HZ_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
     var arquivo = lsGet(K_ARQUIVO);
     if (!arquivo) return Promise.resolve("sem-dados");
 
+    // O arquivo guardado é o relatório já renderizado, sem scripts nem os
+    // controles da tela — abre sozinho no navegador, direto do Storage.
     var clone = document.documentElement.cloneNode(true);
-    var scripts = clone.querySelectorAll("script");
-    for (var i = 0; i < scripts.length; i++) scripts[i].parentNode.removeChild(scripts[i]);
+    var descartaveis = clone.querySelectorAll("script, .no-print");
+    for (var i = 0; i < descartaveis.length; i++) descartaveis[i].parentNode.removeChild(descartaveis[i]);
     var html = "<!DOCTYPE html>\n" + clone.outerHTML;
 
     return sb.storage.from(BUCKET)
@@ -153,14 +215,101 @@ var HZ_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
           lsSet(K_UPLOAD, "ok");
           return "ok";
         }
+        ultimoErro = mensagemDeErro(res.error);
         return "erro";
-      }, function () { return "erro"; });
+      }, function (e) { ultimoErro = String(e && e.message || e); return "erro"; });
+  }
+
+  function hzEnviarRelatorio() {
+    return comRetentativa(enviarRelatorioUmaVez, 3, 1500);
+  }
+
+  // Verificação de saúde da integração, usada por supabase-teste.html.
+  // Não grava nada: só confere se a tabela e o bucket respondem.
+  // Sob RLS a chave anon não lê linha nenhuma, então uma consulta que volta
+  // vazia (sem erro) já prova que a tabela existe e está acessível.
+  function hzVerificar() {
+    var resultado = {
+      configurado: configurado(),
+      url: HZ_SUPABASE_URL,
+      biblioteca: !!(window.supabase && window.supabase.createClient),
+      tabela: null, colunas: null, bucket: null
+    };
+    var sb = client();
+    if (!sb) return Promise.resolve(resultado);
+
+    var checaTabela = sb.from(TABELA).select("id").limit(1).then(function (res) {
+      if (!res.error) { resultado.tabela = { ok: true }; return; }
+      resultado.tabela = { ok: false, erro: mensagemDeErro(res.error), inexistente: res.error.code === "PGRST205" || /does not exist|não existe/i.test(res.error.message || "") };
+    }, function (e) { resultado.tabela = { ok: false, erro: String(e && e.message || e), rede: true }; });
+
+    // Consulta as colunas novas: se alguma faltar, o setup.sql é antigo.
+    var checaColunas = sb.from(TABELA).select("estrategia,patrimonio_necessario,aporte_necessario,aporte_atual,idade_aposentadoria,renda_desejada,resumo").limit(1)
+      .then(function (res) {
+        if (!res.error) { resultado.colunas = { ok: true }; return; }
+        resultado.colunas = { ok: false, erro: mensagemDeErro(res.error) };
+      }, function (e) { resultado.colunas = { ok: false, erro: String(e && e.message || e) }; });
+
+    // Uma listagem no bucket devolve erro claro quando ele não existe; com o
+    // bucket criado, a política de anon (só insert) devolve lista vazia.
+    var checaBucket = sb.storage.from(BUCKET).list("", { limit: 1 }).then(function (res) {
+      if (!res.error) { resultado.bucket = { ok: true }; return; }
+      var msg = mensagemDeErro(res.error);
+      resultado.bucket = { ok: false, erro: msg, inexistente: /not found|bucket/i.test(msg || "") };
+    }, function (e) { resultado.bucket = { ok: false, erro: String(e && e.message || e), rede: true } });
+
+    return Promise.all([checaTabela, checaColunas, checaBucket]).then(function () { return resultado; });
+  }
+
+  // Envio de ponta a ponta com dados fictícios, para provar que gravação e
+  // upload funcionam de verdade. A linha e o arquivo ficam marcados como
+  // teste, para você apagar depois pelo painel.
+  function hzEnviarTeste() {
+    var sb = client();
+    if (!sb) return Promise.resolve({ ok: false, erro: "Supabase não configurado neste arquivo." });
+
+    var id = uuid4();
+    var arquivo = "_teste/" + new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-") + "_teste.html";
+    var linha = {
+      id: id,
+      nome: "TESTE — pode apagar",
+      email: "teste@hzinvest.com.br",
+      respostas: { teste: true, origem: "supabase-teste.html", quando: new Date().toISOString() },
+      relatorio_arquivo: arquivo
+    };
+
+    return sb.from(TABELA).insert(linha).then(function (res) {
+      if (res.error) return { ok: false, etapa: "tabela", erro: mensagemDeErro(res.error) };
+      var html = "<!DOCTYPE html><meta charset=utf-8><title>Teste HZ</title><p>Arquivo de teste enviado em " + new Date().toLocaleString("pt-BR") + ". Pode apagar.";
+      return sb.storage.from(BUCKET)
+        .upload(arquivo, new Blob([html], { type: "text/html" }), { contentType: "text/html", upsert: false })
+        .then(function (up) {
+          if (up.error) return { ok: false, etapa: "storage", erro: mensagemDeErro(up.error), id: id };
+          return { ok: true, id: id, arquivo: arquivo };
+        });
+    }, function (e) { return { ok: false, etapa: "tabela", erro: String(e && e.message || e) }; });
+  }
+
+  // Estado do envio deste navegador, útil para depurar um caso específico.
+  function hzStatus() {
+    return {
+      configurado: configurado(),
+      id: lsGet(K_ID),
+      arquivo: lsGet(K_ARQUIVO),
+      respostasEnviadas: lsGet(K_SYNC) === "ok",
+      relatorioEnviado: lsGet(K_UPLOAD) === "ok",
+      temDados: !!lsGet(K_DATA)
+    };
   }
 
   window.hzSupabase = {
     configurado: configurado,
     novoEnvio: hzNovoEnvio,
     enviarDiagnostico: hzEnviarDiagnostico,
-    enviarRelatorio: hzEnviarRelatorio
+    enviarRelatorio: hzEnviarRelatorio,
+    verificar: hzVerificar,
+    enviarTeste: hzEnviarTeste,
+    status: hzStatus,
+    ultimoErro: function () { return ultimoErro; }
   };
 })();

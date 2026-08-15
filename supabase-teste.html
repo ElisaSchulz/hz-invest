@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Teste da integração com o Supabase | HZ Invest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hz-design.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: 'Manrope', sans-serif; color: var(--ink); }
+  a { color: var(--sage-deep); }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 24px 48px; border-bottom: 1px solid var(--border); }
+  .brand { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: var(--navy); text-decoration: none; }
+  .brand em { font-style: italic; color: var(--sage-deep); font-weight: 500; }
+  .topbar-label { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--faint); }
+
+  .main { max-width: 760px; margin: 0 auto; padding: 48px 24px 96px; }
+  .eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .eyebrow-line { width: 48px; height: 2px; background: var(--sage); }
+  .eyebrow-text { font-size: 11px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--sage-deep); }
+  h1 { font-family: 'Fraunces', serif; font-size: 34px; font-weight: 500; color: var(--navy); margin: 0 0 12px; }
+  .lead { font-size: 15.5px; line-height: 1.75; color: var(--muted); margin: 0 0 36px; max-width: 620px; }
+  h2 { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; color: var(--navy); margin: 40px 0 14px; }
+  p, li { font-size: 14.5px; line-height: 1.75; color: var(--text); }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; background: var(--surface-sunk); padding: 2px 6px; border-radius: 4px; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 24px; }
+  .check { display: flex; align-items: flex-start; gap: 14px; padding: 18px 0; border-bottom: 1px solid var(--border); }
+  .check:last-child { border-bottom: none; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; background: rgba(27,27,92,0.18); }
+  .dot.ok { background: var(--sage); }
+  .dot.bad { background: var(--critico); }
+  .dot.wait { background: var(--alerta); }
+  .check-title { font-size: 14.5px; font-weight: 700; color: var(--navy); }
+  .check-desc { font-size: 13px; line-height: 1.65; color: var(--muted); margin-top: 4px; word-break: break-word; }
+  .check-fix { font-size: 13px; line-height: 1.65; color: var(--alerta-texto); background: rgba(196,138,62,0.1); border-radius: 6px; padding: 10px 14px; margin-top: 10px; }
+
+  .actions { display: flex; gap: 12px; flex-wrap: wrap; margin: 28px 0 8px; }
+  button { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; border-radius: 6px; padding: 14px 24px; cursor: pointer; border: 1px solid var(--navy); }
+  .btn-primary { background: var(--navy); color: var(--surface); }
+  .btn-primary:hover { background: var(--navy-soft); }
+  .btn-ghost { background: transparent; color: var(--navy); }
+  .btn-ghost:hover { background: var(--surface-sunk); }
+  button[disabled] { opacity: 0.5; cursor: default; }
+
+  .resultado { margin-top: 18px; border-radius: 8px; padding: 18px 22px; font-size: 14px; line-height: 1.7; display: none; }
+  .resultado.ok { background: rgba(79,140,132,0.12); border: 1px solid var(--sage-border); color: var(--ink); }
+  .resultado.bad { background: rgba(179,71,71,0.09); border: 1px solid rgba(179,71,71,0.3); color: var(--ink); }
+
+  ol.passos { padding-left: 20px; }
+  ol.passos li { margin-bottom: 10px; }
+
+  @media (max-width: 639px) {
+    .topbar { padding: 16px 20px; }
+    .main { padding: 32px 18px 64px; }
+    h1 { font-size: 27px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="index.html">HZ <em>Invest</em></a>
+  <div class="topbar-label">Uso interno</div>
+</div>
+
+<div class="main">
+  <div class="eyebrow"><div class="eyebrow-line"></div><div class="eyebrow-text">Diagnóstico Financeiro</div></div>
+  <h1>Teste da integração com o Supabase</h1>
+  <p class="lead">
+    Esta página confere, do próprio navegador, se os diagnósticos preenchidos no site estão chegando
+    ao Supabase: se as chaves do projeto estão corretas, se a tabela <code>diagnosticos</code> existe
+    com as colunas atuais e se o bucket <code>relatorios</code> aceita o envio dos arquivos.
+    É uma página de uso interno, sem link no menu do site.
+  </p>
+
+  <h2>Verificação</h2>
+  <div class="card" id="checks">
+    <div class="check"><div class="dot wait"></div><div><div class="check-title">Verificando…</div></div></div>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="btn-ghost" id="btn-verificar">Verificar de novo</button>
+    <button type="button" class="btn-primary" id="btn-teste">Fazer um envio de teste</button>
+  </div>
+  <p style="font-size:13px; color:var(--faint); margin-top:0;">
+    O envio de teste grava uma linha chamada <b>“TESTE — pode apagar”</b> na tabela e um arquivo em
+    <code>_teste/</code> no bucket. É o único jeito de provar que a gravação funciona de ponta a ponta.
+    Depois é só apagar os dois pelo painel do Supabase.
+  </p>
+  <div class="resultado" id="resultado"></div>
+
+  <h2>Se algo estiver vermelho</h2>
+  <ol class="passos">
+    <li>Abra o painel do Supabase, vá em <b>SQL Editor &gt; New query</b>, cole todo o conteúdo do
+      arquivo <code>supabase-setup.sql</code> deste repositório e clique em <b>Run</b>.
+      O script pode ser rodado quantas vezes for preciso, sem apagar nada do que já foi gravado.</li>
+    <li>Confira em <b>Settings &gt; API</b> se a <i>Project URL</i> e a chave <i>anon public</i> são
+      as mesmas que estão no topo do arquivo <code>supabase-config.js</code>.</li>
+    <li>Se o bucket não aparecer, crie-o à mão em <b>Storage &gt; New bucket</b>, com o nome
+      <code>relatorios</code> e a opção <b>Public</b> desmarcada. Depois rode o script de novo.</li>
+    <li>Volte aqui e clique em <b>Verificar de novo</b>.</li>
+  </ol>
+
+  <h2>Onde ver os diagnósticos recebidos</h2>
+  <p>
+    As respostas ficam em <b>Table Editor &gt; diagnosticos</b>, uma linha por diagnóstico finalizado,
+    com nome, e-mail, score, arquétipo e o resumo do plano de aposentadoria (patrimônio necessário,
+    aporte necessário e aporte atual). A coluna <code>respostas</code> guarda o formulário inteiro e
+    <code>relatorio_arquivo</code> diz qual arquivo do bucket corresponde àquela linha.
+  </p>
+  <p>
+    Os relatórios ficam em <b>Storage &gt; relatorios</b>, em HTML, prontos para abrir no navegador
+    ou imprimir em PDF. O bucket é privado: só quem entra no painel com a sua conta consegue baixar.
+  </p>
+
+  <h2>Estado deste navegador</h2>
+  <div class="card" id="estado"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js?v=3"></script>
+<script src="diagnostico-core.js?v=2"></script>
+<script>
+"use strict";
+
+function esc(s) {
+  return String(s === undefined || s === null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+function linha(estado, titulo, desc, correcao) {
+  return '<div class="check"><div class="dot ' + estado + '"></div><div>' +
+    '<div class="check-title">' + esc(titulo) + '</div>' +
+    (desc ? '<div class="check-desc">' + esc(desc) + '</div>' : "") +
+    (correcao ? '<div class="check-fix">' + correcao + '</div>' : "") +
+    '</div></div>';
+}
+
+function renderChecks(r) {
+  var html = "";
+
+  html += linha(r.biblioteca ? "ok" : "bad", "Biblioteca do Supabase carregada",
+    r.biblioteca ? "supabase-js respondeu normalmente." : "O script do supabase-js não carregou.",
+    r.biblioteca ? null : "Verifique a conexão com a internet e se o site consegue acessar <code>cdn.jsdelivr.net</code>.");
+
+  html += linha(r.configurado ? "ok" : "bad", "Chaves do projeto preenchidas",
+    r.configurado ? "URL do projeto: " + r.url : "A URL ou a chave anon em supabase-config.js não têm o formato esperado.",
+    r.configurado ? null : "Copie a <i>Project URL</i> e a chave <i>anon public</i> em <b>Settings &gt; API</b> para o topo de <code>supabase-config.js</code>.");
+
+  if (!r.configurado || !r.biblioteca) {
+    document.getElementById("checks").innerHTML = html +
+      linha("wait", "Tabela e bucket", "Não dá para testar enquanto as chaves não estiverem corretas.");
+    return;
+  }
+
+  var t = r.tabela || {};
+  html += linha(t.ok ? "ok" : "bad", "Tabela diagnosticos",
+    t.ok ? "A tabela existe e aceita conexões com a chave anon." : ("Erro: " + (t.erro || "desconhecido")),
+    t.ok ? null : (t.rede
+      ? "Parece um problema de rede ou de projeto pausado. Confira em <b>Settings &gt; General</b> se o projeto do Supabase está ativo."
+      : "Rode o <code>supabase-setup.sql</code> no <b>SQL Editor</b> do painel."));
+
+  var c = r.colunas || {};
+  html += linha(c.ok ? "ok" : (t.ok ? "bad" : "wait"), "Colunas do plano de aposentadoria",
+    c.ok ? "estrategia, renda_desejada, patrimonio_necessario, aporte_necessario, aporte_atual, idade_aposentadoria e resumo estão presentes."
+         : ("Erro: " + (c.erro || "não verificado")),
+    c.ok ? null : "Sua tabela é de uma versão anterior. Rode o <code>supabase-setup.sql</code> de novo: ele adiciona só as colunas que faltam, sem tocar nos dados.");
+
+  var b = r.bucket || {};
+  html += linha(b.ok ? "ok" : "bad", "Bucket relatorios",
+    b.ok ? "O bucket existe e responde." : ("Erro: " + (b.erro || "desconhecido")),
+    b.ok ? null : "Crie o bucket em <b>Storage &gt; New bucket</b> com o nome <code>relatorios</code> e <b>Public</b> desmarcado, ou rode o <code>supabase-setup.sql</code>.");
+
+  document.getElementById("checks").innerHTML = html;
+}
+
+function renderEstado() {
+  var s = hzSupabase.status();
+  var itens = [
+    ["Diagnóstico preenchido neste navegador", s.temDados ? "sim" : "não"],
+    ["Id do envio atual", s.id || "—"],
+    ["Arquivo do relatório", s.arquivo || "—"],
+    ["Respostas já enviadas", s.respostasEnviadas ? "sim" : "não"],
+    ["Relatório já enviado", s.relatorioEnviado ? "sim" : "não"]
+  ];
+  document.getElementById("estado").innerHTML = itens.map(function (i) {
+    var vazio = i[1] === "não" || i[1] === "—";
+    return '<div class="check"><div class="dot ' + (vazio ? "" : "ok") + '"></div><div>' +
+      '<div class="check-title">' + esc(i[0]) + '</div><div class="check-desc">' + esc(i[1]) + '</div></div></div>';
+  }).join("");
+}
+
+function mostrarResultado(tipo, html) {
+  var box = document.getElementById("resultado");
+  box.className = "resultado " + tipo;
+  box.style.display = "block";
+  box.innerHTML = html;
+}
+
+function verificar() {
+  document.getElementById("checks").innerHTML = linha("wait", "Verificando…", "Consultando o projeto do Supabase.");
+  hzSupabase.verificar().then(renderChecks, function (e) {
+    document.getElementById("checks").innerHTML = linha("bad", "Falha na verificação", String(e && e.message || e));
+  });
+  renderEstado();
+}
+
+document.getElementById("btn-verificar").addEventListener("click", verificar);
+
+document.getElementById("btn-teste").addEventListener("click", function () {
+  var botao = this;
+  botao.disabled = true;
+  botao.textContent = "Enviando…";
+  hzSupabase.enviarTeste().then(function (r) {
+    botao.disabled = false;
+    botao.textContent = "Fazer um envio de teste";
+    if (r.ok) {
+      mostrarResultado("ok", "<b>Funcionou de ponta a ponta.</b><br>" +
+        "A linha de teste está em <b>Table Editor &gt; diagnosticos</b> (procure por “TESTE — pode apagar”) e o arquivo em " +
+        "<b>Storage &gt; relatorios &gt; _teste</b> (<code>" + esc(r.arquivo) + "</code>). Pode apagar os dois: eram só para o teste.");
+    } else if (r.etapa === "storage") {
+      mostrarResultado("bad", "<b>A tabela recebeu, mas o Storage recusou o arquivo.</b><br>Erro: " + esc(r.erro) +
+        "<br>Crie o bucket <code>relatorios</code> (privado) e rode o <code>supabase-setup.sql</code> para aplicar a política de envio.");
+    } else {
+      mostrarResultado("bad", "<b>A gravação na tabela falhou.</b><br>Erro: " + esc(r.erro) +
+        "<br>Rode o <code>supabase-setup.sql</code> no SQL Editor e confira as chaves em <code>supabase-config.js</code>.");
+    }
+    verificar();
+  });
+});
+
+verificar();
+</script>
+</body>
+</html>
