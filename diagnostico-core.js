@@ -15,10 +15,89 @@
   var PREMISSAS = {
     inflacaoAnual: 0.04,
     nominalPorAtivo: { investPoupanca: 0.065, investRendaFixaPublica: 0.105, investRendaFixaPrivada: 0.105, investRendaVariavel: 0.13, investCripto: 0.15, investOutros: 0.09 },
-    nominalPorPerfil: { "Conservador": 0.105, "Moderado": 0.115, "Arrojado": 0.13 }
+    nominalPorPerfil: { "Conservador": 0.105, "Moderado": 0.115, "Arrojado": 0.13 },
+    // Taxa de retirada anual do cenário de renda perpétua (regra dos 4% → 25x).
+    taxaRetiradaPerpetua: 0.04,
+    // Até quando a renda precisa durar quando a pessoa opta por consumir o
+    // patrimônio e não informa uma idade final.
+    idadeFimRendaPadrao: 95,
+    // Horizonte desenhado depois da aposentadoria no cenário perpétuo: o
+    // patrimônio não acaba, mas o gráfico precisa de um fim. Vinte anos
+    // mostram a sustentação da renda sem esticar a escala do eixo Y.
+    anosRendaPerpetua: 20
   };
   function taxaReal(nominal) {
     return (1 + nominal) / (1 + PREMISSAS.inflacaoAnual) - 1;
+  }
+
+  /* ===================== Matemática financeira =====================
+     Tudo roda em taxa REAL (acima da inflação), ou seja, em poder de
+     compra de hoje — as mesmas convenções da Calculadora FIRE. */
+  var EPS = 1e-9;
+  function paraMensal(anual) { return Math.pow(1 + anual, 1 / 12) - 1; }
+  // Valor futuro de um saldo inicial somado a aportes no fim de cada mês.
+  function valorFuturo(p0, aporte, i, n) {
+    if (n <= 0) return p0;
+    if (Math.abs(i) < EPS) return p0 + aporte * n;
+    var g = Math.pow(1 + i, n);
+    return p0 * g + aporte * (g - 1) / i;
+  }
+  // Aporte mensal necessário para sair de p0 e chegar a `alvo` em n meses.
+  function aportePara(alvo, p0, i, n) {
+    if (n <= 0) return Infinity;
+    if (Math.abs(i) < EPS) return (alvo - p0) / n;
+    var g = Math.pow(1 + i, n);
+    return (alvo - p0 * g) * i / (g - 1);
+  }
+  // Valor presente de n saques mensais feitos no início de cada mês.
+  function vpSaques(saque, i, n) {
+    if (n <= 0) return 0;
+    if (Math.abs(i) < EPS) return saque * n;
+    return saque * (1 - Math.pow(1 + i, -n)) / i * (1 + i);
+  }
+  // Capital necessário para n saques mensais deixando `heranca` no final.
+  function capitalNecessario(saque, i, n, heranca) {
+    return vpSaques(saque, i, n) + (heranca > 0 ? heranca * Math.pow(1 + i, -n) : 0);
+  }
+  // Saque mensal que um capital sustenta por n meses deixando `heranca`.
+  function saqueSustentavel(capital, i, n, heranca) {
+    if (n <= 0) return 0;
+    var liquido = capital - (heranca > 0 ? heranca * Math.pow(1 + i, -n) : 0);
+    if (liquido <= 0) return 0;
+    if (Math.abs(i) < EPS) return liquido / n;
+    return liquido * i / ((1 - Math.pow(1 + i, -n)) * (1 + i));
+  }
+  // Simulação mês a mês: acumulação e, depois, a fase de saques. Devolve os
+  // pontos anuais do gráfico e o mês em que o dinheiro acaba, se acabar.
+  function simular(p0, aporte, i, mesesAcumulo, saque, mesesRenda) {
+    var saldo = p0;
+    var pontos = [{ mes: 0, saldo: saldo }];
+    var total = mesesAcumulo + mesesRenda;
+    var esgotouMes = null, patNoAlvo = p0;
+    for (var m = 1; m <= total; m++) {
+      if (m <= mesesAcumulo) {
+        saldo += saldo * i + aporte;
+        if (m === mesesAcumulo) patNoAlvo = saldo;
+      } else {
+        var s = Math.min(saque, Math.max(0, saldo)); // saque no início do mês
+        saldo -= s;
+        saldo += saldo * i;
+        if (saldo <= 0.005 && esgotouMes === null) { saldo = 0; esgotouMes = m; }
+      }
+      if (m % 12 === 0 || m === total) pontos.push({ mes: m, saldo: saldo });
+    }
+    return { pontos: pontos, esgotouMes: esgotouMes, patNoAlvo: patNoAlvo, saldoFinal: saldo };
+  }
+  // Em quantos meses o aporte atual chega ao alvo (null se não chegar no limite).
+  function mesesParaAlvo(p0, aporte, i, alvo, limiteMeses) {
+    if (alvo <= 0) return 0;
+    if (p0 >= alvo) return 0;
+    var saldo = p0;
+    for (var m = 1; m <= limiteMeses; m++) {
+      saldo += saldo * i + aporte;
+      if (saldo >= alvo) return m;
+    }
+    return null;
   }
 
   /* ===================== Textos fixos ===================== */
@@ -88,7 +167,10 @@
     { termo: "Índice de solvência", definicao: "Proporção do seu patrimônio que é realmente sua (patrimônio líquido) em relação ao patrimônio total, descontando dívidas e financiamentos." },
     { termo: "Cobertura de seguro (múltiplo da renda)", definicao: "Quantas vezes sua renda anual o capital do seu seguro de vida cobriria, caso algo acontecesse com você." },
     { termo: "Patrimônio esperado x real", definicao: "Comparação entre o patrimônio que seria esperado pra sua idade e renda, e o patrimônio que você realmente tem hoje." },
-    { termo: "Regra dos 25x", definicao: "Estimativa de quanto patrimônio é necessário pra se aposentar: 25 vezes o gasto anual desejado, permitindo retiradas sustentáveis ao longo do tempo." }
+    { termo: "Regra dos 25x (renda perpétua)", definicao: "Estimativa de quanto patrimônio é necessário pra viver só do rendimento: 25 vezes o gasto anual desejado, o equivalente a sacar 4% ao ano. O principal fica intacto e vira herança." },
+    { termo: "Consumir o patrimônio", definicao: "Estratégia alternativa em que o patrimônio é gasto ao longo da aposentadoria, terminando em zero (ou no valor de herança desejado) numa idade definida. Exige menos capital que a renda perpétua, mas o prazo precisa ser generoso." },
+    { termo: "Aporte mensal necessário", definicao: "Quanto você precisaria guardar todo mês, a partir de hoje e até a idade-alvo, pra chegar ao patrimônio necessário. É calculado em reais de hoje: na prática, o valor precisa ser reajustado pela inflação todo ano." },
+    { termo: "Retorno real", definicao: "Rentabilidade que sobra depois de descontar a inflação. É o que mede o ganho de poder de compra e a base de todas as projeções deste relatório." }
   ];
 
   /* ===================== Helpers ===================== */
@@ -102,6 +184,17 @@
   }
   function num1(value) {
     return (Number(value) || 0).toFixed(1).replace(".", ",");
+  }
+  // Versão curta para eixos de gráfico: "R$ 1,2 mi", "R$ 850 mil".
+  function fmtCurto(value) {
+    var n = Number(value) || 0;
+    var abs = Math.abs(n);
+    if (abs >= 1e6) return "R$ " + (n / 1e6).toFixed(abs >= 1e7 ? 0 : 1).replace(".", ",") + " mi";
+    if (abs >= 1e3) return "R$ " + Math.round(n / 1e3) + " mil";
+    return "R$ " + Math.round(n);
+  }
+  function plural(n, singular, pluralForma) {
+    return n + " " + (Math.abs(n) === 1 ? singular : pluralForma);
   }
   // Idade a partir da data de nascimento (AAAA-MM-DD), na data de referência.
   // Retorna null se a data for inválida ou implausível.
@@ -244,18 +337,73 @@
       else if (D.perfilRisco === "Arrojado" && rvPct < 15) perfilAlertText = "apenas " + pct(rvPct) + " em renda variável para um perfil arrojado, possível ineficiência de alocação";
     }
 
-    // ---- Dim 6: Metas ----
+    // ---- Plano de aposentadoria ----
+    // Base tanto da dimensão de Metas quanto da projeção patrimonial: a partir
+    // da idade-alvo, da renda mensal desejada e da estratégia escolhida
+    // (viver do rendimento x consumir o patrimônio), calcula o patrimônio
+    // necessário, o aporte que o plano exige e o que o ritmo atual entrega.
     var gastoMensalAposentadoria = D.gastoNaoSei ? rendaTotal * ((D.gastoPercent || 70) / 100) : (D.gastoMensalAposentadoria || 0);
-    var patrimonioNecessario = gastoMensalAposentadoria * 12 * 25;
     // A reserva de emergência tem função própria (imprevistos) e fica fora
     // dos ativos destinados à aposentadoria, evitando contar duas vezes.
     var ativosLiquidos = Math.max(0, patrimonioInvest - (D.reservaEmergencia || 0));
     var idadeAposentadoria = Number(D.idadeAposentadoria) || idade + 20;
-    var progressoAtual = patrimonioNecessario > 0 ? (ativosLiquidos / patrimonioNecessario) * 100 : 0;
-    var anosParaAposentar = Math.max(1, idadeAposentadoria - idade);
     // Quem já atingiu (ou passou) a idade-alvo é avaliado pelo progresso absoluto
-    // frente à regra dos 25x, não pela curva de acúmulo esperada por idade.
+    // frente ao patrimônio necessário, não pela curva de acúmulo esperada por idade.
     var aposentadoriaAtingida = idadeAposentadoria <= idade;
+    var anosAcumulo = Math.max(0, idadeAposentadoria - idade);
+    var mesesAcumulo = anosAcumulo * 12;
+
+    // Estratégia: "renda" preserva o patrimônio (regra dos 4% / 25x, padrão dos
+    // diagnósticos antigos), "consumo" gasta o principal até a idade final.
+    var estrategia = D.estrategiaAposentadoria === "consumo" ? "consumo" : "renda";
+    var idadeFimRenda = Math.max(idadeAposentadoria + 1, Number(D.idadeFimRenda) || PREMISSAS.idadeFimRendaPadrao);
+    var anosRenda = estrategia === "consumo" ? (idadeFimRenda - idadeAposentadoria) : PREMISSAS.anosRendaPerpetua;
+    var mesesRenda = anosRenda * 12;
+    var herancaDesejada = estrategia === "consumo" ? Math.max(0, Number(D.herancaDesejada) || 0) : 0;
+
+    // Taxas reais: o plano recomendado assume a carteira do perfil declarado;
+    // o ritmo atual usa a composição real da carteira (limitada ao perfil).
+    var rPlanoAnual = taxaReal(PREMISSAS.nominalPorPerfil[D.perfilRisco] || PREMISSAS.nominalPorPerfil["Moderado"]);
+    var rComposicaoAnual = patrimonioInvest > 0
+      ? taxaReal(INVEST_KEYS.reduce(function (a, k) { return a + (D[k] || 0) * (PREMISSAS.nominalPorAtivo[k] || 0.09); }, 0) / patrimonioInvest)
+      : rPlanoAnual;
+    var rAtualAnual = Math.min(rPlanoAnual, rComposicaoAnual);
+    var iPlano = paraMensal(rPlanoAnual);
+    var iAtual = paraMensal(rAtualAnual);
+
+    var patrimonioNecessario = estrategia === "consumo"
+      ? capitalNecessario(gastoMensalAposentadoria, iPlano, mesesRenda, herancaDesejada)
+      : gastoMensalAposentadoria * 12 / PREMISSAS.taxaRetiradaPerpetua;
+    var progressoAtual = patrimonioNecessario > 0 ? (ativosLiquidos / patrimonioNecessario) * 100 : 0;
+
+    // Aporte do ritmo atual (o que a taxa de poupança representa em reais) x
+    // aporte que o plano exige para chegar ao patrimônio necessário na idade-alvo.
+    var aporteAtual = Math.max(0, (taxaPoupanca / 100) * rendaTotal);
+    var aporteBruto = mesesAcumulo > 0 ? aportePara(patrimonioNecessario, ativosLiquidos, iPlano, mesesAcumulo) : 0;
+    var aporteNecessario = isFinite(aporteBruto) ? Math.max(0, aporteBruto) : 0;
+    var gapAporte = Math.max(0, aporteNecessario - aporteAtual);
+
+    // Simulações mês a mês: acumulação até a idade-alvo e, depois, a fase de
+    // renda sacando o valor desejado. A curva do ritmo atual pode acabar antes
+    // do fim — é justamente esse o alerta que o gráfico precisa mostrar.
+    var simPlano = simular(ativosLiquidos, aporteNecessario, iPlano, mesesAcumulo, gastoMensalAposentadoria, mesesRenda);
+    var simAtual = simular(ativosLiquidos, aporteAtual, iAtual, mesesAcumulo, gastoMensalAposentadoria, mesesRenda);
+    var patrimonioNoAlvoAtual = simAtual.patNoAlvo;
+    // Renda mensal que o ritmo atual sustentaria, na régua da estratégia escolhida.
+    var rendaSustentavelAtual = estrategia === "consumo"
+      ? saqueSustentavel(patrimonioNoAlvoAtual, iAtual, mesesRenda, herancaDesejada)
+      : patrimonioNoAlvoAtual * PREMISSAS.taxaRetiradaPerpetua / 12;
+    var coberturaAtual = gastoMensalAposentadoria > 0 ? rendaSustentavelAtual / gastoMensalAposentadoria : 0;
+    // Zerar no último mês é o objetivo do modo consumo; só é alerta quando o
+    // dinheiro acaba antes do fim do período planejado.
+    var totalMeses = mesesAcumulo + mesesRenda;
+    var esgotaAtualMes = (simAtual.esgotouMes !== null && simAtual.esgotouMes < totalMeses) ? simAtual.esgotouMes : null;
+    var idadeEsgotaAtual = esgotaAtualMes !== null ? idade + Math.floor(esgotaAtualMes / 12) : null;
+    var mesesAteMeta = patrimonioNecessario > 0
+      ? mesesParaAlvo(ativosLiquidos, aporteAtual, iAtual, patrimonioNecessario, Math.max(0, (100 - idade) * 12))
+      : null;
+    var idadeAtingeMeta = mesesAteMeta !== null ? idade + Math.ceil(mesesAteMeta / 12) : null;
+
     var expectedProgress = Math.max(5, Math.min(95, ((idade - 25) / Math.max(1, (idadeAposentadoria - 25))) * 100));
     var progressoRelativo = aposentadoriaAtingida ? progressoAtual : (expectedProgress > 0 ? (progressoAtual / expectedProgress) * 100 : progressoAtual);
     var scoreMetas = ativosLiquidos <= 0 ? 5 : bandInterp(progressoRelativo, [50, 100, 150]);
@@ -353,16 +501,6 @@
     var PRIORITY_ORDER = ["fluxo", "liquidez", "endividamento", "risco", "patrimonio", "metas"];
     var DIM_NAMES = { fluxo: "Fluxo de Caixa e Orçamento", liquidez: "Liquidez e Reserva", endividamento: "Endividamento", risco: "Gestão de Risco (Seguros)", patrimonio: "Patrimônio e Investimentos", metas: "Metas e Planejamento" };
     var gapCobertura = Math.max(0, benchmarkMultiplo - multiploCobertura) * rendaSeguroAnual;
-    var aporteNecessario = (function () {
-      // taxa real (meta a preços de hoje → desconta a inflação do retorno)
-      var rAnual = taxaReal(PREMISSAS.nominalPorPerfil[D.perfilRisco] || PREMISSAS.nominalPorPerfil["Moderado"]);
-      var rMensal = Math.pow(1 + rAnual, 1 / 12) - 1;
-      var nMeses = anosParaAposentar * 12;
-      var fatorFV = Math.pow(1 + rMensal, nMeses);
-      var numerador = patrimonioNecessario - ativosLiquidos * fatorFV;
-      var denominador = (fatorFV - 1) / rMensal;
-      return Math.max(0, numerador / denominador);
-    })();
 
     // Lacunas de proteção (usadas nos textos da dimensão de risco)
     var protecaoGaps = [];
@@ -492,47 +630,204 @@
       justificativa: "Com " + criticosCount + " dimensão(ões) crítica(s) e " + insuficientesCount + " insuficiente(s), somado ao seu perfil comportamental (" + arquetipo.nome + "), um acompanhamento de " + duracaoFinal + " meses é o que permite consolidar mudanças de forma realista, sem pressa nem abandono no meio do caminho."
     };
 
-    // ---- Projeção futura ----
-    // Projeção em termos REAIS: retornos nominais das premissas convertidos
-    // para acima da inflação, mantendo meta e curvas a preços de hoje.
-    var rPerfil = taxaReal(PREMISSAS.nominalPorPerfil[D.perfilRisco] || PREMISSAS.nominalPorPerfil["Moderado"]);
-    var rComposicaoReal = patrimonioInvest > 0 ? taxaReal(INVEST_KEYS.reduce(function (a, k) { return a + (D[k] || 0) * (PREMISSAS.nominalPorAtivo[k] || 0.09); }, 0) / patrimonioInvest) : rPerfil;
-    var rAnual1 = Math.min(rPerfil, rComposicaoReal);
-    var rAnual2 = rPerfil;
-    var rMensal1 = Math.pow(1 + rAnual1, 1 / 12) - 1;
-    var rMensal2 = Math.pow(1 + rAnual2, 1 / 12) - 1;
-    var pmt1 = Math.max(0, (taxaPoupanca / 100) * rendaTotal);
-    // O cenário recomendado nunca assume aporte acima de 40% da renda:
-    // acima disso a recomendação passa a ser recalibrar a meta, não o aporte.
-    var pmt2 = Math.max(pmt1 * 1.2, Math.min(aporteNecessario, rendaTotal * 0.4));
-    var fv = function (p0, pmt, n, rMensal) { return p0 * Math.pow(1 + rMensal, n) + pmt * ((Math.pow(1 + rMensal, n) - 1) / rMensal); };
-    var months = [0, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120];
-    var series1 = months.map(function (n) { return fv(ativosLiquidos, pmt1, n, rMensal1); });
-    var series2 = months.map(function (n) { return fv(ativosLiquidos, pmt2, n, rMensal2); });
-    // Se a meta for muito maior que as projeções, ela sai da escala do gráfico
-    // (linha fixada no topo) pra não achatar as duas curvas no rodapé.
-    var maxSeries = Math.max.apply(null, series1.concat(series2));
-    var metaForaEscala = patrimonioNecessario > maxSeries * 3;
-    var maxVal = Math.max(maxSeries, metaForaEscala ? 0 : patrimonioNecessario) * 1.08;
-    var chartW = 600, chartH = 340, padL = 8, padR = 8, padT = 16, padB = 16;
-    var xFor = function (i) { return padL + (i / (months.length - 1)) * (chartW - padL - padR); };
-    var yFor = function (v) { return chartH - padB - (v / (maxVal || 1)) * (chartH - padT - padB); };
-    var points1 = series1.map(function (v, i) { return xFor(i).toFixed(1) + "," + yFor(v).toFixed(1); }).join(" ");
-    var points2 = series2.map(function (v, i) { return xFor(i).toFixed(1) + "," + yFor(v).toFixed(1); }).join(" ");
-    var dots2 = series2.map(function (v, i) { return { x: xFor(i).toFixed(1), y: yFor(v).toFixed(1) }; });
-    var targetY = metaForaEscala ? (padT + 2).toFixed(1) : yFor(patrimonioNecessario).toFixed(1);
-    var end1Y = yFor(series1[series1.length - 1]);
-    var end2Y = yFor(series2[series2.length - 1]);
-    var closeEnds = Math.abs(end1Y - end2Y) < 16;
-    var end1YFinal = closeEnds ? end1Y + 13 : end1Y + 5;
-    var end2YFinal = closeEnds ? end2Y - 15 : end2Y - 16;
-    var pctX = function (x) { return ((x / chartW) * 100).toFixed(1); };
-    var pctY = function (y) { return ((y / chartH) * 100).toFixed(1); };
-    var targetLabelY = metaForaEscala ? parseFloat(targetY) + 8 : parseFloat(targetY) - 22;
-    var targetLabel = "Meta: " + fmt(patrimonioNecessario) + (metaForaEscala ? " (acima da escala do gráfico)" : "");
-    var targetLabelStyle = "left:" + pctX(596) + "%; top:" + pctY(targetLabelY) + "%; transform: translateX(-100%); white-space: nowrap;";
-    var end1Style = "left:" + pctX(596) + "%; top:" + pctY(end1YFinal) + "%; transform: translateX(-100%);";
-    var end2Style = "left:" + pctX(596) + "%; top:" + pctY(end2YFinal) + "%; transform: translateX(-100%);";
+    // ---- Projeção patrimonial: acumulação + fase de renda ----
+    // Toda a projeção corre em termos REAIS (acima da inflação), então meta,
+    // curvas e valores ficam a preços de hoje. O gráfico vai da idade atual
+    // até o fim do período de renda, marcando a idade-alvo de aposentadoria.
+    var COR = { plano: "#4F8C84", atual: "rgba(27,27,92,0.45)", meta: "#C48A3E", grade: "rgba(27,27,92,0.10)", alerta: "#B34747" };
+    var CH = { w: 720, h: 300, padL: 16, padR: 16, padT: 34, padB: 26 };
+    var chartAreaW = CH.w - CH.padL - CH.padR;
+    var chartAreaH = CH.h - CH.padT - CH.padB;
+    var ptsPlano = simPlano.pontos, ptsAtual = simAtual.pontos;
+    var ultimoMes = Math.max(1, ptsPlano[ptsPlano.length - 1].mes);
+    var maxSaldo = 0;
+    ptsPlano.concat(ptsAtual).forEach(function (p) { if (p.saldo > maxSaldo) maxSaldo = p.saldo; });
+    // Meta muito acima das curvas achataria tudo no rodapé: nesse caso ela é
+    // fixada no topo do gráfico e o rótulo avisa que está fora da escala.
+    var metaNaEscala = patrimonioNecessario > 0 && patrimonioNecessario <= Math.max(maxSaldo, 1) * 3;
+    var maxVal = Math.max(maxSaldo, metaNaEscala ? patrimonioNecessario : 0) * 1.08 || 1;
+    var CX = function (mes) { return CH.padL + (mes / ultimoMes) * chartAreaW; };
+    var CY = function (v) { return CH.padT + chartAreaH - (Math.min(Math.max(v, 0), maxVal) / maxVal) * chartAreaH; };
+    var baseY = CH.padT + chartAreaH;
+    var poly = function (pontos) { return pontos.map(function (p) { return CX(p.mes).toFixed(1) + "," + CY(p.saldo).toFixed(1); }).join(" "); };
+
+    // Os rótulos saem como HTML posicionado em porcentagem, não como <text> do
+    // SVG: assim eles mantêm o tamanho de fonte quando o gráfico encolhe no
+    // celular, em vez de virarem letras microscópicas junto com o desenho.
+    var rotulos = [];
+    var rotulo = function (x, y, texto, tipo, alinhamento, acima) {
+      var deslocX = alinhamento === "fim" ? "-100%" : alinhamento === "meio" ? "-50%" : "0";
+      rotulos.push({
+        texto: texto,
+        tipo: tipo,
+        style: "left:" + ((x / CH.w) * 100).toFixed(2) + "%; top:" + ((y / CH.h) * 100).toFixed(2) + "%;" +
+          " transform: translate(" + deslocX + "," + (acima ? "-100%" : "0") + ");"
+      });
+    };
+    // Perto das bordas o rótulo é ancorado para dentro, senão vaza do cartão.
+    var alinhaPor = function (x) { return x < CH.padL + 90 ? "inicio" : (x > CH.padL + chartAreaW - 90 ? "fim" : "meio"); };
+
+    var svg = "";
+    // Grade horizontal; o valor de cada linha fica logo acima dela, à esquerda,
+    // o que dispensa uma coluna de eixo e sobra largura para a curva.
+    for (var g = 0; g <= 4; g++) {
+      var gy = CH.padT + chartAreaH - (g / 4) * chartAreaH;
+      svg += '<line x1="' + CH.padL + '" y1="' + gy.toFixed(1) + '" x2="' + (CH.padL + chartAreaW) + '" y2="' + gy.toFixed(1) + '" stroke="' + COR.grade + '" stroke-width="1" vector-effect="non-scaling-stroke" />';
+      if (g > 0) rotulo(CH.padL + 2, gy - 3, fmtCurto(maxVal * g / 4), "eixo", "inicio", true);
+    }
+    // Linha da meta
+    if (patrimonioNecessario > 0) {
+      var metaY = metaNaEscala ? CY(patrimonioNecessario) : CH.padT + 3;
+      svg += '<line x1="' + CH.padL + '" y1="' + metaY.toFixed(1) + '" x2="' + (CH.padL + chartAreaW) + '" y2="' + metaY.toFixed(1) + '" stroke="' + COR.meta + '" stroke-width="1.5" stroke-dasharray="6,4" vector-effect="non-scaling-stroke" />';
+      rotulo(CH.padL + chartAreaW - 2, metaY - 4, "Meta: " + fmt(patrimonioNecessario) + (metaNaEscala ? "" : " (acima da escala)"), "meta", "fim", true);
+    }
+    // Marco vertical da aposentadoria
+    if (mesesAcumulo > 0 && mesesAcumulo < ultimoMes) {
+      var mx = CX(mesesAcumulo);
+      svg += '<line x1="' + mx.toFixed(1) + '" y1="' + CH.padT + '" x2="' + mx.toFixed(1) + '" y2="' + baseY + '" stroke="rgba(27,27,92,0.3)" stroke-width="1.2" stroke-dasharray="3,3" vector-effect="non-scaling-stroke" />';
+      rotulo(mx, CH.padT - 6, "aposentadoria · " + idadeAposentadoria + " anos", "marco", alinhaPor(mx), true);
+    }
+    // Área sob a curva do plano recomendado
+    svg += '<polygon points="' + CX(0).toFixed(1) + "," + baseY + " " + poly(ptsPlano) + " " + CX(ultimoMes).toFixed(1) + "," + baseY + '" fill="rgba(79,140,132,0.16)" />';
+    // Curva do ritmo atual (tracejada) e do plano recomendado (cheia)
+    svg += '<polyline points="' + poly(ptsAtual) + '" fill="none" stroke="' + COR.atual + '" stroke-width="2" stroke-dasharray="5,4" stroke-linejoin="round" vector-effect="non-scaling-stroke" />';
+    svg += '<polyline points="' + poly(ptsPlano) + '" fill="none" stroke="' + COR.plano + '" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" />';
+    // Patrimônio de cada cenário na idade-alvo
+    if (mesesAcumulo > 0 && mesesAcumulo <= ultimoMes) {
+      svg += '<circle cx="' + CX(mesesAcumulo).toFixed(1) + '" cy="' + CY(simPlano.patNoAlvo).toFixed(1) + '" r="4" fill="' + COR.plano + '" />';
+      svg += '<circle cx="' + CX(mesesAcumulo).toFixed(1) + '" cy="' + CY(patrimonioNoAlvoAtual).toFixed(1) + '" r="3.5" fill="#1B1B5C" fill-opacity="0.55" />';
+    }
+    // Ponto em que o dinheiro acaba no ritmo atual
+    if (esgotaAtualMes !== null) {
+      var ex = CX(esgotaAtualMes);
+      svg += '<circle cx="' + ex.toFixed(1) + '" cy="' + baseY + '" r="4.5" fill="' + COR.alerta + '" />';
+      rotulo(ex, baseY - 8, "acaba aos " + idadeEsgotaAtual + " anos", "alerta", alinhaPor(ex), true);
+    }
+    // Eixo X em idades
+    var totalAnos = Math.max(1, Math.round(ultimoMes / 12));
+    var passoAnos = Math.max(1, Math.ceil(totalAnos / 7));
+    var ultimoTick = 0;
+    for (var ta = 0; ta <= totalAnos; ta += passoAnos) {
+      rotulo(CX(ta * 12), CH.h - 20, String(idade + ta), "eixo", alinhaPor(CX(ta * 12)));
+      ultimoTick = ta;
+    }
+    // A idade final só entra se não for grudar no tick anterior.
+    if (totalAnos - ultimoTick >= passoAnos * 0.5) rotulo(CX(totalAnos * 12), CH.h - 20, String(idade + totalAnos), "eixo", "fim");
+
+    // O desenho preenche a caixa (preserveAspectRatio="none"), que no celular
+    // é proporcionalmente mais alta — daí ganhar altura em vez de virar uma
+    // faixa fininha. Os traços não distorcem por causa do non-scaling-stroke.
+    var chartSvg = '<svg viewBox="0 0 ' + CH.w + ' ' + CH.h + '" preserveAspectRatio="none" style="position:absolute; inset:0; width:100%; height:100%; display:block;">' + svg + '</svg>';
+    var chart = { svg: chartSvg, rotulos: rotulos };
+
+    // ---- Painel da aposentadoria (números e veredito da projeção) ----
+    var multiploAlvo = Math.round(1 / PREMISSAS.taxaRetiradaPerpetua);
+    var estrategiaLabel = estrategia === "consumo"
+      ? "Consumir o patrimônio ao longo da aposentadoria"
+      : "Viver do rendimento, preservando o patrimônio";
+    var estrategiaResumo = estrategia === "consumo"
+      ? "Você escolheu consumir o patrimônio: receber " + fmt(gastoMensalAposentadoria) + " por mês dos " + idadeAposentadoria + " aos " + idadeFimRenda + " anos" +
+        (herancaDesejada > 0 ? ", deixando " + fmt(herancaDesejada) + " no final." : ", terminando sem patrimônio.") +
+        " Como o principal é gasto, o valor necessário é menor do que o de uma renda perpétua."
+      : "Você escolheu viver do rendimento: sacar " + pct(PREMISSAS.taxaRetiradaPerpetua * 100, 1) + " ao ano (" + fmt(gastoMensalAposentadoria) + " por mês) sem tocar no principal. " +
+        "O patrimônio permanece intacto e vira herança, o que exige " + multiploAlvo + "x o gasto anual.";
+
+    var semGasto = gastoMensalAposentadoria <= 0;
+    // Cada cartão degrada com elegância: sem renda desejada não há meta, e quem
+    // já passou da idade-alvo não tem aporte nem diferença a mostrar.
+    var apoCards = [
+      {
+        label: aposentadoriaAtingida ? "Patrimônio necessário" : "Patrimônio necessário aos " + idadeAposentadoria,
+        value: semGasto ? "—" : fmt(patrimonioNecessario),
+        sub: semGasto
+          ? "depende da renda mensal desejada, que ficou em branco"
+          : (estrategia === "consumo"
+            ? "pra receber " + fmt(gastoMensalAposentadoria) + "/mês por " + plural(anosRenda, "ano", "anos")
+            : multiploAlvo + "x o gasto anual de " + fmt(gastoMensalAposentadoria * 12))
+      },
+      {
+        label: "Aporte mensal necessário",
+        value: (semGasto || aposentadoriaAtingida) ? "—" : fmt(aporteNecessario),
+        sub: aposentadoriaAtingida
+          ? "você já está na idade-alvo, não há fase de acumulação"
+          : (semGasto
+            ? "sem renda-alvo não há aporte a calcular"
+            : (aporteNecessario <= 0
+              ? "o que você já tem investido cobre a meta sozinho"
+              : "todo mês por " + plural(anosAcumulo, "ano", "anos") + ", dos " + idade + " aos " + idadeAposentadoria))
+      },
+      {
+        label: "Seu aporte hoje",
+        value: fmt(aporteAtual),
+        sub: taxaPoupanca < 0
+          ? "suas despesas superam a renda, não há sobra pra investir"
+          : pct(taxaPoupanca) + " da renda mensal"
+      },
+      {
+        label: "Diferença por mês",
+        value: (semGasto || aposentadoriaAtingida) ? "—" : fmt(gapAporte),
+        sub: aposentadoriaAtingida
+          ? "sem fase de acumulação, o ajuste é no gasto, não no aporte"
+          : (semGasto
+            ? "aparece quando a renda desejada estiver informada"
+            : (gapAporte > 0 ? "o quanto falta guardar todo mês" : "seu ritmo atual já cobre o aporte necessário"))
+      },
+      {
+        label: "Renda que o ritmo atual sustenta",
+        value: fmt(rendaSustentavelAtual) + "/mês",
+        sub: semGasto
+          ? "informe a renda desejada pra comparar"
+          : pct(coberturaAtual * 100) + " da renda de " + fmt(gastoMensalAposentadoria) + " que você deseja"
+      },
+      {
+        label: aposentadoriaAtingida ? "Investido hoje" : "Patrimônio projetado aos " + idadeAposentadoria,
+        value: fmt(patrimonioNoAlvoAtual),
+        sub: aposentadoriaAtingida ? "sem contar a reserva de emergência" : "mantendo exatamente o ritmo atual de aportes"
+      }
+    ];
+
+    var veredito;
+    if (semGasto) {
+      veredito = { tipo: "atencao", texto: "Você ainda não informou quanto quer receber por mês na aposentadoria, então não há como calcular o patrimônio necessário. Definir esse número é o primeiro passo pra transformar \"guardar dinheiro\" em um plano com destino." };
+    } else if (aposentadoriaAtingida) {
+      veredito = { tipo: "atencao", texto: "Pela idade-alvo informada (" + idadeAposentadoria + " anos), você já está no período de aposentadoria. Com " + fmt(ativosLiquidos) + " investidos, o patrimônio sustenta cerca de " + fmt(rendaSustentavelAtual) + " por mês" + (estrategia === "consumo" ? " até os " + idadeFimRenda + " anos" : " de forma perpétua") + ", contra os " + fmt(gastoMensalAposentadoria) + " desejados. O ajuste aqui é de gasto sustentável e estratégia de renda, não de aporte." };
+    } else if (coberturaAtual >= 1) {
+      veredito = { tipo: "ok", texto: "No ritmo atual de " + fmt(aporteAtual) + " por mês, você chega aos " + idadeAposentadoria + " anos com " + fmt(patrimonioNoAlvoAtual) + " — o suficiente para a renda de " + fmt(gastoMensalAposentadoria) + " que você deseja. O plano está de pé: o foco agora é manter a consistência dos aportes e a carteira alinhada ao seu perfil." };
+    } else {
+      var faltaTexto = "No ritmo atual de " + fmt(aporteAtual) + " por mês, você chegaria aos " + idadeAposentadoria + " anos com " + fmt(patrimonioNoAlvoAtual) +
+        ", o que sustenta " + fmt(rendaSustentavelAtual) + " por mês (" + pct(coberturaAtual * 100) + " do que você quer receber). " +
+        "Pra fechar esse gap, o aporte precisa subir de " + fmt(aporteAtual) + " para " + fmt(aporteNecessario) + " por mês" +
+        (gapAporte > 0 ? " — " + fmt(gapAporte) + " a mais." : ".");
+      if (idadeEsgotaAtual !== null) faltaTexto += " Mantendo o gasto desejado, o dinheiro acabaria aos " + idadeEsgotaAtual + " anos.";
+      if (idadeAtingeMeta !== null && idadeAtingeMeta > idadeAposentadoria) faltaTexto += " Sem mudar nada, o patrimônio necessário só seria atingido por volta dos " + idadeAtingeMeta + " anos.";
+      if (aporteNecessario > rendaTotal * 0.5) faltaTexto += " Como esse aporte passa de metade da sua renda, o caminho realista combina três alavancas: adiar a idade-alvo, revisar a renda desejada e aumentar o aporte no que for possível.";
+      veredito = { tipo: coberturaAtual < 0.5 ? "critico" : "atencao", texto: faltaTexto };
+    }
+
+    var aposentadoria = {
+      estrategia: estrategia,
+      estrategiaLabel: estrategiaLabel,
+      estrategiaResumo: estrategiaResumo,
+      idadeAtual: idade,
+      idadeAposentadoria: idadeAposentadoria,
+      idadeFimRenda: estrategia === "consumo" ? idadeFimRenda : null,
+      anosAcumulo: anosAcumulo,
+      anosRenda: anosRenda,
+      cards: apoCards,
+      veredito: veredito,
+      titulo: aposentadoriaAtingida
+        ? "Sua aposentadoria em números"
+        : "Sua aposentadoria aos " + idadeAposentadoria + " anos",
+      subtitulo: "Comparação entre manter o ritmo atual de aportes e seguir o plano necessário pra bancar a renda que você quer" +
+        (estrategia === "consumo" ? " dos " + idadeAposentadoria + " aos " + idadeFimRenda + " anos." : " de forma perpétua."),
+      premissas: "Valores a preços de hoje: as projeções usam retorno real anual de " + pct(rAtualAnual * 100, 1) + " (composição atual da sua carteira) e " +
+        pct(rPlanoAnual * 100, 1) + " (carteira do perfil " + (D.perfilRisco || "Moderado") + "), ou seja, já descontada uma inflação estimada de " + pct(PREMISSAS.inflacaoAnual * 100, 1) +
+        " ao ano. O aporte do ritmo atual é a sua taxa de poupança aplicada sobre a renda; o patrimônio de partida (" + fmt(ativosLiquidos) + ") exclui a reserva de emergência. " +
+        (estrategia === "renda"
+          ? "A renda sustentável dos cartões usa a regra de retirada segura de " + pct(PREMISSAS.taxaRetiradaPerpetua * 100, 1) + " ao ano, deliberadamente mais conservadora que a curva do gráfico: ela existe justamente porque o retorno real não vem parelho todo ano. "
+          : "A curva do plano é desenhada para zerar no fim do período de renda" + (herancaDesejada > 0 ? ", deixando " + fmt(herancaDesejada) + " de herança. " : ". ")) +
+        "Projeções não constituem garantia ou promessa de retorno; são baseadas em premissas assumidas e podem não se concretizar."
+    };
 
     // ---- Gauge ----
     var gaugeCirc = 2 * Math.PI * 68;
@@ -554,6 +849,7 @@
       { label: "Patrimônio esperado x real", value: pct(indicePatrimonio) },
       { label: "Cobertura de seguro de vida", value: num1(multiploCobertura) + "x", sub: "da sua renda anual" },
       { label: "Investido para aposentadoria", value: fmt(ativosLiquidos), sub: (D.reservaEmergencia || 0) > 0 ? "não inclui a reserva de emergência" : undefined },
+      { label: "Aporte mensal necessário", value: (semGasto || aposentadoriaAtingida) ? "—" : fmt(aporteNecessario), sub: aposentadoriaAtingida ? "já está na idade-alvo" : (semGasto ? "renda desejada não informada" : "pra se aposentar aos " + idadeAposentadoria + " anos") },
       { label: "Índice de solvência", value: pct(indiceSolvencia) }
     ];
 
@@ -603,7 +899,10 @@
     // ---- Metas declaradas (aposentadoria + outras metas do formulário) ----
     var metasDeclaradas = [{
       titulo: "Aposentadoria aos " + idadeAposentadoria + " anos",
-      detalhe: "gasto desejado de " + fmt(gastoMensalAposentadoria) + "/mês · patrimônio-alvo de " + fmt(patrimonioNecessario) + " (regra dos 25x)"
+      detalhe: "renda desejada de " + fmt(gastoMensalAposentadoria) + "/mês · patrimônio-alvo de " + fmt(patrimonioNecessario) +
+        (estrategia === "consumo"
+          ? " (consumindo o patrimônio até os " + idadeFimRenda + " anos" + (herancaDesejada > 0 ? ", deixando " + fmt(herancaDesejada) : "") + ")"
+          : " (regra dos " + multiploAlvo + "x, vivendo do rendimento)")
     }];
     (D.outrasMetas || []).forEach(function (m) {
       if (!m || (!m.descricao && !(m.valorEstimado > 0))) return;
@@ -650,13 +949,31 @@
         rendaTotalDisplay: fmt(rendaTotal),
         patrimonioTotalDisplay: fmt(patrimonioTotal),
         patrimonioNecessarioDisplay: fmt(patrimonioNecessario),
-        projecaoAtualDisplay: fmt(series1[series1.length - 1]),
-        projecaoRecomendadaDisplay: fmt(series2[series2.length - 1]),
-        taxaRetornoDisplay: pct(rAnual1 * 100, 1) + " (atual) / " + pct(rAnual2 * 100, 1) + " (recomendado)",
+        aporteNecessarioDisplay: fmt(aporteNecessario),
+        aporteAtualDisplay: fmt(aporteAtual),
+        rendaSustentavelDisplay: fmt(rendaSustentavelAtual),
+        taxaRetornoDisplay: pct(rAtualAnual * 100, 1) + " (atual) / " + pct(rPlanoAnual * 100, 1) + " (recomendado)",
         inflacaoDisplay: pct(PREMISSAS.inflacaoAnual * 100, 1)
       },
+      // Números crus (sem formatação), para quem precisa dos valores e não
+      // do texto — hoje, o resumo gravado no Supabase.
+      valores: {
+        rendaTotal: rendaTotal,
+        despesaTotal: despesaTotal,
+        taxaPoupanca: taxaPoupanca,
+        patrimonioTotal: patrimonioTotal,
+        patrimonioLiquido: patrimonioLiquido,
+        ativosLiquidos: ativosLiquidos,
+        totalDividas: totalDividas,
+        patrimonioNecessario: patrimonioNecessario,
+        aporteNecessario: aporteNecessario,
+        aporteAtual: aporteAtual,
+        rendaSustentavelAtual: rendaSustentavelAtual,
+        progressoAtual: progressoAtual
+      },
       kpiHero: kpiHero, kpiRest: kpiRest, dimRows: dimRows, metasDeclaradas: metasDeclaradas,
-      chart: { points1: points1, points2: points2, dots2: dots2, targetY: targetY, targetLabel: targetLabel, targetLabelStyle: targetLabelStyle, end1Style: end1Style, end2Style: end2Style },
+      aposentadoria: aposentadoria,
+      chart: chart,
       actionPlan: actionPlan, hasStrengths: strengths.length > 0, strengths: strengths, investSeguro: investSeguro,
       checklist: checklist, glossario: GLOSSARIO, nextStep: nextStep, insightPercepcao: insightPercepcao,
       vozCliente: { show: !!(D.descricaoSituacao || D.maiorDor || D.sonhos), situacao: D.descricaoSituacao, maiorDor: D.maiorDor, sonhos: D.sonhos },
@@ -667,8 +984,11 @@
   var raiz = typeof window !== "undefined" ? window : globalThis;
   raiz.HZDiag = {
     fmt: fmt,
+    fmtCurto: fmtCurto,
     pct: pct,
     num1: num1,
+    plural: plural,
+    PREMISSAS: PREMISSAS,
     idadeEm: idadeEm,
     idadeDe: idadeDe,
     formatarData: formatarData,
