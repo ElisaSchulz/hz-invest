@@ -155,8 +155,8 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js?v=2"></script>
-<script src="diagnostico-core.js"></script>
+<script src="supabase-config.js?v=3"></script>
+<script src="diagnostico-core.js?v=2"></script>
 <script>
 "use strict";
 
@@ -164,7 +164,7 @@
 var UF_LIST = [["AC","Acre"],["AL","Alagoas"],["AP","Amapá"],["AM","Amazonas"],["BA","Bahia"],["CE","Ceará"],["DF","Distrito Federal"],["ES","Espírito Santo"],["GO","Goiás"],["MA","Maranhão"],["MT","Mato Grosso"],["MS","Mato Grosso do Sul"],["MG","Minas Gerais"],["PA","Pará"],["PB","Paraíba"],["PR","Paraná"],["PE","Pernambuco"],["PI","Piauí"],["RJ","Rio de Janeiro"],["RN","Rio Grande do Norte"],["RS","Rio Grande do Sul"],["RO","Rondônia"],["RR","Roraima"],["SC","Santa Catarina"],["SP","São Paulo"],["SE","Sergipe"],["TO","Tocantins"]];
 var ESTADO_CIVIL = ["Solteiro(a)", "Casado(a)", "União estável", "Divorciado(a)", "Viúvo(a)"];
 var OCUPACOES = ["Tecnologia", "Saúde", "Educação", "Direito", "Finanças / Contabilidade", "Comércio / Varejo", "Indústria", "Serviços", "Setor Público", "Autônomo(a) / Empreendedor(a)", "Aposentado(a)", "Outro"];
-var ENTREGAVEIS = ["Diagnóstico completo das suas finanças", "Seu arquétipo financeiro", "Plano de ação personalizado", "Projeção de patrimônio futuro"];
+var ENTREGAVEIS = ["Diagnóstico completo das suas finanças", "Seu arquétipo financeiro", "Plano de ação personalizado", "Projeção da sua aposentadoria: quanto ter, quanto guardar por mês"];
 var DESPESA_CATEGORIES = [["alimentacao","Alimentação"],["educacao","Educação"],["impostos","Impostos"],["investimentos","Investimentos / Poupança"],["lazer","Lazer"],["moradia","Moradia"],["presentes","Presentes / Doações"],["saude","Saúde"],["seguros","Seguros"],["servicos","Serviços Diversos"],["transporte","Transporte"],["vestuario","Vestuário / Cuidados Pessoais"]];
 var INVEST_FIELDS = [["investPoupanca","Poupança"],["investRendaFixaPublica","Renda Fixa Pública (Tesouro Direto)"],["investRendaFixaPrivada","Renda Fixa Privada (CDB/LCI/LCA)"],["investRendaVariavel","Renda Variável (ações/FIIs/ETFs)"],["investCripto","Criptomoedas"],["investOutros","Outros"]];
 var PERFIL_RISCO = ["Conservador", "Moderado", "Arrojado"];
@@ -188,7 +188,7 @@ var STEP_META = {
   5: { eyebrow: "Etapa 5 de 10", title: "Dívidas", desc: "Cartão de crédito, cheque especial, empréstimos e outras dívidas em aberto." },
   6: { eyebrow: "Etapa 6 de 10", title: "Liquidez e Reserva de Emergência", desc: "Quanto você tem guardado para imprevistos e onde está aplicado. Informe o valor mesmo que já esteja incluído nos investimentos da etapa 4. Aqui ele serve para avaliar sua liquidez." },
   7: { eyebrow: "Etapa 7 de 10", title: "Gestão de Risco (Seguros)", desc: "Seguro de vida, plano de saúde e proteção da sua renda." },
-  8: { eyebrow: "Etapa 8 de 10", title: "Metas e Planejamento de Longo Prazo", desc: "Aposentadoria e outras metas financeiras de vida. Se você tem cônjuge, considere as metas do casal." },
+  8: { eyebrow: "Etapa 8 de 10", title: "Aposentadoria e Metas de Longo Prazo", desc: "Quando você quer parar de depender do trabalho, quanto quer receber por mês e o que fazer com o patrimônio. É com essas respostas que montamos a projeção do relatório. Se você tem cônjuge, considere as metas do casal." },
   9: { eyebrow: "Etapa 9 de 10", title: "Situação Atual", desc: "Como você enxerga sua própria situação financeira hoje." },
   10: { eyebrow: "Etapa 10 de 10", title: "Revisão e Finalização", desc: "Confira tudo antes de enviar. Você pode voltar e editar qualquer etapa." }
 };
@@ -212,6 +212,7 @@ function defaultData() {
     temSeguroVida: "", capitalSegurado: 0, temPlanoSaude: "", reservaMedica: "",
     tempoRendaGarantida: "", revisouApolices: "",
     idadeAposentadoria: "", gastoMensalAposentadoria: 0, gastoNaoSei: false, gastoPercent: 70,
+    estrategiaAposentadoria: "", idadeFimRenda: "", herancaDesejada: 0,
     temMetasDefinidas: "", calculouQuantoGuardar: "", outrasMetas: [],
     salarioCobre: "", sobraEmpataVermelho: "", sabeParaOndeVaiDinheiro: "", descricaoSituacao: "", maiorDor: "", sonhos: "",
     consentimento: false, consentimentoEm: ""
@@ -271,6 +272,15 @@ function dataBR(iso) {
 }
 function dataMaxNascimento() {
   return new Date().toISOString().slice(0, 10);
+}
+// Quantos anos de acumulação sobram entre a idade de hoje e a idade-alvo.
+function hintPrazoAposentadoria() {
+  var idadeHoje = idadeAtual();
+  var idadeAlvo = Number(data.idadeAposentadoria) || 0;
+  if (idadeHoje === null || idadeAlvo <= 0) return "";
+  var anos = idadeAlvo - idadeHoje;
+  if (anos <= 0) return '<div class="f-hint">Você já está na idade que informou, então não há fase de acumulação: o relatório vai avaliar quanto o patrimônio atual sustenta.</div>';
+  return '<div class="f-hint">Você tem ' + anos + (anos === 1 ? " ano" : " anos") + " pra acumular, dos " + idadeHoje + " aos " + idadeAlvo + ".</div>";
 }
 function idadeHint(iso, rotulo) {
   var a = idadeDeData(iso);
@@ -340,7 +350,10 @@ function requiredByStep(n) {
       ["Revisou apólices/coberturas nos últimos 2 anos?", !(data.temSeguroVida === true || data.temPlanoSaude === true) || data.revisouApolices !== ""]
     ],
     8: [
-      ["Idade-alvo de aposentadoria", String(data.idadeAposentadoria) !== ""],
+      ["Idade em que quer se aposentar", String(data.idadeAposentadoria) !== ""],
+      ["Renda mensal desejada na aposentadoria", data.gastoNaoSei === true || (data.gastoMensalAposentadoria || 0) > 0],
+      ["O que fazer com o patrimônio na aposentadoria", data.estrategiaAposentadoria !== ""],
+      ["Idade até quando a renda precisa durar", data.estrategiaAposentadoria !== "consumo" || (Number(data.idadeFimRenda) || 0) > (Number(data.idadeAposentadoria) || 0)],
       ["Metas financeiras definidas", data.temMetasDefinidas !== ""],
       ["Já calculou quanto guardar", data.calculouQuantoGuardar !== ""]
     ],
@@ -582,10 +595,33 @@ function renderStep8() {
       '<div><label class="f-label">Prazo</label><input type="text" class="f-input" data-ltext="prazo" data-list="outrasMetas" data-index="' + i + '" placeholder="Ex: 5 anos" value="' + esc(item.prazo) + '"></div>' +
       '</div></div>';
   });
+  // Estratégia de aposentadoria: define como o patrimônio-alvo é calculado.
+  var estrategiaSeg = '<div class="seg" style="flex-wrap:wrap;">' +
+    '<button type="button" class="' + (data.estrategiaAposentadoria === "renda" ? "on" : "") + '" data-action="set" data-key="estrategiaAposentadoria" data-val="renda" style="padding:12px 18px;">Viver do rendimento</button>' +
+    '<button type="button" class="' + (data.estrategiaAposentadoria === "consumo" ? "on" : "") + '" data-action="set" data-key="estrategiaAposentadoria" data-val="consumo" style="padding:12px 18px;">Consumir o patrimônio</button>' +
+    '</div>' +
+    '<div class="f-hint" style="line-height:1.6;">' +
+    '<b>Viver do rendimento:</b> você saca só uma parte pequena por ano (4%), o patrimônio fica intacto pra sempre e vira herança. Exige 25× o gasto anual.<br>' +
+    '<b>Consumir o patrimônio:</b> o dinheiro é gasto ao longo da aposentadoria e acaba numa idade que você define. Exige bem menos capital, mas o prazo precisa ser generoso.' +
+    '</div>';
+
+  var camposConsumo = data.estrategiaAposentadoria === "consumo"
+    ? '<div><label class="f-label">Até que idade a renda precisa durar?</label>' +
+        '<input type="number" min="0" class="f-input num" data-field="idadeFimRenda" placeholder="Ex: 95" value="' + esc(data.idadeFimRenda) + '">' +
+        '<div class="f-hint">Vale calcular até uma idade generosa (95 ou 100). Subestimar o prazo é o erro mais caro dessa estratégia.</div></div>' +
+      '<div><label class="f-label">Quer deixar algum valor de herança? <span style="font-weight:500; opacity:0.75;">(opcional)</span></label>' +
+        '<input type="text" inputmode="numeric" class="f-input num" data-money="herancaDesejada" value="' + esc(fmt(data.herancaDesejada)) + '">' +
+        '<div class="f-hint">Deixe em zero pra consumir todo o patrimônio, em poder de compra de hoje.</div></div>'
+    : "";
+
   return '<div class="card"><div class="grid2">' +
-    '<div><label class="f-label">Idade-alvo de aposentadoria</label><input type="number" min="0" class="f-input num" data-field="idadeAposentadoria" placeholder="Ex: 60" value="' + esc(data.idadeAposentadoria) + '"></div>' +
-    '<div><label class="f-label">Gasto mensal desejado na aposentadoria</label>' + gastoField +
-    '<label class="check-label"><input type="checkbox" data-action="toggleGastoNaoSei"' + (data.gastoNaoSei ? " checked" : "") + '> Não sei, quero estimar como % da renda atual</label></div>' +
+    '<div><label class="f-label">Com que idade você quer se aposentar?</label><input type="number" min="0" class="f-input num" data-field="idadeAposentadoria" placeholder="Ex: 60" value="' + esc(data.idadeAposentadoria) + '">' +
+    '<div id="hint-prazo-aposentadoria">' + hintPrazoAposentadoria() + '</div></div>' +
+    '<div><label class="f-label">Quanto quer receber por mês na aposentadoria?</label>' + gastoField +
+    '<label class="check-label"><input type="checkbox" data-action="toggleGastoNaoSei"' + (data.gastoNaoSei ? " checked" : "") + '> Não sei, quero estimar como % da renda atual</label>' +
+    '<div class="f-hint">Em reais de hoje: pense no padrão de vida que quer manter, não no valor que estará no extrato lá na frente.</div></div>' +
+    '<div class="span2 seg-wrap-mobile"><label class="f-label" style="margin-bottom:10px;">O que você quer fazer com o patrimônio na aposentadoria?</label>' + estrategiaSeg + '</div>' +
+    camposConsumo +
     '<div class="span2"><label class="f-label">Tem metas financeiras com prazo e valor definidos, ou são ideias vagas?</label>' + selectHtml("temMetasDefinidas", METAS_DEFINIDAS, data.temMetasDefinidas) + '</div>' +
     '<div class="span2"><label class="f-label">Já calculou quanto precisaria guardar por mês pra chegar nas metas?</label>' + selectHtml("calculouQuantoGuardar", CALCULOU_GUARDAR, data.calculouQuantoGuardar) + '</div>' +
     '</div><div class="rule-full"></div>' +
@@ -638,11 +674,16 @@ function renderStep10() {
       ["Seguro de vida", simNao(data.temSeguroVida)], ["Plano de saúde", simNao(data.temPlanoSaude)],
       ["Renda garantida se incapacitado", orDash(data.tempoRendaGarantida)]
     ]},
-    { n: 8, title: "Metas e Planejamento", rows: [
+    { n: 8, title: "Aposentadoria e Metas", rows: [
       ["Idade-alvo aposentadoria", orDash(data.idadeAposentadoria)],
-      ["Gasto mensal desejado", data.gastoNaoSei ? "~" + fmt(t.gastoEstimado) : fmt(data.gastoMensalAposentadoria)],
+      ["Renda mensal desejada", data.gastoNaoSei ? "~" + fmt(t.gastoEstimado) : fmt(data.gastoMensalAposentadoria)],
+      ["Estratégia", data.estrategiaAposentadoria === "consumo" ? "Consumir o patrimônio" : data.estrategiaAposentadoria === "renda" ? "Viver do rendimento" : "—"]
+    ].concat(data.estrategiaAposentadoria === "consumo" ? [
+      ["Renda dura até os", orDash(data.idadeFimRenda) + " anos"],
+      ["Herança desejada", fmt(data.herancaDesejada)]
+    ] : []).concat([
       ["Metas definidas", orDash(data.temMetasDefinidas)], ["Outras metas", String(data.outrasMetas.length)]
-    ]},
+    ])},
     { n: 9, title: "Situação Atual", rows: [
       ["Renda cobre despesas", simNao(data.salarioCobre)], ["Sobra/empata/vermelho", orDash(data.sobraEmpataVermelho)],
       ["Sabe pra onde vai o dinheiro", orDash(data.sabeParaOndeVaiDinheiro)], ["Maior dor financeira", orDash(data.maiorDor)]
@@ -749,6 +790,10 @@ function bindEvents() {
       if (el.dataset.field === "dataNascimento") {
         var h = document.getElementById("hint-nascimento");
         if (h) h.innerHTML = idadeHint(data.dataNascimento);
+      }
+      if (el.dataset.field === "idadeAposentadoria") {
+        var hp = document.getElementById("hint-prazo-aposentadoria");
+        if (hp) hp.innerHTML = hintPrazoAposentadoria();
       }
       if (el.dataset.field === "dataNascimentoConjuge") {
         var hc = document.getElementById("hint-nascimento-conjuge");

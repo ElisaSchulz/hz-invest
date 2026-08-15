@@ -39,11 +39,23 @@
 
   .cover { position: relative; overflow: hidden; background: #1B1B5C; color: #FBFAF6; min-height: 92vh; display: flex; flex-direction: column; justify-content: space-between; }
   .cover-title { font-family: 'Fraunces', serif; font-size: 52px; font-weight: 500; line-height: 1.12; }
+
+  /* Gráfico da projeção: a caixa define a proporção (mais alta no celular) e
+     os rótulos são HTML, então o texto não encolhe junto com o desenho. */
+  .grafico { position: relative; width: 100%; padding-bottom: 41.7%; }
+  .g-rot { position: absolute; font-size: 10.5px; line-height: 1.2; white-space: nowrap; pointer-events: none; }
+  .g-rot-eixo { color: rgba(21,21,63,0.55); font-weight: 500; }
+  .g-rot-meta { color: #A9762F; font-weight: 700; }
+  .g-rot-marco { color: rgba(21,21,63,0.6); font-weight: 700; }
+  .g-rot-alerta { color: #B34747; font-weight: 700; }
+
   @media (max-width: 639px) {
     section { padding: 56px 20px 64px; }
     section.tight { padding: 44px 20px 56px; }
     .cover-title { font-size: 36px; }
     h2 { font-size: 26px; }
+    .grafico { padding-bottom: 78%; }
+    .g-rot { font-size: 10px; }
   }
 
   @media print {
@@ -59,8 +71,8 @@
 <div id="report"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js?v=2"></script>
-<script src="diagnostico-core.js"></script>
+<script src="supabase-config.js?v=3"></script>
+<script src="diagnostico-core.js?v=2"></script>
 <script>
 "use strict";
 
@@ -95,7 +107,7 @@ function renderReport(R) {
     sectionHeader("Antes de começar", "02", "Bem-vindo(a) ao seu diagnóstico, " + esc(R.data.primeiroNome) + ".") +
     '<div style="font-size:16.5px; line-height:1.75; color:rgba(21,21,63,0.75); max-width:640px;">' +
     '<p>Este relatório traduz tudo o que você compartilhou conosco em um retrato claro e honesto da sua vida financeira hoje, sem jargão e sem julgamento.</p>' +
-    '<p>Nas próximas páginas você vai encontrar: seu score geral e nível de maturidade financeira, seu perfil comportamental, os números centrais da sua situação, o desempenho em cada uma das 6 dimensões avaliadas, uma projeção do seu patrimônio nos próximos anos, e um plano de ação individualizado, com uma lista prática para os próximos 30 dias.</p>' +
+    '<p>Nas próximas páginas você vai encontrar: seu score geral e nível de maturidade financeira, seu perfil comportamental, os números centrais da sua situação, o desempenho em cada uma das 6 dimensões avaliadas, a projeção do seu patrimônio até a aposentadoria (quanto você precisa ter, quanto precisa guardar por mês e o que o ritmo atual entrega), e um plano de ação individualizado, com uma lista prática para os próximos 30 dias.</p>' +
     '<p>Este é um retrato do momento, não uma sentença. Toda situação financeira pode evoluir com clareza e direção certas.</p>' +
     '</div></div></section>';
 
@@ -215,29 +227,48 @@ function renderReport(R) {
     '<div style="display:flex; gap:22px; flex-wrap:wrap; margin-bottom:28px; margin-top:-12px;">' + legend + '</div>' +
     dims + '</div></section>';
 
-  // 8. Projeção
-  var dots = R.chart.dots2.map(function (dot) { return '<circle cx="' + dot.x + '" cy="' + dot.y + '" r="3.5" fill="#4F8C84" />'; }).join("");
+  // 8. Projeção da aposentadoria
+  var A = R.aposentadoria;
+  var VEREDITO_CORES = {
+    ok: { fundo: "rgba(79,140,132,0.12)", borda: "rgba(79,140,132,0.4)", texto: "#3E6F69", titulo: "O plano está de pé" },
+    atencao: { fundo: "rgba(196,138,62,0.1)", borda: "rgba(196,138,62,0.35)", texto: "#B07A2E", titulo: "Precisa de ajuste" },
+    critico: { fundo: "rgba(179,71,71,0.09)", borda: "rgba(179,71,71,0.32)", texto: "#B34747", titulo: "Gap relevante" }
+  };
+  var vd = VEREDITO_CORES[A.veredito.tipo] || VEREDITO_CORES.atencao;
+  var apoCards = A.cards.map(function (c) {
+    return '<div class="kpi" style="background:rgba(27,27,92,0.05); border:1px solid rgba(27,27,92,0.12); border-radius:8px; padding:18px 20px;">' +
+      '<div style="font-size:10px; font-weight:700; letter-spacing:0.13em; text-transform:uppercase; color:#3E6F69; margin-bottom:8px;">' + esc(c.label) + '</div>' +
+      '<div style="font-family:\'Fraunces\', serif; font-size:21px; font-weight:500; color:#1B1B5C; font-feature-settings:\'tnum\';">' + esc(c.value) + '</div>' +
+      (c.sub ? '<div style="font-size:11.5px; color:rgba(21,21,63,0.55); margin-top:5px; line-height:1.5;">' + esc(c.sub) + '</div>' : "") +
+      '</div>';
+  }).join("");
+  var legendaChart = [
+    ["Plano necessário", "background:#4F8C84;"],
+    ["Ritmo atual", "background:rgba(27,27,92,0.4);"],
+    ["Patrimônio necessário", "border-top:2px dashed #C48A3E; height:0;"]
+  ].map(function (l) {
+    return '<div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:rgba(21,21,63,0.65);">' +
+      '<div style="width:22px; height:3px; ' + l[1] + '"></div>' + l[0] + '</div>';
+  }).join("");
   html += '<section class="hairline"><div class="wrap-wide">' +
-    sectionHeader("Pra onde isso leva", "08", "Projeção Patrimonial (10 anos)") +
-    '<div style="font-size:15px; color:rgba(21,21,63,0.6); margin:-16px 0 28px; max-width:620px; line-height:1.6;">Comparação entre manter o ritmo atual e seguir as recomendações deste diagnóstico.</div>' +
-    '<div class="card" style="padding:32px;">' +
-    '<div style="position:relative;">' +
-    '<svg viewBox="0 0 640 340" style="width:100%; height:auto; display:block;">' +
-    '<line x1="0" y1="' + R.chart.targetY + '" x2="600" y2="' + R.chart.targetY + '" stroke="rgba(27,27,92,0.35)" stroke-width="1.5" stroke-dasharray="5,5" />' +
-    '<polyline points="' + R.chart.points1 + '" fill="none" stroke="rgba(27,27,92,0.45)" stroke-width="2.5" />' +
-    '<polyline points="' + R.chart.points2 + '" fill="none" stroke="#4F8C84" stroke-width="3" />' + dots +
-    '</svg>' +
-    '<div style="' + R.chart.targetLabelStyle + ' position:absolute; font-size:11px; color:#1B1B5C;">' + R.chart.targetLabel + '</div>' +
-    '<div style="' + R.chart.end1Style + ' position:absolute; font-size:12px; font-weight:700; color:rgba(27,27,92,0.65); font-feature-settings:\'tnum\';">' + R.kpis.projecaoAtualDisplay + '</div>' +
-    '<div style="' + R.chart.end2Style + ' position:absolute; font-size:12px; font-weight:700; color:#3E6F69; font-feature-settings:\'tnum\';">' + R.kpis.projecaoRecomendadaDisplay + '</div>' +
+    sectionHeader("Pra onde isso leva", "08", A.titulo) +
+    '<div style="font-size:15px; color:rgba(21,21,63,0.6); margin:-16px 0 24px; max-width:660px; line-height:1.6;">' + esc(A.subtitulo) + '</div>' +
+    '<div class="card" style="padding:26px 28px; margin-bottom:16px;">' +
+    '<div style="font-size:10.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#3E6F69; margin-bottom:8px;">Estratégia escolhida · ' + esc(A.estrategiaLabel) + '</div>' +
+    '<div style="font-size:14.5px; line-height:1.7; color:rgba(21,21,63,0.75);">' + esc(A.estrategiaResumo) + '</div></div>' +
+    '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-bottom:16px;">' + apoCards + '</div>' +
+    '<div class="card" style="padding:28px 24px 20px;">' +
+    '<div class="grafico">' + R.chart.svg +
+    R.chart.rotulos.map(function (r) {
+      return '<div class="g-rot g-rot-' + r.tipo + '" style="' + r.style + '">' + esc(r.texto) + '</div>';
+    }).join("") + '</div>' +
+    '<div style="display:flex; gap:24px; margin-top:14px; flex-wrap:wrap; padding-left:8px;">' + legendaChart + '</div>' +
+    '<div style="font-size:12.5px; color:rgba(21,21,63,0.5); margin-top:18px; line-height:1.6; border-top:1px solid rgba(27,27,92,0.14); padding-top:14px;">' + esc(A.premissas) + '</div>' +
     '</div>' +
-    '<div style="display:flex; gap:28px; margin-top:4px; flex-wrap:wrap;">' +
-    '<div style="display:flex; align-items:center; gap:8px; font-size:13px; color:rgba(21,21,63,0.65);"><div style="width:20px; height:3px; background:rgba(27,27,92,0.4);"></div> Ritmo atual</div>' +
-    '<div style="display:flex; align-items:center; gap:8px; font-size:13px; color:rgba(21,21,63,0.65);"><div style="width:20px; height:3px; background:#4F8C84;"></div> Seguindo recomendações</div>' +
-    '</div>' +
-    '<div style="font-size:12.5px; color:rgba(21,21,63,0.5); margin-top:20px; line-height:1.6; border-top:1px solid rgba(27,27,92,0.14); padding-top:16px;">' +
-    'Valores a preços de hoje: as projeções usam retorno real anual de ' + R.kpis.taxaRetornoDisplay + ' (perfil ' + esc(R.data.perfilRisco) + '), ou seja, já descontada uma inflação estimada de ' + R.kpis.inflacaoDisplay + ' ao ano, com aportes mensais conforme indicado. Assim, a meta e as curvas ficam na mesma base de comparação. Projeções não constituem garantia ou promessa de retorno; são baseadas em premissas assumidas e podem não se concretizar.' +
-    '</div></div></div></section>';
+    '<div style="margin-top:16px; background:' + vd.fundo + '; border:1px solid ' + vd.borda + '; border-radius:8px; padding:22px 26px;">' +
+    '<div style="font-size:11px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:' + vd.texto + '; margin-bottom:10px;">' + vd.titulo + '</div>' +
+    '<div style="font-size:15px; line-height:1.7; color:rgba(21,21,63,0.82);">' + esc(A.veredito.texto) + '</div></div>' +
+    '</div></section>';
 
   // 9. Plano de ação
   var plan = R.actionPlan.map(function (item) {
