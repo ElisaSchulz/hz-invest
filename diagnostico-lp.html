@@ -1556,11 +1556,9 @@
   <a href="#oferta" class="btn-primary">Quero meu diagnóstico</a>
 </div>
 
-<div class="cfg-warn" id="cfgWarn">
-  ⚠ <strong>Checkout não configurado.</strong> Abra <code>diagnostico-lp.html</code> e preencha
-  <code>HZ_CHECKOUT_URL</code> com o link de pagamento. Este aviso some sozinho depois disso
-  (e não aparece para quem só lê a página).
-</div>
+<!-- Caixa de avisos de configuração. O JS preenche e exibe quando há algo a
+     sinalizar; fica vazia e escondida no resto do tempo. -->
+<div class="cfg-warn" id="cfgWarn"></div>
 
 <script>
 // ─────────────────────────────────────────────────────────────
@@ -1569,6 +1567,11 @@
 //  (Hotmart, Kiwify, Mercado Pago, Stripe…). Enquanto estiver
 //  como "COLE-AQUI", os botões de compra ficam desabilitados
 //  para não vender sem ter como receber.
+//
+//  ATENÇÃO: o aviso que aparecia na tela avisando disso foi removido
+//  a pedido. Os botões continuam desligados enquanto a URL não for
+//  preenchida, e agora nada sinaliza isso na página — confira aqui
+//  antes de divulgar a landing.
 // ─────────────────────────────────────────────────────────────
 var HZ_CHECKOUT_URL = "COLE-AQUI-O-LINK-DE-CHECKOUT";
 
@@ -1632,7 +1635,6 @@ var HZ_DEPOIMENTOS = [];
   }
 
   var avisos = [];
-  if (!configurado) avisos.push("<strong>Checkout não configurado.</strong> Preencha <code>HZ_CHECKOUT_URL</code> com o link de pagamento.");
   if (temExemplo) avisos.push("<strong>Depoimentos de exemplo na página.</strong> Substitua os itens de <code>HZ_DEPOIMENTOS</code> pelos relatos reais (e remova <code>exemplo: true</code>) antes de publicar.");
   if (avisos.length) {
     var warn = document.getElementById("cfgWarn");
