@@ -123,6 +123,16 @@
     colheita: { nome: "Fase de Colheita", abertura: "A fase de construir patrimônio ficou pra trás. O que está em jogo agora é outra coisa: transformar o que você juntou em renda que dure o quanto você precisar." }
   };
 
+  // Ordem fixa de prioridade do plano de ação e nomes das dimensões.
+  var PRIORITY_ORDER = ["fluxo", "liquidez", "endividamento", "risco", "patrimonio", "metas"];
+  var DIM_NAMES = { fluxo: "Fluxo de Caixa e Orçamento", liquidez: "Liquidez e Reserva", endividamento: "Endividamento", risco: "Gestão de Risco (Seguros)", patrimonio: "Patrimônio e Investimentos", metas: "Metas e Planejamento" };
+  // "a, b e c" — para listas em texto corrido.
+  function listaPt(itens) {
+    if (!itens.length) return "";
+    if (itens.length === 1) return itens[0];
+    return itens.slice(0, -1).join(", ") + " e " + itens[itens.length - 1];
+  }
+
   var ACTION_LIBRARY = {
     fluxo: {
       critico: function (n) { return { texto: "Sua despesa mensal supera sua renda em " + n.deficit + ". Antes de qualquer outra ação, é essencial mapear os 3 maiores gastos variáveis e cortar ou renegociar o que for possível nos próximos 30 dias.", acao: "Listar os 3 maiores gastos variáveis do último mês e definir um corte ou renegociação para cada um." }; },
@@ -151,7 +161,7 @@
         return { texto: "Suas dívidas somam " + n.totalDividas + " " + peso + ". Recomendamos consolidar ou renegociar as dívidas de maior taxa.", acao: "Buscar consolidação ou renegociação das dívidas de maior taxa de juros." };
       },
       otimizacao: function (n) {
-        if (n.temDividas) return { texto: "Suas dívidas somam " + n.totalDividas + ", com parcelas em " + n.comprometimento + " da renda mensal, dentro de uma faixa saudável. Não são elas que travam seu plano hoje, mas vale manter o ritmo de quitação e evitar contratar dívida nova mais cara.", acao: "Manter o plano de quitação atual e evitar crédito rotativo e cheque especial." };
+        if (n.temDividas) return { texto: "Suas dívidas somam " + n.totalDividas + ", com parcelas em " + n.comprometimento + " da renda mensal, dentro de uma faixa saudável para o tamanho da sua renda." + (n.deficitAtivo ? " Ainda assim, com o orçamento no vermelho, essas parcelas fazem parte do rombo: enquanto ele não fechar, elas competem com o essencial." : " Não são elas que travam seu plano hoje, mas vale manter o ritmo de quitação e evitar contratar dívida nova mais cara."), acao: "Manter o plano de quitação atual e evitar crédito rotativo e cheque especial." };
         return { texto: "Sem dívidas em aberto no momento. Sua saúde de endividamento está excelente.", acao: "Manter o hábito de evitar crédito rotativo e cheque especial." };
       }
     },
@@ -163,7 +173,7 @@
     patrimonio: {
       // O alerta de carteira (concentração ou descasamento com o perfil) precisa
       // aparecer nas duas faixas: quem está pior é justamente quem mais precisa.
-      critico: function (n) { return { texto: "Seu patrimônio atual representa " + n.indice + " " + n.baseIndice + ". Isso não reflete falta de capacidade, reflete falta de estrutura de investimento, o que é resolvível." + n.alertaCarteira, acao: n.alertaCarteira ? "Estruturar aportes mensais recorrentes e corrigir a alocação apontada acima." : "Estruturar um plano de aportes mensais recorrentes em investimentos alinhados ao seu perfil de risco." }; },
+      critico: function (n) { return { texto: "Seu patrimônio atual representa " + n.indice + " " + n.baseIndice + ". Isso não reflete falta de capacidade, reflete falta de estrutura de investimento, o que é resolvível." + (n.planoCoberto ? " Vale o contexto: esse índice compara seu patrimônio com o esperado para a sua faixa de renda e idade, não com a sua meta — e o ritmo atual de aportes já cobre a renda que você quer na aposentadoria. O ponto aqui é folga, não risco de não chegar lá." : "") + n.alertaCarteira, acao: n.alertaCarteira ? "Estruturar aportes mensais recorrentes e corrigir a alocação apontada acima." : "Estruturar um plano de aportes mensais recorrentes em investimentos alinhados ao seu perfil de risco." }; },
       insuficiente: function (n) { return { texto: "Você está próximo do patrimônio esperado, mas " + n.gapDesc + ".", acao: "Revisar a composição da carteira para reduzir a concentração ou realinhar ao perfil de risco declarado." }; },
       otimizacao: function (n) { return { texto: "Seu patrimônio está bem posicionado frente ao esperado. O foco agora é eficiência: custos, diversificação e adequação fina ao perfil." + n.alertaCarteira, acao: n.alertaCarteira ? "Corrigir a alocação apontada acima e revisar custos da carteira anualmente." : "Revisar custos e diversificação da carteira atual anualmente." }; }
     },
@@ -172,7 +182,7 @@
     metas: {
       critico: function (n) {
         if (n.aposentado) return { texto: "Pela idade-alvo informada, você já está no período de aposentadoria, e o patrimônio investido sustenta cerca de " + n.rendaSustentavel + " por mês, " + n.cobertura + " da renda de " + n.rendaDesejada + " que você deseja (" + n.regraTexto + ").", acao: "Revisar o gasto mensal sustentável com base no patrimônio atual, junto com a estratégia de renda." };
-        if (n.metasVagas) return { texto: "No ritmo atual de aportes, você chegaria aos " + n.idadeAposentadoria + " anos com uma renda de " + n.rendaSustentavel + " por mês, " + n.cobertura + " do que você quer receber. E, sem metas com prazo e valor definidos, não há como priorizar o que fazer com o dinheiro que sobra.", acao: "Definir 2-3 metas prioritárias com prazo e valor específicos nos próximos 30 dias." };
+        if (n.metasVagas) return { texto: "No ritmo atual de aportes, você chegaria aos " + n.idadeAposentadoria + " anos com uma renda de " + n.rendaSustentavel + " por mês, " + n.cobertura + " do que você quer receber. E, sem metas com prazo e valor definidos, " + (n.deficitAtivo ? "qualquer sobra que apareça depois de reequilibrar o orçamento vai continuar sem destino." : "não há como priorizar o que fazer com o dinheiro que sobra."), acao: "Definir 2-3 metas prioritárias com prazo e valor específicos nos próximos 30 dias." };
         return { texto: "No ritmo atual de aportes, você chegaria aos " + n.idadeAposentadoria + " anos com uma renda de " + n.rendaSustentavel + " por mês, " + n.cobertura + " dos " + n.rendaDesejada + " que você deseja. O plano ainda não se paga.", acao: n.aporteViavel ? "Estruturar um aporte mensal de " + n.aporte + " direcionado à meta de aposentadoria." : "Revisar valor e prazo da meta de aposentadoria pra chegar num plano de aportes realista." };
       },
       insuficiente: function (n) {
@@ -497,6 +507,19 @@
     var scoreGeral = Math.round(Object.keys(WEIGHTS).reduce(function (a, k) { return a + scores[k] * WEIGHTS[k]; }, 0));
     var nivelN = scoreGeral <= 20 ? 1 : scoreGeral <= 40 ? 2 : scoreGeral <= 60 ? 3 : scoreGeral <= 80 ? 4 : 5;
     var nivel = Object.assign({ n: nivelN }, NIVEL_TEXTS[nivelN]);
+    // O texto do nível vem da média e, sozinho, apaga o que está em faixa
+    // crítica: "sua vida financeira está bem estruturada" era dito a quem está
+    // sem plano de saúde com três filhos. A ressalva devolve o caso ao texto.
+    var criticasNivel = PRIORITY_ORDER.filter(function (k) { return scores[k] < 30; });
+    if (criticasNivel.length && nivelN >= 3) {
+      nivel.contexto += " Um ponto importante, porém: " +
+        // Os nomes das dimensões já têm "e" dentro ("Liquidez e Reserva"), então
+        // a lista sai separada por vírgula para não gaguejar.
+        (criticasNivel.length === 1
+          ? "a dimensão de " + DIM_NAMES[criticasNivel[0]] + " está em faixa crítica"
+          : "as dimensões de " + criticasNivel.map(function (k) { return DIM_NAMES[k]; }).join(", ") + " estão em faixa crítica") +
+        ", e é por aí que o plano de ação começa.";
+    }
 
     // ---- Arquétipo ----
     var dimScoreList = [
@@ -571,11 +594,13 @@
     // como inexistentes sem olhar os dados. Agora só entra o que falta de fato.
     var lacunasEstrutura = [];
     if (mesesCobertura < 3) lacunasEstrutura.push("reserva de emergência");
-    if (!protecaoAtiva) lacunasEstrutura.push("proteção contra imprevistos");
+    // A proteção só entra como lacuna se a própria dimensão de risco apontar
+    // isso: antes bastava não ter seguro de vida, e o relatório cobrava o item
+    // de quem não tem dependentes enquanto elogiava a proteção dois blocos
+    // depois.
+    if (scoreRisco < 60) lacunasEstrutura.push("proteção contra imprevistos");
     if (ativosLiquidos < rendaTotal * 6) lacunasEstrutura.push("investimento de longo prazo");
-    var listaLacunas = lacunasEstrutura.length === 0 ? "" :
-      lacunasEstrutura.length === 1 ? lacunasEstrutura[0] :
-      lacunasEstrutura.slice(0, -1).join(", ") + " e " + lacunasEstrutura[lacunasEstrutura.length - 1];
+    var listaLacunas = listaPt(lacunasEstrutura);
 
     var ARCH_PADRAO = {
       negacao: "Hoje, mais dinheiro sai do que entra (déficit de " + fmt(despesaTotal - rendaTotal) + "/mês). Isso não é sobre falta de esforço ou de renda, na maioria das vezes é sobre um padrão de evitar olhar pro extrato e deixar o piloto automático decidir por você.",
@@ -660,8 +685,6 @@
     };
 
     // ---- Plano de ação (ordem fixa de prioridade) ----
-    var PRIORITY_ORDER = ["fluxo", "liquidez", "endividamento", "risco", "patrimonio", "metas"];
-    var DIM_NAMES = { fluxo: "Fluxo de Caixa e Orçamento", liquidez: "Liquidez e Reserva", endividamento: "Endividamento", risco: "Gestão de Risco (Seguros)", patrimonio: "Patrimônio e Investimentos", metas: "Metas e Planejamento" };
     var gapCobertura = Math.max(0, benchmarkMultiplo - multiploCobertura) * rendaSeguroAnual;
 
     // Lacunas de proteção (usadas nos textos da dimensão de risco)
@@ -723,6 +746,8 @@
       protecaoAcao: protecaoAcao,
       aporteViavel: aporteNecessario <= rendaTotal * 0.5,
       aposentado: aposentadoriaAtingida,
+      deficitAtivo: deficit,
+      planoCoberto: planoCoberto,
       metasVagas: metasVagas
     };
 
