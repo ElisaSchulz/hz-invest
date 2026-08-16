@@ -135,8 +135,21 @@
       otimizacao: function (n) { return { texto: "Sua reserva está bem dimensionada" + n.aplicacaoNota, acao: n.aplicacaoAcao }; }
     },
     endividamento: {
-      critico: function (n) { return { texto: "Suas dívidas somam " + n.totalDividas + " (cerca de " + n.mesesDivida + " meses da sua renda), com parcelas comprometendo " + n.comprometimento + " da renda mensal, nível crítico. Priorizar a quitação da dívida de maior taxa de juros antes de qualquer investimento é essencial.", acao: "Listar todas as dívidas por taxa de juros e priorizar a quitação da mais cara primeiro." }; },
-      insuficiente: function (n) { return { texto: "Suas dívidas somam " + n.totalDividas + " e as parcelas comprometem " + n.comprometimento + " da renda mensal, o que pede atenção. Recomendamos consolidar ou renegociar as dívidas de maior taxa.", acao: "Buscar consolidação ou renegociação das dívidas de maior taxa de juros." }; },
+      // Dívida sem parcela fixa (rotativo, cheque especial) é o caso em que o
+      // comprometimento de renda é 0% e o problema é justamente esse: o saldo
+      // cresce sozinho. O texto precisa falar do estoque, não da parcela.
+      critico: function (n) {
+        var peso = n.temParcelas
+          ? "com parcelas comprometendo " + n.comprometimento + " da renda mensal, nível crítico"
+          : "sem nenhuma parcela fixa, ou seja, o saldo segue rodando no rotativo e crescendo por conta própria";
+        return { texto: "Suas dívidas somam " + n.totalDividas + " (cerca de " + n.mesesDivida + " meses da sua renda), " + peso + ". Priorizar a quitação da dívida de maior taxa de juros antes de qualquer investimento é essencial.", acao: "Listar todas as dívidas por taxa de juros e priorizar a quitação da mais cara primeiro." };
+      },
+      insuficiente: function (n) {
+        var peso = n.temParcelas
+          ? "e as parcelas comprometem " + n.comprometimento + " da renda mensal, o que pede atenção"
+          : "sem parcela fixa definida, o que costuma significar rotativo rodando e saldo crescendo";
+        return { texto: "Suas dívidas somam " + n.totalDividas + " " + peso + ". Recomendamos consolidar ou renegociar as dívidas de maior taxa.", acao: "Buscar consolidação ou renegociação das dívidas de maior taxa de juros." };
+      },
       otimizacao: function (n) {
         if (n.temDividas) return { texto: "Suas dívidas somam " + n.totalDividas + ", com parcelas em " + n.comprometimento + " da renda mensal, dentro de uma faixa saudável. Não são elas que travam seu plano hoje, mas vale manter o ritmo de quitação e evitar contratar dívida nova mais cara.", acao: "Manter o plano de quitação atual e evitar crédito rotativo e cheque especial." };
         return { texto: "Sem dívidas em aberto no momento. Sua saúde de endividamento está excelente.", acao: "Manter o hábito de evitar crédito rotativo e cheque especial." };
@@ -150,7 +163,7 @@
     patrimonio: {
       // O alerta de carteira (concentração ou descasamento com o perfil) precisa
       // aparecer nas duas faixas: quem está pior é justamente quem mais precisa.
-      critico: function (n) { return { texto: "Seu patrimônio atual representa " + n.indice + " do esperado pra sua idade e renda. Isso não reflete falta de capacidade, reflete falta de estrutura de investimento, o que é resolvível." + n.alertaCarteira, acao: n.alertaCarteira ? "Estruturar aportes mensais recorrentes e corrigir a alocação apontada acima." : "Estruturar um plano de aportes mensais recorrentes em investimentos alinhados ao seu perfil de risco." }; },
+      critico: function (n) { return { texto: "Seu patrimônio atual representa " + n.indice + " " + n.baseIndice + ". Isso não reflete falta de capacidade, reflete falta de estrutura de investimento, o que é resolvível." + n.alertaCarteira, acao: n.alertaCarteira ? "Estruturar aportes mensais recorrentes e corrigir a alocação apontada acima." : "Estruturar um plano de aportes mensais recorrentes em investimentos alinhados ao seu perfil de risco." }; },
       insuficiente: function (n) { return { texto: "Você está próximo do patrimônio esperado, mas " + n.gapDesc + ".", acao: "Revisar a composição da carteira para reduzir a concentração ou realinhar ao perfil de risco declarado." }; },
       otimizacao: function (n) { return { texto: "Seu patrimônio está bem posicionado frente ao esperado. O foco agora é eficiência: custos, diversificação e adequação fina ao perfil." + n.alertaCarteira, acao: n.alertaCarteira ? "Corrigir a alocação apontada acima e revisar custos da carteira anualmente." : "Revisar custos e diversificação da carteira atual anualmente." }; }
     },
@@ -164,6 +177,7 @@
       },
       insuficiente: function (n) {
         if (n.aposentado) return { texto: "Pela idade-alvo informada, você já está no período de aposentadoria, e o patrimônio investido sustenta cerca de " + n.rendaSustentavel + " por mês, " + n.cobertura + " da renda de " + n.rendaDesejada + " que você deseja (" + n.regraTexto + ").", acao: "Revisar o gasto mensal sustentável com base no patrimônio atual, junto com a estratégia de renda." };
+        if (n.carteiraArrasta) return { texto: "O ritmo atual de aportes cobre " + n.cobertura + " da renda que você quer ter aos " + n.idadeAposentadoria + " anos — e o que falta não é volume guardado. Seu aporte de " + n.aporteAtual + " já bastaria numa carteira de perfil " + n.perfilRisco + " (" + n.retornoPlano + " ao ano acima da inflação); a composição atual rende " + n.retornoAtual + ", e é essa diferença que abre o gap.", acao: "Realinhar a carteira ao perfil declarado antes de aumentar o valor aportado." };
         if (!n.aporteViavel) return { texto: "O ritmo atual de aportes cobre " + n.cobertura + " da renda que você quer ter aos " + n.idadeAposentadoria + " anos. O aporte necessário pra fechar o gap no prazo atual (" + n.aporte + ") está acima do que a renda comporta, sinal de que o valor ou o prazo da meta precisam ser recalibrados.", acao: "Revisar valor e prazo da meta de aposentadoria pra chegar num plano de aportes realista." };
         return { texto: "O ritmo atual de aportes cobre " + n.cobertura + " da renda que você quer ter aos " + n.idadeAposentadoria + " anos. Subir o aporte de " + n.aporteAtual + " para " + n.aporte + " por mês fecha essa diferença dentro do prazo desejado.", acao: "Estruturar um aporte mensal de " + n.aporte + " direcionado à meta de aposentadoria." };
       },
@@ -353,10 +367,15 @@
     var AJUSTE_CONHECIMENTO = { "Não sei": -4, "Ideia vaga": -2, "Sei aproximado": 1, "Sei exato": 3 };
     var AJUSTE_AUTOMATICO = { "Só o que sobra": -4, "Às vezes automático": -1, "Quase sempre": 2, "Sempre automático": 4 };
     scorePatrimonio = Math.max(0, Math.min(100, scorePatrimonio + (AJUSTE_CONHECIMENTO[D.sabeRentabilidade] || 0) + (AJUSTE_AUTOMATICO[D.investeAutomatico] || 0)));
-    var concentracaoMax = patrimonioInvest > 0 ? Math.max.apply(null, INVEST_KEYS.map(function (k) { return D[k] || 0; })) / patrimonioInvest * 100 : 0;
+    // Concentração só é alerta quando há patrimônio suficiente para o risco
+    // importar: apontar "100% numa classe" sobre R$ 1.200 é ruído.
+    // Mede o que sobra além da reserva: se toda a carteira é reserva de
+    // emergência, estar concentrado numa classe segura é o comportamento certo.
+    var carteiraRelevante = Math.max(0, patrimonioInvest - (D.reservaEmergencia || 0)) >= rendaTotal * 3;
+    var concentracaoMax = (patrimonioInvest > 0 && carteiraRelevante) ? Math.max.apply(null, INVEST_KEYS.map(function (k) { return D[k] || 0; })) / patrimonioInvest * 100 : 0;
     var rvPct = patrimonioInvest > 0 ? (((D.investRendaVariavel || 0) + (D.investCripto || 0)) / patrimonioInvest) * 100 : 0;
     var perfilAlertText = null;
-    if (patrimonioInvest > 0) {
+    if (patrimonioInvest > 0 && carteiraRelevante) {
       if (D.perfilRisco === "Conservador" && rvPct > 30) perfilAlertText = "alocação em renda variável (" + pct(rvPct) + ") acima do que seu perfil conservador costuma sugerir";
       else if (D.perfilRisco === "Moderado" && rvPct > 65) perfilAlertText = "alocação em renda variável (" + pct(rvPct) + ") bem acima do que um perfil moderado costuma sugerir";
       else if (D.perfilRisco === "Arrojado" && rvPct < 15) perfilAlertText = "apenas " + pct(rvPct) + " em renda variável para um perfil arrojado, possível ineficiência de alocação";
@@ -402,12 +421,26 @@
       : gastoMensalAposentadoria * 12 / PREMISSAS.taxaRetiradaPerpetua;
     var progressoAtual = patrimonioNecessario > 0 ? (ativosLiquidos / patrimonioNecessario) * 100 : 0;
 
+    // Para quem já se aposentou, comparar o patrimônio com "idade × renda ÷ 10"
+    // não diz nada: a renda caiu justamente por causa da aposentadoria, e o
+    // índice infla — dava 172% para quem sustenta 10% do que quer receber. A
+    // régua passa a ser o patrimônio que o próprio plano de renda exige.
+    if (aposentadoriaAtingida && patrimonioNecessario > 0) {
+      indicePatrimonio = progressoAtual;
+      scorePatrimonio = Math.max(0, Math.min(100, bandInterp(progressoAtual, [50, 100, 150]) +
+        (AJUSTE_CONHECIMENTO[D.sabeRentabilidade] || 0) + (AJUSTE_AUTOMATICO[D.investeAutomatico] || 0)));
+    }
+
     // Aporte do ritmo atual (o que a taxa de poupança representa em reais) x
     // aporte que o plano exige para chegar ao patrimônio necessário na idade-alvo.
     var aporteAtual = Math.max(0, (taxaPoupanca / 100) * rendaTotal);
     var aporteBruto = mesesAcumulo > 0 ? aportePara(patrimonioNecessario, ativosLiquidos, iPlano, mesesAcumulo) : 0;
     var aporteNecessario = isFinite(aporteBruto) ? Math.max(0, aporteBruto) : 0;
     var gapAporte = Math.max(0, aporteNecessario - aporteAtual);
+    // Aporte já suficiente para a carteira do perfil, mas cobertura abaixo de
+    // 100%: o que separa os dois cenários é o rendimento da carteira atual,
+    // não o valor guardado.
+    var carteiraArrasta = mesesAcumulo > 0 && aporteNecessario < aporteAtual && rAtualAnual < rPlanoAnual;
 
     // Simulações mês a mês: acumulação até a idade-alvo e, depois, a fase de
     // renda sacando o valor desejado. A curva do ritmo atual pode acabar antes
@@ -474,26 +507,56 @@
       { key: "patrimonio", nome: "Patrimônio", score: scorePatrimonio },
       { key: "metas", nome: "Metas e Planejamento", score: scoreMetas }
     ];
-    var weakest = dimScoreList.reduce(function (a, b) { return b.score < a.score ? b : a; });
+    // Uma dimensão só descreve o padrão da pessoa se o objetivo que ela mede
+    // ainda estiver em aberto. Patrimônio e Metas medem o mesmo destino — a
+    // aposentadoria —, então, com o plano já coberto, elas saem da disputa: era
+    // por aqui que alguém com o plano 173% coberto virava "Paralisia da Decisão".
+    var planoCoberto = !semGasto && coberturaAtual >= 1;
+    var candidatas = dimScoreList.filter(function (d) {
+      if (d.score >= 60) return false;
+      if (planoCoberto && (d.key === "metas" || d.key === "patrimonio")) return false;
+      return true;
+    });
+    // Entre dimensões praticamente empatadas, quem decide é a urgência
+    // financeira, não a ordem em que elas aparecem na lista.
+    var URGENCIA = { fluxo: 0, endividamento: 1, liquidez: 2, risco: 3, patrimonio: 4, metas: 5 };
+    candidatas.sort(function (a, b) { return (a.score - b.score) || (URGENCIA[a.key] - URGENCIA[b.key]); });
+    if (candidatas.length) {
+      var piorScore = candidatas[0].score;
+      candidatas = candidatas.filter(function (d) { return d.score <= piorScore + 10; })
+        .sort(function (a, b) { return URGENCIA[a.key] - URGENCIA[b.key]; });
+    }
+    var foco = candidatas[0] || null;
+
+    // "Paralisia da Decisão" é sobre dinheiro guardado e parado. Sem dinheiro
+    // parado, patrimônio baixo é distância até a meta, não paralisia.
+    var reservaParada = (D.ondeAplicada === "Poupança" || D.ondeAplicada === "Conta corrente") ? (D.reservaEmergencia || 0) : 0;
+    var dinheiroParado = (D.investPoupanca || 0) + reservaParada;
+    var temDinheiroParado = dinheiroParado >= rendaTotal * 3 &&
+      (patrimonioInvest <= 0 || dinheiroParado / patrimonioInvest >= 0.5);
+
+    // Dívida cara e volumosa é um padrão por si só: ela drena antes de qualquer
+    // outra dimensão, mesmo quando outra pontua mais baixo.
+    var dividaSufocante = !!D.temDividas && totalDividas > rendaTotal * 3 &&
+      (D.usouRotativo === "Frequentemente" || (D.chequeEspecial || 0) > 0 || (D.cartaoCredito || 0) > rendaTotal);
+
     // Quem já passou da idade-alvo está em outra fase da vida financeira, e os
     // arquétipos de construção não descrevem esse momento. A exceção é quando
-    // existe um problema urgente antes disso — rombo mensal ou outra dimensão
-    // crítica —, porque aí é ele que precisa ser nomeado.
-    var outraCritica = dimScoreList.some(function (d) { return d.key !== "metas" && d.score < 30; });
+    // existe um problema urgente antes disso.
+    var outraCritica = dimScoreList.some(function (d) { return d.key !== "metas" && d.key !== "patrimonio" && d.score < 30; });
     var archetypeId;
     if (deficit) archetypeId = "negacao";
     else if (aposentadoriaAtingida && !outraCritica) archetypeId = "colheita";
+    else if (dividaSufocante) archetypeId = "vazamento";
+    // Nenhuma dimensão em aberto: o padrão é de domínio.
+    else if (!foco) archetypeId = "dominio";
     else if (scoreGeral < 40) archetypeId = "ilusao";
-    // Se até a dimensão mais fraca está em faixa adequada (>= 60, mesma régua do
-    // plano de ação), o padrão é de domínio. Sem esse piso, um cliente excelente
-    // em tudo receberia o arquétipo da sua "pior" dimensão mesmo ela estando ótima.
-    else if (weakest.score >= 60) archetypeId = "dominio";
-    else if (weakest.key === "fluxo") archetypeId = "ilusao";
-    else if (weakest.key === "metas") archetypeId = "adiamento";
-    else if (weakest.key === "risco") archetypeId = "otimismo";
-    else if (weakest.key === "patrimonio") archetypeId = "paralisia";
-    else if (weakest.key === "liquidez") archetypeId = "ilusao";
-    else if (weakest.key === "endividamento") archetypeId = "vazamento";
+    else if (foco.key === "fluxo") archetypeId = "ilusao";
+    else if (foco.key === "metas") archetypeId = "adiamento";
+    else if (foco.key === "risco") archetypeId = "otimismo";
+    else if (foco.key === "patrimonio") archetypeId = temDinheiroParado ? "paralisia" : "adiamento";
+    else if (foco.key === "liquidez") archetypeId = "ilusao";
+    else if (foco.key === "endividamento") archetypeId = "vazamento";
     else archetypeId = "adiamento";
     var archBase = ARCHETYPE_TEXTS[archetypeId];
 
@@ -504,10 +567,22 @@
     var metasVagas = D.temMetasDefinidas === "Não tenho metas" || D.temMetasDefinidas === "Ideias vagas" || !D.temMetasDefinidas;
     var protecaoAtiva = !!(D.temSeguroVida && D.temPlanoSaude);
     var taxaSaudavel = taxaPoupanca >= 10;
+    // O texto de "Ilusão de Controle" listava reserva, proteção e investimento
+    // como inexistentes sem olhar os dados. Agora só entra o que falta de fato.
+    var lacunasEstrutura = [];
+    if (mesesCobertura < 3) lacunasEstrutura.push("reserva de emergência");
+    if (!protecaoAtiva) lacunasEstrutura.push("proteção contra imprevistos");
+    if (ativosLiquidos < rendaTotal * 6) lacunasEstrutura.push("investimento de longo prazo");
+    var listaLacunas = lacunasEstrutura.length === 0 ? "" :
+      lacunasEstrutura.length === 1 ? lacunasEstrutura[0] :
+      lacunasEstrutura.slice(0, -1).join(", ") + " e " + lacunasEstrutura[lacunasEstrutura.length - 1];
 
     var ARCH_PADRAO = {
       negacao: "Hoje, mais dinheiro sai do que entra (déficit de " + fmt(despesaTotal - rendaTotal) + "/mês). Isso não é sobre falta de esforço ou de renda, na maioria das vezes é sobre um padrão de evitar olhar pro extrato e deixar o piloto automático decidir por você.",
-      ilusao: "Você não está no vermelho, mas também não tem margem real: sua taxa de poupança é de " + pct(taxaPoupanca) + " e sua reserva cobre " + num1(mesesCobertura) + " meses. Esse tipo de estabilidade é frágil por natureza.",
+      ilusao: (taxaSaudavel
+        ? "Você poupa " + pct(taxaPoupanca) + " da renda, o que é disciplina de verdade. O que ainda não existe é a estrutura em volta disso: sua reserva cobre " + num1(mesesCobertura) + " meses de despesa."
+        : "Você não está no vermelho, mas também não tem margem real: sua taxa de poupança é de " + pct(taxaPoupanca) + " e sua reserva cobre " + num1(mesesCobertura) + " meses.") +
+        " Esse tipo de estabilidade é frágil por natureza: basta um imprevisto para o plano inteiro depender de crédito.",
       adiamento: (taxaSaudavel
         ? "Sua taxa de poupança de " + pct(taxaPoupanca) + " mostra disciplina real."
         : "Suas contas fecham no azul, com taxa de poupança de " + pct(taxaPoupanca) + ".") +
@@ -518,8 +593,13 @@
         ? "Sua cobertura de seguro de vida é de " + num1(multiploCobertura) + "x sua renda anual, com " + dependentes + " dependente(s), abaixo do recomendado (" + String(benchmarkMultiplo).replace(".", ",") + "x)."
         : "Sua proteção contra imprevistos está incompleta" + (D.temPlanoSaude ? "" : ", a começar pela ausência de plano de saúde") + ", e sua renda ficaria garantida por pouco tempo se algo acontecesse.") +
         " Existe um viés bem humano por trás disso: a crença de que imprevistos graves acontecem com os outros, não com a gente.",
-      paralisia: "Você guarda dinheiro, isso já é mais do que a maioria consegue fazer. Mas seu patrimônio representa " + pct(indicePatrimonio) + " do esperado pra sua idade e renda. O problema não é a disciplina, é o próximo passo depois de guardar.",
-      vazamento: "Suas contas fecham (taxa de poupança de " + pct(taxaPoupanca) + "), mas " + pct(comprometimento) + " da sua renda mensal está comprometida com dívidas" + (D.sabeTaxaJuros === "Não sei" ? ", e você nem sabe a que taxa de juros" : "") + ". Esse é o tipo de vazamento que não aparece como problema óbvio no orçamento, mas consome silenciosamente sua capacidade de construir patrimônio.",
+      paralisia: "Você guarda dinheiro, isso já é mais do que a maioria consegue fazer. Mas " + fmt(dinheiroParado) + " está parado em poupança ou conta corrente, rendendo menos que a inflação. O problema não é a disciplina, é o próximo passo depois de guardar.",
+      vazamento: "Suas contas fecham (taxa de poupança de " + pct(taxaPoupanca) + "), mas você carrega " + fmt(totalDividas) + " em dívidas" +
+        (comprometimento > 0
+          ? ", com " + pct(comprometimento) + " da renda mensal comprometida em parcelas"
+          : " — sem parcela fixa, o que faz o saldo crescer em silêncio no rotativo") +
+        (D.sabeTaxaJuros === "Não sei" ? ", e você não sabe a que taxa de juros" : "") +
+        ". Esse é o tipo de vazamento que não aparece como problema óbvio no orçamento, mas consome silenciosamente sua capacidade de construir patrimônio.",
       dominio: "Reserva, proteção, planejamento e investimento já estão no lugar: score geral de " + scoreGeral + ". Isso não é sorte, é hábito e comportamento construídos ao longo do tempo.",
       colheita: "Com " + fmt(ativosLiquidos) + " investidos, seu patrimônio sustenta cerca de " + fmt(rendaSustentavelAtual) + " por mês" +
         (estrategia === "consumo" ? " até os " + idadeFimRenda + " anos" : ", de forma perpétua") +
@@ -529,8 +609,11 @@
     var ARCH_NAO_OUTRO = {
       negacao: "Diferente de quem só precisa de ajuste fino, aqui o problema é estrutural: com déficit mensal, nenhuma outra dimensão pode ser resolvida de forma sustentável antes desta.",
       ilusao: (D.temDividas
-        ? "Mesmo com dívidas em aberto, o ponto central aqui não é o endividamento em si, e sim a ausência de margem e de estrutura de segurança: reserva, proteção e investimento ainda não existem de forma consistente."
-        : "Diferente de quem está endividado (você não tem dívidas em aberto) ou sem direção de longo prazo, o que te diferencia aqui é a ausência de qualquer estrutura de segurança: reserva, proteção e investimento ainda não existem de forma consistente."),
+        ? "Mesmo com dívidas em aberto, o ponto central aqui não é o endividamento em si, e sim "
+        : "Diferente de quem está endividado (você não tem dívidas em aberto), o que te diferencia aqui é ") +
+        (listaLacunas
+          ? "o que ainda falta na estrutura de segurança: " + listaLacunas + "."
+          : "o descompasso entre o que já foi construído e o que ainda não tem direção definida."),
       adiamento: "Diferente de quem enfrenta um rombo mensal (você poupa " + pct(taxaPoupanca) + " da renda)" +
         (protecaoAtiva ? " ou de quem não tem proteção básica (seu seguro e plano de saúde estão ativos)" : "") +
         ", o que te diferencia é " +
@@ -611,6 +694,7 @@
       benchmark: String(benchmarkMultiplo).replace(".", ","),
       gap: fmt(gapCobertura),
       indice: pct(indicePatrimonio),
+      baseIndice: aposentadoriaAtingida ? "do patrimônio necessário pra renda que você deseja" : "do esperado pra sua idade e renda",
       gapDesc: concentracaoMax > 70 ? "concentração excessiva em uma única classe de investimento (" + pct(concentracaoMax) + ")" : perfilAlertText ? perfilAlertText : "vale revisar a diversificação da carteira",
       // Frase pronta (ou vazia) sobre concentração e descasamento de perfil,
       // para poder entrar em qualquer faixa da dimensão de patrimônio.
@@ -630,6 +714,11 @@
       totalDividas: fmt(totalDividas),
       mesesDivida: num1(mesesDivida),
       temDividas: !!D.temDividas && totalDividas > 0,
+      temParcelas: (D.parcelasMensais || 0) > 0,
+      carteiraArrasta: carteiraArrasta,
+      perfilRisco: (D.perfilRisco || "Moderado").toLowerCase(),
+      retornoPlano: pct(rPlanoAnual * 100, 1),
+      retornoAtual: pct(rAtualAnual * 100, 1),
       protecaoLista: protecaoGaps.join("; ") || "nenhuma lacuna relevante identificada",
       protecaoAcao: protecaoAcao,
       aporteViavel: aporteNecessario <= rendaTotal * 0.5,
@@ -645,6 +734,31 @@
       var gen = ACTION_LIBRARY[e.key][fnKey](N);
       return { n: i + 1, dimNome: DIM_NAMES[e.key], texto: gen.texto, acao: gen.acao, key: e.key };
     });
+
+    // Sem nenhuma lacuna, o cliente recebia a seção "Plano de Ação" vazia e um
+    // checklist de um item só — justamente quem está mais bem organizado. Aqui
+    // o plano deixa de ser de correção e passa a ser de refinamento.
+    var planoOtimizacao = actionPlan.length === 0;
+    var otimizacoes = [];
+    (function montaOtimizacoes() {
+      if (aposentadoriaAtingida) {
+        otimizacoes.push({ dimNome: "Estratégia de saque", texto: "Seu patrimônio sustenta a renda que você deseja. O trabalho agora é definir de onde sai o dinheiro a cada mês: sequência de resgates, reserva de curto prazo separada e revisão do valor sacado sempre que a inflação corroer o poder de compra.", acao: "Definir a ordem de resgate dos ativos e revisar o valor do saque uma vez por ano." });
+      } else {
+        otimizacoes.push({ dimNome: "Eficiência da carteira", texto: "Com o plano de pé, cada ponto percentual de custo passa a valer muito ao longo do tempo. Vale revisar taxas de administração, custos de corretagem e a eficiência tributária de cada aplicação, comparando com alternativas equivalentes.", acao: "Levantar a taxa de administração de cada aplicação e substituir as que estiverem acima da média do mercado." });
+      }
+      otimizacoes.push({ dimNome: "Rebalanceamento", texto: "Carteiras saem do lugar sozinhas: a classe que mais sobe vai ganhando peso e leva o risco junto, sem que ninguém decida isso. Definir bandas de rebalanceamento transforma esse desvio numa regra, em vez de uma decisão tomada no calor do momento.", acao: "Definir a alocação-alvo por classe e uma banda de tolerância para rebalancear." });
+      if ((D.temSeguroVida || D.temPlanoSaude) && D.revisouApolices !== "Recentemente") {
+        otimizacoes.push({ dimNome: "Revisão de proteção", texto: "Sua proteção está adequada hoje, mas coberturas envelhecem junto com o patrimônio e a estrutura familiar. Uma revisão periódica evita descobrir uma lacuna no pior momento possível.", acao: "Agendar uma revisão das apólices nos próximos 12 meses." });
+      }
+      if (patrimonioLiquido > 1500000) {
+        otimizacoes.push({ dimNome: "Sucessão e estrutura", texto: "Num patrimônio desse porte, a conversa deixa de ser só rentabilidade e passa a incluir como ele se transfere: inventário, custos de transmissão e a forma de titularidade dos bens fazem diferença relevante para a família.", acao: "Mapear a titularidade dos bens e avaliar as alternativas de planejamento sucessório." });
+      }
+    })();
+    if (planoOtimizacao) {
+      actionPlan = otimizacoes.slice(0, 4).map(function (o, i) {
+        return { n: i + 1, dimNome: o.dimNome, texto: o.texto, acao: o.acao, key: "otimizacao" };
+      });
+    }
     var strengths = strengthEntries.map(function (e) {
       var gen = ACTION_LIBRARY[e.key].otimizacao(N);
       return { dimNome: DIM_NAMES[e.key], texto: gen.texto, key: e.key };
@@ -709,11 +823,19 @@
       // O item de aposentadoria só entra se o plano de ação ainda não trouxe um:
       // sem isso o checklist repetia a mesma frase duas vezes.
       var jaTemMetas = actionPlan.slice(0, 3).some(function (a) { return a.key === "metas"; });
-      if (scoreMetas < 60 && !N.aposentado && !jaTemMetas) {
+      // Com dívida cara em aberto, mandar simular aporte contradiz o próprio
+      // plano, que manda quitar antes de investir.
+      var dividaCritica = scoreEndiv < 30;
+      if (scoreMetas < 60 && !N.aposentado && !jaTemMetas && !dividaCritica) {
         checklist.push(N.aporteViavel
           ? "Simular um aporte mensal de " + N.aporte + " direcionado à meta de aposentadoria."
           : "Revisar valor e prazo da meta de aposentadoria pra chegar num plano de aportes realista.");
       }
+      // Poucas lacunas rendiam um checklist de um ou dois itens. Quem está bem
+      // também merece um mês com o que fazer: completa-se com refinamento.
+      otimizacoes.forEach(function (o) {
+        if (checklist.length < 4) checklist.push(o.acao);
+      });
       if (checklist.length < 5) checklist.push("Revisar o extrato do último mês e confirmar se os números batem com sua percepção.");
     }
     // Rede de segurança: nenhuma linha repetida, venha de onde vier.
@@ -891,12 +1013,27 @@
       veredito = { tipo: "ok", texto: "No ritmo atual de " + fmt(aporteAtual) + " por mês, você chega aos " + idadeAposentadoria + " anos com " + fmt(patrimonioNoAlvoAtual) + " — o suficiente para a renda de " + fmt(gastoMensalAposentadoria) + " que você deseja. O plano está de pé: o foco agora é manter a consistência dos aportes e a carteira alinhada ao seu perfil." };
     } else {
       var faltaTexto = "No ritmo atual de " + fmt(aporteAtual) + " por mês, você chegaria aos " + idadeAposentadoria + " anos com " + fmt(patrimonioNoAlvoAtual) +
-        ", o que sustenta " + fmt(rendaSustentavelAtual) + " por mês (" + pct(coberturaAtual * 100) + " do que você quer receber). " +
-        "Pra fechar esse gap, o aporte precisa subir de " + fmt(aporteAtual) + " para " + fmt(aporteNecessario) + " por mês" +
-        (gapAporte > 0 ? " — " + fmt(gapAporte) + " a mais." : ".");
+        ", o que sustenta " + fmt(rendaSustentavelAtual) + " por mês (" + pct(coberturaAtual * 100) + " do que você quer receber). ";
+      // Quando o aporte já seria suficiente na carteira do perfil declarado, o
+      // gap não vem do quanto se guarda, e sim de onde o dinheiro está: mandar
+      // "subir o aporte" para um valor menor que o atual não faria sentido.
+      if (carteiraArrasta) {
+        faltaTexto += "Repare que o seu aporte de " + fmt(aporteAtual) + " já seria suficiente se a carteira rendesse como a de um perfil " +
+          (D.perfilRisco || "Moderado").toLowerCase() + " (" + pct(rPlanoAnual * 100, 1) + " ao ano acima da inflação). A composição atual rende " +
+          pct(rAtualAnual * 100, 1) + ", e é essa diferença que abre o gap: aqui, realinhar a carteira pesa mais do que guardar mais.";
+      } else {
+        faltaTexto += "Pra fechar esse gap, o aporte precisa subir de " + fmt(aporteAtual) + " para " + fmt(aporteNecessario) + " por mês" +
+          (gapAporte > 0 ? " — " + fmt(gapAporte) + " a mais." : ".");
+      }
       if (textoEsgota) faltaTexto += " " + textoEsgota;
-      if (idadeAtingeMeta !== null && idadeAtingeMeta > idadeAposentadoria) faltaTexto += " Sem mudar nada, o patrimônio necessário só seria atingido por volta dos " + idadeAtingeMeta + " anos.";
-      if (aporteNecessario > rendaTotal * 0.5) faltaTexto += " Como esse aporte passa de metade da sua renda, o caminho realista combina três alavancas: adiar a idade-alvo, revisar a renda desejada e aumentar o aporte no que for possível.";
+      if (idadeAtingeMeta !== null && idadeAtingeMeta > idadeAposentadoria) {
+        // Acima dos 90 o número exato assusta sem informar: um gap de R$ 99 por
+        // mês virava "só seria atingido aos 99 anos".
+        faltaTexto += idadeAtingeMeta >= 90
+          ? " Sem mudar nada, o patrimônio necessário só seria atingido bem depois dos 90 anos — os últimos anos de juros compostos são os que mais pesam, e é por isso que uma diferença pequena hoje custa tanto lá na frente."
+          : " Sem mudar nada, o patrimônio necessário só seria atingido por volta dos " + idadeAtingeMeta + " anos.";
+      }
+      if (!carteiraArrasta && aporteNecessario > rendaTotal * 0.5) faltaTexto += " Como esse aporte passa de metade da sua renda, o caminho realista combina três alavancas: adiar a idade-alvo, revisar a renda desejada e aumentar o aporte no que for possível.";
       veredito = { tipo: coberturaAtual < 0.5 ? "critico" : "atencao", texto: faltaTexto };
     }
 
@@ -931,10 +1068,17 @@
     var gaugeOffset = (gaugeCirc * (1 - scoreGeral / 100)).toFixed(1);
 
     // ---- KPI cards ----
+    // O KPI de destaque usa a mesma régua da dimensão de Metas e da projeção:
+    // cobertura da renda desejada. O progresso patrimonial continua no
+    // relatório, mas com o nome do que ele realmente mede.
     var kpiHero = [
       { label: "Renda total mensal", value: fmt(rendaTotal) },
       { label: "Patrimônio líquido", value: fmt(patrimonioLiquido) },
-      { label: "Progresso pra aposentadoria", value: pct(progressoAtual, 1) }
+      {
+        label: "Cobertura da renda desejada",
+        value: semGasto ? "—" : pct(coberturaAtual * 100),
+        sub: semGasto ? "renda desejada não informada" : (aposentadoriaAtingida ? "do que seu patrimônio sustenta hoje" : "no ritmo atual, aos " + idadeAposentadoria + " anos")
+      }
     ];
     var kpiRest = [
       { label: "Despesa total mensal", value: fmt(despesaTotal), sub: aporteMensal > 0 ? "+ " + fmt(aporteMensal) + " de aporte em investimentos" : undefined },
@@ -945,6 +1089,7 @@
       { label: "Patrimônio esperado x real", value: pct(indicePatrimonio) },
       { label: "Cobertura de seguro de vida", value: num1(multiploCobertura) + "x", sub: "da sua renda anual" },
       { label: "Investido para aposentadoria", value: fmt(ativosLiquidos), sub: (D.reservaEmergencia || 0) > 0 ? "não inclui a reserva de emergência" : undefined },
+      { label: "Patrimônio acumulado x necessário", value: semGasto ? "—" : pct(progressoAtual, 1), sub: semGasto ? "renda desejada não informada" : "quanto do alvo já existe hoje" },
       { label: "Aporte mensal necessário", value: (semGasto || aposentadoriaAtingida) ? "—" : fmt(aporteNecessario), sub: aposentadoriaAtingida ? "já está na idade-alvo" : (semGasto ? "renda desejada não informada" : "pra se aposentar aos " + idadeAposentadoria + " anos") },
       { label: "Índice de solvência", value: pct(indiceSolvencia) }
     ];
@@ -985,7 +1130,9 @@
         ? "Cobertura de seguro de vida de " + num1(multiploCobertura) + "x a renda anual para " + plural(dependentes, "dependente", "dependentes") + ", "
         : "Sem dependentes, então a proteção é medida pela garantia de renda: ") +
         (D.temPlanoSaude ? "com" : "sem") + " plano de saúde, renda garantida por \"" + (D.tempoRendaGarantida || "—").toLowerCase() + "\".",
-      patrimonio: "Patrimônio em " + pct(indicePatrimonio) + " do esperado pra sua idade e renda.",
+      patrimonio: aposentadoriaAtingida
+        ? "Patrimônio investido cobre " + pct(indicePatrimonio) + " do necessário para a renda que você deseja."
+        : "Patrimônio em " + pct(indicePatrimonio) + " do esperado pra sua idade e renda.",
       metas: semGasto
         ? "Renda desejada na aposentadoria não informada, então a projeção usa o progresso frente ao esperado pra sua idade."
         : (aposentadoriaAtingida
@@ -1077,7 +1224,7 @@
       kpiHero: kpiHero, kpiRest: kpiRest, dimRows: dimRows, metasDeclaradas: metasDeclaradas,
       aposentadoria: aposentadoria,
       chart: chart,
-      actionPlan: actionPlan, hasStrengths: strengths.length > 0, strengths: strengths, investSeguro: investSeguro,
+      actionPlan: actionPlan, planoOtimizacao: planoOtimizacao, hasStrengths: strengths.length > 0, strengths: strengths, investSeguro: investSeguro,
       checklist: checklist, glossario: GLOSSARIO, nextStep: nextStep, insightPercepcao: insightPercepcao,
       vozCliente: { show: !!(D.descricaoSituacao || D.maiorDor || D.sonhos), situacao: D.descricaoSituacao, maiorDor: D.maiorDor, sonhos: D.sonhos },
       contatoMailto: "mailto:elisa@hzinvest.com.br?subject=Diagn%C3%B3stico%20Financeiro%20-%20Pr%C3%B3ximos%20passos"

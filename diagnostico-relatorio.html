@@ -304,9 +304,14 @@ function renderReport(R) {
     '</div>' +
     '<div style="position:relative; font-size:11.5px; color:rgba(251,250,246,0.45);">' + is.nota + '</div>' +
     '</div>';
+  // Sem lacunas a corrigir, a seção deixa de ser de correção e passa a ser de
+  // refinamento — em vez de aparecer com o título cheio e nenhum item embaixo.
+  var planoIntro = R.planoOtimizacao
+    ? '<div style="font-size:15px; color:rgba(21,21,63,0.6); margin:-16px 0 28px; max-width:640px; line-height:1.6;">Nenhuma das seis dimensões está em faixa de correção. O que segue são ajustes de refinamento: o que fazer quando o básico já está resolvido.</div>'
+    : "";
   html += '<section class="hairline"><div class="wrap">' +
-    sectionHeader("O que fazer", "09", "Plano de Ação Individualizado") +
-    plan + strengthsHtml + investSeguroHtml + '</div></section>';
+    sectionHeader("O que fazer", "09", R.planoOtimizacao ? "Plano de Otimização" : "Plano de Ação Individualizado") +
+    planoIntro + plan + strengthsHtml + investSeguroHtml + '</div></section>';
 
   // 10. Checklist 30 dias
   var checks = R.checklist.map(function (c) {
