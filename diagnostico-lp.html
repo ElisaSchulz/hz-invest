@@ -602,6 +602,133 @@
     padding-left: 1rem;
   }
 
+  /* ─── ARQUÉTIPOS ─── */
+  .arq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.1rem;
+    margin-top: 3rem;
+  }
+  .arq-card {
+    display: block;
+    text-align: left;
+    width: 100%;
+    font: inherit;
+    background: #FBFAF6;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 1.5rem 1.4rem;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .arq-card:hover, .arq-card:focus-visible { border-color: var(--teal); transform: translateY(-2px); }
+  .arq-card .nome {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--white-pure);
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .arq-card .frase {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--muted);
+    font-weight: 300;
+  }
+  .arq-card .ver {
+    display: inline-block;
+    margin-top: 0.9rem;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+
+  /* ─── GALERIA DE EXEMPLOS ─── */
+  #arquetipos { background: #F1EEE6; }
+  .gal-wrap { position: relative; margin-top: 2.8rem; }
+  /* O scroll-snap com um pedaço do próximo card à mostra é o que sinaliza que
+     a faixa arrasta — sem isso, quase ninguém passa do primeiro. */
+  .gal-track {
+    display: flex;
+    gap: 1.2rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 0.4rem 0 1.4rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--teal-border) transparent;
+  }
+  .gal-track::-webkit-scrollbar { height: 6px; }
+  .gal-track::-webkit-scrollbar-thumb { background: var(--teal-border); border-radius: 3px; }
+  .gal-card {
+    scroll-snap-align: start;
+    flex: 0 0 min(420px, 82vw);
+    background: #FBFAF6;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .gal-card .capa {
+    display: block;
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    object-position: top center;
+    background: #F6F4EE;
+    border-bottom: 1px solid var(--border);
+  }
+  .gal-card .corpo { padding: 1.4rem 1.5rem 1.6rem; display: flex; flex-direction: column; flex: 1; }
+  .gal-card .quem { font-size: 1.02rem; font-weight: 700; color: var(--white-pure); margin-bottom: 0.35rem; }
+  .gal-card .situacao { font-size: 0.88rem; line-height: 1.6; color: var(--muted); font-weight: 300; flex: 1; }
+  .gal-card .rodape {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    margin-top: 1.1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--border);
+  }
+  .gal-card .arq {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--teal);
+    line-height: 1.4;
+  }
+  .gal-card .score { font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+  .gal-card .mostra {
+    font-family: var(--font-body);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    opacity: 0.75;
+    margin-bottom: 0.8rem;
+  }
+  .gal-nav { display: flex; gap: 0.6rem; margin-top: 0.2rem; }
+  .gal-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--teal-border);
+    background: transparent;
+    color: var(--teal);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .gal-btn:hover:not(:disabled) { background: var(--teal-dim); border-color: var(--teal); }
+  .gal-btn:disabled { opacity: 0.3; cursor: default; }
+  @media (max-width: 639px) {
+    .gal-card .capa { height: 200px; }
+    .gal-nav { display: none; }
+  }
+
   /* ─── DEPOIMENTOS ─── */
   #depoimentos { background: #F1EEE6; }
   .depo-grid {
@@ -990,11 +1117,202 @@
     <div class="nome">Arquétipo: Adiamento do Futuro</div>
     <div class="quote">
       "Você tem disciplina, guarda dinheiro, se vira bem no dia a dia. O que falta não é esforço, é direção.
-      Sua taxa de poupança de 36% mostra disciplina real, mas seu progresso pra aposentadoria está em 12,4%
-      do patrimônio necessário, e suas metas ainda são ideias vagas, sem prazo ou valor definidos."
+      Sua taxa de poupança de 27% mostra disciplina real. Mas no ritmo atual de aportes você chegaria aos 58 anos
+      com uma renda de R$ 3.275,75 por mês, 23% do que você quer receber, e suas metas ainda são ideias vagas,
+      sem prazo ou valor definidos."
     </div>
     <div class="preview-note" style="margin-top:1.1rem;">
       Trecho real gerado para um perfil de exemplo. Cada frase é montada a partir das suas respostas. Nenhum texto é igual ao de outra pessoa.
+    </div>
+  </div>
+</section>
+
+<!-- ─── ARQUÉTIPOS ─── -->
+<section id="arquetipos">
+  <div class="reveal">
+    <div class="section-label">// os oito padrões</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Qual desses<br>é você hoje?</h2>
+    <p class="section-sub">O diagnóstico não classifica você por quanto ganha, e sim pelo padrão que os seus números revelam. São oito, e o relatório explica por que o seu é aquele, e não os outros sete. Abaixo, a frase de abertura que cada um recebe.</p>
+  </div>
+
+  <div class="arq-grid reveal">
+    <button type="button" class="arq-card" data-alvo="ex-negacao">
+      <div class="nome">Negação Financeira</div>
+      <div class="frase">"Você não está sozinho nisso, e o primeiro passo pra sair daqui já foi dado: você chegou até aqui e olhou pros números de frente."</div>
+      <span class="ver">Ver um relatório assim →</span>
+    </button>
+    <button type="button" class="arq-card" data-alvo="ex-ilusao">
+      <div class="nome">Ilusão de Controle</div>
+      <div class="frase">"As contas fecham no fim do mês, e isso já é melhor do que boa parte das pessoas. Mas 'fechar as contas' e 'estar seguro' são coisas diferentes."</div>
+      <span class="ver">Ver um relatório assim →</span>
+    </button>
+    <button type="button" class="arq-card" data-alvo="ex-adiamento">
+      <div class="nome">Adiamento do Futuro</div>
+      <div class="frase">"Você tem disciplina, guarda dinheiro, se vira bem no dia a dia. O que falta não é esforço, é direção."</div>
+      <span class="ver">Ver um relatório assim →</span>
+    </button>
+    <button type="button" class="arq-card" data-alvo="ex-otimismo">
+      <div class="nome">Otimismo Desprotegido</div>
+      <div class="frase">"Ninguém gosta de pensar no que pode dar errado, e é exatamente por isso que essa é a área mais adiada por quase todo mundo."</div>
+      <span class="ver">Ver um relatório assim →</span>
+    </button>
+    <button type="button" class="arq-card" data-alvo="ex-paralisia">
+      <div class="nome">Paralisia da Decisão</div>
+      <div class="frase">"Você guarda dinheiro, isso já é mais do que a maioria consegue fazer. O problema não é a disciplina, é o próximo passo depois de guardar."</div>
+      <span class="ver">Ver um relatório assim →</span>
+    </button>
+    <button type="button" class="arq-card" data-alvo="ex-vazamento">
+      <div class="nome">Vazamento Silencioso</div>
+      <div class="frase">"Suas contas fecham, você não vive no vermelho, mas isso não significa que não haja dinheiro escorrendo pelo ralo todo mês."</div>
+      <span class="ver">Ver um relatório assim →</span>
+    </button>
+    <button type="button" class="arq-card" data-alvo="ex-dominio">
+      <div class="nome">Domínio Comportamental</div>
+      <div class="frase">"Você já construiu algo raro: uma relação madura com o dinheiro, não só uma planilha organizada."</div>
+      <span class="ver">Ver um relatório assim →</span>
+    </button>
+    <button type="button" class="arq-card" data-alvo="ex-colheita">
+      <div class="nome">Fase de Colheita</div>
+      <div class="frase">"A fase de construir patrimônio ficou pra trás. O que está em jogo agora é transformar o que você juntou em renda que dure o quanto você precisar."</div>
+      <span class="ver">Ver um relatório assim →</span>
+    </button>
+  </div>
+</section>
+
+<!-- ─── GALERIA DE EXEMPLOS ─── -->
+<section id="exemplos">
+  <div class="reveal">
+    <div class="section-label">// oito relatórios por dentro</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Oito situações,<br>oito relatórios diferentes</h2>
+    <p class="section-sub">
+      Preenchemos o diagnóstico com oito situações fictícias, uma para cada padrão, e recortamos do relatório
+      a página que melhor conta a história de cada uma. Arraste para o lado para ver todas.
+      <strong style="color:var(--white-pure);font-weight:600;">São pessoas inventadas para ilustrar o produto</strong>,
+      não clientes: o que você vê são as telas reais que o diagnóstico gera a partir dos números de cada perfil.
+    </p>
+  </div>
+
+  <div class="gal-wrap reveal">
+    <div class="gal-track" id="galTrack">
+
+      <article class="gal-card" id="ex-negacao">
+        <picture>
+          <source media="(max-width: 639px)" srcset="img/lp/relatorio-negacao-sm.jpg">
+          <img class="capa" src="img/lp/relatorio-negacao.jpg" loading="lazy" decoding="async"
+               width="900" height="562" alt="Seção de score geral do relatório: nota 28, nível 2, e um bloco de percepção contra realidade.">
+        </picture>
+        <div class="corpo">
+          <div class="mostra">Seção 3 · Score geral e nível</div>
+          <div class="quem">Bia, 34 anos</div>
+          <div class="situacao">Ganha R$ 6.000 e gasta R$ 6.400. Respondeu que a renda cobre as despesas — o cálculo mostrou um rombo de R$ 400 por mês.</div>
+          <div class="rodape"><span class="arq">Negação Financeira</span><span class="score">score 28</span></div>
+        </div>
+      </article>
+
+      <article class="gal-card" id="ex-ilusao">
+        <picture>
+          <source media="(max-width: 639px)" srcset="img/lp/relatorio-ilusao-sm.jpg">
+          <img class="capa" src="img/lp/relatorio-ilusao.jpg" loading="lazy" decoding="async"
+               width="900" height="562" alt="Seção de score por dimensão do relatório, com as seis barras coloridas por faixa.">
+        </picture>
+        <div class="corpo">
+          <div class="mostra">Seção 7 · Score por dimensão</div>
+          <div class="quem">Caio, 36 anos</div>
+          <div class="situacao">Poupa 16% da renda todo mês e não tem dívida nenhuma. Mas a reserva de emergência cobre menos de dez dias de despesa.</div>
+          <div class="rodape"><span class="arq">Ilusão de Controle</span><span class="score">score 52</span></div>
+        </div>
+      </article>
+
+      <article class="gal-card" id="ex-adiamento">
+        <picture>
+          <source media="(max-width: 639px)" srcset="img/lp/relatorio-adiamento-sm.jpg">
+          <img class="capa" src="img/lp/relatorio-adiamento.jpg" loading="lazy" decoding="async"
+               width="900" height="562" alt="Seção de projeção patrimonial do relatório, com as curvas do ritmo atual e do plano necessário.">
+        </picture>
+        <div class="corpo">
+          <div class="mostra">Seção 8 · Projeção até a aposentadoria</div>
+          <div class="quem">Dora, 46 anos</div>
+          <div class="situacao">Presente resolvido: reserva cheia, sem dívida, proteção em dia. Quer parar aos 58 com R$ 14 mil por mês — e o ritmo atual entrega 23% disso.</div>
+          <div class="rodape"><span class="arq">Adiamento do Futuro</span><span class="score">score 70</span></div>
+        </div>
+      </article>
+
+      <article class="gal-card" id="ex-otimismo">
+        <picture>
+          <source media="(max-width: 639px)" srcset="img/lp/relatorio-otimismo-sm.jpg">
+          <img class="capa" src="img/lp/relatorio-otimismo.jpg" loading="lazy" decoding="async"
+               width="900" height="562" alt="Seção do plano de ação do relatório, com as recomendações numeradas e a ação prática de cada uma.">
+        </picture>
+        <div class="corpo">
+          <div class="mostra">Seção 9 · Plano de ação</div>
+          <div class="quem">Elias, 40 anos</div>
+          <div class="situacao">R$ 21 mil de renda no casal, três filhos, aposentadoria encaminhada. Nenhum seguro de vida, nenhum plano de saúde.</div>
+          <div class="rodape"><span class="arq">Otimismo Desprotegido</span><span class="score">score 69</span></div>
+        </div>
+      </article>
+
+      <article class="gal-card" id="ex-paralisia">
+        <picture>
+          <source media="(max-width: 639px)" srcset="img/lp/relatorio-paralisia-sm.jpg">
+          <img class="capa" src="img/lp/relatorio-paralisia.jpg" loading="lazy" decoding="async"
+               width="900" height="562" alt="Seção do arquétipo financeiro do relatório, em fundo azul, com o padrão identificado e a prioridade imediata.">
+        </picture>
+        <div class="corpo">
+          <div class="mostra">Seção 5 · Arquétipo financeiro</div>
+          <div class="quem">Fábio, 42 anos</div>
+          <div class="situacao">Guarda R$ 2.500 por mês há anos, sem falhar. Tem R$ 210 mil parados em poupança e conta corrente, rendendo menos que a inflação.</div>
+          <div class="rodape"><span class="arq">Paralisia da Decisão</span><span class="score">score 70</span></div>
+        </div>
+      </article>
+
+      <article class="gal-card" id="ex-vazamento">
+        <picture>
+          <source media="(max-width: 639px)" srcset="img/lp/relatorio-vazamento-sm.jpg">
+          <img class="capa" src="img/lp/relatorio-vazamento.jpg" loading="lazy" decoding="async"
+               width="900" height="562" alt="Seção de KPIs financeiros do relatório, com os indicadores de renda, patrimônio e cobertura.">
+        </picture>
+        <div class="corpo">
+          <div class="mostra">Seção 6 · KPIs financeiros</div>
+          <div class="quem">Gil, 39 anos</div>
+          <div class="situacao">As contas fecham e ele ainda poupa 29%. Só que carrega R$ 40 mil entre cartão e cheque especial, sem saber a que taxa de juros.</div>
+          <div class="rodape"><span class="arq">Vazamento Silencioso</span><span class="score">score 50</span></div>
+        </div>
+      </article>
+
+      <article class="gal-card" id="ex-dominio">
+        <picture>
+          <source media="(max-width: 639px)" srcset="img/lp/relatorio-dominio-sm.jpg">
+          <img class="capa" src="img/lp/relatorio-dominio.jpg" loading="lazy" decoding="async"
+               width="900" height="562" alt="Seção de plano de otimização do relatório, com ajustes de eficiência, rebalanceamento e sucessão.">
+        </picture>
+        <div class="corpo">
+          <div class="mostra">Seção 9 · Plano de otimização</div>
+          <div class="quem">Heloísa, 44 anos</div>
+          <div class="situacao">Casal com R$ 30 mil de renda, reserva cheia, seguro dimensionado e aporte automático. Sem lacuna a corrigir, o plano vira refinamento.</div>
+          <div class="rodape"><span class="arq">Domínio Comportamental</span><span class="score">score 95</span></div>
+        </div>
+      </article>
+
+      <article class="gal-card" id="ex-colheita">
+        <picture>
+          <source media="(max-width: 639px)" srcset="img/lp/relatorio-colheita-sm.jpg">
+          <img class="capa" src="img/lp/relatorio-colheita.jpg" loading="lazy" decoding="async"
+               width="900" height="562" alt="Seção de projeção do relatório para quem já se aposentou, com a curva de consumo do patrimônio.">
+        </picture>
+        <div class="corpo">
+          <div class="mostra">Seção 8 · Projeção da renda</div>
+          <div class="quem">Ivo, 67 anos</div>
+          <div class="situacao">Já parou de trabalhar e vive de R$ 8 mil entre aposentadoria e aluguel. O patrimônio sustenta 74% do que ele gostaria de gastar até os 95.</div>
+          <div class="rodape"><span class="arq">Fase de Colheita</span><span class="score">score 82</span></div>
+        </div>
+      </article>
+
+    </div>
+    <div class="gal-nav">
+      <button type="button" class="gal-btn" id="galAnterior" aria-label="Ver exemplo anterior">←</button>
+      <button type="button" class="gal-btn" id="galProximo" aria-label="Ver próximo exemplo">→</button>
     </div>
   </div>
 </section>
@@ -1360,6 +1678,43 @@ var HZ_DEPOIMENTOS = [];
     });
   }, { threshold: 0.08 });
   reveals.forEach(function (el) { observer.observe(el); });
+
+  // Galeria de exemplos: setas, e os cards de arquétipo levam ao exemplo
+  // correspondente. O arrastar com o dedo e a barra de rolagem já vêm do CSS.
+  (function galeria() {
+    var faixa = document.getElementById("galTrack");
+    if (!faixa) return;
+    var anterior = document.getElementById("galAnterior");
+    var proximo = document.getElementById("galProximo");
+
+    function passo() {
+      var card = faixa.querySelector(".gal-card");
+      return card ? card.getBoundingClientRect().width + 19 : faixa.clientWidth;
+    }
+    function atualizaSetas() {
+      var fim = faixa.scrollWidth - faixa.clientWidth - 4;
+      anterior.disabled = faixa.scrollLeft <= 4;
+      proximo.disabled = faixa.scrollLeft >= fim;
+    }
+    anterior.addEventListener("click", function () { faixa.scrollBy({ left: -passo(), behavior: "smooth" }); });
+    proximo.addEventListener("click", function () { faixa.scrollBy({ left: passo(), behavior: "smooth" }); });
+    faixa.addEventListener("scroll", atualizaSetas, { passive: true });
+    window.addEventListener("resize", atualizaSetas);
+    atualizaSetas();
+
+    document.querySelectorAll(".arq-card[data-alvo]").forEach(function (botao) {
+      botao.addEventListener("click", function () {
+        var alvo = document.getElementById(botao.dataset.alvo);
+        if (!alvo) return;
+        // Traz a seção para a tela e, só então, posiciona a faixa no card certo,
+        // para o scroll horizontal não competir com o vertical.
+        document.getElementById("exemplos").scrollIntoView({ behavior: "smooth", block: "start" });
+        setTimeout(function () {
+          faixa.scrollTo({ left: alvo.offsetLeft - faixa.offsetLeft, behavior: "smooth" });
+        }, 500);
+      });
+    });
+  })();
 })();
 </script>
 

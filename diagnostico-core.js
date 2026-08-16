@@ -337,8 +337,11 @@
     var patrimonioLiquido = patrimonioTotal - saldosFinanciamento - totalDividas;
     // Sem bens e com dívidas em aberto, a solvência é zero — não 100%, como
     // saía antes por falta de denominador.
+    // Proporção do patrimônio que é de fato sua. Com dívida maior que os bens a
+    // razão fica negativa e não comunica nada ("-100%"): o piso é zero, e o
+    // recado de que o líquido é negativo vai no texto do indicador.
     var indiceSolvencia = patrimonioTotal > 0
-      ? (patrimonioLiquido / patrimonioTotal) * 100
+      ? Math.max(0, (patrimonioLiquido / patrimonioTotal) * 100)
       : (patrimonioLiquido < 0 ? 0 : 100);
 
     // ---- Dim 4: Gestão de Risco ----
@@ -1116,7 +1119,7 @@
       { label: "Investido para aposentadoria", value: fmt(ativosLiquidos), sub: (D.reservaEmergencia || 0) > 0 ? "não inclui a reserva de emergência" : undefined },
       { label: "Patrimônio acumulado x necessário", value: semGasto ? "—" : pct(progressoAtual, 1), sub: semGasto ? "renda desejada não informada" : "quanto do alvo já existe hoje" },
       { label: "Aporte mensal necessário", value: (semGasto || aposentadoriaAtingida) ? "—" : fmt(aporteNecessario), sub: aposentadoriaAtingida ? "já está na idade-alvo" : (semGasto ? "renda desejada não informada" : "pra se aposentar aos " + idadeAposentadoria + " anos") },
-      { label: "Índice de solvência", value: pct(indiceSolvencia) }
+      { label: "Índice de solvência", value: pct(indiceSolvencia), sub: patrimonioLiquido < 0 ? "suas dívidas superam o que você tem em bens" : undefined }
     ];
 
     // Insight comportamental: divergência entre percepção e realidade calculada
