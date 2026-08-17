@@ -5,10 +5,51 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Diagnóstico Financeiro | HZ Invest</title>
 <meta name="description" content="Um raio-x completo da sua vida financeira em 25 minutos. Score, arquétipo financeiro, plano de ação e projeção patrimonial até a aposentadoria num relatório personalizado de 13 seções.">
+<link rel="canonical" href="https://hzinvest.com.br/diagnostico-lp.html">
+
+<!-- Cartão de compartilhamento. Sem isso, o link colado no WhatsApp (que é
+     onde esse produto circula) aparece cru, sem título nem imagem. A imagem
+     precisa ter URL absoluta: as redes não resolvem caminho relativo. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="HZ Invest">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://hzinvest.com.br/diagnostico-lp.html">
+<meta property="og:title" content="Diagnóstico Financeiro | HZ Invest">
+<meta property="og:description" content="Um raio-x completo da sua vida financeira em cerca de 25 minutos: score, arquétipo financeiro, plano de ação e projeção até a aposentadoria, tudo a partir dos seus números.">
+<meta property="og:image" content="https://hzinvest.com.br/img/lp/relatorio-adiamento.jpg">
+<meta property="og:image:width" content="900">
+<meta property="og:image:height" content="562">
+<meta property="og:image:alt" content="Página de projeção patrimonial de um relatório do Diagnóstico Financeiro da HZ Invest.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Diagnóstico Financeiro | HZ Invest">
+<meta name="twitter:description" content="Um raio-x completo da sua vida financeira em cerca de 25 minutos, com plano de ação a partir dos seus números.">
+<meta name="twitter:image" content="https://hzinvest.com.br/img/lp/relatorio-adiamento.jpg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="hz-design.css">
+
+<!-- ─────────────────────────────────────────────────────────────
+     Google Analytics 4 · propriedade G-JNJQ4ED1KG, a mesma do
+     projeto Firebase usado pelo login (ver auth.js).
+
+     Nenhum dado do questionário passa por aqui: a LP não coleta
+     resposta nenhuma. Os eventos disparados estão no fim do
+     arquivo e medem só o funil da página (ver seção "funil" no
+     script): quanto da página foi lida, quem chegou na oferta e
+     quem clicou em comprar.
+
+     A divulgação exigida pela LGPD está no item 8 da
+     politica-privacidade.html.
+     ───────────────────────────────────────────────────────────── -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JNJQ4ED1KG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-JNJQ4ED1KG');
+</script>
 
 <style>
 
@@ -19,41 +60,33 @@
     background: var(--navy-dark);
     color: var(--text);
     font-family: var(--font-body);
-    font-size: 18px;
+    font-size: 17px;
     line-height: 1.65;
     overflow-x: hidden;
   }
 
+  /* Mesmo brilho discreto do restante do site (hz-design.css). O fundo
+     pontilhado e o clarão central que existiam aqui vinham do tema escuro
+     antigo e não têm par em nenhuma outra página. */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(79,140,132,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 60% at 80% 90%, rgba(79,140,132,0.05) 0%, transparent 60%),
-      radial-gradient(ellipse 80% 80% at 50% 50%, #FBFAF6 0%, transparent 100%);
+      radial-gradient(ellipse 60% 50% at 20% 8%, rgba(79,140,132,0.07) 0%, transparent 62%),
+      radial-gradient(ellipse 50% 60% at 82% 92%, rgba(79,140,132,0.05) 0%, transparent 62%);
     pointer-events: none;
     z-index: 0;
   }
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: radial-gradient(circle, rgba(79,140,132,0.18) 1px, transparent 1px);
-    background-size: 40px 40px;
-    mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 0%, transparent 80%);
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.35;
-  }
+  body::after { content: none; }
 
   /* ─── NAV ─── */
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 100;
-    padding: 0 12%;
-    height: 70px;
+    padding: 0 8%;
+    height: 74px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -78,8 +111,10 @@
     font-weight: 500;
   }
   .nav-back:hover { color: var(--teal-light); }
+  @media (max-width: 860px) {
+    nav { padding: 0 6%; height: 66px; }
+  }
   @media (max-width: 700px) {
-    nav { padding: 0 6%; }
     .nav-back { display: none; }
   }
 
@@ -195,19 +230,6 @@
     font-weight: 300;
     line-height: 1.75;
   }
-  .hero-price {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.6rem;
-    margin-bottom: 1.8rem;
-  }
-  .hero-price .val {
-    font-size: 2.6rem;
-    font-weight: 800;
-    color: var(--white-pure);
-    letter-spacing: -0.02em;
-  }
-  .hero-price .note { font-size: 0.9rem; color: var(--muted); }
   .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
   .hero-trust {
     margin-top: 1.8rem;
@@ -751,9 +773,21 @@
   }
   .gal-btn:hover:not(:disabled) { background: var(--teal-dim); border-color: var(--teal); }
   .gal-btn:disabled { opacity: 0.3; cursor: default; }
+  .gal-fecho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    margin-top: 2.2rem;
+    padding-top: 1.8rem;
+    border-top: 1px solid var(--border);
+  }
+  .gal-fecho p { font-size: 1.02rem; color: var(--text); font-weight: 300; margin: 0; }
   @media (max-width: 639px) {
     .gal-card .capa { height: 200px; }
     .gal-nav { display: none; }
+    .gal-fecho { justify-content: center; text-align: center; }
   }
 
   /* ─── DEPOIMENTOS ─── */
@@ -772,7 +806,7 @@
     display: flex;
     flex-direction: column;
   }
-  .depo-card.exemplo { border-style: dashed; border-color: rgba(224,164,88,0.4); }
+  .depo-card.exemplo { border-style: dashed; border-color: rgba(196,138,62,0.45); }
   .depo-tag {
     align-self: flex-start;
     font-family: var(--font-body);
@@ -780,7 +814,7 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--amber);
-    border: 1px solid rgba(224,164,88,0.4);
+    border: 1px solid rgba(196,138,62,0.45);
     border-radius: 4px;
     padding: 0.15rem 0.45rem;
     margin-bottom: 0.9rem;
@@ -976,7 +1010,7 @@
   <p class="saber-fecho reveal">
     Nenhuma das quatro perguntas da direita se responde com força de vontade: cada uma depende de contas
     que cruzam renda, gastos, dívidas, proteção e prazo. <strong>O diagnóstico transforma essa lista em
-    números seus</strong>, em cerca de 25 minutos.
+    números seus</strong>, cada um com valor, prazo e ordem de prioridade.
   </p>
 </section>
 
@@ -1006,7 +1040,7 @@
         <p>Fluxo de caixa, liquidez, endividamento, proteção, patrimônio e metas, cada um com nota, faixa e a explicação do porquê.</p>
       </div>
       <div class="deliver-card">
-        <div class="deliver-num">11 indicadores</div>
+        <div class="deliver-num">14 indicadores</div>
         <h3>Os números que importam</h3>
         <p>Taxa de poupança, meses de cobertura da reserva, comprometimento de renda, índice de solvência, cobertura de seguro e mais.</p>
       </div>
@@ -1027,7 +1061,7 @@
       <div class="deliver-card">
         <div class="deliver-num">Arquétipo financeiro</div>
         <h3>O padrão por trás dos números</h3>
-        <p>Qual dos 7 perfis comportamentais explica a sua relação com o dinheiro hoje. E por que ele, e não os outros seis.</p>
+        <p>Qual dos 8 perfis comportamentais explica a sua relação com o dinheiro hoje. E por que ele, e não os outros sete.</p>
       </div>
       <div class="deliver-card">
         <div class="deliver-num">Na sua fala</div>
@@ -1061,7 +1095,7 @@
       <div class="deliver-card">
         <div class="deliver-num">Checklist 30 dias</div>
         <h3>Por onde começar hoje</h3>
-        <p>Cinco tarefas objetivas para as próximas semanas, priorizadas pelo que mais destrava a sua situação específica.</p>
+        <p>Até cinco tarefas objetivas para as próximas semanas, priorizadas pelo que mais destrava a sua situação específica.</p>
       </div>
       <div class="deliver-card">
         <div class="deliver-num">Onde aplicar</div>
@@ -1077,7 +1111,7 @@
   </div>
 
   <p class="section-sub reveal" style="margin-top:2.4rem;max-width:640px;">
-    Ainda no relatório: glossário sem jargão dos conceitos usados e download em <strong style="color:var(--white);">PDF</strong> para guardar e comparar quando você refizer o diagnóstico.
+    Ainda no relatório: glossário sem jargão dos conceitos usados e uma <strong style="color:var(--white);">versão para impressão e PDF</strong>, para guardar e comparar quando você refizer o diagnóstico.
   </p>
 </section>
 
@@ -1123,7 +1157,7 @@
         <circle cx="80" cy="80" r="68" fill="none" stroke="rgba(79,140,132,0.12)" stroke-width="14" />
         <circle cx="80" cy="80" r="68" fill="none" stroke="#4F8C84" stroke-width="14" stroke-linecap="round"
                 stroke-dasharray="427.3 427.3" stroke-dashoffset="145.3" transform="rotate(-90 80 80)" />
-        <text x="80" y="90" text-anchor="middle" font-family="Outfit, sans-serif" font-size="44" font-weight="800" fill="#ffffff">66</text>
+        <text x="80" y="88" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="42" font-weight="500" fill="#1B1B5C">66</text>
       </svg>
       <div class="gauge-label">Nível 4 · Consolidado</div>
     </div>
@@ -1142,15 +1176,15 @@
       </div>
       <div class="dim-row">
         <div class="dim-head"><span class="nome">Gestão de Risco (Seguros)</span><span class="score">41 / 100</span></div>
-        <div class="dim-bar"><div style="width:41%;background:#e0a458;"></div></div>
+        <div class="dim-bar"><div style="width:41%;background:#C48A3E;"></div></div>
       </div>
       <div class="dim-row">
         <div class="dim-head"><span class="nome">Patrimônio e Investimentos</span><span class="score">54 / 100</span></div>
-        <div class="dim-bar"><div style="width:54%;background:#e0a458;"></div></div>
+        <div class="dim-bar"><div style="width:54%;background:#C48A3E;"></div></div>
       </div>
       <div class="dim-row" style="margin-bottom:0;">
         <div class="dim-head"><span class="nome">Metas e Planejamento</span><span class="score">28 / 100</span></div>
-        <div class="dim-bar"><div style="width:28%;background:#e06b6b;"></div></div>
+        <div class="dim-bar"><div style="width:28%;background:#B34747;"></div></div>
       </div>
       <div class="preview-note">Exemplo ilustrativo. O seu relatório traz os seus próprios números, textos e recomendações.</div>
     </div>
@@ -1359,6 +1393,11 @@
       <button type="button" class="gal-btn" id="galProximo" aria-label="Ver próximo exemplo">→</button>
     </div>
   </div>
+
+  <div class="gal-fecho reveal">
+    <p>Oito perfis, oito relatórios sem uma linha em comum. O nono é o seu.</p>
+    <a href="#oferta" class="btn-primary">Ver o meu relatório</a>
+  </div>
 </section>
 
 <!-- ─── PARA QUEM ─── -->
@@ -1401,7 +1440,15 @@
   </div>
 
   <div class="author-box reveal">
-    <img class="author-img" src="https://framerusercontent.com/images/0DlZ0kmXAutFyVmhsf2IzDVYA.jpeg" alt="Elisa Schulz">
+    <!-- PENDENTE: esta foto ainda é servida pelo framerusercontent.com, resto
+         da versão anterior do site em Framer. Se aquela conta mudar ou for
+         encerrada, a seção fica com a imagem quebrada. Para resolver, baixe
+         o arquivo e troque o src por img/equipe/elisa-schulz.jpg:
+           curl -L -o img/equipe/elisa-schulz.jpg \
+             "https://framerusercontent.com/images/0DlZ0kmXAutFyVmhsf2IzDVYA.jpeg"
+         O mesmo vale para as fotos de equipe.html. -->
+    <img class="author-img" src="https://framerusercontent.com/images/0DlZ0kmXAutFyVmhsf2IzDVYA.jpeg"
+         width="120" height="120" loading="lazy" decoding="async" alt="Elisa Schulz">
     <div>
       <h3>Elisa Schulz</h3>
       <div class="author-role">Economista &amp; Mestre em Finanças</div>
@@ -1419,7 +1466,7 @@
   <div class="reveal">
     <div class="section-label">// quem já fez</div>
     <div class="teal-line"></div>
-    <h2 class="section-title">O que dizem quem<br>passou pelo diagnóstico</h2>
+    <h2 class="section-title">O que diz quem<br>passou pelo diagnóstico</h2>
     <p class="section-sub">Relatos de quem respondeu o questionário e recebeu o relatório completo.</p>
   </div>
 
@@ -1430,7 +1477,7 @@
 <section id="oferta">
   <div class="reveal" style="text-align:center;">
     <div class="section-label" style="text-align:center;">// o investimento</div>
-    <h2 class="section-title">Em 25 minutos você sai da dúvida<br>e entra no plano.</h2>
+    <h2 class="section-title">Hoje você sai da dúvida<br>e entra no plano.</h2>
     <p class="section-sub" style="margin:0 auto;">Um retrato honesto da sua vida financeira, com o próximo passo escrito com todas as letras. E ele fica com você para sempre.</p>
   </div>
 
@@ -1452,15 +1499,16 @@
     <ul class="price-list">
       <li>Questionário guiado de 10 etapas, com salvar e continuar depois</li>
       <li>Relatório personalizado de 13 seções, gerado na hora</li>
-      <li>Score geral, arquétipo financeiro e 11 indicadores</li>
+      <li>Score geral, arquétipo financeiro e 14 indicadores</li>
       <li>Plano de ação individualizado e checklist de 30 dias</li>
       <li>Projeção patrimonial até a aposentadoria, a preços de hoje</li>
-      <li>Download em PDF para consultar e comparar quando refizer</li>
+      <li>Versão para impressão e PDF, para consultar e comparar quando refizer</li>
       <li><strong style="color:var(--white);">Bônus:</strong> 30 minutos com a consultoria da HZ para discutir o resultado</li>
     </ul>
     <a href="#" class="btn-primary js-cta" style="font-size:1rem;padding:1.1rem 2.6rem;">Quero meu diagnóstico agora</a>
     <div class="price-guarantee">
-      <strong style="color:var(--white);">Garantia de 7 dias.</strong> Se o relatório não te entregar clareza, devolvemos o valor integral. Basta escrever para
+      <strong style="color:var(--white);">Garantia de 7 dias.</strong> Se o relatório não te entregar clareza, devolvemos o valor integral,
+      em até 5 dias úteis a partir do pedido. Basta escrever para
       <a href="mailto:elisa@hzinvest.com.br" style="color:var(--teal);">elisa@hzinvest.com.br</a>.
     </div>
   </div>
@@ -1469,8 +1517,9 @@
     <span class="bonus-tag">Bônus incluso</span>
     <h3>30 minutos com a consultoria da HZ</h3>
     <p>
-      Depois de receber o relatório, a equipe de consultoria da HZ Invest entra em contato pelo e-mail que você informou
-      para combinar uma conversa de 30 minutos, tirar dúvidas sobre o que o diagnóstico encontrou e definir por onde começar.
+      Depois de receber o relatório, a equipe de consultoria da HZ Invest entra em contato pelo e-mail que você informou,
+      <strong style="color:var(--white);">em até 3 dias úteis</strong>, para combinar uma conversa de 30 minutos,
+      tirar dúvidas sobre o que o diagnóstico encontrou e definir por onde começar.
       Sem custo adicional e sem compromisso de contratar nada.
     </p>
   </div>
@@ -1478,7 +1527,7 @@
   <div class="after-buy reveal">
     <div><strong>1. Pagamento</strong>Confirmação em segundos, direto no checkout.</div>
     <div><strong>2. Acesso liberado</strong>Você já cai no questionário, sem espera nem e-mail de liberação.</div>
-    <div><strong>3. Relatório na hora</strong>Ao finalizar, ele é gerado na mesma sessão e fica disponível em PDF.</div>
+    <div><strong>3. Relatório na hora</strong>Ao finalizar, ele é gerado na mesma sessão, pronto para ler e para salvar em PDF.</div>
   </div>
 
   <p class="section-sub reveal" style="margin:2rem auto 0;text-align:center;max-width:560px;font-size:0.85rem;">
@@ -1529,7 +1578,7 @@
         <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <div class="faq-a" id="faq-a4" role="region" aria-labelledby="faq-q4">
-        <p>Na hora. Assim que você finaliza o questionário, o relatório é gerado e fica disponível para leitura e download em PDF.</p>
+        <p>Na hora. Assim que você finaliza o questionário, o relatório é gerado e fica disponível para leitura, com um botão que abre a versão para impressão, de onde você salva em PDF.</p>
       </div>
     </div>
     <div class="faq-item" data-faq>
@@ -1556,7 +1605,7 @@
         <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <div class="faq-a" id="faq-a7" role="region" aria-labelledby="faq-q7">
-        <p>O relatório é gerado automaticamente pela metodologia desenvolvida pela HZ Invest, e é por isso que ele fica pronto na hora, sem fila de espera. Não é uma análise manual caso a caso: se o que você procura é alguém olhando o seu caso pessoalmente, o caminho é o <a href="consultoria.html">acompanhamento individual</a>, e o próprio relatório indica se ele faz sentido pra você.</p>
+        <p>O relatório é gerado automaticamente pela metodologia desenvolvida pela HZ Invest, e é por isso que ele fica pronto na hora, sem fila de espera. A leitura humana do seu caso vem depois, na conversa de 30 minutos com a consultoria que está inclusa: é ali que alguém da HZ olha o que o diagnóstico encontrou junto com você. Se depois disso você quiser acompanhamento contínuo, o caminho é o <a href="consultoria.html">acompanhamento individual</a>, e o próprio relatório indica se ele faz sentido pra você.</p>
       </div>
     </div>
     <div class="faq-item" data-faq>
@@ -1575,8 +1624,8 @@
 <section class="closing">
   <div class="reveal">
     <h2 class="section-title">Ainda com dúvida sobre<br>onde você está?</h2>
-    <p class="section-sub">É exatamente isso que o diagnóstico resolve, em 25 minutos, com números seus e um plano escrito.</p>
-    <a href="#oferta" class="btn-primary" style="font-size:1rem;padding:1.1rem 2.6rem;">Quero meu diagnóstico</a>
+    <p class="section-sub">É exatamente isso que o diagnóstico resolve: números seus, um retrato honesto e o próximo passo escrito com todas as letras.</p>
+    <a href="#oferta" class="btn-primary" style="font-size:1rem;padding:1.1rem 2.6rem;">Descobrir onde eu estou</a>
   </div>
 </section>
 
@@ -1588,7 +1637,7 @@
 
 <footer>
   <a href="index.html" class="footer-logo">HZ <span>Invest</span></a>
-  <p>© 2025 HZ Invest · Todos os direitos reservados</p>
+  <p>© 2026 HZ Invest · Todos os direitos reservados</p>
   <div class="footer-links">
     <a href="index.html">Site</a>
     <a href="politica-privacidade.html">Política de Privacidade</a>
@@ -1613,9 +1662,9 @@
 //  para não vender sem ter como receber.
 //
 //  ATENÇÃO: o aviso que aparecia na tela avisando disso foi removido
-//  a pedido. Os botões continuam desligados enquanto a URL não for
-//  preenchida, e agora nada sinaliza isso na página — confira aqui
-//  antes de divulgar a landing.
+//  a pedido, e continua removido. Nada sinaliza esse estado para o
+//  visitante — só um aviso no console do navegador, para quem abrir
+//  as ferramentas de desenvolvedor. Confira aqui antes de divulgar.
 // ─────────────────────────────────────────────────────────────
 var HZ_CHECKOUT_URL = "COLE-AQUI-O-LINK-DE-CHECKOUT";
 
@@ -1654,8 +1703,18 @@ var HZ_DEPOIMENTOS = [];
       ctas[i].setAttribute("href", HZ_CHECKOUT_URL);
     } else {
       ctas[i].classList.add("disabled");
-      ctas[i].setAttribute("href", "#preco");
+      // "#oferta" é a âncora que existe de fato nesta página. O valor
+      // anterior ("#preco") não correspondia a nenhuma seção, então o
+      // clique não fazia absolutamente nada.
+      ctas[i].setAttribute("href", "#oferta");
+      ctas[i].setAttribute("aria-disabled", "true");
     }
+  }
+  if (!configurado && window.console && console.warn) {
+    console.warn(
+      "[HZ] Checkout não configurado: os botões de compra estão desligados. " +
+      "Preencha HZ_CHECKOUT_URL em diagnostico-lp.html antes de divulgar esta página."
+    );
   }
   // ── depoimentos ──
   var grid = document.getElementById("depoGrid");
@@ -1750,6 +1809,7 @@ var HZ_DEPOIMENTOS = [];
 
     document.querySelectorAll(".arq-card[data-alvo]").forEach(function (botao) {
       botao.addEventListener("click", function () {
+        evento("arquetipo_aberto", { arquetipo: botao.dataset.alvo });
         var alvo = document.getElementById(botao.dataset.alvo);
         if (!alvo) return;
         // Traz a seção para a tela e, só então, posiciona a faixa no card certo,
@@ -1758,6 +1818,78 @@ var HZ_DEPOIMENTOS = [];
         setTimeout(function () {
           faixa.scrollTo({ left: alvo.offsetLeft - faixa.offsetLeft, behavior: "smooth" });
         }, 500);
+      });
+    });
+  })();
+
+  // ── funil ──
+  // Responde a única pergunta que importa antes de gastar com tráfego:
+  // em que ponto a página perde as pessoas. São quatro marcos, do topo
+  // até o clique de compra. Nada aqui coleta dado pessoal.
+  function evento(nome, dados) {
+    if (typeof gtag === "function") gtag("event", nome, dados || {});
+  }
+
+  (function funil() {
+    // 1. Profundidade de leitura, uma vez por marco.
+    var marcos = [25, 50, 75, 100];
+    var vistos = {};
+    window.addEventListener("scroll", function () {
+      var altura = document.documentElement.scrollHeight - window.innerHeight;
+      if (altura <= 0) return;
+      var pct = (window.scrollY / altura) * 100;
+      for (var m = 0; m < marcos.length; m++) {
+        if (pct >= marcos[m] && !vistos[marcos[m]]) {
+          vistos[marcos[m]] = true;
+          evento("scroll_profundidade", { percentual: marcos[m] });
+        }
+      }
+    }, { passive: true });
+
+    // 2. Chegou na seção de oferta: é aqui que o preço aparece pela
+    //    primeira vez, e a queda entre este evento e o clique é a taxa
+    //    de rejeição do preço.
+    var secOferta = document.getElementById("oferta");
+    if (secOferta && "IntersectionObserver" in window) {
+      var obsOferta = new IntersectionObserver(function (entradas) {
+        if (entradas[0].isIntersecting) {
+          evento("oferta_visualizada", {});
+          obsOferta.disconnect();
+        }
+      }, { threshold: 0.25 });
+      obsOferta.observe(secOferta);
+    }
+
+    // 3. Cliques em qualquer chamada, identificados por onde estavam.
+    var origens = [
+      [".sticky-cta a", "barra_fixa"],
+      ["nav .btn-primary", "nav"],
+      [".hero-actions .btn-primary", "hero"],
+      [".gal-fecho .btn-primary", "galeria"],
+      [".closing .btn-primary", "fechamento"]
+    ];
+    origens.forEach(function (par) {
+      document.querySelectorAll(par[0]).forEach(function (el) {
+        el.addEventListener("click", function () {
+          evento("cta_clique", { origem: par[1] });
+        });
+      });
+    });
+
+    // 4. Clique no botão de compra de verdade. Quando o checkout estiver
+    //    configurado, este é o evento a marcar como conversão no GA4.
+    document.querySelectorAll(".js-cta").forEach(function (el) {
+      el.addEventListener("click", function () {
+        evento(configurado ? "checkout_iniciado" : "checkout_indisponivel", { valor: 97, moeda: "BRL" });
+      });
+    });
+
+    // 5. Abertura de pergunta do FAQ: mostra qual objeção mais aparece.
+    document.querySelectorAll("[data-faq] .faq-q").forEach(function (botao) {
+      botao.addEventListener("click", function () {
+        if (botao.getAttribute("aria-expanded") !== "true") return;
+        var texto = botao.querySelector("span");
+        evento("faq_aberto", { pergunta: texto ? texto.textContent.trim().slice(0, 80) : "" });
       });
     });
   })();
