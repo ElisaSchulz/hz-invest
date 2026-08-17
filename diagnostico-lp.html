@@ -223,30 +223,57 @@
 
   /* ─── PROBLEMA ─── */
   #problema { background: #F1EEE6; }
-  .pain-grid {
+  /* Duas colunas em contraste. A da esquerda é deliberadamente apagada: ela
+     existe para dar peso à da direita, que é onde mora o problema. */
+  .saber-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1px;
-    background: var(--border);
+    grid-template-columns: 1fr 1.15fr;
+    gap: 1.6rem;
+    margin-top: 3rem;
+    align-items: start;
+  }
+  @media (max-width: 767px) { .saber-grid { grid-template-columns: 1fr; gap: 1.2rem; } }
+  .saber-col {
+    background: #FBFAF6;
     border: 1px solid var(--border);
     border-radius: 10px;
-    overflow: hidden;
-    margin-top: 3rem;
+    padding: 1.8rem 1.8rem 1.9rem;
   }
-  .pain-card {
-    background: #FBFAF6;
-    padding: 1.8rem 1.6rem;
-    font-size: 0.98rem;
-    line-height: 1.6;
-    color: var(--text);
-  }
-  .pain-card .q {
+  .saber-col.forte { border-color: var(--teal-border); box-shadow: 0 1px 20px rgba(79,140,132,0.07); }
+  .saber-col .titulo {
     font-family: var(--font-body);
-    color: var(--teal);
-    font-size: 0.85rem;
-    display: block;
-    margin-bottom: 0.6rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 1.3rem;
+    color: var(--faint);
   }
+  .saber-col.forte .titulo { color: var(--teal); }
+  .saber-col ul { list-style: none; margin: 0; padding: 0; }
+  .saber-col li {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    padding: 0.72rem 0;
+    border-bottom: 1px solid rgba(27,27,92,0.07);
+  }
+  .saber-col li:last-child { border-bottom: none; padding-bottom: 0; }
+  .saber-col li:first-child { padding-top: 0; }
+  .saber-col .marca { flex-shrink: 0; line-height: 1.5; }
+  .saber-col.leve li { color: var(--faint); font-weight: 300; }
+  .saber-col.leve .marca { color: var(--sage); }
+  .saber-col.forte li { color: var(--white-pure); font-weight: 500; }
+  .saber-col.forte .marca { color: var(--teal); font-weight: 700; }
+  .saber-fecho {
+    margin-top: 2rem;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--text);
+    font-weight: 300;
+    max-width: 620px;
+  }
+  .saber-fecho strong { color: var(--white-pure); font-weight: 600; }
 
   /* ─── ENTREGÁVEIS ─── */
   .deliver-grid {
@@ -922,18 +949,35 @@
   <div class="reveal">
     <div class="section-label">// o problema</div>
     <div class="teal-line"></div>
-    <h2 class="section-title">Você já sabe que precisa<br>organizar as finanças.</h2>
-    <p class="section-sub">O que falta não é vontade, e sim um retrato claro de onde você está hoje e qual é o próximo passo certo. Se alguma dessas frases é sua, o diagnóstico foi feito pra você.</p>
+    <h2 class="section-title">O problema não é falta<br>de disciplina.</h2>
+    <p class="section-sub">É que ninguém nunca juntou os seus números num lugar só. Repare na diferença entre as duas listas abaixo.</p>
   </div>
 
-  <div class="pain-grid reveal">
-    <div class="pain-card"><span class="q">01</span>"Ganho bem, mas não sei exatamente pra onde vai o meu dinheiro todo mês."</div>
-    <div class="pain-card"><span class="q">02</span>"Consigo guardar, mas o dinheiro fica parado na poupança rendendo quase nada."</div>
-    <div class="pain-card"><span class="q">03</span>"Não faço ideia se estou investindo certo pro futuro que eu quero."</div>
-    <div class="pain-card"><span class="q">04</span>"As contas fecham, mas qualquer imprevisto me tiraria do sério."</div>
-    <div class="pain-card"><span class="q">05</span>"Tenho seguro e plano de saúde, mas nunca conferi se a cobertura faz sentido."</div>
-    <div class="pain-card"><span class="q">06</span>"Quero me aposentar tranquilo, mas nunca calculei quanto preciso guardar."</div>
+  <div class="saber-grid reveal">
+    <div class="saber-col leve">
+      <div class="titulo">O que você já sabe</div>
+      <ul>
+        <li><span class="marca">✓</span><span>Quanto você ganha por mês.</span></li>
+        <li><span class="marca">✓</span><span>Mais ou menos quanto gasta.</span></li>
+        <li><span class="marca">✓</span><span>Que precisa investir melhor do que investe hoje.</span></li>
+      </ul>
+    </div>
+    <div class="saber-col forte">
+      <div class="titulo">O que ninguém te disse</div>
+      <ul>
+        <li><span class="marca">?</span><span>Se dá pra parar de trabalhar aos 60 com o padrão de vida que você quer.</span></li>
+        <li><span class="marca">?</span><span>Quanto exatamente falta guardar por mês pra isso acontecer.</span></li>
+        <li><span class="marca">?</span><span>Se o seu seguro cobre o que você imagina que cobre.</span></li>
+        <li><span class="marca">?</span><span>Qual dessas contas resolver primeiro, e qual pode esperar.</span></li>
+      </ul>
+    </div>
   </div>
+
+  <p class="saber-fecho reveal">
+    Nenhuma das quatro perguntas da direita se responde com força de vontade: cada uma depende de contas
+    que cruzam renda, gastos, dívidas, proteção e prazo. <strong>O diagnóstico transforma essa lista em
+    números seus</strong>, em cerca de 25 minutos.
+  </p>
 </section>
 
 <!-- ─── ENTREGÁVEIS ─── -->
@@ -1556,11 +1600,9 @@
   <a href="#oferta" class="btn-primary">Quero meu diagnóstico</a>
 </div>
 
-<div class="cfg-warn" id="cfgWarn">
-  ⚠ <strong>Checkout não configurado.</strong> Abra <code>diagnostico-lp.html</code> e preencha
-  <code>HZ_CHECKOUT_URL</code> com o link de pagamento. Este aviso some sozinho depois disso
-  (e não aparece para quem só lê a página).
-</div>
+<!-- Caixa de avisos de configuração. O JS preenche e exibe quando há algo a
+     sinalizar; fica vazia e escondida no resto do tempo. -->
+<div class="cfg-warn" id="cfgWarn"></div>
 
 <script>
 // ─────────────────────────────────────────────────────────────
@@ -1569,6 +1611,11 @@
 //  (Hotmart, Kiwify, Mercado Pago, Stripe…). Enquanto estiver
 //  como "COLE-AQUI", os botões de compra ficam desabilitados
 //  para não vender sem ter como receber.
+//
+//  ATENÇÃO: o aviso que aparecia na tela avisando disso foi removido
+//  a pedido. Os botões continuam desligados enquanto a URL não for
+//  preenchida, e agora nada sinaliza isso na página — confira aqui
+//  antes de divulgar a landing.
 // ─────────────────────────────────────────────────────────────
 var HZ_CHECKOUT_URL = "COLE-AQUI-O-LINK-DE-CHECKOUT";
 
@@ -1632,7 +1679,6 @@ var HZ_DEPOIMENTOS = [];
   }
 
   var avisos = [];
-  if (!configurado) avisos.push("<strong>Checkout não configurado.</strong> Preencha <code>HZ_CHECKOUT_URL</code> com o link de pagamento.");
   if (temExemplo) avisos.push("<strong>Depoimentos de exemplo na página.</strong> Substitua os itens de <code>HZ_DEPOIMENTOS</code> pelos relatos reais (e remova <code>exemplo: true</code>) antes de publicar.");
   if (avisos.length) {
     var warn = document.getElementById("cfgWarn");
