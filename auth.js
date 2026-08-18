@@ -50,6 +50,51 @@ export function requireAuth() {
   });
 }
 
+/**
+ * Libera uma página só para quem está logado E tem o produto liberado.
+ *
+ * Segue a convenção já usada pelos cursos (`enrollments/{uid}/courses/{id}`),
+ * numa coleção irmã para os produtos avulsos:
+ *
+ *     enrollments/{uid}/produtos/{produtoId}   →  { ativo: true }
+ *
+ * Para liberar uma compra à mão: painel do Firebase > Firestore > coleção
+ * `enrollments` > documento do uid da pessoa > subcoleção `produtos` >
+ * documento com o id do produto > campo `ativo` = true.
+ *
+ * LIMITE IMPORTANTE: o site é estático (GitHub Pages), então esta checagem
+ * roda no navegador. Ela impede que o link circule e seja usado por quem não
+ * comprou, mas não impede alguém que leia o código-fonte de renderizar o
+ * formulário à mão. Um bloqueio real exigiria servir a página por trás de um
+ * servidor — o que só vale a pena se o produto passar a ser pirateado de fato.
+ *
+ * @param {string} produtoId  id do produto em `enrollments/{uid}/produtos`
+ * @param {object} handlers
+ *        onLiberado()   — comprou: pode mostrar a página
+ *        onSemCompra()  — logado, mas sem a compra registrada
+ * @returns {void}
+ */
+export function requireProduto(produtoId, { onLiberado, onSemCompra } = {}) {
+  onAuthStateChanged(auth, async user => {
+    if (!user) {
+      sessionStorage.setItem('hz_redirect', window.location.pathname.split('/').pop() || 'index.html');
+      window.location.href = 'login.html';
+      return;
+    }
+    let liberado = false;
+    try {
+      const snap = await getDoc(doc(db, 'enrollments', user.uid, 'produtos', produtoId));
+      liberado = snap.exists() && snap.data().ativo !== false;
+    } catch (e) {
+      // Falha de rede ou de permissão não deve deixar a pessoa presa numa
+      // tela branca: cai no caminho de "sem compra", que explica o que fazer.
+      console.error('[HZ] Falha ao verificar a compra:', e);
+    }
+    if (liberado) onLiberado && onLiberado(user);
+    else onSemCompra && onSemCompra(user);
+  });
+}
+
 /** Renders name + logout OR "Entrar" inside #nav-user-pill
  * Requires .nav-minha-area CSS in each page (see index.html for reference) */
 export function bindNavUser() {

@@ -139,6 +139,64 @@
     .btn-continue { width: 100%; }
     .error-msg { text-align: left; }
   }
+
+  /* ── controle de acesso ── */
+  .gate {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: #F6F4EE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .gate[hidden] { display: none; }
+  .gate-box {
+    max-width: 460px;
+    width: 100%;
+    text-align: center;
+    background: #FBFAF6;
+    border: 1px solid rgba(27,27,92,0.14);
+    border-radius: 12px;
+    padding: 40px 32px;
+  }
+  .gate-spinner {
+    width: 28px; height: 28px;
+    margin: 0 auto 20px;
+    border: 2px solid rgba(27,27,92,0.15);
+    border-top-color: #3E6F69;
+    border-radius: 50%;
+    animation: gate-gira 0.8s linear infinite;
+  }
+  .gate-spinner[hidden] { display: none; }
+  @keyframes gate-gira { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    .gate-spinner { animation-duration: 2.4s; }
+  }
+  .gate-titulo {
+    font-family: 'Fraunces', serif;
+    font-size: 24px; font-weight: 500; color: #1B1B5C;
+    margin: 0 0 12px;
+  }
+  .gate-msg { font-size: 15px; line-height: 1.65; color: rgba(21,21,63,0.68); margin: 0 0 8px; }
+  .gate-msg + .gate-msg { margin-top: 12px; }
+  .gate-acoes { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+  .gate-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #1B1B5C; color: #FBFAF6;
+    font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 15px;
+    text-decoration: none; border-radius: 6px; padding: 14px 24px;
+    border: none; cursor: pointer;
+  }
+  .gate-btn:hover { background: #3E6F69; }
+  .gate-btn.sec {
+    background: transparent; color: #1B1B5C;
+    border: 1px solid rgba(27,27,92,0.2);
+  }
+  .gate-btn.sec:hover { background: rgba(79,140,132,0.1); color: #1B1B5C; }
+  .gate-nota { font-size: 13px; color: rgba(21,21,63,0.58); margin-top: 20px; line-height: 1.6; }
+  .gate-nota a { color: #3E6F69; }
 </style>
 </head>
 <body>
@@ -152,6 +210,22 @@
 
 <div class="main">
   <div class="container" id="app"></div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────────
+     Controle de acesso. Fica visível por padrão e sai da frente
+     assim que a compra é confirmada, para o questionário nunca
+     aparecer antes da verificação.
+     Para desligar durante o desenvolvimento, troque
+     HZ_EXIGIR_COMPRA para false no script logo abaixo.
+     ───────────────────────────────────────────────────────────── -->
+<div class="gate" id="acessoGate">
+  <div class="gate-box">
+    <div class="gate-spinner" id="gateSpinner" aria-hidden="true"></div>
+    <div id="gateConteudo">
+      <p class="gate-msg">Verificando seu acesso…</p>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -919,6 +993,89 @@ function bindEvents() {
 }
 
 render();
+</script>
+
+<!-- ─────────────────────────────────────────────────────────────
+     Controle de acesso ao Diagnóstico.
+
+     Antes desta verificação, quem digitasse o endereço direto fazia
+     o diagnóstico de R$ 97 inteiro de graça.
+
+     Como liberar uma compra:
+       Firebase > Firestore > enrollments > {uid da pessoa}
+         > produtos > diagnostico > { ativo: true }
+
+     Quando o checkout estiver ligado, o ideal é que o webhook do
+     provedor de pagamento escreva esse documento sozinho, em vez de
+     alguém fazer isso à mão a cada venda.
+     ───────────────────────────────────────────────────────────── -->
+<script type="module">
+  // Deixe false para testar o questionário sem passar pelo login.
+  const HZ_EXIGIR_COMPRA = true;
+
+  // Se a verificação não responder nesse tempo, a pessoa recebe uma
+  // explicação em vez de ficar olhando o spinner para sempre. Acontece
+  // quando o Firebase está fora do ar ou quando um bloqueador de
+  // anúncios barra o gstatic.com.
+  const LIMITE_MS = 8000;
+
+  const gate = document.getElementById('acessoGate');
+  const spinner = document.getElementById('gateSpinner');
+  const conteudo = document.getElementById('gateConteudo');
+  let resolvido = false;
+
+  function liberar() {
+    resolvido = true;
+    gate.hidden = true;
+  }
+
+  function bloquear(titulo, paragrafos, acoes) {
+    resolvido = true;
+    spinner.hidden = true;
+    conteudo.innerHTML =
+      '<h1 class="gate-titulo">' + titulo + '</h1>' +
+      paragrafos.map(p => '<p class="gate-msg">' + p + '</p>').join('') +
+      '<div class="gate-acoes">' + acoes + '</div>' +
+      '<p class="gate-nota">Comprou e ainda está vendo esta tela? Escreva para ' +
+      '<a href="mailto:elisa@hzinvest.com.br">elisa@hzinvest.com.br</a> ' +
+      'que a gente libera na hora.</p>';
+  }
+
+  function semCompra() {
+    bloquear(
+      'Seu acesso ainda não está liberado',
+      ['Você está conectado, mas não encontramos a compra do Diagnóstico Financeiro nesta conta.',
+       'Se você comprou com outro e-mail, entre com ele. Se ainda não comprou, o diagnóstico completo está na página do produto.'],
+      '<a class="gate-btn" href="diagnostico-lp.html">Ver o Diagnóstico Financeiro</a>' +
+      '<a class="gate-btn sec" href="minha-area.html">Ir para a Minha Área</a>'
+    );
+  }
+
+  function falhaDeConexao() {
+    bloquear(
+      'Não conseguimos verificar seu acesso',
+      ['A checagem de login não respondeu. Isso costuma ser conexão instável ou uma extensão do navegador bloqueando o serviço de autenticação.',
+       'Tente de novo. Se continuar, abra esta página numa aba anônima ou em outro navegador.'],
+      '<button type="button" class="gate-btn" onclick="location.reload()">Tentar de novo</button>' +
+      '<a class="gate-btn sec" href="index.html">Voltar ao site</a>'
+    );
+  }
+
+  if (!HZ_EXIGIR_COMPRA) {
+    liberar();
+  } else {
+    setTimeout(() => { if (!resolvido) falhaDeConexao(); }, LIMITE_MS);
+    // import dinâmico: se o auth.js (ou o Firebase que ele carrega) não
+    // subir, o catch avisa em vez de deixar a tela pendurada.
+    import('./auth.js')
+      .then(({ requireProduto }) => {
+        requireProduto('diagnostico', { onLiberado: liberar, onSemCompra: semCompra });
+      })
+      .catch(err => {
+        console.error('[HZ] Falha ao carregar a autenticação:', err);
+        if (!resolvido) falhaDeConexao();
+      });
+  }
 </script>
 </body>
 </html>
