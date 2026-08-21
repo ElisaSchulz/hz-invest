@@ -61,8 +61,29 @@
   @media print {
     .no-print { display: none !important; }
     body { background: #fff; }
-    .card, .kpi, .dim-row, .glossary-item, .archetype-block { break-inside: avoid; }
+    .card, .kpi, .dim-row, .glossary-item { break-inside: avoid; }
+    /* O bloco do arquétipo pode passar de uma página inteira quando o cliente
+       escreve bastante nas perguntas abertas. Mantê-lo inteiro empurraria o
+       bloco todo pra folha seguinte e deixaria o título da seção sozinho, então
+       aqui ele continua na próxima página em vez de ser preservado. */
+    .archetype-block { break-inside: auto; }
     @page { size: A4; margin: 16mm; }
+
+    /* Capa e encerramento ganham páginas sem margem, pra o fundo navy sangrar
+       até a borda do papel. O padding volta por dentro, em mm, já que aqui não
+       há viewport. */
+    @page sangria { margin: 0; }
+    .cover, .closing { page: sangria; min-height: 0; height: 100vh; padding: 24mm 22mm; }
+    .closing { break-before: page; display: flex; flex-direction: column; justify-content: center; }
+
+    /* Uma seção por página: cada uma recomeça no topo da folha seguinte. O
+       respiro vertical entre seções vem da margem da folha, então o padding
+       sai — inclusive o de baixo, que o navegador tenta manter junto com o
+       último bloco e acabava empurrando blocos inteiros pra página seguinte. */
+    #report > section:not(.cover):not(.closing) { break-before: page; padding-top: 0; padding-bottom: 0; }
+    /* Os fios separadores só fazem sentido quando as seções se seguem na
+       mesma folha; com a quebra, viram um risco solto no topo da página. */
+    .hairline { border-top: none; }
   }
 </style>
 </head>
@@ -344,7 +365,7 @@ function renderReport(R) {
     '</div></div></section>';
 
   // 13. Encerramento
-  html += '<section style="position:relative; overflow:hidden; background:#1B1B5C; color:#FBFAF6;">' +
+  html += '<section class="closing" style="position:relative; overflow:hidden; background:#1B1B5C; color:#FBFAF6;">' +
     '<div class="navy-glow" style="bottom:-100px; left:-100px; width:320px; height:320px; background:radial-gradient(circle, rgba(111,168,160,0.3) 0%, rgba(111,168,160,0) 70%);"></div>' +
     '<div style="max-width:700px; margin:0 auto; position:relative; text-align:center;">' +
     '<div style="font-family:\'Fraunces\', serif; font-style:italic; font-size:24px; color:#6FA8A0; margin-bottom:20px;">Obrigado pela confiança, ' + esc(R.data.primeiroNome) + '.</div>' +
