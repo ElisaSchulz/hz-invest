@@ -532,13 +532,13 @@ function closeMenu() {
 
 <!-- Firebase Auth (module) -->
 <script type="module">
-  import { bindNavUser } from './auth.js';
+  import { bindNavUser } from './auth.js?v=2';
   bindNavUser();
 </script>
 
 <!-- Newsletter — salva e-mail no Firestore -->
 <script type="module">
-import { db } from './auth.js';
+import { db } from './auth.js?v=2';
 import { doc, setDoc } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js';
 
 window.subscribeNewsletter = async function() {
