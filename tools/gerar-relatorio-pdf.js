@@ -40,7 +40,10 @@ function servidor() {
   const stored = JSON.parse(fs.readFileSync(dadosPath, "utf8"));
   const server = await servidor();
   const base = "http://127.0.0.1:" + server.address().port;
-  const browser = await chromium.launch();
+  // Em ambientes onde o Playwright só tem o Chromium completo instalado (sem o
+  // "headless shell" que ele baixa por padrão), aponte o binário via
+  // HZ_CHROMIUM=/caminho/para/chromium em vez de reinstalar tudo.
+  const browser = await chromium.launch(process.env.HZ_CHROMIUM ? { executablePath: process.env.HZ_CHROMIUM } : {});
   const page = await browser.newPage({ viewport: { width: 1180, height: 1400 } });
 
   // Sem rede externa o Supabase não carrega; o relatório não depende dele.
