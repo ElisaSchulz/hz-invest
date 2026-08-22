@@ -81,18 +81,33 @@ export function requireProduto(produtoId, { onLiberado, onSemCompra } = {}) {
       window.location.href = 'login.html';
       return;
     }
-    let liberado = false;
-    try {
-      const snap = await getDoc(doc(db, 'enrollments', user.uid, 'produtos', produtoId));
-      liberado = snap.exists() && snap.data().ativo !== false;
-    } catch (e) {
-      // Falha de rede ou de permissão não deve deixar a pessoa presa numa
-      // tela branca: cai no caminho de "sem compra", que explica o que fazer.
-      console.error('[HZ] Falha ao verificar a compra:', e);
-    }
-    if (liberado) onLiberado && onLiberado(user);
+    if (await temProduto(produtoId, user)) onLiberado && onLiberado(user);
     else onSemCompra && onSemCompra(user);
   });
+}
+
+/**
+ * Diz se a pessoa tem um produto liberado, sem redirecionar nem bloquear
+ * a página. É o que a Minha Área usa para decidir o que mostrar no banner.
+ *
+ * Mesma regra do requireProduto, num lugar só: se um dia a estrutura de
+ * `enrollments` mudar, muda aqui e as duas chamadas acompanham.
+ *
+ * @param {string} produtoId
+ * @param {object} [user]  padrão: o usuário logado no momento
+ * @returns {Promise<boolean>}
+ */
+export async function temProduto(produtoId, user = auth.currentUser) {
+  if (!user) return false;
+  try {
+    const snap = await getDoc(doc(db, 'enrollments', user.uid, 'produtos', produtoId));
+    return snap.exists() && snap.data().ativo !== false;
+  } catch (e) {
+    // Falha de rede ou de permissão não deve deixar a pessoa presa numa
+    // tela branca: trata como "sem acesso", que sempre tem saída na tela.
+    console.error('[HZ] Falha ao verificar a compra:', e);
+    return false;
+  }
 }
 
 /** Renders name + logout OR "Entrar" inside #nav-user-pill
