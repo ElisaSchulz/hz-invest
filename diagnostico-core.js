@@ -168,7 +168,7 @@
     risco: {
       critico: function (n) { return { texto: "Sua proteção contra imprevistos tem lacunas sérias: " + n.protecaoLista + ". Isso expõe " + (n.dependentes > 0 ? "sua família" : "você") + " a risco financeiro significativo em caso de imprevisto.", acao: n.protecaoAcao }; },
       insuficiente: function (n) { return { texto: "Sua proteção cobre parte dos cenários, mas ainda há lacunas: " + n.protecaoLista + ".", acao: n.protecaoAcao }; },
-      otimizacao: function (n) { return { texto: "Sua proteção está bem estruturada. Recomendamos revisão periódica a cada 2 anos para manter a adequação.", acao: "Agendar uma revisão de apólices em até 2 anos." }; }
+      otimizacao: function (n) { return { texto: "Sua proteção está bem estruturada. Recomendamos revisão periódica a cada 2 anos para manter a adequação.", acao: "Revisar " + n.coberturas + " em até 2 anos." }; }
     },
     patrimonio: {
       // O alerta de carteira (concentração ou descasamento com o perfil) precisa
@@ -694,6 +694,12 @@
     // Sem dependentes, seguro de vida não entra como lacuna: não há renda de
     // terceiros a proteger, e cobrar isso desloca o foco do que importa.
     var seguroVidaInsuficiente = dependentes > 0 && D.temSeguroVida && multiploCobertura < benchmarkMultiplo * 0.85;
+    // Como se referir às coberturas que a pessoa de fato contratou. Usado nos
+    // textos de revisão de proteção, que antes falavam em "apólices" mesmo para
+    // quem só tinha plano de saúde.
+    var coberturasDaPessoa =
+      (D.temSeguroVida && D.temPlanoSaude) ? "seu seguro de vida e seu plano de saúde" :
+      D.temSeguroVida ? "seu seguro de vida" : "seu plano de saúde";
     var protecaoGaps = [];
     if (dependentes > 0 && !D.temSeguroVida) protecaoGaps.push("nenhum seguro de vida, com " + plural(dependentes, "dependente", "dependentes"));
     else if (seguroVidaInsuficiente) protecaoGaps.push("cobertura de seguro de vida de " + num1(multiploCobertura) + "x a renda anual, abaixo do recomendado (" + String(benchmarkMultiplo).replace(".", ",") + "x)");
@@ -747,6 +753,7 @@
       retornoAtual: pct(rAtualAnual * 100, 1),
       protecaoLista: protecaoGaps.join("; ") || "nenhuma lacuna relevante identificada",
       protecaoAcao: protecaoAcao,
+      coberturas: coberturasDaPessoa,
       aporteViavel: aporteNecessario <= rendaTotal * 0.5,
       aposentado: aposentadoriaAtingida,
       deficitAtivo: deficit,
@@ -776,7 +783,7 @@
       }
       otimizacoes.push({ dimNome: "Rebalanceamento", texto: "Carteiras saem do lugar sozinhas: a classe que mais sobe vai ganhando peso e leva o risco junto, sem que ninguém decida isso. Definir bandas de rebalanceamento transforma esse desvio numa regra, em vez de uma decisão tomada no calor do momento.", acao: "Definir a alocação-alvo por classe e uma banda de tolerância para rebalancear." });
       if ((D.temSeguroVida || D.temPlanoSaude) && D.revisouApolices !== "Recentemente") {
-        otimizacoes.push({ dimNome: "Revisão de proteção", texto: "Sua proteção está adequada hoje, mas coberturas envelhecem junto com o patrimônio e a estrutura familiar. Uma revisão periódica evita descobrir uma lacuna no pior momento possível.", acao: "Agendar uma revisão das apólices nos próximos 12 meses." });
+        otimizacoes.push({ dimNome: "Revisão de proteção", texto: "Sua proteção está adequada hoje, mas coberturas envelhecem junto com o patrimônio e a estrutura familiar. Uma revisão periódica evita descobrir uma lacuna no pior momento possível.", acao: "Revisar " + coberturasDaPessoa + " nos próximos 12 meses." });
       }
       if (patrimonioLiquido > 1500000) {
         otimizacoes.push({ dimNome: "Sucessão e estrutura", texto: "Num patrimônio desse porte, a conversa deixa de ser só rentabilidade e passa a incluir como ele se transfere: inventário, custos de transmissão e a forma de titularidade dos bens fazem diferença relevante para a família.", acao: "Mapear a titularidade dos bens e avaliar as alternativas de planejamento sucessório." });
@@ -809,11 +816,13 @@
       }
     }
 
-    // Regra contextual: apólices sem revisão há 2+ anos entram na recomendação de risco
+    // Regra contextual: coberturas sem revisão há 2+ anos entram na recomendação
+    // de risco. O texto nomeia o que a pessoa tem: falar em "apólices" para quem
+    // só marcou plano de saúde contradiz a resposta que ela acabou de dar.
     if ((D.temSeguroVida || D.temPlanoSaude) && (D.revisouApolices === "Nunca revisei" || D.revisouApolices === "Faz mais de 2 anos")) {
       var extraRisco = (D.revisouApolices === "Nunca revisei"
-        ? " Suas apólices nunca foram revisadas desde a contratação."
-        : " Suas apólices estão sem revisão há mais de 2 anos.") +
+        ? " Você nunca revisou " + coberturasDaPessoa + " desde a contratação."
+        : " Faz mais de 2 anos que você não revisa " + coberturasDaPessoa + ".") +
         " Coberturas desatualizadas costumam ser descobertas na pior hora, então vale agendar uma revisão.";
       var riscoPlan = actionPlan.filter(function (a) { return a.key === "risco"; })[0];
       var riscoStrength = strengths.filter(function (s) { return s.key === "risco"; })[0];

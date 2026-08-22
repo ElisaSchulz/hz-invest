@@ -421,7 +421,7 @@ function requiredByStep(n) {
       ["Tem seguro de vida?", data.temSeguroVida === true || data.temSeguroVida === false],
       ["Tem plano de saúde?", data.temPlanoSaude === true || data.temPlanoSaude === false],
       ["Tempo com renda garantida", data.tempoRendaGarantida !== ""],
-      ["Revisou apólices/coberturas nos últimos 2 anos?", !(data.temSeguroVida === true || data.temPlanoSaude === true) || data.revisouApolices !== ""]
+      [rotuloRevisao(), !(data.temSeguroVida === true || data.temPlanoSaude === true) || data.revisouApolices !== ""]
     ],
     8: [
       ["Idade em que quer se aposentar", String(data.idadeAposentadoria) !== ""],
@@ -636,6 +636,18 @@ function renderStep6() {
     '</div></div>';
 }
 
+/* A pergunta de revisão aparece para quem tem seguro de vida OU plano de
+   saúde, mas falar em "apólices" para quem só tem plano soa como se o
+   formulário tivesse ignorado a resposta anterior. O rótulo nomeia o que a
+   pessoa realmente marcou. */
+function rotuloRevisao() {
+  var vida = data.temSeguroVida === true;
+  var saude = data.temPlanoSaude === true;
+  if (vida && saude) return "Revisou o seguro de vida e o plano de saúde nos últimos 2 anos?";
+  if (vida) return "Revisou a apólice do seu seguro de vida nos últimos 2 anos?";
+  return "Revisou as coberturas do seu plano de saúde nos últimos 2 anos?";
+}
+
 function renderStep7() {
   return '<div class="card"><div class="grid2">' +
     '<div><label class="f-label" style="margin-bottom:10px;">Tem seguro de vida?</label>' + simNaoSeg("temSeguroVida", data.temSeguroVida) + '</div>' +
@@ -644,7 +656,7 @@ function renderStep7() {
     '<div><label class="f-label" style="margin-bottom:10px;">Tem reserva específica pra emergências médicas?</label>' + simNaoSeg("reservaMedica", data.reservaMedica) + '</div>' +
     '<div class="span2"><label class="f-label">Se ficasse incapacitado de trabalhar, por quanto tempo sua renda estaria garantida?</label>' + selectHtml("tempoRendaGarantida", TEMPO_RENDA_GARANTIDA, data.tempoRendaGarantida) + '</div>' +
     (data.temSeguroVida === true || data.temPlanoSaude === true ?
-      '<div class="span2"><label class="f-label">Revisou apólices/coberturas nos últimos 2 anos?</label>' + selectHtml("revisouApolices", REVISOU_APOLICES, data.revisouApolices) + '</div>' : "") +
+      '<div class="span2"><label class="f-label">' + rotuloRevisao() + '</label>' + selectHtml("revisouApolices", REVISOU_APOLICES, data.revisouApolices) + '</div>' : "") +
     '</div></div>';
 }
 
