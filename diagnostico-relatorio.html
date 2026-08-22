@@ -56,13 +56,41 @@
     h2 { font-size: 26px; }
     .grafico { padding-bottom: 78%; }
     .g-rot { font-size: 10px; }
+    /* Cartão-âncora em cima dos secundários, e rosca em cima da legenda:
+       lado a lado, os dois espremem a coluna da direita a ponto de os
+       rótulos quebrarem letra a letra. */
+    .kpi-grupo-corpo { grid-template-columns: 1fr !important; }
+    .dist-card { flex-direction: column; align-items: stretch !important; gap: 22px !important; }
+    .dist-card > div:first-child { align-self: center; }
+    .dist-lista { grid-template-columns: 1fr !important; }
   }
 
   @media print {
     .no-print { display: none !important; }
     body { background: #fff; }
-    .card, .kpi, .dim-row, .glossary-item, .archetype-block { break-inside: avoid; }
+    .card, .kpi, .dim-row, .glossary-item, .faixa-row, .kpi-grupo { break-inside: avoid; }
+    /* O bloco do arquétipo pode passar de uma página inteira quando o cliente
+       escreve bastante nas perguntas abertas. Mantê-lo inteiro empurraria o
+       bloco todo pra folha seguinte e deixaria o título da seção sozinho, então
+       aqui ele continua na próxima página em vez de ser preservado. */
+    .archetype-block { break-inside: auto; }
     @page { size: A4; margin: 16mm; }
+
+    /* Capa e encerramento ganham páginas sem margem, pra o fundo navy sangrar
+       até a borda do papel. O padding volta por dentro, em mm, já que aqui não
+       há viewport. */
+    @page sangria { margin: 0; }
+    .cover, .closing { page: sangria; min-height: 0; height: 100vh; padding: 24mm 22mm; }
+    .closing { break-before: page; display: flex; flex-direction: column; justify-content: center; }
+
+    /* Uma seção por página: cada uma recomeça no topo da folha seguinte. O
+       respiro vertical entre seções vem da margem da folha, então o padding
+       sai — inclusive o de baixo, que o navegador tenta manter junto com o
+       último bloco e acabava empurrando blocos inteiros pra página seguinte. */
+    #report > section:not(.cover):not(.closing) { break-before: page; padding-top: 0; padding-bottom: 0; }
+    /* Os fios separadores só fazem sentido quando as seções se seguem na
+       mesma folha; com a quebra, viram um risco solto no topo da página. */
+    .hairline { border-top: none; }
   }
 </style>
 </head>
@@ -81,8 +109,130 @@ var fmt = HZDiag.fmt, pct = HZDiag.pct, esc = HZDiag.esc, computeReport = HZDiag
 
 /* ===================== Render ===================== */
 function sectionHeader(eyebrow, num, title) {
-  return '<div class="eyebrow-wrap"><div class="eyebrow-line"></div><div class="eyebrow-text">' + eyebrow + '</div><div class="section-num">' + num + ' · 13</div></div>' +
+  return '<div class="eyebrow-wrap"><div class="eyebrow-line"></div><div class="eyebrow-text">' + eyebrow + '</div><div class="section-num">' + num + ' · 14</div></div>' +
     '<h2>' + title + '</h2>';
+}
+
+/* ── Seção 7: Distribuição de Despesas ────────────────────────────────────
+   Duas leituras na mesma página. A rosca reparte a despesa por categoria
+   (fecha em 100%); a régua compara com a referência 50/30/20, que é sobre a
+   renda.
+
+   Cor: onze categorias com onze matizes distintos reprovam nos testes de
+   daltonismo e de contraste — passam só três matizes quando todos os pares
+   precisam se distinguir. Então a identidade fica no grupo (essenciais em
+   azul, flexíveis em ocre) e, dentro de cada grupo, os passos variam em
+   claridade na ordem de tamanho. A lista ao lado nomeia cada fatia com seu
+   percentual, que é o alívio exigido para os tons de contraste mais baixo. */
+var RAMPA = {
+  essenciais: ["#25397A", "#2C4794", "#3454A8", "#4667BB", "#6180C9", "#8098D6", "#A3B4E3"],
+  flexiveis:  ["#9E6B14", "#BE8320", "#D99A2B", "#E8B45E"],
+  investimentos: "#1F8F7A"
+};
+
+function corDaCategoria(cat, indiceNoGrupo) {
+  var rampa = RAMPA[cat.grupo] || RAMPA.essenciais;
+  return rampa[Math.min(indiceNoGrupo, rampa.length - 1)];
+}
+
+function renderDistribuicao(R) {
+  var d = R.distribuicao;
+
+  // A régua não é identidade, é estado: cada faixa é uma razão medida contra um
+  // limite. Por isso a barra usa a cor de estado — e vem sempre com a frase que
+  // diz o mesmo, pra não depender de cor em impressão preto e branco.
+  var COMENTARIO = {
+    essenciais: { ok: "Dentro da faixa geralmente considerada saudável.",
+                  fora: "Acima da faixa geralmente considerada saudável — vale ver se há espaço pra reduzir algum desses gastos fixos." },
+    flexiveis:  { ok: "Dentro da faixa geralmente considerada saudável.",
+                  fora: "Acima da faixa geralmente considerada saudável — é aqui que os cortes costumam ser mais fáceis." },
+    investimentos: { ok: "Dentro (ou acima) da faixa geralmente considerada saudável.",
+                     fora: "Abaixo da faixa geralmente considerada saudável — é o que mais pesa no longo prazo." }
+  };
+
+  var faixas = d.faixas.map(function (f) {
+    var cor = f.dentro ? "#3E6F69" : "#C48A3E";
+    var largura = Math.max(0, Math.min(100, f.pct));
+    var rotulo = f.limite === "ate" ? "ideal até " + f.ideal + "%" : "ideal no mínimo " + f.ideal + "%";
+    var texto = COMENTARIO[f.key][f.dentro ? "ok" : "fora"];
+    return '<div class="faixa-row" style="margin-bottom:18px;">' +
+      '<div style="display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:5px;">' +
+      '<div style="font-size:14.5px; font-weight:700; color:#1B1B5C;">' + f.nome + '</div>' +
+      '<div style="font-size:13px; font-weight:700; color:' + cor + '; font-feature-settings:\'tnum\';">' + pct(f.pct, 1) +
+      ' <span style="color:rgba(21,21,63,0.4); font-weight:500;">(' + rotulo + ')</span></div></div>' +
+      '<div style="position:relative; height:9px; border-radius:4.5px; background:rgba(27,27,92,0.08); margin-bottom:6px;">' +
+      '<div style="width:' + largura + '%; height:100%; background:' + cor + '; border-radius:4.5px;"></div>' +
+      '<div style="position:absolute; top:-3px; left:' + f.ideal + '%; width:2px; height:15px; background:#1B1B5C;"></div>' +
+      '</div>' +
+      '<div style="font-size:12px; color:rgba(21,21,63,0.55); line-height:1.5;">' + f.itens + ' ' + texto + '</div>' +
+      '</div>';
+  }).join("");
+
+  var referencia =
+    '<div style="font-size:13.5px; line-height:1.7; color:rgba(21,21,63,0.7); max-width:620px; margin-bottom:16px;">' +
+    'Uma referência comum de planejamento sugere até 50% da renda em despesas essenciais, até 30% em despesas flexíveis, ' +
+    'e pelo menos 20% direcionado a investimentos e reserva — a lógica do "50/30/20". É um ponto de partida, não uma regra: ' +
+    'serve pra mostrar onde vale ajustar primeiro.</div>';
+
+  var cabecalho =
+    sectionHeader("Para onde vai o dinheiro", "07", "Distribuição de Despesas");
+
+  var bloco2 =
+    '<div style="font-size:10.5px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#3E6F69; margin:26px 0 10px;">Referência</div>' +
+    '<div style="font-family:\'Fraunces\', serif; font-size:19px; font-weight:500; color:#1B1B5C; margin-bottom:10px;">O que seria uma distribuição equilibrada</div>' +
+    referencia +
+    '<div class="card" style="padding:22px 28px;">' + faixas + '</div>';
+
+  if (!d.categorias.length) {
+    return '<section class="hairline"><div class="wrap">' + cabecalho +
+      '<div style="font-size:13.5px; line-height:1.6; color:rgba(21,21,63,0.7); margin-bottom:6px;">Você não detalhou as despesas por categoria, então não há distribuição a mostrar. A régua abaixo usa os totais informados.</div>' +
+      bloco2 + '</div></section>';
+  }
+
+  // ---- rosca ----
+  // Onze categorias com onze matizes distintos reprovam nos testes de daltonismo
+  // (só três matizes se distinguem quando qualquer par pode ser comparado). Então
+  // a identidade fica no grupo — essenciais em azul, flexíveis em ocre — e dentro
+  // de cada grupo os passos variam em claridade, na ordem de tamanho. A lista ao
+  // lado nomeia cada fatia com o percentual, que é o alívio exigido.
+  var RAIO = 60, LARGURA = 24, C = 2 * Math.PI * RAIO;
+  var acumulado = 0, vistos = {};
+  var arcos = d.categorias.map(function (c) {
+    var i = (vistos[c.grupo] = (vistos[c.grupo] || 0)); vistos[c.grupo]++;
+    var comprimento = (c.pct / 100) * C;
+    var traco = Math.max(comprimento - 2, 0.8);   // 2px de respiro entre fatias
+    var el = '<circle cx="80" cy="80" r="' + RAIO + '" fill="none" stroke="' + corDaCategoria(c, i) +
+      '" stroke-width="' + LARGURA + '" stroke-dasharray="' + traco.toFixed(2) + ' ' + (C - traco).toFixed(2) +
+      '" stroke-dashoffset="' + (-acumulado).toFixed(2) + '" />';
+    acumulado += comprimento;
+    return el;
+  }).join("");
+
+  vistos = {};
+  var lista = d.categorias.map(function (c) {
+    var i = (vistos[c.grupo] = (vistos[c.grupo] || 0)); vistos[c.grupo]++;
+    return '<div style="display:flex; align-items:center; gap:8px; padding:5px 0;">' +
+      '<div style="width:9px; height:9px; border-radius:50%; background:' + corDaCategoria(c, i) + '; flex-shrink:0;"></div>' +
+      '<div style="font-size:12.5px; color:rgba(21,21,63,0.8); flex:1; min-width:0;">' + c.label + '</div>' +
+      '<div style="font-size:12.5px; font-weight:700; color:#1B1B5C; font-feature-settings:\'tnum\';">' + pct(c.pct, 1) + '</div>' +
+      '</div>';
+  }).join("");
+
+  return '<section class="hairline"><div class="wrap">' + cabecalho +
+    '<div style="font-size:13.5px; line-height:1.6; color:rgba(21,21,63,0.6); max-width:580px; margin-bottom:18px;">' +
+    'Como os ' + fmt(d.total) + ' que saem por mês se repartem entre as categorias. ' +
+    'Aqui os percentuais são sobre a despesa; na régua abaixo, sobre a renda.</div>' +
+    '<div class="card dist-card" style="padding:26px 30px; display:flex; gap:32px; align-items:center;">' +
+    '<div style="position:relative; width:176px; height:176px; flex-shrink:0;">' +
+    '<svg width="176" height="176" viewBox="0 0 160 160" role="img" aria-label="Distribuição das despesas por categoria, total de ' + fmt(d.total) + '.">' +
+    '<circle cx="80" cy="80" r="' + RAIO + '" fill="none" stroke="rgba(27,27,92,0.08)" stroke-width="' + LARGURA + '" />' +
+    '<g transform="rotate(-90 80 80)">' + arcos + '</g></svg>' +
+    '<div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none;">' +
+    '<div style="font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:rgba(21,21,63,0.4);">Total</div>' +
+    '<div style="font-family:\'Fraunces\', serif; font-size:18px; font-weight:500; color:#1B1B5C; font-feature-settings:\'tnum\';">' + fmt(d.total) + '</div>' +
+    '</div></div>' +
+    '<div class="dist-lista" style="flex:1; display:grid; grid-template-columns:repeat(2, 1fr); gap:6px 20px;">' + lista + '</div>' +
+    '</div>' + bloco2 + '</div></section>';
 }
 
 function renderReport(R) {
@@ -187,27 +337,34 @@ function renderReport(R) {
     '<div style="font-size:16px; line-height:1.6; color:#FBFAF6; font-weight:500;">' + R.arquetipo.prioridade + '</div></div>' +
     voz + '</div></div></section>';
 
-  // 6. KPIs
-  var heroCards = R.kpiHero.map(function (kpi) {
-    return '<div class="kpi" style="position:relative; overflow:hidden; background:#1B1B5C; border-radius:8px; padding:32px 30px; color:#FBFAF6;">' +
-      '<div class="navy-glow" style="top:-30px; right:-30px; width:140px; height:140px;"></div>' +
-      '<div style="position:relative; font-size:11px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#6FA8A0; margin-bottom:12px;">' + kpi.label + '</div>' +
-      '<div style="position:relative; font-family:\'Fraunces\', serif; font-size:34px; font-weight:500; font-feature-settings:\'tnum\';">' + kpi.value + '</div>' +
-      (kpi.sub ? '<div style="position:relative; font-size:12.5px; color:rgba(251,250,246,0.6); margin-top:8px;">' + kpi.sub + '</div>' : "") +
-      '</div>';
-  }).join("");
-  var restCards = R.kpiRest.map(function (kpi) {
-    return '<div class="kpi" style="position:relative; overflow:hidden; background:rgba(27,27,92,0.06); border:1px solid rgba(27,27,92,0.12); border-radius:8px; padding:18px 20px;">' +
-      '<div style="font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#3E6F69; margin-bottom:8px;">' + kpi.label + '</div>' +
-      '<div style="font-family:\'Fraunces\', serif; font-size:20px; font-weight:500; color:#1B1B5C; font-feature-settings:\'tnum\';">' + kpi.value + '</div>' +
-      (kpi.sub ? '<div style="font-size:11.5px; color:rgba(21,21,63,0.5); margin-top:4px;">' + kpi.sub + '</div>' : "") +
-      '</div>';
+  // 6. KPIs, agrupados por assunto
+  var grupos = R.kpiGrupos.map(function (g) {
+    var pequenos = g.itens.map(function (kpi) {
+      return '<div class="kpi" style="background:rgba(27,27,92,0.05); border:1px solid rgba(27,27,92,0.12); border-radius:8px; padding:16px 18px;">' +
+        '<div style="font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#3E6F69; margin-bottom:6px;">' + kpi.label + '</div>' +
+        '<div style="font-family:\'Fraunces\', serif; font-size:20px; font-weight:500; color:#1B1B5C; font-feature-settings:\'tnum\';">' + kpi.value + '</div>' +
+        (kpi.sub ? '<div style="font-size:11.5px; color:rgba(21,21,63,0.5); margin-top:4px; line-height:1.45;">' + kpi.sub + '</div>' : "") +
+        '</div>';
+    }).join("");
+    return '<div class="kpi-grupo" style="margin-bottom:26px;">' +
+      '<div style="font-size:10.5px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#3E6F69; padding-bottom:8px; margin-bottom:14px; border-bottom:1px solid rgba(27,27,92,0.12);">' + g.titulo + '</div>' +
+      '<div class="kpi-grupo-corpo" style="display:grid; grid-template-columns:minmax(220px, 1fr) 2fr; gap:14px; align-items:stretch;">' +
+      '<div class="kpi" style="position:relative; overflow:hidden; background:#1B1B5C; border-radius:8px; padding:28px 26px; color:#FBFAF6; display:flex; flex-direction:column; justify-content:center;">' +
+      '<div class="navy-glow" style="top:-40px; right:-40px; width:150px; height:150px;"></div>' +
+      '<div style="position:relative; font-size:10.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#6FA8A0; margin-bottom:10px;">' + g.destaque.label + '</div>' +
+      '<div style="position:relative; font-family:\'Fraunces\', serif; font-size:31px; font-weight:500; font-feature-settings:\'tnum\'; line-height:1.1;">' + g.destaque.value + '</div>' +
+      (g.destaque.sub ? '<div style="position:relative; font-size:12px; color:rgba(251,250,246,0.6); margin-top:8px;">' + g.destaque.sub + '</div>' : "") +
+      '</div>' +
+      '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(175px, 1fr)); gap:12px; align-content:start;">' + pequenos + '</div>' +
+      '</div></div>';
   }).join("");
   html += '<section><div class="wrap-wide">' +
     sectionHeader("Os números por trás", "06", "KPIs Financeiros") +
-    '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin-bottom:16px;">' + heroCards + '</div>' +
-    '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:12px;">' + restCards + '</div>' +
+    grupos +
     '</div></section>';
+
+  // 7. Distribuição das despesas
+  html += renderDistribuicao(R);
 
   // 7. Score por dimensão
   var legend = [["Crítico", "#B34747"], ["Insuficiente", "#C48A3E"], ["Adequado", "#4F8C84"], ["Excelente", "#1B1B5C"]].map(function (b) {
@@ -223,7 +380,7 @@ function renderReport(R) {
       '<div style="font-size:14px; color:rgba(21,21,63,0.65); line-height:1.6;">' + d.contexto + '</div></div>';
   }).join("");
   html += '<section><div class="wrap">' +
-    sectionHeader("Dimensão por dimensão", "07", "Score por Dimensão") +
+    sectionHeader("Dimensão por dimensão", "08", "Score por Dimensão") +
     '<div style="display:flex; gap:22px; flex-wrap:wrap; margin-bottom:28px; margin-top:-12px;">' + legend + '</div>' +
     dims + '</div></section>';
 
@@ -251,7 +408,7 @@ function renderReport(R) {
       '<div style="width:22px; height:3px; ' + l[1] + '"></div>' + l[0] + '</div>';
   }).join("");
   html += '<section class="hairline"><div class="wrap-wide">' +
-    sectionHeader("Pra onde isso leva", "08", A.titulo) +
+    sectionHeader("Pra onde isso leva", "09", A.titulo) +
     '<div style="font-size:15px; color:rgba(21,21,63,0.6); margin:-16px 0 24px; max-width:660px; line-height:1.6;">' + esc(A.subtitulo) + '</div>' +
     '<div class="card" style="padding:26px 28px; margin-bottom:16px;">' +
     '<div style="font-size:10.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#3E6F69; margin-bottom:8px;">Estratégia escolhida · ' + esc(A.estrategiaLabel) + '</div>' +
@@ -310,7 +467,7 @@ function renderReport(R) {
     ? '<div style="font-size:15px; color:rgba(21,21,63,0.6); margin:-16px 0 28px; max-width:640px; line-height:1.6;">Nenhuma das seis dimensões está em faixa de correção. O que segue são ajustes de refinamento: o que fazer quando o básico já está resolvido.</div>'
     : "";
   html += '<section class="hairline"><div class="wrap">' +
-    sectionHeader("O que fazer", "09", R.planoOtimizacao ? "Plano de Otimização" : "Plano de Ação Individualizado") +
+    sectionHeader("O que fazer", "10", R.planoOtimizacao ? "Plano de Otimização" : "Plano de Ação Individualizado") +
     planoIntro + plan + strengthsHtml + investSeguroHtml + '</div></section>';
 
   // 10. Checklist 30 dias
@@ -320,7 +477,7 @@ function renderReport(R) {
       '<div style="font-size:15px; line-height:1.6; color:rgba(21,21,63,0.8);">' + c + '</div></div>';
   }).join("");
   html += '<section class="tight hairline"><div class="wrap">' +
-    sectionHeader("Comece por aqui", "10", "Checklist dos Próximos 30 Dias") +
+    sectionHeader("Comece por aqui", "11", "Checklist dos Próximos 30 Dias") +
     '<div class="card" style="padding:12px 32px;">' + checks + '</div></div></section>';
 
   // 11. Glossário
@@ -330,12 +487,12 @@ function renderReport(R) {
       '<div style="font-size:14px; line-height:1.65; color:rgba(21,21,63,0.7);">' + g.definicao + '</div></div>';
   }).join("");
   html += '<section class="hairline"><div class="wrap-wide">' +
-    sectionHeader("Pra consultar sempre que precisar", "11", "Glossário") +
+    sectionHeader("Pra consultar sempre que precisar", "12", "Glossário") +
     '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:24px 32px;">' + gloss + '</div></div></section>';
 
   // 12. Próximo passo
   html += '<section class="tight hairline"><div class="wrap">' +
-    sectionHeader("Recomendação", "12", "Seu Próximo Passo") +
+    sectionHeader("Recomendação", "13", "Seu Próximo Passo") +
     '<div class="card" style="padding:44px;">' +
     '<div style="font-size:11px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#3E6F69; margin-bottom:12px;">Plano recomendado</div>' +
     '<div style="font-family:\'Fraunces\', serif; font-size:34px; font-weight:500; color:#1B1B5C; margin-bottom:20px;">' + R.nextStep.duracao + '</div>' +
@@ -344,7 +501,7 @@ function renderReport(R) {
     '</div></div></section>';
 
   // 13. Encerramento
-  html += '<section style="position:relative; overflow:hidden; background:#1B1B5C; color:#FBFAF6;">' +
+  html += '<section class="closing" style="position:relative; overflow:hidden; background:#1B1B5C; color:#FBFAF6;">' +
     '<div class="navy-glow" style="bottom:-100px; left:-100px; width:320px; height:320px; background:radial-gradient(circle, rgba(111,168,160,0.3) 0%, rgba(111,168,160,0) 70%);"></div>' +
     '<div style="max-width:700px; margin:0 auto; position:relative; text-align:center;">' +
     '<div style="font-family:\'Fraunces\', serif; font-style:italic; font-size:24px; color:#6FA8A0; margin-bottom:20px;">Obrigado pela confiança, ' + esc(R.data.primeiroNome) + '.</div>' +

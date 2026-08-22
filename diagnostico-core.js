@@ -168,7 +168,7 @@
     risco: {
       critico: function (n) { return { texto: "Sua proteção contra imprevistos tem lacunas sérias: " + n.protecaoLista + ". Isso expõe " + (n.dependentes > 0 ? "sua família" : "você") + " a risco financeiro significativo em caso de imprevisto.", acao: n.protecaoAcao }; },
       insuficiente: function (n) { return { texto: "Sua proteção cobre parte dos cenários, mas ainda há lacunas: " + n.protecaoLista + ".", acao: n.protecaoAcao }; },
-      otimizacao: function (n) { return { texto: "Sua proteção está bem estruturada. Recomendamos revisão periódica a cada 2 anos para manter a adequação.", acao: "Agendar uma revisão de apólices em até 2 anos." }; }
+      otimizacao: function (n) { return { texto: "Sua proteção está bem estruturada. Recomendamos revisão periódica a cada 2 anos para manter a adequação.", acao: "Revisar " + n.coberturas + " em até 2 anos." }; }
     },
     patrimonio: {
       // O alerta de carteira (concentração ou descasamento com o perfil) precisa
@@ -297,6 +297,52 @@
     var despesaTotal = Object.keys(despesasCats).reduce(function (a, k) { return a + (despesasCats[k] || 0); }, 0) - aporteMensal;
     var taxaPoupanca = rendaTotal > 0 ? ((rendaTotal - despesaTotal) / rendaTotal) * 100 : 0;
     var deficit = despesaTotal > rendaTotal;
+
+    // ---- Distribuição das despesas (seção 6 do relatório) ----
+    // Duas leituras diferentes na mesma página, e por isso duas bases:
+    //   · a rosca reparte a DESPESA em categorias, então fecha em 100%;
+    //   · a régua 50/30/20 é sobre a RENDA, que é como a referência é definida.
+    // "Investimentos/Poupança" não entra na rosca: o que é aportado não é gasto
+    // de vida, e já aparece como a terceira faixa da régua.
+    var ESSENCIAIS = ["moradia", "alimentacao", "transporte", "saude", "educacao", "seguros", "impostos"];
+    var FLEXIVEIS = ["lazer", "vestuario", "presentes", "servicos"];
+    var somaDe = function (chaves) {
+      return chaves.reduce(function (a, k) { return a + (despesasCats[k] || 0); }, 0);
+    };
+    var gastoEssencial = somaDe(ESSENCIAIS);
+    var gastoFlexivel = somaDe(FLEXIVEIS);
+    var pctDaRenda = function (v) { return rendaTotal > 0 ? (v / rendaTotal) * 100 : 0; };
+
+    var catsDistribuicao = Object.keys(CAT_LABELS)
+      .filter(function (k) { return k !== "investimentos" && (despesasCats[k] || 0) > 0; })
+      .map(function (k) {
+        return {
+          key: k,
+          label: CAT_LABELS[k],
+          valor: despesasCats[k],
+          pct: despesaTotal > 0 ? (despesasCats[k] / despesaTotal) * 100 : 0,
+          grupo: ESSENCIAIS.indexOf(k) !== -1 ? "essenciais" : "flexiveis"
+        };
+      })
+      .sort(function (a, b) { return b.valor - a.valor; });
+
+    var distribuicao = {
+      total: despesaTotal,
+      renda: rendaTotal,
+      categorias: catsDistribuicao,
+      faixas: [
+        { key: "essenciais", nome: "Despesas essenciais", pct: pctDaRenda(gastoEssencial), valor: gastoEssencial,
+          ideal: 50, limite: "ate", itens: "Moradia, alimentação, transporte, saúde, educação, seguros e impostos." },
+        { key: "flexiveis", nome: "Despesas flexíveis", pct: pctDaRenda(gastoFlexivel), valor: gastoFlexivel,
+          ideal: 30, limite: "ate", itens: "Lazer, vestuário, presentes e serviços." },
+        { key: "investimentos", nome: "Investimentos e reserva", pct: taxaPoupanca, valor: rendaTotal - despesaTotal,
+          ideal: 20, limite: "minimo", itens: "O que sobra da renda no mês, somado ao aporte que você declarou." }
+      ]
+    };
+    distribuicao.faixas.forEach(function (f) {
+      f.dentro = f.limite === "ate" ? f.pct <= f.ideal : f.pct >= f.ideal;
+    });
+
     var maiorCatKey = null, maiorCatVal = -1;
     Object.keys(despesasCats).forEach(function (k) { if (k === "investimentos") return; if ((despesasCats[k] || 0) > maiorCatVal) { maiorCatVal = despesasCats[k]; maiorCatKey = k; } });
     var scoreFluxo = deficit ? 0 : (taxaPoupanca < 0 ? 0 : taxaPoupanca < 10 ? 30 + (taxaPoupanca / 10) * 30 : taxaPoupanca < 20 ? 60 + ((taxaPoupanca - 10) / 10) * 25 : Math.min(100, 85 + Math.min(1, (taxaPoupanca - 20) / 20) * 15));
@@ -694,6 +740,12 @@
     // Sem dependentes, seguro de vida não entra como lacuna: não há renda de
     // terceiros a proteger, e cobrar isso desloca o foco do que importa.
     var seguroVidaInsuficiente = dependentes > 0 && D.temSeguroVida && multiploCobertura < benchmarkMultiplo * 0.85;
+    // Como se referir às coberturas que a pessoa de fato contratou. Usado nos
+    // textos de revisão de proteção, que antes falavam em "apólices" mesmo para
+    // quem só tinha plano de saúde.
+    var coberturasDaPessoa =
+      (D.temSeguroVida && D.temPlanoSaude) ? "seu seguro de vida e seu plano de saúde" :
+      D.temSeguroVida ? "seu seguro de vida" : "seu plano de saúde";
     var protecaoGaps = [];
     if (dependentes > 0 && !D.temSeguroVida) protecaoGaps.push("nenhum seguro de vida, com " + plural(dependentes, "dependente", "dependentes"));
     else if (seguroVidaInsuficiente) protecaoGaps.push("cobertura de seguro de vida de " + num1(multiploCobertura) + "x a renda anual, abaixo do recomendado (" + String(benchmarkMultiplo).replace(".", ",") + "x)");
@@ -747,6 +799,7 @@
       retornoAtual: pct(rAtualAnual * 100, 1),
       protecaoLista: protecaoGaps.join("; ") || "nenhuma lacuna relevante identificada",
       protecaoAcao: protecaoAcao,
+      coberturas: coberturasDaPessoa,
       aporteViavel: aporteNecessario <= rendaTotal * 0.5,
       aposentado: aposentadoriaAtingida,
       deficitAtivo: deficit,
@@ -776,7 +829,7 @@
       }
       otimizacoes.push({ dimNome: "Rebalanceamento", texto: "Carteiras saem do lugar sozinhas: a classe que mais sobe vai ganhando peso e leva o risco junto, sem que ninguém decida isso. Definir bandas de rebalanceamento transforma esse desvio numa regra, em vez de uma decisão tomada no calor do momento.", acao: "Definir a alocação-alvo por classe e uma banda de tolerância para rebalancear." });
       if ((D.temSeguroVida || D.temPlanoSaude) && D.revisouApolices !== "Recentemente") {
-        otimizacoes.push({ dimNome: "Revisão de proteção", texto: "Sua proteção está adequada hoje, mas coberturas envelhecem junto com o patrimônio e a estrutura familiar. Uma revisão periódica evita descobrir uma lacuna no pior momento possível.", acao: "Agendar uma revisão das apólices nos próximos 12 meses." });
+        otimizacoes.push({ dimNome: "Revisão de proteção", texto: "Sua proteção está adequada hoje, mas coberturas envelhecem junto com o patrimônio e a estrutura familiar. Uma revisão periódica evita descobrir uma lacuna no pior momento possível.", acao: "Revisar " + coberturasDaPessoa + " nos próximos 12 meses." });
       }
       if (patrimonioLiquido > 1500000) {
         otimizacoes.push({ dimNome: "Sucessão e estrutura", texto: "Num patrimônio desse porte, a conversa deixa de ser só rentabilidade e passa a incluir como ele se transfere: inventário, custos de transmissão e a forma de titularidade dos bens fazem diferença relevante para a família.", acao: "Mapear a titularidade dos bens e avaliar as alternativas de planejamento sucessório." });
@@ -809,11 +862,13 @@
       }
     }
 
-    // Regra contextual: apólices sem revisão há 2+ anos entram na recomendação de risco
+    // Regra contextual: coberturas sem revisão há 2+ anos entram na recomendação
+    // de risco. O texto nomeia o que a pessoa tem: falar em "apólices" para quem
+    // só marcou plano de saúde contradiz a resposta que ela acabou de dar.
     if ((D.temSeguroVida || D.temPlanoSaude) && (D.revisouApolices === "Nunca revisei" || D.revisouApolices === "Faz mais de 2 anos")) {
       var extraRisco = (D.revisouApolices === "Nunca revisei"
-        ? " Suas apólices nunca foram revisadas desde a contratação."
-        : " Suas apólices estão sem revisão há mais de 2 anos.") +
+        ? " Você nunca revisou " + coberturasDaPessoa + " desde a contratação."
+        : " Faz mais de 2 anos que você não revisa " + coberturasDaPessoa + ".") +
         " Coberturas desatualizadas costumam ser descobertas na pior hora, então vale agendar uma revisão.";
       var riscoPlan = actionPlan.filter(function (a) { return a.key === "risco"; })[0];
       var riscoStrength = strengths.filter(function (s) { return s.key === "risco"; })[0];
@@ -1099,27 +1154,45 @@
     // O KPI de destaque usa a mesma régua da dimensão de Metas e da projeção:
     // cobertura da renda desejada. O progresso patrimonial continua no
     // relatório, mas com o nome do que ele realmente mede.
-    var kpiHero = [
-      { label: "Renda total mensal", value: fmt(rendaTotal) },
-      { label: "Patrimônio líquido", value: fmt(patrimonioLiquido) },
+    // ---- KPIs, agrupados por assunto ----
+    // Antes eram três cartões de destaque soltos e uma grade única de onze.
+    // Agrupar por assunto dá ao leitor três perguntas em vez de catorze números:
+    // quanto entra e sai, quanto já foi construído, e quão protegido isso está.
+    // Cada grupo tem um número-âncora e os que o explicam.
+    var kpiGrupos = [
       {
-        label: "Cobertura da renda desejada",
-        value: semGasto ? "—" : pct(coberturaAtual * 100),
-        sub: semGasto ? "renda desejada não informada" : (aposentadoriaAtingida ? "do que seu patrimônio sustenta hoje" : "no ritmo atual, aos " + idadeAposentadoria + " anos")
+        titulo: "Fluxo mensal",
+        destaque: { label: "Renda total mensal", value: fmt(rendaTotal) },
+        itens: [
+          { label: "Despesa total mensal", value: fmt(despesaTotal), sub: aporteMensal > 0 ? "+ " + fmt(aporteMensal) + " de aporte em investimentos" : undefined },
+          { label: "Taxa de poupança", value: pct(taxaPoupanca), sub: aporteMensal > 0 ? "inclui o aporte mensal declarado" : undefined }
+        ]
+      },
+      {
+        titulo: "Patrimônio",
+        destaque: { label: "Patrimônio líquido", value: fmt(patrimonioLiquido) },
+        itens: [
+          { label: "Patrimônio total", value: fmt(patrimonioTotal) },
+          { label: "Patrimônio esperado x real", value: pct(indicePatrimonio) },
+          { label: "Investido para aposentadoria", value: fmt(ativosLiquidos), sub: (D.reservaEmergencia || 0) > 0 ? "não inclui a reserva de emergência" : undefined },
+          { label: "Patrimônio acumulado x necessário", value: semGasto ? "—" : pct(progressoAtual, 1), sub: semGasto ? "renda desejada não informada" : "quanto do alvo já existe hoje" },
+          {
+            label: "Cobertura da renda desejada",
+            value: semGasto ? "—" : pct(coberturaAtual * 100),
+            sub: semGasto ? "renda desejada não informada" : (aposentadoriaAtingida ? "do que seu patrimônio sustenta hoje" : "no ritmo atual, aos " + idadeAposentadoria + " anos")
+          },
+          { label: "Aporte mensal necessário", value: (semGasto || aposentadoriaAtingida) ? "—" : fmt(aporteNecessario), sub: aposentadoriaAtingida ? "já está na idade-alvo" : (semGasto ? "renda desejada não informada" : "pra se aposentar aos " + idadeAposentadoria + " anos") }
+        ]
+      },
+      {
+        titulo: "Proteção e dívida",
+        destaque: { label: "Reserva de emergência", value: fmt(D.reservaEmergencia), sub: num1(mesesCobertura) + " meses de cobertura" },
+        itens: [
+          { label: "Total de dívidas", value: fmt(totalDividas), sub: D.temDividas ? pct(comprometimento) + " da renda em parcelas" : "sem dívidas em aberto" },
+          { label: "Cobertura de seguro de vida", value: num1(multiploCobertura) + "x", sub: "da sua renda anual" },
+          { label: "Índice de solvência", value: pct(indiceSolvencia), sub: patrimonioLiquido < 0 ? "suas dívidas superam o que você tem em bens" : undefined }
+        ]
       }
-    ];
-    var kpiRest = [
-      { label: "Despesa total mensal", value: fmt(despesaTotal), sub: aporteMensal > 0 ? "+ " + fmt(aporteMensal) + " de aporte em investimentos" : undefined },
-      { label: "Taxa de poupança", value: pct(taxaPoupanca), sub: aporteMensal > 0 ? "inclui o aporte mensal declarado" : undefined },
-      { label: "Reserva de emergência", value: fmt(D.reservaEmergencia), sub: num1(mesesCobertura) + " meses de cobertura" },
-      { label: "Total de dívidas", value: fmt(totalDividas), sub: D.temDividas ? pct(comprometimento) + " da renda em parcelas" : "sem dívidas em aberto" },
-      { label: "Patrimônio total", value: fmt(patrimonioTotal) },
-      { label: "Patrimônio esperado x real", value: pct(indicePatrimonio) },
-      { label: "Cobertura de seguro de vida", value: num1(multiploCobertura) + "x", sub: "da sua renda anual" },
-      { label: "Investido para aposentadoria", value: fmt(ativosLiquidos), sub: (D.reservaEmergencia || 0) > 0 ? "não inclui a reserva de emergência" : undefined },
-      { label: "Patrimônio acumulado x necessário", value: semGasto ? "—" : pct(progressoAtual, 1), sub: semGasto ? "renda desejada não informada" : "quanto do alvo já existe hoje" },
-      { label: "Aporte mensal necessário", value: (semGasto || aposentadoriaAtingida) ? "—" : fmt(aporteNecessario), sub: aposentadoriaAtingida ? "já está na idade-alvo" : (semGasto ? "renda desejada não informada" : "pra se aposentar aos " + idadeAposentadoria + " anos") },
-      { label: "Índice de solvência", value: pct(indiceSolvencia), sub: patrimonioLiquido < 0 ? "suas dívidas superam o que você tem em bens" : undefined }
     ];
 
     // Insight comportamental: divergência entre percepção e realidade calculada
@@ -1249,7 +1322,7 @@
         rendaSustentavelAtual: rendaSustentavelAtual,
         progressoAtual: progressoAtual
       },
-      kpiHero: kpiHero, kpiRest: kpiRest, dimRows: dimRows, metasDeclaradas: metasDeclaradas,
+      kpiGrupos: kpiGrupos, distribuicao: distribuicao, dimRows: dimRows, metasDeclaradas: metasDeclaradas,
       aposentadoria: aposentadoria,
       chart: chart,
       actionPlan: actionPlan, planoOtimizacao: planoOtimizacao, hasStrengths: strengths.length > 0, strengths: strengths, investSeguro: investSeguro,

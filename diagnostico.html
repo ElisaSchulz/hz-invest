@@ -421,7 +421,7 @@ function requiredByStep(n) {
       ["Tem seguro de vida?", data.temSeguroVida === true || data.temSeguroVida === false],
       ["Tem plano de saúde?", data.temPlanoSaude === true || data.temPlanoSaude === false],
       ["Tempo com renda garantida", data.tempoRendaGarantida !== ""],
-      ["Revisou apólices/coberturas nos últimos 2 anos?", !(data.temSeguroVida === true || data.temPlanoSaude === true) || data.revisouApolices !== ""]
+      [rotuloRevisao(), !(data.temSeguroVida === true || data.temPlanoSaude === true) || data.revisouApolices !== ""]
     ],
     8: [
       ["Idade em que quer se aposentar", String(data.idadeAposentadoria) !== ""],
@@ -636,6 +636,18 @@ function renderStep6() {
     '</div></div>';
 }
 
+/* A pergunta de revisão aparece para quem tem seguro de vida OU plano de
+   saúde, mas falar em "apólices" para quem só tem plano soa como se o
+   formulário tivesse ignorado a resposta anterior. O rótulo nomeia o que a
+   pessoa realmente marcou. */
+function rotuloRevisao() {
+  var vida = data.temSeguroVida === true;
+  var saude = data.temPlanoSaude === true;
+  if (vida && saude) return "Revisou o seguro de vida e o plano de saúde nos últimos 2 anos?";
+  if (vida) return "Revisou a apólice do seu seguro de vida nos últimos 2 anos?";
+  return "Revisou as coberturas do seu plano de saúde nos últimos 2 anos?";
+}
+
 function renderStep7() {
   return '<div class="card"><div class="grid2">' +
     '<div><label class="f-label" style="margin-bottom:10px;">Tem seguro de vida?</label>' + simNaoSeg("temSeguroVida", data.temSeguroVida) + '</div>' +
@@ -644,7 +656,7 @@ function renderStep7() {
     '<div><label class="f-label" style="margin-bottom:10px;">Tem reserva específica pra emergências médicas?</label>' + simNaoSeg("reservaMedica", data.reservaMedica) + '</div>' +
     '<div class="span2"><label class="f-label">Se ficasse incapacitado de trabalhar, por quanto tempo sua renda estaria garantida?</label>' + selectHtml("tempoRendaGarantida", TEMPO_RENDA_GARANTIDA, data.tempoRendaGarantida) + '</div>' +
     (data.temSeguroVida === true || data.temPlanoSaude === true ?
-      '<div class="span2"><label class="f-label">Revisou apólices/coberturas nos últimos 2 anos?</label>' + selectHtml("revisouApolices", REVISOU_APOLICES, data.revisouApolices) + '</div>' : "") +
+      '<div class="span2"><label class="f-label">' + rotuloRevisao() + '</label>' + selectHtml("revisouApolices", REVISOU_APOLICES, data.revisouApolices) + '</div>' : "") +
     '</div></div>';
 }
 
@@ -829,8 +841,12 @@ function render() {
     var missing = requiredByStep(step);
     var blocked = missing.length > 0;
     var showError = attempted[step] && blocked;
+    // A mensagem de erro fica sempre no DOM, só escondida quando não há o que
+    // mostrar: assim o atualizarRodape() consegue preenchê-la e limpá-la sem
+    // depender de um novo render().
     html += '<div style="margin-top:36px;">' +
-      (showError ? '<div class="error-msg">Preencha para continuar: ' + esc(missing.join(", ")) + '</div>' : "") +
+      '<div class="error-msg" id="erroEtapa"' + (showError ? '' : ' style="display:none;"') + '>' +
+      (showError ? 'Preencha para continuar: ' + esc(missing.join(", ")) : '') + '</div>' +
       '<div class="footer-nav" style="margin-top:0;">' +
       '<button type="button" class="btn-back" data-action="back">← Voltar</button>' +
       '<button type="button" class="btn-continue' + (blocked ? " blocked" : "") + '" data-action="continue">' + (step === 10 ? "Finalizar" : "Continuar →") + '</button>' +
@@ -852,6 +868,33 @@ var LIST_TEMPLATES = {
   imoveis: { descricao: "", valorMercado: 0, status: "quitado", saldoDevedor: 0 },
   veiculos: { descricao: "", valor: 0, status: "quitado", saldoDevedor: 0 }
 };
+
+/**
+ * Deixa o rodapé de acordo com o que já foi preenchido.
+ *
+ * O render() só roda quando a etapa muda. Digitar um valor atualiza os
+ * totalizadores e nada mais, então o botão Continuar ficava com a
+ * aparência de bloqueado mesmo depois de a etapa já estar válida — e a
+ * mensagem de erro, uma vez exibida, continuava na tela depois de a
+ * pessoa corrigir o campo. Clicar sempre funcionou; o que estava errado
+ * era só o que a tela dizia.
+ */
+function atualizarRodape() {
+  var botao = document.querySelector(".btn-continue");
+  if (!botao) return;
+  var missing = requiredByStep(step);
+  botao.classList.toggle("blocked", missing.length > 0);
+
+  var erro = document.getElementById("erroEtapa");
+  if (!erro) return;
+  if (attempted[step] && missing.length) {
+    erro.textContent = "Preencha para continuar: " + missing.join(", ");
+    erro.style.display = "";
+  } else {
+    erro.textContent = "";
+    erro.style.display = "none";
+  }
+}
 
 function bindEvents() {
   var app = document.getElementById("app");
@@ -991,6 +1034,15 @@ function bindEvents() {
     });
   });
 }
+
+// Um ouvinte só, no container, ligado uma vez. Dentro do bindEvents() ele
+// se acumularia a cada render. Como os handlers de cada campo rodam no alvo
+// e este roda na propagação, os dados já estão atualizados quando ele entra.
+(function ligarSincroniaDoRodape() {
+  var app = document.getElementById("app");
+  app.addEventListener("input", atualizarRodape);
+  app.addEventListener("change", atualizarRodape);
+})();
 
 render();
 </script>
