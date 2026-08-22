@@ -1067,7 +1067,7 @@ render();
     setTimeout(() => { if (!resolvido) falhaDeConexao(); }, LIMITE_MS);
     // import dinâmico: se o auth.js (ou o Firebase que ele carrega) não
     // subir, o catch avisa em vez de deixar a tela pendurada.
-    import('./auth.js')
+    import('./auth.js?v=2')
       .then(({ requireProduto }) => {
         requireProduto('diagnostico', { onLiberado: liberar, onSemCompra: semCompra });
       })
