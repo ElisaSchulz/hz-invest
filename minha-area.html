@@ -210,6 +210,105 @@
   }
   @keyframes shimmer { to { background-position: -200% 0; } }
 
+  /* ─── BANNER DO DIAGNÓSTICO ─────────────────────────────────
+     Painel navy para destacar o produto pago dos cartões de curso,
+     que são creme. Muda de conteúdo conforme o estado da pessoa:
+     sem acesso, não iniciado, em andamento ou concluído. */
+  .diag-banner {
+    position: relative;
+    overflow: hidden;
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 2.1rem 2.4rem;
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .diag-banner::before {
+    content: '';
+    position: absolute;
+    top: -90px; right: -60px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(111,168,160,0.30) 0%, rgba(111,168,160,0) 70%);
+    pointer-events: none;
+  }
+  .diag-texto { position: relative; flex: 1 1 340px; min-width: 0; }
+  .diag-eyebrow {
+    font-family: var(--font-body);
+    font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--sage-light);
+    margin-bottom: 0.5rem;
+  }
+  .diag-banner h3 {
+    font-family: var(--font-display);
+    font-weight: 500; font-size: 1.4rem;
+    color: #FBFAF6;
+    letter-spacing: -0.015em;
+    margin-bottom: 0.4rem;
+  }
+  .diag-banner p {
+    font-size: 0.92rem;
+    color: rgba(251,250,246,0.72);
+    font-weight: 300;
+    max-width: 46ch;
+  }
+  .diag-acoes {
+    position: relative;
+    display: flex; align-items: center;
+    gap: 0.9rem; flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+  .diag-btn {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    background: var(--sage-light); color: #15153F;
+    font-family: var(--font-body); font-weight: 700; font-size: 0.88rem;
+    padding: 0.75rem 1.5rem; border-radius: 8px;
+    text-decoration: none; white-space: nowrap;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .diag-btn:hover { background: #8FC4BC; transform: translateY(-1px); }
+  .diag-btn.sec {
+    background: transparent;
+    color: rgba(251,250,246,0.85);
+    border: 1px solid rgba(251,250,246,0.28);
+    font-weight: 600;
+  }
+  .diag-btn.sec:hover { background: rgba(251,250,246,0.08); color: #FBFAF6; }
+  /* barra de progresso do questionário em andamento */
+  .diag-progresso { position: relative; margin-top: 1rem; max-width: 320px; }
+  .diag-progresso-topo {
+    display: flex; justify-content: space-between;
+    font-size: 0.7rem; color: rgba(251,250,246,0.6);
+    margin-bottom: 0.4rem;
+  }
+  .diag-progresso-barra {
+    height: 4px; border-radius: 2px;
+    background: rgba(251,250,246,0.16);
+    overflow: hidden;
+  }
+  .diag-progresso-fill {
+    height: 100%; border-radius: 2px;
+    background: var(--sage-light);
+    transition: width 0.6s ease;
+  }
+  .diag-nota {
+    position: relative;
+    margin-top: 0.9rem;
+    font-size: 0.76rem;
+    color: rgba(251,250,246,0.5);
+    line-height: 1.55;
+  }
+  @media (max-width: 700px) {
+    .diag-banner { padding: 1.6rem; }
+    .diag-acoes { width: 100%; }
+    .diag-btn { flex: 1; justify-content: center; }
+  }
+
   /* ─── EXPLORE BANNER ─── */
   .explore-banner {
     background: var(--navy-card); border: 1px solid var(--teal-border);
@@ -288,6 +387,12 @@
     <div class="greeting-name skeleton" style="width:260px;height:2.4rem;"></div>
   </div>
 
+  <!-- DIAGNÓSTICO FINANCEIRO -->
+  <div class="section-heading">Meu diagnóstico</div>
+  <div id="diagBanner">
+    <div class="skeleton" style="height:150px;border-radius:14px;margin-bottom:3rem;"></div>
+  </div>
+
   <!-- ENROLLED COURSES -->
   <div class="section-heading">Meus cursos</div>
   <div class="courses-grid" id="coursesGrid">
@@ -360,14 +465,115 @@ const CATALOG = [
 </script>
 
 <script type="module">
-import { auth, bindNavUser, requireAuth, onAuthStateChanged,
+import { auth, bindNavUser, requireAuth, onAuthStateChanged, temProduto,
          doc, getDoc, setDoc, db } from './auth.js';
 
 requireAuth();
 bindNavUser();
 
+/* ── Banner do Diagnóstico Financeiro ───────────────────────────────
+   O acesso vem do Firestore; o andamento vem do localStorage, que é
+   onde o questionário salva. Como localStorage é por dispositivo,
+   quem responder no celular e abrir no computador aparece como não
+   iniciado — por isso o estado "concluído" avisa onde o relatório
+   está guardado.
+
+     hz_diagnostico_form  { step, data }        → em andamento
+     hz_diagnostico_data  { data, geradoEm }    → concluído
+──────────────────────────────────────────────────────────────────── */
+const DIAG_TOTAL_ETAPAS = 10;
+
+function lerJson(chave) {
+  try { return JSON.parse(localStorage.getItem(chave) || 'null'); }
+  catch (e) { return null; }
+}
+
+function dataPtBr(iso) {
+  const d = new Date(iso);
+  return isNaN(d) ? null : d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+}
+
+function bannerDiagnostico(temAcesso) {
+  if (!temAcesso) {
+    return `
+      <div class="diag-banner">
+        <div class="diag-texto">
+          <div class="diag-eyebrow">Ainda não é seu</div>
+          <h3>Diagnóstico Financeiro</h3>
+          <p>Um raio-x da sua vida financeira: score, arquétipo, plano de ação e projeção até a aposentadoria, tudo a partir dos seus números.</p>
+        </div>
+        <div class="diag-acoes">
+          <a href="diagnostico-lp.html" class="diag-btn">Conhecer o diagnóstico →</a>
+        </div>
+      </div>`;
+  }
+
+  const concluido = lerJson('hz_diagnostico_data');
+  if (concluido) {
+    const quando = concluido.geradoEm ? dataPtBr(concluido.geradoEm) : null;
+    return `
+      <div class="diag-banner">
+        <div class="diag-texto">
+          <div class="diag-eyebrow">Concluído</div>
+          <h3>Seu relatório está pronto</h3>
+          <p>${quando ? `Gerado em ${quando}.` : 'Relatório gerado.'} Refazer depois de alguns meses mostra a evolução do seu score.</p>
+          <div class="diag-nota">O relatório fica salvo neste navegador. Para guardar uma cópia, abra e use o botão de PDF.</div>
+        </div>
+        <div class="diag-acoes">
+          <a href="diagnostico-relatorio.html" class="diag-btn">Ver meu relatório</a>
+          <a href="diagnostico.html" class="diag-btn sec">Refazer</a>
+        </div>
+      </div>`;
+  }
+
+  // `step` é a etapa em que a pessoa está, de 1 a 10 (0 é a tela de
+  // abertura e 11 é o questionário já finalizado). O preenchido da barra
+  // são as etapas concluídas, ou seja, as que vêm antes da atual.
+  const emAndamento = lerJson('hz_diagnostico_form');
+  const etapa = emAndamento ? Number(emAndamento.step) : 0;
+  if (etapa >= 1 && etapa <= DIAG_TOTAL_ETAPAS) {
+    const pct = Math.round(((etapa - 1) / DIAG_TOTAL_ETAPAS) * 100);
+    return `
+      <div class="diag-banner">
+        <div class="diag-texto">
+          <div class="diag-eyebrow">Em andamento</div>
+          <h3>Você parou na etapa ${etapa}</h3>
+          <p>Suas respostas estão salvas. Continue de onde parou.</p>
+          <div class="diag-progresso">
+            <div class="diag-progresso-topo">
+              <span>Progresso</span>
+              <span>Etapa ${etapa} de ${DIAG_TOTAL_ETAPAS}</span>
+            </div>
+            <div class="diag-progresso-barra"><div class="diag-progresso-fill" style="width:${pct}%"></div></div>
+          </div>
+        </div>
+        <div class="diag-acoes">
+          <a href="diagnostico.html" class="diag-btn">Continuar · Etapa ${etapa}</a>
+        </div>
+      </div>`;
+  }
+
+  return `
+    <div class="diag-banner">
+      <div class="diag-texto">
+        <div class="diag-eyebrow">Acesso liberado</div>
+        <h3>Diagnóstico Financeiro</h3>
+        <p>São cerca de 25 minutos, em dez etapas. Dá para parar no meio e continuar depois, e o relatório fica pronto na hora.</p>
+        <div class="diag-nota">Já respondeu em outro aparelho? O relatório fica guardado no navegador onde foi feito.</div>
+      </div>
+      <div class="diag-acoes">
+        <a href="diagnostico.html" class="diag-btn">Começar o diagnóstico →</a>
+      </div>
+    </div>`;
+}
+
 onAuthStateChanged(auth, async user => {
   if (!user) return;
+
+  // Banner do diagnóstico: renderiza sozinho, sem esperar os cursos.
+  temProduto('diagnostico', user).then(temAcesso => {
+    document.getElementById('diagBanner').innerHTML = bannerDiagnostico(temAcesso);
+  });
 
   // Update greeting
   const name = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
