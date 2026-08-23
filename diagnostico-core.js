@@ -712,25 +712,56 @@
     if (criticosCount >= 2) duracaoFinal = 12;
     else if (criticosCount === 1 || insuficientesCount >= 2) duracaoFinal = 6;
 
-    // O foco do acompanhamento vem do arquétipo; a duração, da gravidade.
+    // A prioridade imediata do arquétipo diz O QUE atacar primeiro. A duração
+    // do acompanhamento é recomendação comercial e vive só na seção "Seu
+    // Próximo Passo" — repetir "Plano de N meses" aqui antecipava a oferta no
+    // meio da análise e dizia duas vezes a mesma coisa.
     var CTA_FOCO = {
-      negacao: { inicial: "com foco total no início em estancar o rombo e construir o primeiro colchão de segurança.", "média": "com foco total no início em estancar o rombo e construir o primeiro colchão de segurança.", alta: "com foco em reorganizar hábitos: mesmo com renda alta, esse padrão muda mais devagar do que uma planilha." },
-      ilusao: { inicial: "começando pela reserva de emergência como base de tudo o resto.", "média": "começando pela reserva de emergência como base de tudo o resto.", alta: "começando pela estrutura, não pelo recurso: aqui não falta dinheiro, falta organização." },
-      adiamento: {
-        inicial: metasVagas ? "focado em estruturar as 2-3 metas prioritárias com prazo e valor claros." : "focado em fechar a distância entre o aporte atual e o que suas metas pedem.",
-        "média": metasVagas ? "focado em estruturar as 2-3 metas prioritárias com prazo e valor claros." : "focado em fechar a distância entre o aporte atual e o que suas metas pedem.",
-        alta: metasVagas ? "focado em transformar recurso em rota: definir metas com prazo e valor e direcionar o aporte." : "focado em calibrar aporte, prazo e renda desejada até o plano fechar."
+      negacao: {
+        inicial: "Estancar o rombo mensal e construir o primeiro colchão de segurança, antes de qualquer outra coisa.",
+        "média": "Estancar o rombo mensal e construir o primeiro colchão de segurança, antes de qualquer outra coisa.",
+        alta: "Reorganizar hábitos: mesmo com renda alta, esse padrão muda mais devagar do que uma planilha."
       },
-      otimismo: { inicial: "com revisão da proteção básica (seguro, saúde e renda) como prioridade nº 1.", "média": "com revisão da proteção básica (seguro, saúde e renda) como prioridade nº 1.", alta: "com revisão de proteção como prioridade: quanto maior o patrimônio, maior o custo de não estar protegido." },
-      paralisia: { inicial: "pra estruturar os primeiros investimentos com segurança e clareza.", "média": "pra estruturar os primeiros investimentos com segurança e clareza.", alta: "pra dar destino ao capital que já está disponível e parado." },
-      vazamento: { inicial: "focado em eliminar a dívida mais cara e redirecionar esse valor para construção de patrimônio.", "média": "focado em eliminar a dívida mais cara e redirecionar esse valor para construção de patrimônio.", alta: "focado em quitar a dívida cara: com sua renda isso é rápido, é mais questão de prioridade do que de recurso." },
-      dominio: { inicial: "de otimização e ajuste fino.", "média": "de otimização e ajuste fino.", alta: "focado em sofisticação: estruturas avançadas, diversificação internacional, planejamento sucessório." },
-      colheita: { inicial: "pra definir um saque mensal sustentável e proteger a renda contra imprevistos de saúde.", "média": "pra definir um saque mensal sustentável e organizar a carteira de renda.", alta: "pra calibrar o saque, organizar a carteira de renda e cuidar da sucessão." }
+      ilusao: {
+        inicial: "Montar a reserva de emergência, que é a base de todo o resto.",
+        "média": "Montar a reserva de emergência, que é a base de todo o resto.",
+        alta: "Começar pela estrutura, não pelo recurso: aqui não falta dinheiro, falta organização."
+      },
+      adiamento: {
+        inicial: metasVagas ? "Estruturar as 2-3 metas prioritárias com prazo e valor claros." : "Fechar a distância entre o aporte atual e o que suas metas pedem.",
+        "média": metasVagas ? "Estruturar as 2-3 metas prioritárias com prazo e valor claros." : "Fechar a distância entre o aporte atual e o que suas metas pedem.",
+        alta: metasVagas ? "Transformar recurso em rota: definir metas com prazo e valor e direcionar o aporte." : "Calibrar aporte, prazo e renda desejada até o plano fechar."
+      },
+      otimismo: {
+        inicial: "Revisar a proteção básica — seguro de vida, plano de saúde e proteção de renda — como prioridade nº 1.",
+        "média": "Revisar a proteção básica — seguro de vida, plano de saúde e proteção de renda — como prioridade nº 1.",
+        alta: "Revisar a proteção: quanto maior o patrimônio, maior o custo de não estar protegido."
+      },
+      paralisia: {
+        inicial: "Estruturar os primeiros investimentos com segurança e clareza.",
+        "média": "Estruturar os primeiros investimentos com segurança e clareza.",
+        alta: "Dar destino ao capital que já está disponível e parado."
+      },
+      vazamento: {
+        inicial: "Eliminar a dívida mais cara e redirecionar esse valor para a construção de patrimônio.",
+        "média": "Eliminar a dívida mais cara e redirecionar esse valor para a construção de patrimônio.",
+        alta: "Quitar a dívida cara: com sua renda isso é rápido, é mais questão de prioridade do que de recurso."
+      },
+      dominio: {
+        inicial: "Otimização e ajuste fino: não há lacuna estrutural a corrigir.",
+        "média": "Otimização e ajuste fino: não há lacuna estrutural a corrigir.",
+        alta: "Sofisticação: estruturas avançadas, diversificação internacional e planejamento sucessório."
+      },
+      colheita: {
+        inicial: "Definir um saque mensal sustentável e proteger a renda contra imprevistos de saúde.",
+        "média": "Definir um saque mensal sustentável e organizar a carteira de renda.",
+        alta: "Calibrar o saque, organizar a carteira de renda e cuidar da sucessão."
+      }
     };
     var arquetipo = {
       nome: archBase.nome, abertura: archBase.abertura,
       padrao: ARCH_PADRAO[archetypeId], naoOutro: ARCH_NAO_OUTRO[archetypeId],
-      prioridade: "Plano de " + duracaoFinal + " meses, " + CTA_FOCO[archetypeId][rendaBand]
+      prioridade: CTA_FOCO[archetypeId][rendaBand]
     };
 
     // ---- Plano de ação (ordem fixa de prioridade) ----
