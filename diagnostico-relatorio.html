@@ -56,13 +56,55 @@
     h2 { font-size: 26px; }
     .grafico { padding-bottom: 78%; }
     .g-rot { font-size: 10px; }
+    /* Cartão-âncora em cima dos secundários, e rosca em cima da legenda:
+       lado a lado, os dois espremem a coluna da direita a ponto de os
+       rótulos quebrarem letra a letra. */
+    .kpi-grupo-corpo { grid-template-columns: 1fr !important; }
+    .dist-card { flex-direction: column; align-items: stretch !important; gap: 22px !important; }
+    .dist-card > div:first-child { align-self: center; }
+    .dist-lista { grid-template-columns: 1fr !important; }
+    .perfil-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .perfil-grid-2 { grid-template-columns: 1fr !important; }
   }
 
   @media print {
     .no-print { display: none !important; }
     body { background: #fff; }
-    .card, .kpi, .dim-row, .glossary-item, .archetype-block { break-inside: avoid; }
+    .card, .kpi, .dim-row, .glossary-item, .faixa-row, .kpi-grupo { break-inside: avoid; }
+    /* O bloco do arquétipo pode passar de uma página inteira quando o cliente
+       escreve bastante nas perguntas abertas. Mantê-lo inteiro empurraria o
+       bloco todo pra folha seguinte e deixaria o título da seção sozinho, então
+       aqui ele continua na próxima página em vez de ser preservado. */
+    .archetype-block { break-inside: auto; }
     @page { size: A4; margin: 16mm; }
+
+    /* Capa e encerramento ganham páginas sem margem, pra o fundo navy sangrar
+       até a borda do papel. O padding volta por dentro, em mm, já que aqui não
+       há viewport. */
+    @page sangria { margin: 0; }
+    /* A altura tem que ser dita em unidade de papel: 100vh aqui segue o
+       viewport de quem imprime, não a folha. Com um viewport mais alto que
+       A4, a capa passava do fim da página e gerava uma folha em branco
+       atrás dela — e o mesmo no encerramento. 296mm deixa 1mm de folga
+       contra arredondamento, imperceptível e suficiente. */
+    .cover, .closing { page: sangria; min-height: 0; height: 296mm; padding: 24mm 22mm; }
+    .closing { break-before: page; display: flex; flex-direction: column; justify-content: center; }
+
+    /* Uma seção por página: cada uma recomeça no topo da folha seguinte. O
+       respiro vertical entre seções vem da margem da folha, então o padding
+       sai — inclusive o de baixo, que o navegador tenta manter junto com o
+       último bloco e acabava empurrando blocos inteiros pra página seguinte. */
+    /* O recuo lateral também sai: a margem da folha já dá o respiro, e os
+       32px de cada lado espremiam o conteúdo para ~609mm úteis, deixando
+       tudo mais alto do que precisava. */
+    #report > section:not(.cover):not(.closing) { break-before: page; padding: 0; }
+    .wrap, .wrap-wide { max-width: none; }
+    /* Blocos que são grandes demais pra caber junto com o resto da seção e
+       têm título próprio: começam na folha seguinte de propósito. */
+    .quebra-pagina { break-before: page; }
+    /* Os fios separadores só fazem sentido quando as seções se seguem na
+       mesma folha; com a quebra, viram um risco solto no topo da página. */
+    .hairline { border-top: none; }
   }
 </style>
 </head>
@@ -78,11 +120,172 @@
 
 // Lógica de cálculo compartilhada (diagnostico-core.js)
 var fmt = HZDiag.fmt, pct = HZDiag.pct, esc = HZDiag.esc, computeReport = HZDiag.computeReport;
+var NIVEL_TEXTS = HZDiag.NIVEL_TEXTS;
+
+/* Valores monetários longos não cabem em caixa de largura fixa, e como a
+   fonte é estática não dá pra medir em tempo de render. Aqui a largura é
+   estimada pelo número de caracteres — 0,55 em de largura média por
+   caractere na Fraunces com tabular-nums, aferido contra o texto real
+   renderizado — e a fonte encolhe só o quanto precisar pra caber.
+
+   `largura` é a largura útil da caixa em impressão A4, que é a condição mais
+   apertada: 673px de folha, não os 900px do wrap na tela. */
+function tamanhoValor(txt, base, largura) {
+  var estimado = String(txt).length * base * 0.55;
+  var teto = largura * 0.94;                       // folga contra a estimativa
+  if (estimado <= teto) return base;
+  return Math.max(base * 0.45, base * teto / estimado).toFixed(1);
+}
+
+/* Cabeçalho de bloco dentro de uma seção: mesmo desenho do sectionHeader,
+   sem o número — a numeração é da página, não do bloco. */
+function blocoHeader(eyebrow, title, margemTopo) {
+  return '<div class="eyebrow-wrap" style="margin-top:' + (margemTopo || 34) + 'px;"><div class="eyebrow-line"></div><div class="eyebrow-text">' + eyebrow + '</div></div>' +
+    '<h2 style="font-size:23px; margin-bottom:16px;">' + title + '</h2>';
+}
+
+/* Escala dos cinco níveis de maturidade. Mostra onde a pessoa está dentro do
+   caminho inteiro, em vez de só nomear o degrau atual. */
+function escalaNiveis(atual) {
+  var itens = "";
+  for (var n = 1; n <= 5; n++) {
+    var passado = n <= atual;
+    var ehAtual = n === atual;
+    itens += '<div>' +
+      '<div style="height:7px; border-radius:4px; background:' + (passado ? (ehAtual ? "#3E6F69" : "rgba(79,140,132,0.45)") : "rgba(27,27,92,0.12)") + '; margin-bottom:6px;"></div>' +
+      '<div style="font-size:10px; line-height:1.3; text-align:center; color:' + (ehAtual ? "#1B1B5C" : "rgba(21,21,63,0.5)") + '; font-weight:' + (ehAtual ? 700 : 500) + ';">' +
+      NIVEL_TEXTS[n].nome + '</div></div>';
+  }
+  return '<div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:6px; margin-top:18px;">' + itens + '</div>';
+}
 
 /* ===================== Render ===================== */
 function sectionHeader(eyebrow, num, title) {
   return '<div class="eyebrow-wrap"><div class="eyebrow-line"></div><div class="eyebrow-text">' + eyebrow + '</div><div class="section-num">' + num + ' · 13</div></div>' +
     '<h2>' + title + '</h2>';
+}
+
+/* ── Seção 7: Distribuição de Despesas ────────────────────────────────────
+   Duas leituras na mesma página. A rosca reparte a despesa por categoria
+   (fecha em 100%); a régua compara com a referência 50/30/20, que é sobre a
+   renda.
+
+   Cor: onze categorias com onze matizes distintos reprovam nos testes de
+   daltonismo e de contraste — passam só três matizes quando todos os pares
+   precisam se distinguir. Então a identidade fica no grupo (essenciais em
+   azul, flexíveis em ocre) e, dentro de cada grupo, os passos variam em
+   claridade na ordem de tamanho. A lista ao lado nomeia cada fatia com seu
+   percentual, que é o alívio exigido para os tons de contraste mais baixo. */
+var RAMPA = {
+  essenciais: ["#25397A", "#2C4794", "#3454A8", "#4667BB", "#6180C9", "#8098D6", "#A3B4E3"],
+  flexiveis:  ["#9E6B14", "#BE8320", "#D99A2B", "#E8B45E"],
+  investimentos: "#1F8F7A"
+};
+
+function corDaCategoria(cat, indiceNoGrupo) {
+  var rampa = RAMPA[cat.grupo] || RAMPA.essenciais;
+  return rampa[Math.min(indiceNoGrupo, rampa.length - 1)];
+}
+
+function renderDistribuicao(R) {
+  var d = R.distribuicao;
+
+  // A régua não é identidade, é estado: cada faixa é uma razão medida contra um
+  // limite. Por isso a barra usa a cor de estado — e vem sempre com a frase que
+  // diz o mesmo, pra não depender de cor em impressão preto e branco.
+  var COMENTARIO = {
+    essenciais: { ok: "Dentro da faixa geralmente considerada saudável.",
+                  fora: "Acima da faixa geralmente considerada saudável — vale ver se há espaço pra reduzir algum desses gastos fixos." },
+    flexiveis:  { ok: "Dentro da faixa geralmente considerada saudável.",
+                  fora: "Acima da faixa geralmente considerada saudável — é aqui que os cortes costumam ser mais fáceis." },
+    investimentos: { ok: "Dentro (ou acima) da faixa geralmente considerada saudável.",
+                     fora: "Abaixo da faixa geralmente considerada saudável — é o que mais pesa no longo prazo." }
+  };
+
+  var faixas = d.faixas.map(function (f) {
+    var cor = f.dentro ? "#3E6F69" : "#C48A3E";
+    var largura = Math.max(0, Math.min(100, f.pct));
+    var rotulo = f.limite === "ate" ? "ideal até " + f.ideal + "%" : "ideal no mínimo " + f.ideal + "%";
+    var texto = COMENTARIO[f.key][f.dentro ? "ok" : "fora"];
+    return '<div class="faixa-row" style="margin-bottom:18px;">' +
+      '<div style="display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:5px;">' +
+      '<div style="font-size:14.5px; font-weight:700; color:#1B1B5C;">' + f.nome + '</div>' +
+      '<div style="font-size:13px; font-weight:700; color:' + cor + '; font-feature-settings:\'tnum\';">' + pct(f.pct, 1) +
+      ' <span style="color:rgba(21,21,63,0.4); font-weight:500;">(' + rotulo + ')</span></div></div>' +
+      '<div style="position:relative; height:9px; border-radius:4.5px; background:rgba(27,27,92,0.08); margin-bottom:6px;">' +
+      '<div style="width:' + largura + '%; height:100%; background:' + cor + '; border-radius:4.5px;"></div>' +
+      '<div style="position:absolute; top:-3px; left:' + f.ideal + '%; width:2px; height:15px; background:#1B1B5C;"></div>' +
+      '</div>' +
+      '<div style="font-size:12px; color:rgba(21,21,63,0.55); line-height:1.5;">' + f.itens + ' ' + texto + '</div>' +
+      '</div>';
+  }).join("");
+
+  var referencia =
+    '<div style="font-size:13.5px; line-height:1.7; color:rgba(21,21,63,0.7); max-width:620px; margin-bottom:16px;">' +
+    'Uma referência comum de planejamento sugere até 50% da renda em despesas essenciais, até 30% em despesas flexíveis, ' +
+    'e pelo menos 20% direcionado a investimentos e reserva — a lógica do "50/30/20". É um ponto de partida, não uma regra: ' +
+    'serve pra mostrar onde vale ajustar primeiro.</div>';
+
+  var cabecalho =
+    sectionHeader("Para onde vai o dinheiro", "06", "Distribuição de Despesas");
+
+  var bloco2 =
+    '<div style="font-size:10.5px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#3E6F69; margin:26px 0 10px;">Referência</div>' +
+    '<div style="font-family:\'Fraunces\', serif; font-size:19px; font-weight:500; color:#1B1B5C; margin-bottom:10px;">O que seria uma distribuição equilibrada</div>' +
+    referencia +
+    '<div class="card" style="padding:22px 28px;">' + faixas + '</div>';
+
+  if (!d.categorias.length) {
+    return '<section class="hairline"><div class="wrap">' + cabecalho +
+      '<div style="font-size:13.5px; line-height:1.6; color:rgba(21,21,63,0.7); margin-bottom:6px;">Você não detalhou as despesas por categoria, então não há distribuição a mostrar. A régua abaixo usa os totais informados.</div>' +
+      bloco2 + '</div></section>';
+  }
+
+  // ---- rosca ----
+  // Onze categorias com onze matizes distintos reprovam nos testes de daltonismo
+  // (só três matizes se distinguem quando qualquer par pode ser comparado). Então
+  // a identidade fica no grupo — essenciais em azul, flexíveis em ocre — e dentro
+  // de cada grupo os passos variam em claridade, na ordem de tamanho. A lista ao
+  // lado nomeia cada fatia com o percentual, que é o alívio exigido.
+  var RAIO = 60, LARGURA = 24, C = 2 * Math.PI * RAIO;
+  var acumulado = 0, vistos = {};
+  var arcos = d.categorias.map(function (c) {
+    var i = (vistos[c.grupo] = (vistos[c.grupo] || 0)); vistos[c.grupo]++;
+    var comprimento = (c.pct / 100) * C;
+    var traco = Math.max(comprimento - 2, 0.8);   // 2px de respiro entre fatias
+    var el = '<circle cx="80" cy="80" r="' + RAIO + '" fill="none" stroke="' + corDaCategoria(c, i) +
+      '" stroke-width="' + LARGURA + '" stroke-dasharray="' + traco.toFixed(2) + ' ' + (C - traco).toFixed(2) +
+      '" stroke-dashoffset="' + (-acumulado).toFixed(2) + '" />';
+    acumulado += comprimento;
+    return el;
+  }).join("");
+
+  vistos = {};
+  var lista = d.categorias.map(function (c) {
+    var i = (vistos[c.grupo] = (vistos[c.grupo] || 0)); vistos[c.grupo]++;
+    return '<div style="display:flex; align-items:center; gap:8px; padding:5px 0;">' +
+      '<div style="width:9px; height:9px; border-radius:50%; background:' + corDaCategoria(c, i) + '; flex-shrink:0;"></div>' +
+      '<div style="font-size:12.5px; color:rgba(21,21,63,0.8); flex:1; min-width:0;">' + c.label + '</div>' +
+      '<div style="font-size:12.5px; font-weight:700; color:#1B1B5C; font-feature-settings:\'tnum\';">' + pct(c.pct, 1) + '</div>' +
+      '</div>';
+  }).join("");
+
+  return '<section class="hairline"><div class="wrap">' + cabecalho +
+    '<div style="font-size:13.5px; line-height:1.6; color:rgba(21,21,63,0.6); max-width:580px; margin-bottom:18px;">' +
+    'Como os ' + fmt(d.total) + ' que saem por mês se repartem entre as categorias. ' +
+    'Aqui os percentuais são sobre a despesa; na régua abaixo, sobre a renda.</div>' +
+    '<div class="card dist-card" style="padding:26px 30px; display:flex; gap:32px; align-items:center;">' +
+    '<div style="position:relative; width:176px; height:176px; flex-shrink:0;">' +
+    '<svg width="176" height="176" viewBox="0 0 160 160" role="img" aria-label="Distribuição das despesas por categoria, total de ' + fmt(d.total) + '.">' +
+    '<circle cx="80" cy="80" r="' + RAIO + '" fill="none" stroke="rgba(27,27,92,0.08)" stroke-width="' + LARGURA + '" />' +
+    '<g transform="rotate(-90 80 80)">' + arcos + '</g></svg>' +
+    '<div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none;">' +
+    '<div style="width:96px; text-align:center;">' +
+    '<div style="font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:rgba(21,21,63,0.4);">Total</div>' +
+    '<div style="font-family:\'Fraunces\', serif; font-size:' + tamanhoValor(fmt(d.total), 18, 96) + 'px; font-weight:500; color:#1B1B5C; font-feature-settings:\'tnum\'; white-space:nowrap;">' + fmt(d.total) + '</div>' +
+    '</div></div></div>' +
+    '<div class="dist-lista" style="flex:1; display:grid; grid-template-columns:repeat(2, 1fr); gap:6px 20px;">' + lista + '</div>' +
+    '</div>' + bloco2 + '</div></section>';
 }
 
 function renderReport(R) {
@@ -111,52 +314,55 @@ function renderReport(R) {
     '<p>Este é um retrato do momento, não uma sentença. Toda situação financeira pode evoluir com clareza e direção certas.</p>' +
     '</div></div></section>';
 
-  // 3. Score geral
-  var insight = "";
+  // 3. Score, nível e perfil — uma página só
+  var rodapeScore;
   if (R.insightPercepcao.show) {
-    insight = '<div style="margin-top:24px; background:rgba(196,138,62,0.1); border:1px solid rgba(196,138,62,0.3); border-radius:8px; padding:20px 24px;">' +
-      '<div style="font-size:11px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#C48A3E; margin-bottom:10px;">Percepção x Realidade</div>' +
-      R.insightPercepcao.itens.map(function (d) { return '<div style="font-size:14px; line-height:1.65; color:rgba(21,21,63,0.8); margin-bottom:8px;">' + d + '</div>'; }).join("") +
-      '</div>';
+    rodapeScore = blocoHeader("Percepção x Realidade", "Onde a sensação diverge dos números") +
+      '<div style="background:rgba(196,138,62,0.1); border:1px solid rgba(196,138,62,0.3); border-radius:8px; padding:16px 20px;">' +
+      R.insightPercepcao.itens.map(function (d) {
+        return '<div style="font-size:13.5px; line-height:1.6; color:rgba(21,21,63,0.8); margin-bottom:8px;">' + d + '</div>';
+      }).join("") + '</div>';
+  } else {
+    rodapeScore = blocoHeader("Como chegamos ao score", "O que entra na conta") +
+      '<div style="font-size:14px; line-height:1.75; color:rgba(21,21,63,0.6); max-width:560px;">' +
+      'O score combina seis dimensões da sua vida financeira — fluxo de caixa, liquidez, endividamento, ' +
+      'gestão de risco, patrimônio e metas — cada uma com peso próprio na fórmula. Nas páginas seguintes ' +
+      'você verá o desempenho detalhado em cada uma delas.</div>';
   }
+
   html += '<section class="tight hairline"><div class="wrap">' +
     sectionHeader("Onde você está", "03", "Score Geral e Nível de Maturidade") +
-    '<div class="card" style="padding:44px; display:flex; align-items:center; gap:48px; flex-wrap:wrap;">' +
-    '<div style="flex:0 0 auto;"><svg width="160" height="160" viewBox="0 0 160 160">' +
+    '<div class="card" style="padding:34px 38px; display:flex; align-items:center; gap:40px; flex-wrap:wrap;">' +
+    '<div style="position:relative; width:158px; height:158px; flex:0 0 auto;">' +
+    '<svg width="158" height="158" viewBox="0 0 160 160">' +
     '<circle cx="80" cy="80" r="68" fill="none" stroke="rgba(27,27,92,0.12)" stroke-width="14" />' +
     '<circle cx="80" cy="80" r="68" fill="none" stroke="#4F8C84" stroke-width="14" stroke-linecap="round" stroke-dasharray="' + R.gaugeDash + '" stroke-dashoffset="' + R.gaugeOffset + '" transform="rotate(-90 80 80)" />' +
-    '<text x="80" y="88" text-anchor="middle" font-family="Fraunces, serif" font-size="42" font-weight="500" fill="#1B1B5C">' + R.scoreGeral + '</text>' +
-    '</svg></div>' +
-    '<div style="flex:1 1 260px; min-width:240px;">' +
+    '</svg>' +
+    '<div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none;">' +
+    '<div style="font-family:\'Fraunces\', serif; font-size:46px; font-weight:500; color:#1B1B5C; font-feature-settings:\'tnum\'; line-height:1;">' + R.scoreGeral + '</div>' +
+    '<div style="font-size:9px; font-weight:700; letter-spacing:0.1em; color:rgba(21,21,63,0.4); margin-top:3px;">DE 100</div>' +
+    '</div></div>' +
+    '<div style="flex:1 1 280px; min-width:260px;">' +
     '<div style="font-size:11px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#3E6F69; margin-bottom:8px;">Nível ' + R.nivel.n + ' · ' + R.nivel.nome + '</div>' +
-    '<div style="font-size:15.5px; line-height:1.7; color:rgba(21,21,63,0.75);">' + R.nivel.contexto + '</div>' +
-    '</div></div>' + insight + '</div></section>';
+    '<div style="font-size:15px; line-height:1.65; color:rgba(21,21,63,0.75);">' + R.nivel.contexto + '</div>' +
+    escalaNiveis(R.nivel.n) +
+    '</div></div>' +
 
-  // 4. Resumo do perfil
-  html += '<section class="tight hairline"><div class="wrap">' +
-    sectionHeader("Contexto", "04", "Resumo do Perfil") +
-    '<div class="card" style="padding:40px;">' +
-    '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:24px 32px; margin-bottom:28px;">' +
-    '<div><div class="kpi-label">Idade</div><div class="kpi-small">' + esc(R.data.idade) + ' anos</div>' +
-      (R.data.nascimentoDisplay ? '<div style="font-size:12px; color:rgba(21,21,63,0.60); margin-top:4px;">Nascimento: ' + esc(R.data.nascimentoDisplay) + '</div>' : "") + '</div>' +
-    '<div><div class="kpi-label">Estado civil</div><div class="kpi-small">' + esc(R.data.estadoCivil) + '</div>' +
-      (R.data.nascimentoConjugeDisplay ? '<div style="font-size:12px; color:rgba(21,21,63,0.60); margin-top:4px;">Cônjuge nascido em ' + esc(R.data.nascimentoConjugeDisplay) + '</div>' : "") + '</div>' +
+    blocoHeader("Contexto", "Resumo do Perfil") +
+    '<div class="card" style="padding:30px 34px;">' +
+    '<div class="perfil-grid" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:20px 24px; margin-bottom:20px;">' +
+    '<div><div class="kpi-label">Idade</div><div class="kpi-small">' + esc(R.data.idade) + ' anos</div></div>' +
+    '<div><div class="kpi-label">Estado civil</div><div class="kpi-small">' + esc(R.data.estadoCivil) + '</div></div>' +
     '<div><div class="kpi-label">Filhos/dependentes</div><div class="kpi-small">' + esc(R.data.filhos) + '</div></div>' +
     '<div><div class="kpi-label">Ocupação</div><div class="kpi-small">' + esc(R.data.ocupacao) + '</div></div>' +
     '</div>' +
-    '<div style="height:1px; background:rgba(27,27,92,0.14); margin:8px 0 28px;"></div>' +
-    '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:24px 32px;">' +
+    '<div style="height:1px; background:rgba(27,27,92,0.14); margin:4px 0 20px;"></div>' +
+    '<div class="perfil-grid-2" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:20px 24px;">' +
     '<div><div class="kpi-label">Renda total mensal</div><div class="kpi-med">' + R.kpis.rendaTotalDisplay + '</div></div>' +
     '<div><div class="kpi-label">Patrimônio total</div><div class="kpi-med">' + R.kpis.patrimonioTotalDisplay + '</div></div>' +
-    '</div>' +
-    '<div style="height:1px; background:rgba(27,27,92,0.14); margin:28px 0;"></div>' +
-    '<div class="kpi-label" style="margin-bottom:14px;">Metas declaradas</div>' +
-    R.metasDeclaradas.map(function (m) {
-      return '<div style="display:flex; gap:12px; margin-bottom:10px; align-items:baseline;">' +
-        '<div style="font-family:\'Fraunces\', serif; font-style:italic; color:#3E6F69; flex-shrink:0;">—</div>' +
-        '<div style="font-size:14.5px; line-height:1.6; color:rgba(21,21,63,0.75);"><span style="font-weight:700; color:#1B1B5C;">' + esc(m.titulo) + '</span>' + (m.detalhe ? ' · ' + esc(m.detalhe) : '') + '</div></div>';
-    }).join("") +
-    '</div></div></section>';
+    '</div></div>' +
+    rodapeScore +
+    '</div></section>';
 
   // 5. Arquétipo
   var voz = "";
@@ -169,52 +375,59 @@ function renderReport(R) {
       '</div>';
   }
   html += '<section><div class="wrap">' +
-    sectionHeader("Análise Comportamental", "05", "Seu Arquétipo Financeiro") +
-    '<div class="archetype-block" style="position:relative; overflow:hidden; background:#1B1B5C; color:#FBFAF6; border-radius:8px; padding:48px;">' +
+    sectionHeader("Análise Comportamental", "04", "Seu Arquétipo Financeiro") +
+    '<div class="archetype-block" style="position:relative; overflow:hidden; background:#1B1B5C; color:#FBFAF6; border-radius:8px; padding:30px 34px;">' +
     '<div class="navy-glow" style="top:-70px; right:-70px; width:280px; height:280px;"></div>' +
     '<div style="position:relative; font-size:11px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#6FA8A0; margin-bottom:14px;">Seu arquétipo</div>' +
-    '<div style="position:relative; font-family:\'Fraunces\', serif; font-style:italic; font-size:34px; color:#FBFAF6; margin-bottom:22px;">' + R.arquetipo.nome + '</div>' +
-    '<div style="position:relative; font-family:\'Fraunces\', serif; font-size:21px; line-height:1.6; color:#6FA8A0; margin-bottom:32px; max-width:620px;">“' + R.arquetipo.abertura + '”</div>' +
-    '<div style="position:relative; display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:24px; margin-bottom:24px;">' +
-    '<div style="background:rgba(251,250,246,0.06); border-radius:8px; padding:22px 24px;">' +
+    '<div style="position:relative; font-family:\'Fraunces\', serif; font-style:italic; font-size:31px; color:#FBFAF6; margin-bottom:16px;">' + R.arquetipo.nome + '</div>' +
+    '<div style="position:relative; font-family:\'Fraunces\', serif; font-size:20px; line-height:1.55; color:#6FA8A0; margin-bottom:22px; max-width:620px;">“' + R.arquetipo.abertura + '”</div>' +
+    '<div style="position:relative; display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:14px; margin-bottom:14px;">' +
+    '<div style="background:rgba(251,250,246,0.06); border-radius:8px; padding:17px 20px;">' +
     '<div style="font-size:10.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#6FA8A0; margin-bottom:10px;">Padrão identificado</div>' +
     '<div style="font-size:14.5px; line-height:1.7; color:rgba(251,250,246,0.85);">' + R.arquetipo.padrao + '</div></div>' +
-    '<div style="background:rgba(251,250,246,0.06); border-radius:8px; padding:22px 24px;">' +
+    '<div style="background:rgba(251,250,246,0.06); border-radius:8px; padding:17px 20px;">' +
     '<div style="font-size:10.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#6FA8A0; margin-bottom:10px;">Por que este é o seu padrão</div>' +
     '<div style="font-size:14.5px; line-height:1.7; color:rgba(251,250,246,0.85);">' + R.arquetipo.naoOutro + '</div></div></div>' +
-    '<div style="position:relative; background:rgba(111,168,160,0.16); border-radius:8px; padding:22px 26px;">' +
+    '<div style="position:relative; background:rgba(111,168,160,0.16); border-radius:8px; padding:17px 22px;">' +
     '<div style="font-size:10.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#6FA8A0; margin-bottom:8px;">Prioridade imediata</div>' +
     '<div style="font-size:16px; line-height:1.6; color:#FBFAF6; font-weight:500;">' + R.arquetipo.prioridade + '</div></div>' +
     voz + '</div></div></section>';
 
-  // 6. KPIs
-  var heroCards = R.kpiHero.map(function (kpi) {
-    return '<div class="kpi" style="position:relative; overflow:hidden; background:#1B1B5C; border-radius:8px; padding:32px 30px; color:#FBFAF6;">' +
-      '<div class="navy-glow" style="top:-30px; right:-30px; width:140px; height:140px;"></div>' +
-      '<div style="position:relative; font-size:11px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#6FA8A0; margin-bottom:12px;">' + kpi.label + '</div>' +
-      '<div style="position:relative; font-family:\'Fraunces\', serif; font-size:34px; font-weight:500; font-feature-settings:\'tnum\';">' + kpi.value + '</div>' +
-      (kpi.sub ? '<div style="position:relative; font-size:12.5px; color:rgba(251,250,246,0.6); margin-top:8px;">' + kpi.sub + '</div>' : "") +
-      '</div>';
-  }).join("");
-  var restCards = R.kpiRest.map(function (kpi) {
-    return '<div class="kpi" style="position:relative; overflow:hidden; background:rgba(27,27,92,0.06); border:1px solid rgba(27,27,92,0.12); border-radius:8px; padding:18px 20px;">' +
-      '<div style="font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#3E6F69; margin-bottom:8px;">' + kpi.label + '</div>' +
-      '<div style="font-family:\'Fraunces\', serif; font-size:20px; font-weight:500; color:#1B1B5C; font-feature-settings:\'tnum\';">' + kpi.value + '</div>' +
-      (kpi.sub ? '<div style="font-size:11.5px; color:rgba(21,21,63,0.5); margin-top:4px;">' + kpi.sub + '</div>' : "") +
-      '</div>';
+  // 6. KPIs, agrupados por assunto
+  var grupos = R.kpiGrupos.map(function (g) {
+    var pequenos = g.itens.map(function (kpi) {
+      return '<div class="kpi" style="background:rgba(27,27,92,0.05); border:1px solid rgba(27,27,92,0.12); border-radius:8px; padding:16px 18px;">' +
+        '<div style="font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#3E6F69; margin-bottom:6px;">' + kpi.label + '</div>' +
+        '<div style="font-family:\'Fraunces\', serif; font-size:' + tamanhoValor(kpi.value, 20, 177) + 'px; font-weight:500; color:#1B1B5C; font-feature-settings:\'tnum\';">' + kpi.value + '</div>' +
+        (kpi.sub ? '<div style="font-size:11.5px; color:rgba(21,21,63,0.5); margin-top:4px; line-height:1.45;">' + kpi.sub + '</div>' : "") +
+        '</div>';
+    }).join("");
+    return '<div class="kpi-grupo" style="margin-bottom:26px;">' +
+      '<div style="font-size:10.5px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#3E6F69; padding-bottom:8px; margin-bottom:14px; border-bottom:1px solid rgba(27,27,92,0.12);">' + g.titulo + '</div>' +
+      '<div class="kpi-grupo-corpo" style="display:grid; grid-template-columns:minmax(220px, 1fr) 2fr; gap:14px; align-items:stretch;">' +
+      '<div class="kpi" style="position:relative; overflow:hidden; background:#1B1B5C; border-radius:8px; padding:28px 26px; color:#FBFAF6; display:flex; flex-direction:column; justify-content:center;">' +
+      '<div class="navy-glow" style="top:-40px; right:-40px; width:150px; height:150px;"></div>' +
+      '<div style="position:relative; font-size:10.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#6FA8A0; margin-bottom:10px;">' + g.destaque.label + '</div>' +
+      '<div style="position:relative; font-family:\'Fraunces\', serif; font-size:' + tamanhoValor(g.destaque.value, 31, 168) + 'px; font-weight:500; font-feature-settings:\'tnum\'; line-height:1.15; white-space:nowrap;">' + g.destaque.value + '</div>' +
+      (g.destaque.sub ? '<div style="position:relative; font-size:12px; color:rgba(251,250,246,0.6); margin-top:8px;">' + g.destaque.sub + '</div>' : "") +
+      '</div>' +
+      '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(175px, 1fr)); gap:12px; align-content:start;">' + pequenos + '</div>' +
+      '</div></div>';
   }).join("");
   html += '<section><div class="wrap-wide">' +
-    sectionHeader("Os números por trás", "06", "KPIs Financeiros") +
-    '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin-bottom:16px;">' + heroCards + '</div>' +
-    '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:12px;">' + restCards + '</div>' +
+    sectionHeader("Os números por trás", "05", "KPIs Financeiros") +
+    grupos +
     '</div></section>';
+
+  // 7. Distribuição das despesas
+  html += renderDistribuicao(R);
 
   // 7. Score por dimensão
   var legend = [["Crítico", "#B34747"], ["Insuficiente", "#C48A3E"], ["Adequado", "#4F8C84"], ["Excelente", "#1B1B5C"]].map(function (b) {
     return '<div style="display:flex; align-items:center; gap:8px; font-size:12px; color:rgba(21,21,63,0.55);"><div style="background:' + b[1] + '; width:10px; height:10px; border-radius:50%;"></div>' + b[0] + '</div>';
   }).join("");
   var dims = R.dimRows.map(function (d) {
-    return '<div class="dim-row" style="background:#FBFAF6; border:1px solid rgba(27,27,92,0.14); border-radius:8px; padding:26px 30px; margin-bottom:14px;">' +
+    return '<div class="dim-row" style="background:#FBFAF6; border:1px solid rgba(27,27,92,0.14); border-radius:8px; padding:20px 26px; margin-bottom:11px;">' +
       '<div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:12px; gap:12px; flex-wrap:wrap;">' +
       '<div style="font-family:\'Fraunces\', serif; font-size:19px; font-weight:500; color:#1B1B5C;">' + d.nome + '</div>' +
       '<div style="font-family:\'Fraunces\', serif; font-size:19px; font-weight:500; color:#3E6F69; font-feature-settings:\'tnum\';">' + d.score + '<span style="font-size:13px; color:rgba(21,21,63,0.4);"> / 100</span></div></div>' +
@@ -238,7 +451,7 @@ function renderReport(R) {
   var apoCards = A.cards.map(function (c) {
     return '<div class="kpi" style="background:rgba(27,27,92,0.05); border:1px solid rgba(27,27,92,0.12); border-radius:8px; padding:18px 20px;">' +
       '<div style="font-size:10px; font-weight:700; letter-spacing:0.13em; text-transform:uppercase; color:#3E6F69; margin-bottom:8px;">' + esc(c.label) + '</div>' +
-      '<div style="font-family:\'Fraunces\', serif; font-size:21px; font-weight:500; color:#1B1B5C; font-feature-settings:\'tnum\';">' + esc(c.value) + '</div>' +
+      '<div style="font-family:\'Fraunces\', serif; font-size:' + tamanhoValor(c.value, 21, 174) + 'px; font-weight:500; color:#1B1B5C; font-feature-settings:\'tnum\';">' + esc(c.value) + '</div>' +
       (c.sub ? '<div style="font-size:11.5px; color:rgba(21,21,63,0.55); margin-top:5px; line-height:1.5;">' + esc(c.sub) + '</div>' : "") +
       '</div>';
   }).join("");
@@ -250,6 +463,16 @@ function renderReport(R) {
     return '<div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:rgba(21,21,63,0.65);">' +
       '<div style="width:22px; height:3px; ' + l[1] + '"></div>' + l[0] + '</div>';
   }).join("");
+  var metasBloco = R.metasDeclaradas.length
+    ? blocoHeader("Metas declaradas", "O que você disse que quer") +
+      '<div class="card" style="padding:24px 28px; margin-bottom:16px;">' +
+      R.metasDeclaradas.map(function (m) {
+        return '<div style="display:flex; gap:12px; margin-bottom:9px; align-items:baseline;">' +
+          '<div style="font-family:\'Fraunces\', serif; font-style:italic; color:#3E6F69; flex-shrink:0;">—</div>' +
+          '<div style="font-size:14px; line-height:1.6; color:rgba(21,21,63,0.75);"><span style="font-weight:700; color:#1B1B5C;">' + esc(m.titulo) + '</span>' + (m.detalhe ? ' · ' + esc(m.detalhe) : '') + '</div></div>';
+      }).join("") + '</div>'
+    : "";
+
   html += '<section class="hairline"><div class="wrap-wide">' +
     sectionHeader("Pra onde isso leva", "08", A.titulo) +
     '<div style="font-size:15px; color:rgba(21,21,63,0.6); margin:-16px 0 24px; max-width:660px; line-height:1.6;">' + esc(A.subtitulo) + '</div>' +
@@ -257,6 +480,11 @@ function renderReport(R) {
     '<div style="font-size:10.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#3E6F69; margin-bottom:8px;">Estratégia escolhida · ' + esc(A.estrategiaLabel) + '</div>' +
     '<div style="font-size:14.5px; line-height:1.7; color:rgba(21,21,63,0.75);">' + esc(A.estrategiaResumo) + '</div></div>' +
     '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-bottom:16px;">' + apoCards + '</div>' +
+    metasBloco +
+    // O gráfico e a leitura dele ficam na folha seguinte, com título próprio:
+    // sem isso a curva aparecia sozinha no topo de uma página, sem dizer o que é.
+    '<div class="quebra-pagina">' +
+    blocoHeader("A curva", "Como o patrimônio evolui até lá", 0) +
     '<div class="card" style="padding:28px 24px 20px;">' +
     '<div class="grafico">' + R.chart.svg +
     R.chart.rotulos.map(function (r) {
@@ -268,11 +496,12 @@ function renderReport(R) {
     '<div style="margin-top:16px; background:' + vd.fundo + '; border:1px solid ' + vd.borda + '; border-radius:8px; padding:22px 26px;">' +
     '<div style="font-size:11px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:' + vd.texto + '; margin-bottom:10px;">' + vd.titulo + '</div>' +
     '<div style="font-size:15px; line-height:1.7; color:rgba(21,21,63,0.82);">' + esc(A.veredito.texto) + '</div></div>' +
+    '</div>' +
     '</div></section>';
 
   // 9. Plano de ação
   var plan = R.actionPlan.map(function (item) {
-    return '<div class="card" style="padding:32px; margin-bottom:18px;">' +
+    return '<div class="card" style="padding:24px 28px; margin-bottom:13px;">' +
       '<div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">' +
       '<div style="font-family:\'Fraunces\', serif; font-style:italic; color:#3E6F69; font-size:22px;">' + item.n + '</div>' +
       '<div style="font-family:\'Fraunces\', serif; font-size:19px; font-weight:500; color:#1B1B5C;">' + item.dimNome + '</div></div>' +
@@ -291,7 +520,9 @@ function renderReport(R) {
       }).join("") + '</div>';
   }
   var is = R.investSeguro;
-  var investSeguroHtml = '<div class="archetype-block" style="position:relative; overflow:hidden; margin-top:36px; background:#1B1B5C; color:#FBFAF6; border-radius:8px; padding:36px;">' +
+  var investSeguroHtml = '<div class="quebra-pagina">' +
+    blocoHeader("Onde começar a aplicar", "Alternativas seguras pro curto prazo", 0) +
+    '<div class="archetype-block" style="position:relative; overflow:hidden; background:#1B1B5C; color:#FBFAF6; border-radius:8px; padding:36px;">' +
     '<div class="navy-glow" style="top:-50px; right:-50px; width:200px; height:200px;"></div>' +
     '<div style="position:relative; font-size:11px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#6FA8A0; margin-bottom:14px;">Onde aplicar com segurança</div>' +
     '<div style="position:relative; font-size:15px; line-height:1.7; color:rgba(251,250,246,0.85); margin-bottom:22px; max-width:620px;">' + esc(is.intro) + '</div>' +
@@ -303,7 +534,8 @@ function renderReport(R) {
     }).join("") +
     '</div>' +
     '<div style="position:relative; font-size:11.5px; color:rgba(251,250,246,0.45);">' + is.nota + '</div>' +
-    '</div>';
+    '</div></div>';
+
   // Sem lacunas a corrigir, a seção deixa de ser de correção e passa a ser de
   // refinamento — em vez de aparecer com o título cheio e nenhum item embaixo.
   var planoIntro = R.planoOtimizacao
@@ -344,7 +576,7 @@ function renderReport(R) {
     '</div></div></section>';
 
   // 13. Encerramento
-  html += '<section style="position:relative; overflow:hidden; background:#1B1B5C; color:#FBFAF6;">' +
+  html += '<section class="closing" style="position:relative; overflow:hidden; background:#1B1B5C; color:#FBFAF6;">' +
     '<div class="navy-glow" style="bottom:-100px; left:-100px; width:320px; height:320px; background:radial-gradient(circle, rgba(111,168,160,0.3) 0%, rgba(111,168,160,0) 70%);"></div>' +
     '<div style="max-width:700px; margin:0 auto; position:relative; text-align:center;">' +
     '<div style="font-family:\'Fraunces\', serif; font-style:italic; font-size:24px; color:#6FA8A0; margin-bottom:20px;">Obrigado pela confiança, ' + esc(R.data.primeiroNome) + '.</div>' +
