@@ -122,6 +122,21 @@
 var fmt = HZDiag.fmt, pct = HZDiag.pct, esc = HZDiag.esc, computeReport = HZDiag.computeReport;
 var NIVEL_TEXTS = HZDiag.NIVEL_TEXTS;
 
+/* Valores monetários longos não cabem em caixa de largura fixa, e como a
+   fonte é estática não dá pra medir em tempo de render. Aqui a largura é
+   estimada pelo número de caracteres — 0,55 em de largura média por
+   caractere na Fraunces com tabular-nums, aferido contra o texto real
+   renderizado — e a fonte encolhe só o quanto precisar pra caber.
+
+   `largura` é a largura útil da caixa em impressão A4, que é a condição mais
+   apertada: 673px de folha, não os 900px do wrap na tela. */
+function tamanhoValor(txt, base, largura) {
+  var estimado = String(txt).length * base * 0.55;
+  var teto = largura * 0.94;                       // folga contra a estimativa
+  if (estimado <= teto) return base;
+  return Math.max(base * 0.45, base * teto / estimado).toFixed(1);
+}
+
 /* Cabeçalho de bloco dentro de uma seção: mesmo desenho do sectionHeader,
    sem o número — a numeração é da página, não do bloco. */
 function blocoHeader(eyebrow, title, margemTopo) {
@@ -265,9 +280,10 @@ function renderDistribuicao(R) {
     '<circle cx="80" cy="80" r="' + RAIO + '" fill="none" stroke="rgba(27,27,92,0.08)" stroke-width="' + LARGURA + '" />' +
     '<g transform="rotate(-90 80 80)">' + arcos + '</g></svg>' +
     '<div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none;">' +
+    '<div style="width:96px; text-align:center;">' +
     '<div style="font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:rgba(21,21,63,0.4);">Total</div>' +
-    '<div style="font-family:\'Fraunces\', serif; font-size:18px; font-weight:500; color:#1B1B5C; font-feature-settings:\'tnum\';">' + fmt(d.total) + '</div>' +
-    '</div></div>' +
+    '<div style="font-family:\'Fraunces\', serif; font-size:' + tamanhoValor(fmt(d.total), 18, 96) + 'px; font-weight:500; color:#1B1B5C; font-feature-settings:\'tnum\'; white-space:nowrap;">' + fmt(d.total) + '</div>' +
+    '</div></div></div>' +
     '<div class="dist-lista" style="flex:1; display:grid; grid-template-columns:repeat(2, 1fr); gap:6px 20px;">' + lista + '</div>' +
     '</div>' + bloco2 + '</div></section>';
 }
@@ -382,7 +398,7 @@ function renderReport(R) {
     var pequenos = g.itens.map(function (kpi) {
       return '<div class="kpi" style="background:rgba(27,27,92,0.05); border:1px solid rgba(27,27,92,0.12); border-radius:8px; padding:16px 18px;">' +
         '<div style="font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#3E6F69; margin-bottom:6px;">' + kpi.label + '</div>' +
-        '<div style="font-family:\'Fraunces\', serif; font-size:20px; font-weight:500; color:#1B1B5C; font-feature-settings:\'tnum\';">' + kpi.value + '</div>' +
+        '<div style="font-family:\'Fraunces\', serif; font-size:' + tamanhoValor(kpi.value, 20, 177) + 'px; font-weight:500; color:#1B1B5C; font-feature-settings:\'tnum\';">' + kpi.value + '</div>' +
         (kpi.sub ? '<div style="font-size:11.5px; color:rgba(21,21,63,0.5); margin-top:4px; line-height:1.45;">' + kpi.sub + '</div>' : "") +
         '</div>';
     }).join("");
@@ -392,7 +408,7 @@ function renderReport(R) {
       '<div class="kpi" style="position:relative; overflow:hidden; background:#1B1B5C; border-radius:8px; padding:28px 26px; color:#FBFAF6; display:flex; flex-direction:column; justify-content:center;">' +
       '<div class="navy-glow" style="top:-40px; right:-40px; width:150px; height:150px;"></div>' +
       '<div style="position:relative; font-size:10.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#6FA8A0; margin-bottom:10px;">' + g.destaque.label + '</div>' +
-      '<div style="position:relative; font-family:\'Fraunces\', serif; font-size:31px; font-weight:500; font-feature-settings:\'tnum\'; line-height:1.1;">' + g.destaque.value + '</div>' +
+      '<div style="position:relative; font-family:\'Fraunces\', serif; font-size:' + tamanhoValor(g.destaque.value, 31, 168) + 'px; font-weight:500; font-feature-settings:\'tnum\'; line-height:1.15; white-space:nowrap;">' + g.destaque.value + '</div>' +
       (g.destaque.sub ? '<div style="position:relative; font-size:12px; color:rgba(251,250,246,0.6); margin-top:8px;">' + g.destaque.sub + '</div>' : "") +
       '</div>' +
       '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(175px, 1fr)); gap:12px; align-content:start;">' + pequenos + '</div>' +
@@ -435,7 +451,7 @@ function renderReport(R) {
   var apoCards = A.cards.map(function (c) {
     return '<div class="kpi" style="background:rgba(27,27,92,0.05); border:1px solid rgba(27,27,92,0.12); border-radius:8px; padding:18px 20px;">' +
       '<div style="font-size:10px; font-weight:700; letter-spacing:0.13em; text-transform:uppercase; color:#3E6F69; margin-bottom:8px;">' + esc(c.label) + '</div>' +
-      '<div style="font-family:\'Fraunces\', serif; font-size:21px; font-weight:500; color:#1B1B5C; font-feature-settings:\'tnum\';">' + esc(c.value) + '</div>' +
+      '<div style="font-family:\'Fraunces\', serif; font-size:' + tamanhoValor(c.value, 21, 174) + 'px; font-weight:500; color:#1B1B5C; font-feature-settings:\'tnum\';">' + esc(c.value) + '</div>' +
       (c.sub ? '<div style="font-size:11.5px; color:rgba(21,21,63,0.55); margin-top:5px; line-height:1.5;">' + esc(c.sub) + '</div>' : "") +
       '</div>';
   }).join("");
