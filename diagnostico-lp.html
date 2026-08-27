@@ -651,6 +651,67 @@
     padding-left: 1rem;
   }
 
+  /* ─── FOLHAS DO RELATÓRIO MODELO ─── */
+  /* Faixa que arrasta, com as páginas em leque. A sobreposição é o que dá a
+     leitura de "documento impresso" em vez de "seis imagens numa grade" —
+     por isso as folhas se encavalam e alternam a inclinação. */
+  .folhas {
+    display: flex;
+    gap: 0;
+    margin-top: 1.8rem;
+    padding: 1.8rem 0 2rem;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+    scrollbar-color: var(--teal-border) transparent;
+  }
+  .folhas::-webkit-scrollbar { height: 6px; }
+  .folhas::-webkit-scrollbar-thumb { background: var(--teal-border); border-radius: 3px; }
+  .folha {
+    scroll-snap-align: center;
+    flex: 0 0 auto;
+    width: clamp(150px, 20vw, 208px);
+    margin: 0 0 0 -2.4rem;
+    text-align: center;
+    transition: transform 0.28s ease, filter 0.28s ease;
+  }
+  .folha:first-child { margin-left: 0; }
+  .folha:nth-child(odd)  { transform: rotate(-2.2deg); }
+  .folha:nth-child(even) { transform: rotate(1.8deg) translateY(10px); }
+  .folha:hover, .folha:focus-within {
+    transform: rotate(0deg) translateY(-10px) scale(1.06);
+    z-index: 5;
+    position: relative;
+  }
+  .folha img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(27,27,92,0.16), 0 2px 6px rgba(27,27,92,0.08);
+  }
+  .folha figcaption {
+    margin-top: 0.9rem;
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .folhas-nota { font-size: 0.8rem; color: var(--muted); font-style: italic; }
+  @media (max-width: 700px) {
+    /* Sem hover no toque, o leque vira empilhamento ilegível: as folhas
+       ficam maiores, sem giro e com sobreposição mínima. */
+    .folha { width: 62vw; margin-left: -1rem; transform: none !important; }
+    .folha:first-child { margin-left: 0; }
+    .folhas { padding: 1rem 0 1.4rem; scroll-snap-type: x mandatory; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .folha { transition: none; }
+  }
+
   /* ─── ARQUÉTIPOS ─── */
   .arq-grid {
     display: grid;
@@ -1196,13 +1257,37 @@
     <div class="quote">
       "Você tem disciplina, guarda dinheiro, se vira bem no dia a dia. O que falta não é esforço, é direção.
       Sua taxa de poupança de 27% mostra disciplina real. Mas no ritmo atual de aportes você chegaria aos 58 anos
-      com uma renda de R$ 3.275,75 por mês, 23% do que você quer receber, e suas metas ainda são ideias vagas,
+      com uma renda de R$ 4.295,98 por mês, 31% do que você quer receber, e suas metas ainda são ideias vagas,
       sem prazo ou valor definidos."
     </div>
     <div class="preview-note" style="margin-top:1.1rem;">
       Trecho real gerado para um perfil de exemplo. A frase de abertura é a do seu arquétipo, a mesma da lista acima. O que vem depois é montado com os seus números: taxa de poupança, idade-alvo, renda projetada e a situação das suas metas.
     </div>
   </div>
+</section>
+
+<!-- ─── O DOCUMENTO (mockup do relatório modelo) ─── -->
+<section id="modelo">
+  <div class="reveal">
+    <div class="section-label">// o documento</div>
+    <div class="teal-line"></div>
+    <h2 class="section-title">Um relatório inteiro,<br>página por página</h2>
+    <p class="section-sub">
+      Treze seções em A4, prontas para ler na tela ou imprimir. Estas são páginas de um relatório
+      de verdade, gerado pelo diagnóstico a partir das respostas de um perfil de exemplo.
+    </p>
+  </div>
+
+  <div class="folhas reveal">
+    <figure class="folha"><img src="img/lp/modelo/capa.jpg" width="673" height="1002" loading="lazy" decoding="async" alt="Capa do relatório, em fundo azul-marinho, com o nome da pessoa e a data."><figcaption>Capa</figcaption></figure>
+    <figure class="folha"><img src="img/lp/modelo/score.jpg" width="673" height="1002" loading="lazy" decoding="async" alt="Página de score geral, com o velocímetro, o nível de maturidade e o resumo do perfil."><figcaption>Score e perfil</figcaption></figure>
+    <figure class="folha"><img src="img/lp/modelo/kpis.jpg" width="673" height="1002" loading="lazy" decoding="async" alt="Página de KPIs financeiros, com os indicadores agrupados em fluxo, patrimônio e proteção."><figcaption>Indicadores</figcaption></figure>
+    <figure class="folha"><img src="img/lp/modelo/distribuicao.jpg" width="673" height="1002" loading="lazy" decoding="async" alt="Página de distribuição de despesas, com gráfico de rosca por categoria e a régua 50/30/20."><figcaption>Para onde vai o dinheiro</figcaption></figure>
+    <figure class="folha"><img src="img/lp/modelo/projecao.jpg" width="673" height="1002" loading="lazy" decoding="async" alt="Página de projeção até a aposentadoria, com o patrimônio necessário e o aporte mensal."><figcaption>Projeção</figcaption></figure>
+    <figure class="folha"><img src="img/lp/modelo/plano.jpg" width="673" height="1002" loading="lazy" decoding="async" alt="Página do plano de ação, com as recomendações numeradas e a ação prática de cada uma."><figcaption>Plano de ação</figcaption></figure>
+  </div>
+
+  <p class="folhas-nota reveal">Perfil fictício, criado para ilustrar o produto. O seu traz os seus números.</p>
 </section>
 
 <!-- ─── ARQUÉTIPOS ─── -->
@@ -1285,7 +1370,7 @@
           <div class="mostra">Seção 3 · Score geral e nível</div>
           <div class="quem">Bia, 34 anos</div>
           <div class="situacao">Ganha R$ 6.000 e gasta R$ 6.400. Respondeu que a renda cobre as despesas — o cálculo mostrou um rombo de R$ 400 por mês.</div>
-          <div class="rodape"><span class="arq">Negação Financeira</span><span class="score">score 28</span></div>
+          <div class="rodape"><span class="arq">Negação Financeira</span><span class="score">score 22</span></div>
         </div>
       </article>
 
@@ -1299,7 +1384,7 @@
           <div class="mostra">Seção 7 · Score por dimensão</div>
           <div class="quem">Caio, 36 anos</div>
           <div class="situacao">Poupa 16% da renda todo mês e não tem dívida nenhuma. Mas a reserva de emergência cobre menos de dez dias de despesa.</div>
-          <div class="rodape"><span class="arq">Ilusão de Controle</span><span class="score">score 52</span></div>
+          <div class="rodape"><span class="arq">Ilusão de Controle</span><span class="score">score 45</span></div>
         </div>
       </article>
 
@@ -1312,7 +1397,7 @@
         <div class="corpo">
           <div class="mostra">Seção 8 · Projeção até a aposentadoria</div>
           <div class="quem">Dora, 46 anos</div>
-          <div class="situacao">Presente resolvido: reserva cheia, sem dívida, proteção em dia. Quer parar aos 58 com R$ 14 mil por mês — e o ritmo atual entrega 23% disso.</div>
+          <div class="situacao">Presente resolvido: reserva cheia, sem dívida, proteção em dia. Quer parar aos 58 com R$ 14 mil por mês — e o ritmo atual entrega 31% disso.</div>
           <div class="rodape"><span class="arq">Adiamento do Futuro</span><span class="score">score 70</span></div>
         </div>
       </article>
@@ -1338,10 +1423,10 @@
                width="900" height="562" alt="Seção do arquétipo financeiro do relatório, em fundo azul, com o padrão identificado e a prioridade imediata.">
         </picture>
         <div class="corpo">
-          <div class="mostra">Seção 5 · Arquétipo financeiro</div>
+          <div class="mostra">Seção 4 · Arquétipo financeiro</div>
           <div class="quem">Fábio, 42 anos</div>
           <div class="situacao">Guarda R$ 2.500 por mês há anos, sem falhar. Tem R$ 210 mil parados em poupança e conta corrente, rendendo menos que a inflação.</div>
-          <div class="rodape"><span class="arq">Paralisia da Decisão</span><span class="score">score 70</span></div>
+          <div class="rodape"><span class="arq">Paralisia da Decisão</span><span class="score">score 63</span></div>
         </div>
       </article>
 
@@ -1352,10 +1437,10 @@
                width="900" height="562" alt="Seção de KPIs financeiros do relatório, com os indicadores de renda, patrimônio e cobertura.">
         </picture>
         <div class="corpo">
-          <div class="mostra">Seção 6 · KPIs financeiros</div>
+          <div class="mostra">Seção 5 · KPIs financeiros</div>
           <div class="quem">Gil, 39 anos</div>
-          <div class="situacao">As contas fecham e ele ainda poupa 29%. Só que carrega R$ 40 mil entre cartão e cheque especial, sem saber a que taxa de juros.</div>
-          <div class="rodape"><span class="arq">Vazamento Silencioso</span><span class="score">score 50</span></div>
+          <div class="situacao">As contas fecham e ele ainda poupa 32%. Só que carrega R$ 40 mil entre cartão e cheque especial, sem saber a que taxa de juros.</div>
+          <div class="rodape"><span class="arq">Vazamento Silencioso</span><span class="score">score 46</span></div>
         </div>
       </article>
 
@@ -1369,7 +1454,7 @@
           <div class="mostra">Seção 9 · Plano de otimização</div>
           <div class="quem">Heloísa, 44 anos</div>
           <div class="situacao">Casal com R$ 30 mil de renda, reserva cheia, seguro dimensionado e aporte automático. Sem lacuna a corrigir, o plano vira refinamento.</div>
-          <div class="rodape"><span class="arq">Domínio Comportamental</span><span class="score">score 95</span></div>
+          <div class="rodape"><span class="arq">Domínio Comportamental</span><span class="score">score 97</span></div>
         </div>
       </article>
 
@@ -1382,8 +1467,8 @@
         <div class="corpo">
           <div class="mostra">Seção 8 · Projeção da renda</div>
           <div class="quem">Ivo, 67 anos</div>
-          <div class="situacao">Já parou de trabalhar e vive de R$ 8 mil entre aposentadoria e aluguel. O patrimônio sustenta 74% do que ele gostaria de gastar até os 95.</div>
-          <div class="rodape"><span class="arq">Fase de Colheita</span><span class="score">score 82</span></div>
+          <div class="situacao">Já parou de trabalhar e vive de R$ 8 mil entre aposentadoria e aluguel. O patrimônio sustenta 54% do que ele gostaria de gastar até os 95.</div>
+          <div class="rodape"><span class="arq">Fase de Colheita</span><span class="score">score 67</span></div>
         </div>
       </article>
 
