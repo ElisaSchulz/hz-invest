@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metodologia do Score e dos Arquétipos | Diagnóstico Financeiro HZ Invest</title>
+
+<!-- ─────────────────────────────────────────────────────────────
+     Documento de metodologia do Diagnóstico Financeiro.
+
+     A fonte da verdade das regras descritas aqui é o
+     diagnostico-core.js. Sempre que um limiar, um peso ou uma
+     regra de arquétipo mudar lá, este documento precisa mudar
+     junto — e o PDF precisa ser gerado de novo:
+
+         node tools/gerar-metodologia-pdf.js
+
+     ───────────────────────────────────────────────────────────── -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  /* Tokens da identidade HZ (espelham o hz-design.css; ficam inline
+     para o documento imprimir igual mesmo fora da pasta do site). */
+  :root {
+    --bg: #F6F4EE;
+    --surface: #FBFAF6;
+    --ink: #15153F;
+    --navy: #1B1B5C;
+    --text: rgba(21,21,63,0.84);
+    --muted: rgba(21,21,63,0.68);
+    --faint: rgba(21,21,63,0.62);
+    --sage: #4F8C84;
+    --sage-deep: #3E6F69;
+    --sage-light: #6FA8A0;
+    --sage-dim: rgba(79,140,132,0.10);
+    --border: rgba(27,27,92,0.14);
+    --critico: #B34747;
+    --alerta: #C48A3E;
+    --alerta-texto: #8A5F22;
+    --bom: #3E6F69;
+    --otimo: #1B1B5C;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Manrope', system-ui, sans-serif;
+    --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  }
+
+  * , *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  section { padding: 44px 0; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 32px; }
+
+  h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 500; color: var(--navy); letter-spacing: -0.01em; margin: 0; }
+  p { margin: 0 0 14px; }
+  strong { color: var(--navy); font-weight: 700; }
+
+  /* ── capa ── */
+  .cover {
+    background: var(--navy);
+    color: #FBFAF6;
+    min-height: 100vh;
+    padding: 64px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .cover-eyebrow { display: flex; align-items: center; gap: 12px; }
+  .cover-eyebrow span {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--sage-light);
+  }
+  .cover-eyebrow i { display: block; width: 48px; height: 2px; background: var(--sage-light); }
+  .cover-title {
+    font-family: var(--font-display); font-size: 46px; line-height: 1.12;
+    font-weight: 500; color: #FBFAF6; margin: 26px 0 0; letter-spacing: -0.02em;
+  }
+  .cover-sub { font-size: 16px; line-height: 1.7; color: rgba(251,250,246,0.72); max-width: 520px; margin-top: 22px; }
+  .cover-meta { font-size: 12.5px; color: rgba(251,250,246,0.5); }
+  .cover-sumario { margin-top: 40px; border-top: 1px solid rgba(251,250,246,0.16); padding-top: 22px; }
+  .cover-sumario ol { margin: 0; padding: 0; list-style: none; counter-reset: s; }
+  .cover-sumario li {
+    counter-increment: s;
+    font-size: 13.5px; color: rgba(251,250,246,0.75);
+    padding: 5px 0; display: flex; gap: 14px;
+  }
+  /* Largura fixa: sem ela, "01" e "13" ocupam larguras diferentes e o
+     texto dos itens fica desalinhado de uma linha para a outra. */
+  .cover-sumario li::before {
+    content: counter(s, decimal-leading-zero);
+    color: var(--sage-light); font-weight: 700; font-size: 11px;
+    letter-spacing: 0.08em; padding-top: 3px;
+    flex: 0 0 22px; font-variant-numeric: tabular-nums;
+  }
+
+  /* ── cabeçalho de seção ── */
+  .sec-head { margin-bottom: 28px; }
+  .sec-num {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--sage-deep); margin-bottom: 10px;
+  }
+  .sec-title { font-size: 28px; line-height: 1.2; }
+  .sec-lead { font-size: 15.5px; color: var(--muted); margin-top: 12px; max-width: 620px; }
+
+  h3.bloco {
+    font-size: 17px; margin: 30px 0 10px;
+    padding-top: 16px; border-top: 1px solid var(--border);
+  }
+  h3.bloco:first-of-type { border-top: none; padding-top: 0; }
+  h4.sub { font-size: 14.5px; margin: 18px 0 6px; color: var(--navy); }
+
+  /* ── fórmula ── */
+  .formula {
+    font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6;
+    background: var(--sage-dim); border-left: 3px solid var(--sage);
+    border-radius: 0 6px 6px 0; padding: 12px 16px; margin: 12px 0 16px;
+    color: var(--ink); white-space: pre-wrap;
+  }
+
+  /* ── tabelas ── */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 18px; font-size: 13.5px; }
+  caption {
+    caption-side: top; text-align: left; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint);
+    padding-bottom: 8px;
+  }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  thead th {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--faint); border-bottom: 1px solid rgba(27,27,92,0.2);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.cod { font-family: var(--font-mono); font-size: 12px; white-space: nowrap; }
+
+  /* ── régua de faixas ── */
+  .regua { display: flex; margin: 14px 0 6px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+  .regua div { padding: 10px 12px; font-size: 12px; line-height: 1.45; color: #FBFAF6; }
+  .regua .f1 { background: var(--critico); flex: 30; }
+  .regua .f2 { background: var(--alerta); flex: 30; }
+  .regua .f3 { background: var(--bom); flex: 25; }
+  .regua .f4 { background: var(--otimo); flex: 15; }
+  .regua b { display: block; font-size: 12.5px; font-weight: 700; }
+  .regua span { opacity: 0.82; font-variant-numeric: tabular-nums; }
+
+  /* ── cartão de destaque ── */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 18px 22px; margin: 16px 0;
+  }
+  .card p:last-child { margin-bottom: 0; }
+  .nota {
+    font-size: 13px; line-height: 1.65; color: var(--muted);
+    border-left: 2px solid var(--sage); padding-left: 14px; margin: 14px 0;
+  }
+  .nota strong { color: var(--sage-deep); }
+
+  ul.limpa { margin: 10px 0 16px; padding-left: 20px; }
+  ul.limpa li { margin-bottom: 7px; }
+
+  .peso-barra { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+  .peso-nome { flex: 0 0 200px; font-size: 13.5px; color: var(--text); }
+  .peso-trilho { flex: 1; height: 13px; background: rgba(27,27,92,0.07); border-radius: 3px; overflow: hidden; }
+  .peso-fill { height: 100%; background: var(--sage); border-radius: 3px; }
+  .peso-val { flex: 0 0 42px; text-align: right; font-size: 13px; font-weight: 700; color: var(--navy); font-variant-numeric: tabular-nums; }
+
+  /* ── cascata dos arquétipos ── */
+  ol.cascata { counter-reset: c; list-style: none; margin: 14px 0 18px; padding: 0; }
+  ol.cascata li {
+    counter-increment: c; position: relative; padding: 9px 0 9px 42px;
+    border-bottom: 1px solid var(--border); font-size: 13.5px; line-height: 1.6;
+  }
+  ol.cascata li:last-child { border-bottom: none; }
+  ol.cascata li::before {
+    content: counter(c); position: absolute; left: 0; top: 10px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--navy); color: #FBFAF6;
+    font-family: var(--font-body); font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  ol.cascata b { color: var(--sage-deep); }
+
+  .arq-nome { font-family: var(--font-display); font-size: 15px; color: var(--navy); font-weight: 600; }
+
+  /* ── encerramento ── */
+  .closing { background: var(--navy); color: rgba(251,250,246,0.78); }
+  .closing h2 { color: #FBFAF6; }
+  .closing .wrap { padding-top: 30px; padding-bottom: 30px; }
+  .closing .sec-num { color: var(--sage-light); }
+  .closing strong { color: #FBFAF6; }
+  .closing .nota { border-left-color: var(--sage-light); color: rgba(251,250,246,0.72); }
+  .closing .nota strong { color: var(--sage-light); }
+
+  /* ── impressão ─────────────────────────────────────────────
+     Uma seção por folha, como no relatório do diagnóstico. A capa
+     e o encerramento sangram até a borda; o resto respira pela
+     margem da própria folha. */
+  @media print {
+    body { background: #fff; font-size: 9.6pt; line-height: 1.6; }
+    @page { size: A4; margin: 16mm; }
+    @page sangria { margin: 0; }
+    .cover, .closing { page: sangria; min-height: 0; height: 296mm; padding: 24mm 22mm; }
+    .closing { break-before: page; display: flex; flex-direction: column; justify-content: center; }
+    section:not(.cover):not(.closing) { break-before: page; padding: 0; }
+    .wrap { max-width: none; padding: 0; }
+
+    /* O espaçamento de tela é generoso demais para a folha: cada seção
+       precisa caber inteira em uma página, senão sobra uma folha quase
+       vazia atrás dela. Os valores abaixo foram ajustados medindo a
+       altura real de cada seção em A4. */
+    .sec-head { margin-bottom: 20px; }
+    .sec-title { font-size: 23pt; }
+    .sec-lead { font-size: 10.2pt; margin-top: 9px; }
+    p { margin-bottom: 10px; }
+    h3.bloco { font-size: 12.4pt; margin: 20px 0 7px; padding-top: 12px; }
+    h4.sub { font-size: 10.6pt; margin: 13px 0 4px; }
+    table { margin: 9px 0 13px; font-size: 9.2pt; }
+    th, td { padding: 5px 8px; }
+    caption { padding-bottom: 5px; }
+    .formula { font-size: 8.8pt; padding: 9px 13px; margin: 9px 0 12px; }
+    .card { padding: 13px 17px; margin: 12px 0; }
+    .nota { margin: 11px 0; font-size: 9.4pt; }
+    .regua { margin: 10px 0 5px; }
+    .regua div { padding: 8px 10px; }
+    ol.cascata { margin: 10px 0 13px; }
+    ol.cascata li { padding: 6px 0 6px 38px; font-size: 9.4pt; }
+    ol.cascata li::before { width: 23px; height: 23px; font-size: 9pt; top: 7px; }
+    ul.limpa li { margin-bottom: 5px; }
+    .peso-barra { margin-bottom: 5px; }
+
+    table, .formula, .card, .regua, .peso-barra { break-inside: avoid; }
+    h3.bloco, h4.sub { break-after: avoid; }
+    tr { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ CAPA ═══════════ -->
+<section class="cover">
+  <div>
+    <div class="cover-eyebrow"><i></i><span>Documento de Metodologia</span></div>
+    <h1 class="cover-title">Como o score e os<br>arquétipos são calculados</h1>
+    <p class="cover-sub">O caminho completo entre as respostas do questionário e as duas sínteses do relatório: a nota de 0 a 100 e o arquétipo financeiro.</p>
+  </div>
+
+  <div class="cover-sumario">
+    <ol>
+      <li>A arquitetura do score</li>
+      <li>A régua comum das seis dimensões</li>
+      <li>Fluxo de Caixa e Liquidez</li>
+      <li>Endividamento</li>
+      <li>Gestão de Risco</li>
+      <li>Patrimônio</li>
+      <li>Metas e Planejamento</li>
+      <li>As premissas da projeção</li>
+      <li>Score geral e níveis de maturidade</li>
+      <li>A dimensão de foco</li>
+      <li>A cascata dos arquétipos</li>
+      <li>Os oito arquétipos</li>
+      <li>O que o score não mede</li>
+    </ol>
+  </div>
+
+  <div class="cover-meta">Diagnóstico Financeiro · HZ Invest Consultoria de Investimentos</div>
+</section>
+
+<!-- ═══════════ 1. ARQUITETURA ═══════════ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">01 — Visão geral</div>
+      <h2 class="sec-title">A arquitetura do score</h2>
+      <p class="sec-lead">O score não é uma nota única atribuída ao final. Ele é montado de baixo para cima, em quatro camadas, e cada camada é auditável separadamente.</p>
+    </div>
+
+    <p>As respostas do questionário alimentam <strong>seis dimensões independentes</strong>. Cada dimensão recebe a sua própria nota de 0 a 100, calculada por uma regra própria a partir de um indicador objetivo — meses de reserva, percentual da renda comprometido, múltiplo de cobertura do seguro, e assim por diante.</p>
+
+    <p>Só depois essas seis notas são combinadas numa média ponderada, que é o score geral. O arquétipo, por sua vez, não olha para o score geral: ele olha para o <em>formato</em> do conjunto das seis notas, ou seja, para onde está a dimensão mais frágil.</p>
+
+    <div class="formula">respostas → indicador objetivo por dimensão
+        → nota 0–100 da dimensão (régua própria)
+        → média ponderada = score geral (0–100)
+        → nível de maturidade (1 a 5)
+
+o arquétipo sai das seis notas, não do score geral</div>
+
+    <h3 class="bloco">Os pesos de cada dimensão</h3>
+    <p>Os pesos refletem o que compromete primeiro a saúde financeira de alguém. Fluxo de caixa, endividamento e patrimônio pesam mais porque são as dimensões que, quando falham, travam todas as outras.</p>
+
+    <div class="peso-barra"><div class="peso-nome">Fluxo de Caixa</div><div class="peso-trilho"><div class="peso-fill" style="width:100%"></div></div><div class="peso-val">20%</div></div>
+    <div class="peso-barra"><div class="peso-nome">Endividamento</div><div class="peso-trilho"><div class="peso-fill" style="width:100%"></div></div><div class="peso-val">20%</div></div>
+    <div class="peso-barra"><div class="peso-nome">Patrimônio</div><div class="peso-trilho"><div class="peso-fill" style="width:100%"></div></div><div class="peso-val">20%</div></div>
+    <div class="peso-barra"><div class="peso-nome">Liquidez</div><div class="peso-trilho"><div class="peso-fill" style="width:75%"></div></div><div class="peso-val">15%</div></div>
+    <div class="peso-barra"><div class="peso-nome">Gestão de Risco</div><div class="peso-trilho"><div class="peso-fill" style="width:75%"></div></div><div class="peso-val">15%</div></div>
+    <div class="peso-barra"><div class="peso-nome">Metas e Planejamento</div><div class="peso-trilho"><div class="peso-fill" style="width:50%"></div></div><div class="peso-val">10%</div></div>
+
+    <div class="formula">score geral = fluxo × 0,20 + liquidez × 0,15 + endividamento × 0,20
+             + risco × 0,15 + patrimônio × 0,20 + metas × 0,10
+
+(resultado arredondado para o inteiro mais próximo)</div>
+
+    <div class="nota"><strong>Por que Metas pesa só 10%:</strong> é a dimensão mais dependente de projeção — ela mede algo que ainda não aconteceu. As outras cinco medem a situação de hoje, que é verificável. O peso menor evita que uma premissa de longo prazo domine o retrato do presente.</div>
+  </div>
+</section>
+
+<!-- ═══════════ 2. RÉGUA ═══════════ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">02 — O denominador comum</div>
+      <h2 class="sec-title">A régua das seis dimensões</h2>
+      <p class="sec-lead">Indicadores diferentes (meses, percentuais, múltiplos) precisam virar notas comparáveis. Para isso, todas as dimensões usam a mesma régua de quatro faixas.</p>
+    </div>
+
+    <div class="regua">
+      <div class="f1"><b>Crítico</b><span>0 – 29</span></div>
+      <div class="f2"><b>Insuficiente</b><span>30 – 59</span></div>
+      <div class="f3"><b>Adequado</b><span>60 – 84</span></div>
+      <div class="f4"><b>Excelente</b><span>85 – 100</span></div>
+    </div>
+
+    <p>As faixas não têm a mesma largura de propósito. Sair do crítico para o adequado exige atravessar 60 pontos de nota; do adequado para o excelente, apenas 25. A régua é mais exigente embaixo porque é embaixo que mora o risco real.</p>
+
+    <h3 class="bloco">Como um indicador vira nota</h3>
+    <p>Cada dimensão define <strong>três limiares de referência</strong> — chame-os de mínimo, recomendado e confortável. Eles são as fronteiras das faixas, e a nota entre dois limiares é interpolada de forma linear:</p>
+
+    <table>
+      <caption>Conversão de um indicador em nota</caption>
+      <thead><tr><th>Posição do indicador</th><th class="num">Nota resultante</th><th>Comportamento</th></tr></thead>
+      <tbody>
+        <tr><td class="cod">abaixo do mínimo</td><td class="num">0 a 30</td><td>proporcional ao quanto falta para o mínimo</td></tr>
+        <tr><td class="cod">entre mínimo e recomendado</td><td class="num">30 a 60</td><td>interpolação linear</td></tr>
+        <tr><td class="cod">entre recomendado e confortável</td><td class="num">60 a 85</td><td>interpolação linear</td></tr>
+        <tr><td class="cod">acima do confortável</td><td class="num">85 a 100</td><td>chega a 100 com 50% de folga sobre o confortável</td></tr>
+      </tbody>
+    </table>
+
+    <p>O efeito prático é que a nota é <strong>contínua</strong>: não existe salto ao cruzar um limiar, e uma reserva de 5,9 meses não é tratada como igual a uma de 3,1 meses só porque ambas estão na mesma faixa.</p>
+
+    <h3 class="bloco">Os limiares de cada dimensão</h3>
+    <table>
+      <caption>Onde ficam as fronteiras</caption>
+      <thead><tr><th>Dimensão</th><th>Indicador</th><th class="num">Mín.</th><th class="num">Recom.</th><th class="num">Confort.</th></tr></thead>
+      <tbody>
+        <tr><td>Fluxo de Caixa</td><td>taxa de poupança</td><td class="num">0%</td><td class="num">10%</td><td class="num">20%</td></tr>
+        <tr><td>Liquidez</td><td>meses de despesa cobertos</td><td class="num">1</td><td class="num">3</td><td class="num">6</td></tr>
+        <tr><td>Endividamento</td><td>renda comprometida <span style="color:var(--faint)">(invertido)</span></td><td class="num">10%</td><td class="num">20%</td><td class="num">36%</td></tr>
+        <tr><td>Gestão de Risco</td><td>três componentes ponderados</td><td class="num" colspan="3" style="text-align:left; color:var(--faint);">régua própria — ver seção 05</td></tr>
+        <tr><td>Patrimônio</td><td>% do patrimônio esperado</td><td class="num">50%</td><td class="num">100%</td><td class="num">150%</td></tr>
+        <tr><td>Metas</td><td>% da renda futura coberta</td><td class="num">40%</td><td class="num">80%</td><td class="num">110%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════ 3. FLUXO + LIQUIDEZ ═══════════ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">03 — Dimensões 1 e 2</div>
+      <h2 class="sec-title">Fluxo de Caixa e Liquidez</h2>
+      <p class="sec-lead">As duas dimensões do presente: quanto sobra todo mês e por quanto tempo você aguenta sem a próxima entrada.</p>
+    </div>
+
+    <h3 class="bloco">Fluxo de Caixa <span style="font-size:13px; color:var(--faint); font-family:var(--font-body);">— peso 20%</span></h3>
+    <p>O indicador é a <strong>taxa de poupança</strong>: a fração da renda que não é consumida pelas despesas do mês.</p>
+
+    <div class="formula">renda total    = renda própria + renda do cônjuge + outras rendas
+despesa total  = soma das 12 categorias − Investimentos/Poupança
+taxa poupança  = (renda total − despesa total) ÷ renda total</div>
+
+    <div class="nota"><strong>O aporte não é despesa.</strong> O valor declarado em "Investimentos/Poupança" sai da despesa total e conta a favor da taxa de poupança: quem já investe com disciplina não é penalizado por declarar isso.</div>
+
+    <table>
+      <caption>Nota do fluxo de caixa</caption>
+      <thead><tr><th>Taxa de poupança</th><th class="num">Nota</th></tr></thead>
+      <tbody>
+        <tr><td>despesa maior que a renda <span style="color:var(--critico)">(déficit)</span></td><td class="num">0</td></tr>
+        <tr><td>0% a 10%</td><td class="num">30 → 60</td></tr>
+        <tr><td>10% a 20%</td><td class="num">60 → 85</td></tr>
+        <tr><td>20% a 40% ou mais</td><td class="num">85 → 100</td></tr>
+      </tbody>
+    </table>
+
+    <p>Essa é a única dimensão com um <strong>degrau proposital</strong>: fechar o mês no zero a zero vale 30 pontos, mas gastar um real a mais do que se ganha zera a nota. Viver em déficit é uma condição diferente em natureza, não em grau.</p>
+
+    <h3 class="bloco">Liquidez <span style="font-size:13px; color:var(--faint); font-family:var(--font-body);">— peso 15%</span></h3>
+    <p>O indicador é a <strong>cobertura da reserva</strong>, medida em meses da sua própria despesa — nunca em valor absoluto.</p>
+
+    <div class="formula">meses de cobertura = reserva de emergência ÷ despesa mensal total</div>
+
+    <table>
+      <caption>Nota da liquidez</caption>
+      <thead><tr><th>Meses cobertos</th><th class="num">Nota</th></tr></thead>
+      <tbody>
+        <tr><td>menos de 1 mês</td><td class="num">0 → 30</td></tr>
+        <tr><td>1 a 3 meses</td><td class="num">30 → 60</td></tr>
+        <tr><td>3 a 6 meses</td><td class="num">60 → 85</td></tr>
+        <tr><td>6 a 9 meses ou mais</td><td class="num">85 → 100</td></tr>
+      </tbody>
+    </table>
+
+    <p>Medir em meses de despesa é o que torna a nota justa entre padrões de vida diferentes: R$ 30 mil são oito meses de tranquilidade para uma pessoa e menos de dois para outra.</p>
+
+    <div class="nota"><strong>Onde a reserva está aplicada não altera esta nota.</strong> A aplicação entra na recomendação e pode influenciar o arquétipo, mas dinheiro disponível é dinheiro disponível.</div>
+  </div>
+</section>
+
+<!-- ═══════════ 4. ENDIVIDAMENTO ═══════════ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">04 — Dimensão 3</div>
+      <h2 class="sec-title">Endividamento</h2>
+      <p class="sec-lead">Peso 20%. É a única dimensão avaliada por dois ângulos ao mesmo tempo, e o pior dos dois é o que vale.</p>
+    </div>
+
+    <p>Quem não tem dívidas recebe <strong>nota 100</strong>, e a dimensão encerra aí. Para quem tem, a avaliação combina duas leituras que podem divergir bastante.</p>
+
+    <h4 class="sub">Ângulo 1 · O fluxo — quanto da renda a parcela consome</h4>
+    <div class="formula">comprometimento = parcelas mensais ÷ renda total</div>
+    <table>
+      <thead><tr><th>Renda comprometida</th><th class="num">Nota</th></tr></thead>
+      <tbody>
+        <tr><td>até 10%</td><td class="num">100 → 85</td></tr>
+        <tr><td>10% a 20%</td><td class="num">85 → 60</td></tr>
+        <tr><td>20% a 36%</td><td class="num">60 → 30</td></tr>
+        <tr><td>acima de 36% <span style="color:var(--faint)">(zera em 56%)</span></td><td class="num">30 → 0</td></tr>
+      </tbody>
+    </table>
+
+    <h4 class="sub">Ângulo 2 · O estoque — quantos meses de renda a dívida representa</h4>
+    <div class="formula">meses de dívida = saldo total das dívidas ÷ renda mensal total</div>
+    <table>
+      <thead><tr><th>Estoque da dívida</th><th class="num">Nota</th></tr></thead>
+      <tbody>
+        <tr><td>até meio mês de renda</td><td class="num">100 → 85</td></tr>
+        <tr><td>de 0,5 a 1,5 mês</td><td class="num">85 → 60</td></tr>
+        <tr><td>de 1,5 a 4 meses</td><td class="num">60 → 30</td></tr>
+        <tr><td>acima de 4 meses <span style="color:var(--faint)">(zera em 12)</span></td><td class="num">30 → 0</td></tr>
+      </tbody>
+    </table>
+
+    <div class="card">
+      <p><strong>A nota final é a menor das duas.</strong> Esse é o ponto central da dimensão: uma dívida grande não pode se esconder atrás de uma parcela pequena.</p>
+      <p style="margin-bottom:0">O caso clássico é o rotativo do cartão e o cheque especial, que muitas vezes não têm parcela fixa nenhuma. Pelo ângulo do fluxo, o comprometimento da renda seria 0% e a nota, 100. Pelo ângulo do estoque, a dívida aparece com o tamanho real — e é essa a nota que prevalece.</p>
+    </div>
+
+    <p>O limiar de 36% no ângulo do fluxo não é arbitrário: é a referência de mercado para comprometimento máximo de renda em crédito, o mesmo teto que instituições financeiras usam ao avaliar capacidade de pagamento.</p>
+  </div>
+</section>
+
+<!-- ═══════════ 5. RISCO ═══════════ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">05 — Dimensão 4</div>
+      <h2 class="sec-title">Gestão de Risco</h2>
+      <p class="sec-lead">Peso 15%. Aqui a nota não vem de um indicador só: são três componentes de proteção, e o peso de cada um muda conforme você tenha ou não dependentes.</p>
+    </div>
+
+    <h4 class="sub">Componente A · Seguro de vida</h4>
+    <p>Avaliado pelo <strong>múltiplo de cobertura</strong>: quantas vezes a sua renda anual o capital segurado representa. O parâmetro de referência depende do número de dependentes.</p>
+    <div class="formula">múltiplo = capital segurado ÷ (renda própria × 12)
+
+referência = 6,5× para até 2 dependentes
+             9,0× para 3 ou mais</div>
+    <p>Com seguro, a nota sai da régua padrão aplicada sobre esse múltiplo (mínimo em 50% da referência, recomendado em 85%, confortável em 115%). <strong>Sem seguro de vida e com dependentes, o componente vale 5.</strong></p>
+
+    <h4 class="sub">Componente B · Garantia de renda</h4>
+    <p>Por quanto tempo a renda continuaria entrando se você ficasse impossibilitado de trabalhar.</p>
+    <table>
+      <thead><tr><th>Resposta</th><th class="num">Nota do componente</th></tr></thead>
+      <tbody>
+        <tr><td>Nenhum tempo</td><td class="num">5</td></tr>
+        <tr><td>Menos de 3 meses</td><td class="num">30</td></tr>
+        <tr><td>De 3 a 6 meses</td><td class="num">68</td></tr>
+        <tr><td>6+ meses ou seguro de invalidez</td><td class="num">92</td></tr>
+      </tbody>
+    </table>
+
+    <h4 class="sub">Componente C · Proteção de saúde</h4>
+    <table>
+      <thead><tr><th>Situação</th><th class="num">Nota do componente</th></tr></thead>
+      <tbody>
+        <tr><td>Plano de saúde <em>e</em> reserva médica dedicada</td><td class="num">100</td></tr>
+        <tr><td>Plano de saúde, sem reserva médica</td><td class="num">80</td></tr>
+        <tr><td>Sem plano, com reserva médica</td><td class="num">45</td></tr>
+        <tr><td>Sem plano e sem reserva</td><td class="num">10</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="bloco">Como os três se combinam</h3>
+    <table>
+      <thead><tr><th>Situação familiar</th><th class="num">Seguro de vida</th><th class="num">Garantia de renda</th><th class="num">Saúde</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Com dependentes</strong></td><td class="num">40%</td><td class="num">35%</td><td class="num">25%</td></tr>
+        <tr><td><strong>Sem dependentes</strong></td><td class="num">—</td><td class="num">60%</td><td class="num">40%</td></tr>
+      </tbody>
+    </table>
+
+    <div class="nota"><strong>Sem dependentes, o seguro de vida sai da conta inteiramente.</strong> Ele existe para proteger quem depende da sua renda; cobrar sua ausência de quem não tem dependentes seria penalizar a decisão correta. A proteção passa a ser medida só pela garantia de renda e pela cobertura de saúde.</div>
+  </div>
+</section>
+
+<!-- ═══════════ 6. PATRIMÔNIO ═══════════ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">06 — Dimensão 5</div>
+      <h2 class="sec-title">Patrimônio</h2>
+      <p class="sec-lead">Peso 20%. A pergunta não é "quanto você tem", e sim "quanto você tem em relação ao que seria esperado para alguém da sua idade e da sua renda".</p>
+    </div>
+
+    <div class="formula">patrimônio total    = imóveis + veículos + investimentos
+patrimônio esperado = (idade × renda anual) ÷ 10
+índice              = patrimônio total ÷ patrimônio esperado</div>
+
+    <p>A fórmula do patrimônio esperado é a referência clássica de <em>O Milionário Mora ao Lado</em>. Ela tem a virtude de se ajustar sozinha aos dois fatores que mais importam: quem ganha mais deveria ter acumulado mais, e quem tem mais idade teve mais tempo para isso.</p>
+
+    <table>
+      <caption>Nota do patrimônio</caption>
+      <thead><tr><th>Índice sobre o esperado</th><th class="num">Nota</th></tr></thead>
+      <tbody>
+        <tr><td>abaixo de 50%</td><td class="num">0 → 30</td></tr>
+        <tr><td>50% a 100%</td><td class="num">30 → 60</td></tr>
+        <tr><td>100% a 150%</td><td class="num">60 → 85</td></tr>
+        <tr><td>150% a 225% ou mais</td><td class="num">85 → 100</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="bloco">Dois ajustes comportamentais</h3>
+    <p>Sobre a nota do índice incidem dois ajustes pequenos, somados diretamente em pontos. Eles existem porque conhecer a própria carteira e automatizar o aporte são preditores consistentes de acúmulo futuro — coisas que o saldo de hoje ainda não mostra.</p>
+
+    <table>
+      <thead><tr><th>Você sabe a rentabilidade da sua carteira?</th><th class="num">Ajuste</th><th>Seus aportes são automáticos?</th><th class="num">Ajuste</th></tr></thead>
+      <tbody>
+        <tr><td>Não sei</td><td class="num">−4</td><td>Só o que sobra</td><td class="num">−4</td></tr>
+        <tr><td>Ideia vaga</td><td class="num">−2</td><td>Às vezes automático</td><td class="num">−1</td></tr>
+        <tr><td>Sei aproximado</td><td class="num">+1</td><td>Quase sempre</td><td class="num">+2</td></tr>
+        <tr><td>Sei exato</td><td class="num">+3</td><td>Sempre automático</td><td class="num">+4</td></tr>
+      </tbody>
+    </table>
+
+    <p>O ajuste combinado vai de −8 a +7 pontos, e a nota final é sempre limitada ao intervalo de 0 a 100. É um ajuste fino: ele muda a posição dentro de uma faixa, não a faixa em si.</p>
+
+    <div class="nota"><strong>Quem já passou da idade-alvo de aposentadoria usa outra régua.</strong> Comparar o patrimônio com "idade × renda ÷ 10" não diz nada quando a renda caiu justamente por causa da aposentadoria — o índice inflaria artificialmente. Nesse caso, o patrimônio passa a ser medido contra o que o próprio plano de renda exige.</div>
+  </div>
+</section>
+
+<!-- ═══════════ 7. METAS ═══════════ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">07 — Dimensão 6</div>
+      <h2 class="sec-title">Metas e Planejamento</h2>
+      <p class="sec-lead">Peso 10%. É a única dimensão que mede o futuro: quanto da renda que você deseja na aposentadoria o seu ritmo atual de aportes realmente sustenta.</p>
+    </div>
+
+    <p>O indicador é a <strong>cobertura projetada</strong>. O cálculo simula mês a mês o seu patrimônio até a idade-alvo, com o aporte que você faz hoje e o rendimento da carteira que você tem hoje, e então pergunta que renda mensal esse patrimônio sustentaria.</p>
+
+    <div class="formula">cobertura = renda que o ritmo atual sustenta
+            ÷ renda mensal desejada na aposentadoria</div>
+
+    <table>
+      <caption>Nota de metas e planejamento</caption>
+      <thead><tr><th>Cobertura projetada</th><th class="num">Nota</th></tr></thead>
+      <tbody>
+        <tr><td>abaixo de 40%</td><td class="num">0 → 30</td></tr>
+        <tr><td>40% a 80%</td><td class="num">30 → 60</td></tr>
+        <tr><td>80% a 110%</td><td class="num">60 → 85</td></tr>
+        <tr><td>110% a 165% ou mais</td><td class="num">85 → 100</td></tr>
+      </tbody>
+    </table>
+
+    <p>Medir cobertura projetada, e não patrimônio acumulado, é o que impede a dimensão de reprovar quem está no meio de um plano que funciona: o acúmulo é justamente o que ainda não aconteceu.</p>
+
+    <h3 class="bloco">Os dois ajustes de planejamento</h3>
+    <table>
+      <thead><tr><th>Já calculou quanto guardar?</th><th class="num">Ajuste</th><th>Suas metas estão definidas?</th><th class="num">Ajuste</th></tr></thead>
+      <tbody>
+        <tr><td>Não</td><td class="num">−4</td><td>Não tenho metas</td><td class="num">−6</td></tr>
+        <tr><td>Pensei, mas não calculei</td><td class="num">−2</td><td>Ideias vagas</td><td class="num">−3</td></tr>
+        <tr><td>Calculei aproximado</td><td class="num">+1</td><td>Algumas com prazo e valor</td><td class="num">+2</td></tr>
+        <tr><td>Calculei exato</td><td class="num">+3</td><td>Todas com prazo e valor</td><td class="num">+4</td></tr>
+      </tbody>
+    </table>
+
+    <div class="nota">Os dois ajustes vão de −10 a +7 pontos. Ter metas com prazo e valor definidos e já ter calculado quanto guardar por mês são sinais de direção, não de acúmulo — e é por isso que entram como ajuste, não como indicador.</div>
+  </div>
+</section>
+
+<!-- ═══════════ 8. PREMISSAS ═══════════ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">08 — A projeção</div>
+      <h2 class="sec-title">As premissas por trás da cobertura</h2>
+      <p class="sec-lead">A nota de Metas depende de uma simulação de décadas. Estas são as premissas que a sustentam — e elas são explícitas justamente para poderem ser questionadas.</p>
+    </div>
+
+    <p>Toda a projeção roda em <strong>taxa real</strong>, ou seja, já descontada a inflação. Os valores do relatório estão sempre a preços de hoje: quando ele diz "R$ 8.000 por mês aos 60 anos", significa o poder de compra de R$ 8.000 hoje.</p>
+
+    <table>
+      <caption>Premissas do cálculo</caption>
+      <thead><tr><th>Premissa</th><th class="num">Valor</th></tr></thead>
+      <tbody>
+        <tr><td>Inflação anual considerada</td><td class="num">4,0%</td></tr>
+        <tr><td>Retorno nominal — perfil conservador</td><td class="num">10,5%</td></tr>
+        <tr><td>Retorno nominal — perfil moderado</td><td class="num">11,5%</td></tr>
+        <tr><td>Retorno nominal — perfil arrojado</td><td class="num">13,0%</td></tr>
+        <tr><td>Taxa de retirada perpétua <span style="color:var(--faint)">(regra dos 4% / 25×)</span></td><td class="num">4,0%</td></tr>
+        <tr><td>Idade final padrão no modo "consumir o patrimônio"</td><td class="num">95 anos</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="bloco">Duas estratégias, dois alvos de patrimônio</h3>
+    <p>O patrimônio necessário depende do que você quer fazer com ele na aposentadoria, e a escolha é sua no questionário:</p>
+
+    <table>
+      <thead><tr><th style="width:34%">Estratégia</th><th>Como o alvo é calculado</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Viver do rendimento</strong><br><span style="color:var(--faint); font-size:12px;">o patrimônio se preserva</span></td><td>O alvo é 25× o gasto anual desejado — a regra dos 4%. A renda sustentável é o patrimônio multiplicado por 4% ao ano.</td></tr>
+        <tr><td><strong>Consumir o patrimônio</strong><br><span style="color:var(--faint); font-size:12px;">acaba na idade final</span></td><td>O alvo é o valor presente de todos os saques até a idade final escolhida, somado à herança que você queira deixar.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="bloco">Duas curvas, duas taxas</h3>
+    <p>A projeção desenha duas trajetórias, e a diferença entre elas é o que a dimensão de Metas mede:</p>
+    <ul class="limpa">
+      <li><strong>O plano recomendado</strong> assume a carteira do perfil que você declarou, e calcula o aporte mensal necessário para chegar ao alvo na idade-alvo.</li>
+      <li><strong>O ritmo atual</strong> usa o aporte que você faz hoje e o rendimento da carteira que você de fato tem — a média ponderada das suas aplicações, limitada ao teto do perfil declarado.</li>
+    </ul>
+
+    <div class="nota"><strong>Por que alguém aporta o suficiente e mesmo assim não chega a 100%:</strong> quando as duas curvas divergem e o aporte já é adequado, o que arrasta não é o valor guardado — é onde ele está aplicado. A reserva de emergência fica fora de toda essa conta: ela tem função própria, e contá-la como patrimônio de aposentadoria seria contar o mesmo dinheiro duas vezes.</div>
+  </div>
+</section>
+
+<!-- ═══════════ 8. SCORE GERAL ═══════════ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">09 — A síntese</div>
+      <h2 class="sec-title">Score geral e níveis de maturidade</h2>
+      <p class="sec-lead">A média ponderada das seis dimensões produz um número de 0 a 100, e esse número é traduzido em um dos cinco níveis de maturidade financeira.</p>
+    </div>
+
+    <table>
+      <caption>Os cinco níveis</caption>
+      <thead><tr><th class="num">Score</th><th>Nível</th><th>O que descreve</th></tr></thead>
+      <tbody>
+        <tr><td class="num">0 – 20</td><td><strong>Ponto de Partida</strong></td><td>Os fundamentos ainda precisam ser construídos, um passo de cada vez.</td></tr>
+        <tr><td class="num">21 – 40</td><td><strong>Em Construção</strong></td><td>Algumas bases existem, mas há lacunas importantes antes de otimizar.</td></tr>
+        <tr><td class="num">41 – 60</td><td><strong>Fundação Formada</strong></td><td>Os fundamentos estão no lugar; falta fechar lacunas e dar direção de longo prazo.</td></tr>
+        <tr><td class="num">61 – 80</td><td><strong>Consolidado</strong></td><td>Bem estruturado na maior parte das dimensões; o foco é refinar e manter consistência.</td></tr>
+        <tr><td class="num">81 – 100</td><td><strong>Otimizado</strong></td><td>Relação madura com o dinheiro; o jogo passa a ser sofisticação e eficiência.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="bloco">A ressalva que a média esconde</h3>
+    <p>Uma média é, por natureza, capaz de apagar um problema grave. Alguém com cinco dimensões excelentes e uma em faixa crítica pode terminar com score 72 — "Consolidado" — enquanto está sem plano de saúde e com três filhos.</p>
+
+    <div class="card">
+      <p style="margin-bottom:0">Por isso existe uma regra de correção: sempre que o nível for <strong>3 ou superior</strong> e ao menos uma dimensão estiver em <strong>faixa crítica (nota abaixo de 30)</strong>, o texto do nível recebe uma ressalva explícita, nomeando as dimensões críticas e indicando que é por elas que o plano de ação começa.</p>
+    </div>
+
+    <p>O score geral, sozinho, nunca é o diagnóstico. Ele é o resumo — e é justamente por ser um resumo que o relatório continua por mais doze seções.</p>
+  </div>
+</section>
+
+<!-- ═══════════ 9. ALGORITMO DO ARQUÉTIPO ═══════════ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">10 — O perfil comportamental</div>
+      <h2 class="sec-title">Etapa 1: a dimensão de foco</h2>
+      <p class="sec-lead">O arquétipo não é uma tradução do score. Duas pessoas com o mesmo score 58 recebem arquétipos diferentes se a fragilidade delas estiver em dimensões diferentes.</p>
+    </div>
+
+    <p>A escolha acontece em duas etapas: primeiro o cálculo identifica <strong>a dimensão de foco</strong> — a fragilidade que melhor descreve o momento da pessoa —, depois uma cascata de condições converte esse foco em um dos oito arquétipos.</p>
+    <ol class="cascata">
+      <li>Entram na disputa apenas as dimensões com <b>nota abaixo de 60</b> — as que ainda não chegaram à faixa "adequado".</li>
+      <li>Se o plano de aposentadoria já está <b>100% coberto</b>, Patrimônio e Metas saem da disputa. As duas medem o mesmo destino, e com ele alcançado não descrevem mais um padrão em aberto.</li>
+      <li>As candidatas são ordenadas <b>da pior nota para a melhor</b>.</li>
+      <li>Tudo que estiver a <b>até 10 pontos da pior nota</b> é considerado empate técnico, e o desempate é por urgência financeira, não por nota.</li>
+    </ol>
+
+    <table>
+      <caption>Ordem de urgência no desempate</caption>
+      <thead><tr><th class="num">#</th><th>Dimensão</th><th>Por que vem antes</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td><strong>Fluxo de Caixa</strong></td><td>sem sobra mensal, nenhuma outra dimensão tem como melhorar</td></tr>
+        <tr><td class="num">2</td><td><strong>Endividamento</strong></td><td>a dívida drena a sobra antes que ela chegue a qualquer lugar</td></tr>
+        <tr><td class="num">3</td><td><strong>Liquidez</strong></td><td>sem reserva, o primeiro imprevisto recria a dívida</td></tr>
+        <tr><td class="num">4</td><td><strong>Gestão de Risco</strong></td><td>protege o que já foi construído contra o evento grave</td></tr>
+        <tr><td class="num">5</td><td><strong>Patrimônio</strong></td><td>construção de longo prazo, que pressupõe as anteriores</td></tr>
+        <tr><td class="num">6</td><td><strong>Metas</strong></td><td>direção do longo prazo, a mais adiável das seis</td></tr>
+      </tbody>
+    </table>
+
+    <div class="nota"><strong>Por que a urgência vence a nota no empate:</strong> entre uma dimensão com nota 31 e outra com 38, a diferença é pequena demais para decidir o que a pessoa deve encarar primeiro. Nesse intervalo, o que decide é a ordem em que os problemas financeiros se destravam — não o decimal.</div>
+  </div>
+</section>
+
+<!-- ═══════════ 11. CASCATA ═══════════ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">11 — A decisão</div>
+      <h2 class="sec-title">Etapa 2: a cascata</h2>
+      <p class="sec-lead">Com a dimensão de foco em mãos, as condições abaixo são avaliadas em ordem. A primeira que se aplica define o arquétipo, e as seguintes nem chegam a ser testadas.</p>
+    </div>
+
+    <ol class="cascata">
+      <li>Gasta mais do que ganha → <span class="arq-nome">Negação Financeira</span></li>
+      <li>Já passou da idade-alvo de aposentadoria, sem nenhuma outra dimensão crítica → <span class="arq-nome">Fase de Colheita</span></li>
+      <li>Dívida sufocante: saldo acima de <b>3× a renda mensal</b> combinado a rotativo frequente, cheque especial em aberto ou fatura de cartão maior que a renda → <span class="arq-nome">Vazamento Silencioso</span></li>
+      <li>Nenhuma dimensão abaixo de 60 → <span class="arq-nome">Domínio Comportamental</span></li>
+      <li>Score geral abaixo de 40 → <span class="arq-nome">Ilusão de Controle</span></li>
+      <li>Foco em <b>Fluxo de Caixa</b> ou <b>Liquidez</b> → <span class="arq-nome">Ilusão de Controle</span></li>
+      <li>Foco em <b>Endividamento</b> → <span class="arq-nome">Vazamento Silencioso</span></li>
+      <li>Foco em <b>Gestão de Risco</b> → <span class="arq-nome">Otimismo Desprotegido</span></li>
+      <li>Foco em <b>Patrimônio</b>, com dinheiro parado → <span class="arq-nome">Paralisia da Decisão</span></li>
+      <li>Foco em <b>Patrimônio</b> sem dinheiro parado, ou em <b>Metas</b> → <span class="arq-nome">Adiamento do Futuro</span></li>
+    </ol>
+
+    <div class="nota"><strong>O que conta como "dinheiro parado":</strong> o que está em poupança, somado à reserva de emergência quando ela está em poupança ou conta corrente. Para configurar paralisia, esse montante precisa somar ao menos <strong>3× a renda mensal</strong> e representar <strong>metade ou mais</strong> de tudo que a pessoa tem investido. Sem dinheiro parado, patrimônio baixo é distância até a meta — não paralisia.</div>
+  </div>
+</section>
+
+<!-- ═══════════ 10. OS ARQUÉTIPOS ═══════════ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">12 — O catálogo</div>
+      <h2 class="sec-title">Os oito arquétipos</h2>
+      <p class="sec-lead">Sete descrevem fases da construção patrimonial; o oitavo descreve quem já saiu dela.</p>
+    </div>
+
+    <table>
+      <thead><tr><th style="width:32%">Arquétipo</th><th>O padrão que descreve</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="arq-nome">Negação Financeira</span></td>
+          <td>Mais dinheiro sai do que entra. Raramente é falta de esforço ou de renda: costuma ser o padrão de evitar olhar o extrato e deixar o piloto automático decidir.</td>
+        </tr>
+        <tr>
+          <td><span class="arq-nome">Ilusão de Controle</span></td>
+          <td>As contas fecham, mas não existe estrutura em volta disso. É uma estabilidade frágil por natureza: basta um imprevisto para o plano inteiro depender de crédito.</td>
+        </tr>
+        <tr>
+          <td><span class="arq-nome">Vazamento Silencioso</span></td>
+          <td>As contas fecham e ainda assim há dinheiro escorrendo todo mês em juros. Não aparece como problema óbvio no orçamento, mas consome a capacidade de construir patrimônio.</td>
+        </tr>
+        <tr>
+          <td><span class="arq-nome">Otimismo Desprotegido</span></td>
+          <td>A proteção contra imprevistos está incompleta. Por trás disso existe um viés bem humano: a crença de que o evento grave acontece com os outros.</td>
+        </tr>
+        <tr>
+          <td><span class="arq-nome">Paralisia da Decisão</span></td>
+          <td>Há disciplina para guardar, mas o dinheiro fica parado rendendo menos que a inflação. O problema não é a poupança, é o passo seguinte a ela.</td>
+        </tr>
+        <tr>
+          <td><span class="arq-nome">Adiamento do Futuro</span></td>
+          <td>Disciplina real no presente, sem direção de longo prazo. No ritmo atual, a renda na aposentadoria fica abaixo da desejada. Falta direção, não esforço.</td>
+        </tr>
+        <tr>
+          <td><span class="arq-nome">Domínio Comportamental</span></td>
+          <td>Reserva, proteção, planejamento e investimento no lugar. Não é sorte: é hábito construído ao longo do tempo.</td>
+        </tr>
+        <tr>
+          <td><span class="arq-nome">Fase de Colheita</span></td>
+          <td>A construção ficou para trás. A pergunta deixa de ser quanto acumular e passa a ser quanto dá para sacar sem comprometer o futuro.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="nota">O texto de abertura de cada arquétipo é fixo, mas o parágrafo que descreve o padrão é <strong>montado com os números da própria pessoa</strong> — a taxa de poupança, os meses de reserva, o valor exato parado em poupança, o múltiplo de cobertura do seguro. Nenhum texto afirma algo que as respostas contradigam.</div>
+  </div>
+</section>
+
+<!-- ═══════════ ENCERRAMENTO ═══════════ -->
+<section class="closing">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">13 — Limites</div>
+      <h2 class="sec-title">O que o score não mede</h2>
+    </div>
+
+    <p>A metodologia foi desenhada para ser transparente e reproduzível: as mesmas respostas produzem sempre o mesmo score e o mesmo arquétipo, e cada nota pode ser rastreada até o indicador que a gerou. Isso é uma virtude, mas traz limites que vale dizer com todas as letras.</p>
+
+    <ul class="limpa">
+      <li><strong>O score depende da qualidade das respostas.</strong> Números estimados produzem um diagnóstico aproximado. Ele continua útil, mas não é mais preciso do que os dados que recebeu.</li>
+      <li><strong>É um retrato de um momento.</strong> Uma despesa atípica no mês declarado desloca a taxa de poupança e, com ela, várias notas.</li>
+      <li><strong>As projeções são cenários, não previsões.</strong> Elas assumem retornos médios constantes e inflação estável — nenhuma das duas coisas se comporta assim na vida real.</li>
+      <li><strong>O contexto de vida não entra na conta.</strong> Estabilidade do emprego, saúde da família, herança a caminho, sociedade em um negócio: nada disso está no questionário, e tudo isso muda a leitura.</li>
+      <li><strong>O arquétipo descreve um padrão, não uma personalidade.</strong> Ele nomeia onde está a maior fragilidade hoje, e muda quando ela mudar.</li>
+    </ul>
+
+    <div class="nota"><strong>É por isso que o diagnóstico inclui a conversa.</strong> A leitura humana do caso é o que coloca de volta tudo que um cálculo, por definição, não alcança.</div>
+
+    <p style="margin-top:22px; font-size:13px; color:rgba(251,250,246,0.5);">Documento educacional e orientativo. Não constitui recomendação de investimento.<br>HZ Invest Consultoria de Investimentos</p>
+  </div>
+</section>
+
+</body>
+</html>
