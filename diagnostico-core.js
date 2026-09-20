@@ -290,11 +290,20 @@
     // ---- Dim 1: Fluxo de Caixa ----
     var rendaTotal = (D.rendaPropria || 0) + (D.temConjuge ? (D.rendaConjuge || 0) : 0) + (D.outrasRendas || []).reduce(function (a, r) { return a + (r.valor || 0); }, 0);
     var despesasCats = D.despesas || {};
-    var CAT_LABELS = { alimentacao: "Alimentação", educacao: "Educação", impostos: "Impostos", investimentos: "Investimentos/Poupança", lazer: "Lazer", moradia: "Moradia", presentes: "Presentes/Doações", saude: "Saúde", seguros: "Seguros", servicos: "Serviços", transporte: "Transporte", vestuario: "Vestuário" };
+    // "impostos" saiu do formulário, mas continua aqui: diagnósticos gerados
+    // antes dessa mudança ainda trazem a categoria, e o relatório deles precisa
+    // seguir nomeando o valor que soma no total.
+    var CAT_LABELS = { alimentacao: "Alimentação", educacao: "Educação", filhos: "Filhos/Dependentes", impostos: "Impostos", investimentos: "Investimentos/Poupança", lazer: "Lazer", moradia: "Moradia", presentes: "Presentes/Doações", saude: "Saúde", seguros: "Seguros", servicos: "Serviços", transporte: "Transporte", vestuario: "Vestuário" };
+    // Despesas que a pessoa acrescentou à mão, já classificadas por ela como
+    // essenciais ou flexíveis.
+    var despesasExtras = (D.despesasExtras || []).filter(function (d) { return (d.valor || 0) > 0; });
+    var extraEssencial = despesasExtras.reduce(function (a, d) { return a + (d.tipo === "flexivel" ? 0 : (d.valor || 0)); }, 0);
+    var extraFlexivel = despesasExtras.reduce(function (a, d) { return a + (d.tipo === "flexivel" ? (d.valor || 0) : 0); }, 0);
     // O valor aportado em "Investimentos/Poupança" é poupança, não gasto de vida:
     // fica fora da despesa total e, portanto, soma a favor da taxa de poupança.
     var aporteMensal = despesasCats.investimentos || 0;
-    var despesaTotal = Object.keys(despesasCats).reduce(function (a, k) { return a + (despesasCats[k] || 0); }, 0) - aporteMensal;
+    var despesaTotal = Object.keys(despesasCats).reduce(function (a, k) { return a + (despesasCats[k] || 0); }, 0) - aporteMensal +
+      extraEssencial + extraFlexivel;
     var taxaPoupanca = rendaTotal > 0 ? ((rendaTotal - despesaTotal) / rendaTotal) * 100 : 0;
     var deficit = despesaTotal > rendaTotal;
 
@@ -304,13 +313,13 @@
     //   · a régua 50/30/20 é sobre a RENDA, que é como a referência é definida.
     // "Investimentos/Poupança" não entra na rosca: o que é aportado não é gasto
     // de vida, e já aparece como a terceira faixa da régua.
-    var ESSENCIAIS = ["moradia", "alimentacao", "transporte", "saude", "educacao", "seguros", "impostos"];
+    var ESSENCIAIS = ["moradia", "alimentacao", "transporte", "saude", "educacao", "filhos", "seguros", "impostos"];
     var FLEXIVEIS = ["lazer", "vestuario", "presentes", "servicos"];
     var somaDe = function (chaves) {
       return chaves.reduce(function (a, k) { return a + (despesasCats[k] || 0); }, 0);
     };
-    var gastoEssencial = somaDe(ESSENCIAIS);
-    var gastoFlexivel = somaDe(FLEXIVEIS);
+    var gastoEssencial = somaDe(ESSENCIAIS) + extraEssencial;
+    var gastoFlexivel = somaDe(FLEXIVEIS) + extraFlexivel;
     var pctDaRenda = function (v) { return rendaTotal > 0 ? (v / rendaTotal) * 100 : 0; };
 
     var catsDistribuicao = Object.keys(CAT_LABELS)
@@ -324,6 +333,15 @@
           grupo: ESSENCIAIS.indexOf(k) !== -1 ? "essenciais" : "flexiveis"
         };
       })
+      .concat(despesasExtras.map(function (d, i) {
+        return {
+          key: "extra-" + i,
+          label: (d.descricao || "").trim() || "Outra despesa",
+          valor: d.valor || 0,
+          pct: despesaTotal > 0 ? ((d.valor || 0) / despesaTotal) * 100 : 0,
+          grupo: d.tipo === "flexivel" ? "flexiveis" : "essenciais"
+        };
+      }))
       .sort(function (a, b) { return b.valor - a.valor; });
 
     var distribuicao = {
@@ -332,9 +350,9 @@
       categorias: catsDistribuicao,
       faixas: [
         { key: "essenciais", nome: "Despesas essenciais", pct: pctDaRenda(gastoEssencial), valor: gastoEssencial,
-          ideal: 50, limite: "ate", itens: "Moradia, alimentação, transporte, saúde, educação, seguros e impostos." },
+          ideal: 50, limite: "ate", itens: "Moradia, alimentação, transporte, saúde, educação, filhos, seguros e o que você marcou como essencial." },
         { key: "flexiveis", nome: "Despesas flexíveis", pct: pctDaRenda(gastoFlexivel), valor: gastoFlexivel,
-          ideal: 30, limite: "ate", itens: "Lazer, vestuário, presentes e serviços." },
+          ideal: 30, limite: "ate", itens: "Lazer, vestuário, presentes, serviços e o que você marcou como flexível." },
         { key: "investimentos", nome: "Investimentos e reserva", pct: taxaPoupanca, valor: rendaTotal - despesaTotal,
           ideal: 20, limite: "minimo", itens: "O que sobra da renda no mês, somado ao aporte que você declarou." }
       ]
@@ -343,8 +361,11 @@
       f.dentro = f.limite === "ate" ? f.pct <= f.ideal : f.pct >= f.ideal;
     });
 
-    var maiorCatKey = null, maiorCatVal = -1;
-    Object.keys(despesasCats).forEach(function (k) { if (k === "investimentos") return; if ((despesasCats[k] || 0) > maiorCatVal) { maiorCatVal = despesasCats[k]; maiorCatKey = k; } });
+    // A lista de distribuição já vem ordenada por valor e sem o aporte, então a
+    // maior categoria é o primeiro item — e as despesas extras disputam junto.
+    var maiorCat = catsDistribuicao[0] || null;
+    var maiorCatLabel = maiorCat ? maiorCat.label : null;
+    var maiorCatVal = maiorCat ? maiorCat.valor : 0;
     var scoreFluxo = deficit ? 0 : (taxaPoupanca < 0 ? 0 : taxaPoupanca < 10 ? 30 + (taxaPoupanca / 10) * 30 : taxaPoupanca < 20 ? 60 + ((taxaPoupanca - 10) / 10) * 25 : Math.min(100, 85 + Math.min(1, (taxaPoupanca - 20) / 20) * 15));
 
     // ---- Dim 2: Liquidez ----
@@ -791,7 +812,7 @@
     var N = {
       deficit: fmt(despesaTotal - rendaTotal),
       taxa: pct(taxaPoupanca),
-      categoria: CAT_LABELS[maiorCatKey] || "—",
+      categoria: maiorCatLabel || "—",
       categoriaPct: rendaTotal > 0 ? pct((maiorCatVal / rendaTotal) * 100) : "0%",
       meses: num1(mesesCobertura),
       mesesParaMeta: taxaPoupanca > 0 ? Math.ceil(((6 - mesesCobertura) * despesaTotal) / ((taxaPoupanca / 100) * rendaTotal || 1)) : "—",
