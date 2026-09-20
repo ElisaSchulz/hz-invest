@@ -114,6 +114,13 @@
   .btn-report:hover { background: #6FA8A0; color: #FBFAF6; }
   .link-restart { display: block; margin-top: 18px; font-size: 13px; color: rgba(251,250,246,0.55); background: none; border: none; cursor: pointer; text-decoration: underline; margin-left: auto; margin-right: auto; position: relative; }
 
+  .nota { background: rgba(79,140,132,0.08); border-left: 2px solid #4F8C84; border-radius: 6px; padding: 16px 18px; font-size: 13px; line-height: 1.65; color: rgba(21,21,63,0.72); }
+  .nota b { color: #1B1B5C; }
+  .nota p { margin: 0; }
+  .nota p + p { margin-top: 8px; }
+
+  .f-input.narrow { max-width: 340px; }
+
   .gasto-slider-box { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .gasto-slider-box span { font-size: 14px; color: rgba(21,21,63,0.6); }
   .check-label { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px; color: rgba(21,21,63,0.55); cursor: pointer; }
@@ -238,8 +245,18 @@
 var UF_LIST = [["AC","Acre"],["AL","Alagoas"],["AP","Amapá"],["AM","Amazonas"],["BA","Bahia"],["CE","Ceará"],["DF","Distrito Federal"],["ES","Espírito Santo"],["GO","Goiás"],["MA","Maranhão"],["MT","Mato Grosso"],["MS","Mato Grosso do Sul"],["MG","Minas Gerais"],["PA","Pará"],["PB","Paraíba"],["PR","Paraná"],["PE","Pernambuco"],["PI","Piauí"],["RJ","Rio de Janeiro"],["RN","Rio Grande do Norte"],["RS","Rio Grande do Sul"],["RO","Rondônia"],["RR","Roraima"],["SC","Santa Catarina"],["SP","São Paulo"],["SE","Sergipe"],["TO","Tocantins"]];
 var ESTADO_CIVIL = ["Solteiro(a)", "Casado(a)", "União estável", "Divorciado(a)", "Viúvo(a)"];
 var OCUPACOES = ["Tecnologia", "Saúde", "Educação", "Direito", "Finanças / Contabilidade", "Comércio / Varejo", "Indústria", "Serviços", "Setor Público", "Autônomo(a) / Empreendedor(a)", "Aposentado(a)", "Outro"];
-var ENTREGAVEIS = ["Diagnóstico completo das suas finanças", "Seu arquétipo financeiro", "Plano de ação personalizado", "Projeção da sua aposentadoria: quanto ter, quanto guardar por mês"];
-var DESPESA_CATEGORIES = [["alimentacao","Alimentação"],["educacao","Educação"],["impostos","Impostos"],["investimentos","Investimentos / Poupança"],["lazer","Lazer"],["moradia","Moradia"],["presentes","Presentes / Doações"],["saude","Saúde"],["seguros","Seguros"],["servicos","Serviços Diversos"],["transporte","Transporte"],["vestuario","Vestuário / Cuidados Pessoais"]];
+var ENTREGAVEIS = [
+  "Score geral e seu nível de maturidade financeira",
+  "Seu arquétipo financeiro (leitura comportamental)",
+  "Os KPIs dos seus números, com a distribuição das despesas",
+  "Score por dimensão: fluxo, liquidez, dívidas, risco, patrimônio e metas",
+  "Projeção da aposentadoria: quanto ter, quanto guardar por mês",
+  "Plano de ação e checklist dos próximos 30 dias"
+];
+var DESPESA_CATEGORIES = [["alimentacao","Alimentação"],["educacao","Educação"],["filhos","Filhos / Dependentes"],["investimentos","Investimentos / Poupança"],["lazer","Lazer"],["moradia","Moradia"],["presentes","Presentes / Doações"],["saude","Saúde"],["seguros","Seguros"],["servicos","Serviços Diversos"],["transporte","Transporte"],["vestuario","Vestuário / Cuidados Pessoais"]];
+// Classificação usada no relatório (régua 50/30/20). As despesas que a pessoa
+// adiciona à mão em "outras despesas" trazem a própria classificação.
+var DESPESAS_ESSENCIAIS = ["moradia", "alimentacao", "transporte", "saude", "educacao", "filhos", "seguros"];
 var INVEST_FIELDS = [["investPoupanca","Poupança"],["investRendaFixaPublica","Renda Fixa Pública (Tesouro Direto)"],["investRendaFixaPrivada","Renda Fixa Privada (CDB/LCI/LCA)"],["investRendaVariavel","Renda Variável (ações/FIIs/ETFs)"],["investCripto","Criptomoedas"],["investOutros","Outros"]];
 var PERFIL_RISCO = ["Conservador", "Moderado", "Arrojado"];
 var SABE_RENTABILIDADE = ["Não sei", "Ideia vaga", "Sei aproximado", "Sei exato"];
@@ -257,9 +274,9 @@ var SABE_PARA_ONDE = ["Sei bem, sem surpresas", "Mais ou menos, às vezes me sur
 var STEP_META = {
   1: { eyebrow: "Etapa 1 de 10", title: "Identificação", desc: "Alguns dados básicos pra personalizar seu relatório e mantermos contato sobre seu diagnóstico." },
   2: { eyebrow: "Etapa 2 de 10", title: "Renda Mensal", desc: "Sua renda líquida e a do seu cônjuge, se aplicável, além de outras fontes de renda." },
-  3: { eyebrow: "Etapa 3 de 10", title: "Despesas", desc: "Seus gastos mensais por categoria. O valor em Investimentos / Poupança conta como aporte mensal (poupança), não como gasto." },
+  3: { eyebrow: "Etapa 3 de 10", title: "Despesas", desc: "Seus gastos mensais por categoria. O valor em Investimentos / Poupança conta como aporte mensal (poupança), não como gasto. Se faltar alguma categoria, adicione no fim da página." },
   4: { eyebrow: "Etapa 4 de 10", title: "Patrimônio e Investimentos", desc: "Imóveis, veículos, investimentos e seu perfil como investidor. Se você tem cônjuge, informe o patrimônio do casal." },
-  5: { eyebrow: "Etapa 5 de 10", title: "Dívidas", desc: "Cartão de crédito, cheque especial, empréstimos e outras dívidas em aberto." },
+  5: { eyebrow: "Etapa 5 de 10", title: "Dívidas", desc: "Cartão de crédito, cheque especial, empréstimos e outras dívidas em aberto. Se não souber um valor exato, use o último extrato ou a última fatura como referência." },
   6: { eyebrow: "Etapa 6 de 10", title: "Liquidez e Reserva de Emergência", desc: "Quanto você tem guardado para imprevistos e onde está aplicado. Informe o valor mesmo que já esteja incluído nos investimentos da etapa 4. Aqui ele serve para avaliar sua liquidez." },
   7: { eyebrow: "Etapa 7 de 10", title: "Gestão de Risco (Seguros)", desc: "Seguro de vida, plano de saúde e proteção da sua renda." },
   8: { eyebrow: "Etapa 8 de 10", title: "Aposentadoria e Metas de Longo Prazo", desc: "Quando você quer parar de depender do trabalho, quanto quer receber por mês e o que fazer com o patrimônio. É com essas respostas que montamos a projeção do relatório. Se você tem cônjuge, considere as metas do casal." },
@@ -276,7 +293,8 @@ function defaultData() {
     nome: "", email: "", estado: "", cidade: "", dataNascimento: "",
     estadoCivil: "", temConjuge: "", dataNascimentoConjuge: "", filhos: "", ocupacao: "",
     rendaPropria: 0, rendaConjuge: 0, outrasRendas: [],
-    despesas: { alimentacao: 0, educacao: 0, impostos: 0, investimentos: 0, lazer: 0, moradia: 0, presentes: 0, saude: 0, seguros: 0, servicos: 0, transporte: 0, vestuario: 0 },
+    despesas: { alimentacao: 0, educacao: 0, filhos: 0, investimentos: 0, lazer: 0, moradia: 0, presentes: 0, saude: 0, seguros: 0, servicos: 0, transporte: 0, vestuario: 0 },
+    despesasExtras: [],
     imoveis: [], veiculos: [],
     investPoupanca: 0, investRendaFixaPublica: 0, investRendaFixaPrivada: 0, investRendaVariavel: 0, investCripto: 0, investOutros: 0,
     perfilRisco: "", sabeRentabilidade: "", investeAutomatico: "",
@@ -302,7 +320,16 @@ var data = defaultData();
     var saved = JSON.parse(localStorage.getItem(STORAGE_FORM) || "null");
     if (saved && saved.data) {
       data = Object.assign(defaultData(), saved.data);
-      data.despesas = Object.assign(defaultData().despesas, saved.data.despesas || {});
+      // Só as categorias que existem hoje. Um rascunho antigo pode trazer
+      // "impostos", que saiu do formulário: sem essa limpeza o valor continuaria
+      // somando no total sem ter campo na tela pra ser editado.
+      var padraoDespesas = defaultData().despesas;
+      var salvas = saved.data.despesas || {};
+      Object.keys(padraoDespesas).forEach(function (k) {
+        padraoDespesas[k] = Number(salvas[k]) || 0;
+      });
+      data.despesas = padraoDespesas;
+      if (!Array.isArray(data.despesasExtras)) data.despesasExtras = [];
       step = typeof saved.step === "number" ? saved.step : 0;
     }
   } catch (e) { /* dados corrompidos: começa do zero */ }
@@ -366,7 +393,8 @@ function idadeHint(iso, rotulo) {
 /* ===================== Totais ===================== */
 function totals() {
   var totalRenda = (data.rendaPropria || 0) + (data.temConjuge === true ? (data.rendaConjuge || 0) : 0) + data.outrasRendas.reduce(function (a, r) { return a + (r.valor || 0); }, 0);
-  var totalDespesas = DESPESA_CATEGORIES.reduce(function (a, c) { return a + (data.despesas[c[0]] || 0); }, 0);
+  var totalDespesas = DESPESA_CATEGORIES.reduce(function (a, c) { return a + (data.despesas[c[0]] || 0); }, 0) +
+    data.despesasExtras.reduce(function (a, d) { return a + (d.valor || 0); }, 0);
   var patrimonioImoveis = data.imoveis.reduce(function (a, i) { return a + (i.valorMercado || 0); }, 0);
   var patrimonioVeiculos = data.veiculos.reduce(function (a, i) { return a + (i.valor || 0); }, 0);
   var patrimonioInvest = INVEST_FIELDS.reduce(function (a, f) { return a + (data[f[0]] || 0); }, 0);
@@ -459,9 +487,10 @@ function simNaoSeg(field, value) {
     '</div>';
 }
 
-function moneyInput(field, label, extra) {
+function moneyInput(field, label, extra, hint) {
   return '<div' + (extra ? ' class="' + extra + '"' : "") + '><label class="f-label">' + esc(label) + '</label>' +
-    '<input type="text" inputmode="numeric" class="f-input num" data-money="' + field + '" value="' + esc(fmt(data[field])) + '"></div>';
+    '<input type="text" inputmode="numeric" class="f-input num" data-money="' + field + '" value="' + esc(fmt(data[field])) + '">' +
+    (hint ? '<div class="f-hint">' + hint + '</div>' : "") + '</div>';
 }
 
 function totalizerHtml(id, label, value, flat) {
@@ -497,12 +526,12 @@ function renderStep0() {
   }).join("");
   return '<div class="hero"><div class="hero-glow"></div>' +
     '<div class="hero-eyebrow"><div class="hero-eyebrow-line"></div><div class="hero-eyebrow-text">Diagnóstico Financeiro HZ</div></div>' +
-    '<div class="hero-title">Um raio-x completo da sua vida financeira, <em>em cerca de 25 minutos</em>.</div>' +
-    '<div class="hero-sub">Você vai responder perguntas sobre renda, gastos, patrimônio, dívidas e objetivos. Ao final, preparamos um relatório personalizado com seu diagnóstico completo.</div>' +
+    '<div class="hero-title">Um raio-x completo da sua vida financeira, <em>em cerca de 15 minutos</em>.</div>' +
+    '<div class="hero-sub">Você vai responder perguntas sobre renda, gastos, patrimônio, dívidas e objetivos. Ao final, o relatório personalizado fica pronto na hora, com o diagnóstico completo dos seus números:</div>' +
     '<div class="entregaveis">' + items + '</div>' +
     '<div class="cta-wrap">' +
     '<button type="button" class="btn-cta" data-action="start">Começar diagnóstico</button>' +
-    '<div class="cta-note">Tempo estimado: 20 a 30 min · você pode salvar e continuar depois</div>' +
+    '<div class="cta-note">Tempo estimado: cerca de 15 min · você pode salvar e continuar depois</div>' +
     '</div></div>';
 }
 
@@ -557,10 +586,44 @@ function renderStep2() {
 function renderStep3() {
   var t = totals();
   var fields = DESPESA_CATEGORIES.map(function (c) {
-    return '<div><label class="f-label">' + esc(c[1]) + '</label><input type="text" inputmode="numeric" class="f-input num" data-despesa="' + c[0] + '" value="' + esc(fmt(data.despesas[c[0]])) + '"></div>';
+    var grupo = c[0] === "investimentos" ? "" :
+      DESPESAS_ESSENCIAIS.indexOf(c[0]) !== -1 ? "Essencial" : "Flexível";
+    return '<div><label class="f-label">' + esc(c[1]) +
+      (grupo ? ' <span style="font-weight:600; letter-spacing:0.06em; color:rgba(21,21,63,0.35);">· ' + grupo + '</span>' : "") +
+      '</label><input type="text" inputmode="numeric" class="f-input num" data-despesa="' + c[0] + '" value="' + esc(fmt(data.despesas[c[0]])) + '"></div>';
   }).join("");
+
+  // Gastos que não cabem em nenhuma categoria acima. A classificação vem de
+  // quem responde, porque só ela sabe se aquele gasto é obrigatório na vida
+  // dela ou se é o primeiro candidato a corte.
+  var extras = data.despesasExtras.map(function (item, i) {
+    var flexivel = item.tipo === "flexivel";
+    return '<div class="list-item">' +
+      '<div class="list-header"><div class="list-title">Despesa ' + (i + 1) + '</div>' +
+      '<button type="button" class="link-remove" data-action="removeItem" data-list="despesasExtras" data-index="' + i + '">Remover</button></div>' +
+      '<div class="grid2 tight">' +
+      '<div><label class="f-label">Descrição</label><input type="text" class="f-input" data-ltext="descricao" data-list="despesasExtras" data-index="' + i + '" placeholder="Ex: Pensão, academia, pet" value="' + esc(item.descricao) + '"></div>' +
+      '<div><label class="f-label">Valor mensal</label><input type="text" inputmode="numeric" class="f-input num" data-lmoney="valor" data-list="despesasExtras" data-index="' + i + '" value="' + esc(fmt(item.valor)) + '"></div>' +
+      '<div class="span2"><label class="f-label">Esse gasto é</label><div class="seg stretch" style="width:100%;">' +
+      '<button type="button" class="' + (!flexivel ? "on" : "") + '" data-action="setListField" data-list="despesasExtras" data-index="' + i + '" data-lfield="tipo" data-val="essencial">Essencial</button>' +
+      '<button type="button" class="' + (flexivel ? "on" : "") + '" data-action="setListField" data-list="despesasExtras" data-index="' + i + '" data-lfield="tipo" data-val="flexivel">Flexível</button>' +
+      '</div></div>' +
+      '</div></div>';
+  }).join("");
+
+  var nota = '<div class="nota" style="margin-bottom:18px;">' +
+    '<p><b>Essencial</b> é o gasto que mantém a sua vida funcionando: você não consegue cortar no mês que vem sem mudar de fato como vive — moradia, comida, transporte pro trabalho, saúde, escola dos filhos.</p>' +
+    '<p><b>Flexível</b> é o gasto que melhora a vida, mas que dá pra reduzir, adiar ou trocar por uma versão mais barata sem quebrar nada — lazer, assinaturas, presentes, roupas além do necessário.</p>' +
+    '<p>Essa classificação é o que permite ao relatório comparar suas contas com a referência 50/30/20 (até 50% da renda em essenciais, até 30% em flexíveis, ao menos 20% guardado). Na dúvida, pergunte-se: se a renda caísse pela metade, esse gasto continuaria do mesmo jeito?</p>' +
+    '</div>';
+
   return totalizerHtml("tot-despesas", "Total de despesas mensais", t.totalDespesas) +
-    '<div class="card"><div class="grid2">' + fields + '</div></div>';
+    '<div class="card"><div class="grid2">' + fields + '</div>' +
+    '<div class="rule-full"></div>' +
+    '<label class="f-label" style="margin-bottom:14px;">Outras despesas</label>' +
+    nota + extras +
+    '<button type="button" class="link-add" data-action="addItem" data-list="despesasExtras">+ Adicionar outra despesa</button>' +
+    '</div>';
 }
 
 function renderStep4() {
@@ -607,25 +670,38 @@ function renderStep5() {
         '<div><label class="f-label">Valor</label><input type="text" inputmode="numeric" class="f-input num" data-lmoney="valor" data-list="outrasDividas" data-index="' + i + '" value="' + esc(fmt(item.valor)) + '"></div>' +
         '</div></div>';
     });
+    var notaDividas = '<div class="nota" style="margin-bottom:22px;">' +
+      '<p><b>Rotativo em aberto</b> é o que sobra quando você não paga a fatura inteira. O banco financia a diferença automaticamente e ela volta na próxima fatura com juros — os mais caros do mercado brasileiro, na casa de 400% ao ano. Some aqui o que ainda não foi pago: a fatura atual em aberto, o que ficou rolando de meses anteriores e o saldo do parcelamento da fatura.</p>' +
+      '<p>Não inclua as compras parceladas em lojas no cartão sem juros: elas não são rotativo. Elas entram em "Total das parcelas mensais" abaixo.</p>' +
+      '<p><b>Cheque especial</b> é o limite extra da conta corrente. Se o saldo está negativo, o valor que está no vermelho é o que você deve — também com juros altos, cobrados por dia de uso.</p>' +
+      '</div>';
     detail = '<div style="margin-top:28px;">' +
       totalizerHtml("tot-dividas", "Total de dívidas", t.totalDividas) +
+      notaDividas +
       '<div class="grid1">' +
-      moneyInput("cartaoCredito", "Cartão de crédito (fatura/rotativo em aberto)") +
-      moneyInput("chequeEspecial", "Cheque especial (valor utilizado)") +
-      moneyInput("emprestimoPessoal", "Empréstimo pessoal (saldo devedor)") +
-      moneyInput("parcelasMensais", "Total das parcelas mensais dessas dívidas") +
+      moneyInput("cartaoCredito", "Cartão de crédito (fatura/rotativo em aberto)", "",
+        "Quanto da fatura ainda não foi pago hoje, somando o que ficou rolando de meses anteriores.") +
+      moneyInput("chequeEspecial", "Cheque especial (valor utilizado)", "",
+        "O quanto a conta está negativa hoje. Se está zerada ou positiva, deixe em zero.") +
+      moneyInput("emprestimoPessoal", "Empréstimo pessoal (saldo devedor)", "",
+        "O que falta quitar, não o valor original contratado. Inclui consignado e crédito pessoal.") +
+      moneyInput("parcelasMensais", "Total das parcelas mensais dessas dívidas", "",
+        "Quanto sai da sua conta por mês para pagar tudo isso, incluindo compras parceladas no cartão. É esse valor que mostra o quanto da renda já está comprometido.") +
       '</div><div class="rule-full"></div>' +
       '<label class="f-label" style="margin-bottom:14px;">Outras dívidas</label>' + outras +
       '<button type="button" class="link-add" data-action="addItem" data-list="outrasDividas">+ Adicionar outra dívida</button>' +
       '<div class="rule-full"></div>' +
       '<div class="grid1">' +
       '<div><label class="f-label">Sabe a taxa de juros da dívida mais cara?</label>' + selectHtml("sabeTaxaJuros", SABE_RENTABILIDADE, data.sabeTaxaJuros) + '</div>' +
-      '<div><label class="f-label">Nos últimos 12 meses, já pegou empréstimo/usou rotativo pra cobrir outra dívida?</label>' + selectHtml("usouRotativo", USOU_ROTATIVO, data.usouRotativo) + '</div>' +
+      '<div><label class="f-label">Nos últimos 12 meses, já pegou empréstimo/usou rotativo pra cobrir outra dívida?</label>' + selectHtml("usouRotativo", USOU_ROTATIVO, data.usouRotativo) +
+      '<div class="f-hint">Pagar uma dívida com outra dívida mais cara é o padrão que mais rápido transforma um aperto passageiro numa bola de neve. Responder com honestidade aqui muda o plano de ação do relatório.</div></div>' +
       '</div></div>';
   }
   return '<div class="card">' +
     '<label class="f-label" style="margin-bottom:10px;">Você tem dívidas em cartão de crédito, cheque especial ou empréstimo pessoal hoje?</label>' +
-    simNaoSeg("temDividas", data.temDividas) + detail + '</div>';
+    simNaoSeg("temDividas", data.temDividas) +
+    '<div class="f-hint">Financiamento de imóvel ou de veículo não entra aqui: o saldo devedor desses bens já foi informado na etapa de patrimônio.</div>' +
+    detail + '</div>';
 }
 
 function renderStep6() {
@@ -664,12 +740,12 @@ function renderStep8() {
   var t = totals();
   var gastoField;
   if (data.gastoNaoSei) {
-    gastoField = '<div class="f-input gasto-slider-box">' +
+    gastoField = '<div class="f-input narrow gasto-slider-box">' +
       '<span id="gasto-estimado-label">~ ' + fmt(t.gastoEstimado) + ' (' + data.gastoPercent + '% da renda)</span>' +
       '<input type="range" min="30" max="120" value="' + data.gastoPercent + '" data-range="gastoPercent" style="width:100px;">' +
       '</div>';
   } else {
-    gastoField = '<input type="text" inputmode="numeric" class="f-input num" data-money="gastoMensalAposentadoria" value="' + esc(fmt(data.gastoMensalAposentadoria)) + '">';
+    gastoField = '<input type="text" inputmode="numeric" class="f-input num narrow" data-money="gastoMensalAposentadoria" value="' + esc(fmt(data.gastoMensalAposentadoria)) + '">';
   }
   var metas = "";
   data.outrasMetas.forEach(function (item, i) {
@@ -700,10 +776,13 @@ function renderStep8() {
         '<div class="f-hint">Deixe em zero pra consumir todo o patrimônio, em poder de compra de hoje.</div></div>'
     : "";
 
+  // As duas primeiras perguntas ficam uma embaixo da outra: lado a lado, os
+  // blocos têm alturas diferentes (uma tem dica de prazo, a outra tem checkbox
+  // mais dica) e as bordas dos campos deixavam de se alinhar.
   return '<div class="card"><div class="grid2">' +
-    '<div><label class="f-label">Com que idade você quer se aposentar?</label><input type="number" min="0" class="f-input num" data-field="idadeAposentadoria" placeholder="Ex: 60" value="' + esc(data.idadeAposentadoria) + '">' +
+    '<div class="span2"><label class="f-label">Com que idade você quer se aposentar?</label><input type="number" min="0" class="f-input num narrow" data-field="idadeAposentadoria" placeholder="Ex: 60" value="' + esc(data.idadeAposentadoria) + '">' +
     '<div id="hint-prazo-aposentadoria">' + hintPrazoAposentadoria() + '</div></div>' +
-    '<div><label class="f-label">Quanto quer receber por mês na aposentadoria?</label>' + gastoField +
+    '<div class="span2"><label class="f-label">Quanto quer receber por mês na aposentadoria?</label>' + gastoField +
     '<label class="check-label"><input type="checkbox" data-action="toggleGastoNaoSei"' + (data.gastoNaoSei ? " checked" : "") + '> Não sei, quero estimar como % da renda atual</label>' +
     '<div class="f-hint">Em reais de hoje: pense no padrão de vida que quer manter, não no valor que estará no extrato lá na frente.</div></div>' +
     '<div class="span2 seg-wrap-mobile"><label class="f-label" style="margin-bottom:10px;">O que você quer fazer com o patrimônio na aposentadoria?</label>' + estrategiaSeg + '</div>' +
@@ -745,7 +824,10 @@ function renderStep10() {
       ["Renda própria", fmt(data.rendaPropria)], ["Renda cônjuge", fmt(data.rendaConjuge)],
       ["Outras rendas", String(data.outrasRendas.length)], ["Total", fmt(t.totalRenda)]
     ]},
-    { n: 3, title: "Despesas", rows: [["Total de despesas", fmt(t.totalDespesas)]] },
+    { n: 3, title: "Despesas", rows: [
+      ["Total de despesas", fmt(t.totalDespesas)],
+      ["Outras despesas informadas", String(data.despesasExtras.length)]
+    ]},
     { n: 4, title: "Patrimônio e Investimentos", rows: [
       ["Imóveis", String(data.imoveis.length)], ["Veículos", String(data.veiculos.length)],
       ["Perfil de risco", orDash(data.perfilRisco)], ["Patrimônio total", fmt(t.patrimonioTotal)],
@@ -863,6 +945,7 @@ function coerceVal(v) { return v === "true" ? true : v === "false" ? false : v; 
 
 var LIST_TEMPLATES = {
   outrasRendas: { descricao: "", valor: 0 },
+  despesasExtras: { descricao: "", valor: 0, tipo: "essencial" },
   outrasDividas: { descricao: "", valor: 0 },
   outrasMetas: { descricao: "", valorEstimado: 0, prazo: "" },
   imoveis: { descricao: "", valorMercado: 0, status: "quitado", saldoDevedor: 0 },
