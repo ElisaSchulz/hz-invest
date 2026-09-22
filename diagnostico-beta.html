@@ -6,8 +6,8 @@
 <title>Teste fechado · Diagnóstico Financeiro | HZ Invest</title>
 <meta name="description" content="Dez vagas para testar o Diagnóstico Financeiro da HZ Invest antes do lançamento, sem custo, em troca de feedback honesto.">
 
-<!-- Página de convite para o grupo do Telegram: o link circula por lá, não
-     deve ser encontrada por busca enquanto o produto não estiver à venda. -->
+<!-- Página de convite, divulgada por link: não deve ser encontrada por
+     busca enquanto o produto não estiver à venda. -->
 <meta name="robots" content="noindex, nofollow">
 
 <meta property="og:type" content="website">
@@ -314,12 +314,13 @@
 
   <!-- ─── CABEÇALHO ─── -->
   <div class="topo">
-    <div class="selo"><span class="ponto"></span> Teste fechado · grupo do Telegram</div>
+    <div class="selo"><span class="ponto"></span> Teste fechado · 10 vagas</div>
     <h1>Teste o Diagnóstico Financeiro <span class="destaque">antes de todo mundo</span>.</h1>
     <p class="linha-fina">
       Antes de colocar o diagnóstico à venda, quero rodar ele com um grupo pequeno de pessoas de verdade.
       São <strong>10 vagas</strong>, sem custo, para quem topa fazer o questionário completo e me contar,
       com honestidade, o que funcionou e o que não funcionou.
+      Falo com você <strong>só por e-mail</strong>: sem grupo, sem WhatsApp, sem ligação.
     </p>
     <div class="vagas" id="vagas">
       <span id="vagasTexto"></span>
@@ -343,7 +344,7 @@
       <ul class="lista">
         <li><span class="marca">1</span><span>Responder o questionário inteiro com os seus números reais — leva cerca de 15 minutos.</span></li>
         <li><span class="marca">2</span><span>Fazer isso em até uma semana depois que o acesso for liberado.</span></li>
-        <li><span class="marca">3</span><span>Me mandar feedback sincero: o que confundiu, o que faltou, o que não bateu com a sua realidade.</span></li>
+        <li><span class="marca">3</span><span>Responder o meu e-mail com feedback sincero: o que confundiu, o que faltou, o que não bateu com a sua realidade.</span></li>
         <li><span class="marca">4</span><span>Aguentar o fato de que é um teste: pode ter erro, e é justamente isso que eu quero descobrir.</span></li>
       </ul>
     </div>
@@ -421,7 +422,7 @@
     <div class="estado" id="estForm">
       <div class="rotulo-secao">// passo 2 de 2</div>
       <h2 class="passo-titulo">Confirme o seu interesse</h2>
-      <p class="passo-sub">É rápido. Preciso do seu Telegram para falar com você quando o acesso for liberado.</p>
+      <p class="passo-sub">É rápido. Toda a conversa sobre o teste acontece por e-mail, no endereço da sua conta.</p>
 
       <div class="conta-atual">
         <span>Conectado como <strong id="contaEmail"></strong></span>
@@ -441,19 +442,9 @@
             <input type="text" id="fNome" autocomplete="name" placeholder="Seu nome">
           </div>
           <div class="campo">
-            <label for="fTelegram">Seu usuário no Telegram</label>
-            <input type="text" id="fTelegram" placeholder="@seuusuario">
-          </div>
-        </div>
-        <div class="dois">
-          <div class="campo">
             <label for="fEmail">E-mail da conta</label>
             <input type="email" id="fEmail" disabled>
-            <div class="ajuda">É para esse e-mail que o aviso de liberação vai.</div>
-          </div>
-          <div class="campo">
-            <label for="fWhats">WhatsApp <span style="text-transform:none;letter-spacing:0;font-weight:400;">(opcional)</span></label>
-            <input type="tel" id="fWhats" placeholder="(11) 90000-0000">
+            <div class="ajuda">É para cá que eu escrevo. Para usar outro endereço, entre com outra conta.</div>
           </div>
         </div>
         <div class="campo">
@@ -499,13 +490,13 @@
 
         <div class="proximos">
           <div><strong>1. Eu confiro a lista</strong>Olho as inscrições pela ordem de chegada e libero o acesso na sua conta HZ.</div>
-          <div><strong>2. Você recebe um aviso</strong>Mando mensagem no seu Telegram e um e-mail para <span id="okEmail"></span>.</div>
+          <div><strong>2. Você recebe um e-mail</strong>Escrevo de <strong style="display:inline;font-size:inherit;">elisa@hzinvest.com.br</strong> para <span id="okEmail"></span>. Vale marcar como contato para não cair no spam.</div>
           <div><strong>3. Você faz o diagnóstico</strong>Entra na Minha Área, responde as 10 etapas e o relatório é gerado na hora.</div>
         </div>
 
         <div class="ok-acoes">
-          <a class="btn auto" href="https://t.me/+uMdIiepcb-E0ZWIx" target="_blank" rel="noopener">Abrir o grupo no Telegram</a>
-          <a class="btn sec auto" href="minha-area.html">Ir para a Minha Área</a>
+          <a class="btn auto" href="minha-area.html">Ir para a Minha Área</a>
+          <a class="btn sec auto" href="diagnostico-lp.html">Ver o que vem no relatório</a>
         </div>
       </div>
     </div>
@@ -736,12 +727,10 @@
     ev.preventDefault();
     if (!usuario) return;
 
-    const nome     = $('fNome').value.trim();
-    const telegram = $('fTelegram').value.trim();
-    const momento  = $('fMomento').value;
+    const nome    = $('fNome').value.trim();
+    const momento = $('fMomento').value;
 
     if (!nome)                        return aviso('avisoForm', 'Escreva o seu nome.');
-    if (!telegram)                    return aviso('avisoForm', 'Preciso do seu usuário do Telegram para te avisar.');
     if (!momento)                     return aviso('avisoForm', 'Escolha a opção que mais parece com a sua situação.');
     if (!$('fCompromisso').checked)   return aviso('avisoForm', 'Marque o compromisso de responder e dar feedback.');
     if (!$('fConsentimento').checked) return aviso('avisoForm', 'Preciso da sua autorização para usar os dados no diagnóstico.');
@@ -751,13 +740,11 @@
       uid: usuario.uid,
       nome: nome,
       email: usuario.email || null,
-      telegram: telegram.replace(/^@+/, '').trim(),
-      whatsapp: $('fWhats').value.trim() || null,
       momento: momento,
       expectativa: $('fExpectativa').value.trim() || null,
       compromisso: true,
       consentimento: true,
-      origem: 'telegram',
+      origem: 'teste-fechado',
       acessoLiberado: false
     };
 

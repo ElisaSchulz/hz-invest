@@ -1,7 +1,7 @@
 # Teste fechado do Diagnóstico — como colocar no ar
 
-A página `diagnostico-beta.html` é o convite que você manda no grupo do
-Telegram. Ela faz três coisas, na ordem:
+A página `diagnostico-beta.html` é o convite que você divulga (no grupo do
+Telegram, ou onde quiser). Ela faz três coisas, na ordem:
 
 1. a pessoa **cria a conta HZ** (ou entra na que já tem);
 2. a pessoa **confirma o interesse** num formulário curto;
@@ -84,8 +84,7 @@ documento é uma pessoa, e o **ID do documento é o uid dela**. Os campos:
 
 | campo | o que é |
 |---|---|
-| `nome`, `email` | como ela se cadastrou |
-| `telegram`, `whatsapp` | por onde falar com ela |
+| `nome`, `email` | como ela se cadastrou — **o e-mail é o único canal de contato** |
 | `momento`, `expectativa` | o que ela respondeu no formulário |
 | `situacao` | `vaga` (entrou nas 10), `espera` (lista de espera) ou `registrado` (gravada sem contador) |
 | `posicao` | 1 a 10, na ordem de chegada |
@@ -123,12 +122,66 @@ documento.
 
 ## O que a pessoa vê, passo a passo
 
-1. abre o link do Telegram → página do teste, com as vagas restantes;
+1. abre o link → página do teste, com as vagas restantes;
 2. cria a conta (e-mail e senha, ou Google);
-3. preenche nome, Telegram, momento financeiro e os dois aceites;
-4. recebe a confirmação com a posição dela ("3ª pessoa inscrita");
-5. espera o seu aviso;
+3. preenche nome, momento financeiro e os dois aceites;
+4. recebe a confirmação com a posição dela ("3ª pessoa inscrita"), avisada de
+   que você vai escrever de `elisa@hzinvest.com.br`;
+5. espera o seu e-mail;
 6. você libera o acesso → ela entra na Minha Área e faz o diagnóstico.
+
+---
+
+## Os e-mails que você manda
+
+Toda a comunicação do teste é por e-mail, do seu endereço
+`elisa@hzinvest.com.br`. São três mensagens, e o texto abaixo é um ponto de
+partida — a coluna `nome` da inscrição tem o primeiro nome de cada pessoa, e
+a `expectativa` tem a pergunta que ela quer ver respondida (vale citar).
+
+**1. Acesso liberado** — logo depois de marcar `ativo: true`:
+
+> **Assunto:** Seu acesso ao Diagnóstico Financeiro está liberado
+>
+> Oi, {nome}! Obrigada por topar testar o diagnóstico antes de todo mundo.
+>
+> Seu acesso já está liberado. É só entrar em hzinvest.com.br/minha-area.html
+> com a conta que você criou e clicar em "Começar o diagnóstico". São cerca de
+> 15 minutos, dá para salvar e continuar depois, e o relatório é gerado na hora.
+>
+> Se der qualquer erro, ou se a tela pedir uma compra, me responda este e-mail
+> que eu resolvo.
+>
+> Elisa · HZ Invest
+
+**2. Lembrete** — para quem não respondeu em cinco ou seis dias (dá para ver
+quem já fez: a inscrição existe, mas não apareceu diagnóstico no Supabase com
+o e-mail dela):
+
+> **Assunto:** Conseguiu fazer o diagnóstico?
+>
+> Oi, {nome}! Passando para saber se você conseguiu fazer o diagnóstico. Se
+> travou em alguma parte, me conta qual — é exatamente esse tipo de coisa que
+> eu preciso descobrir antes de abrir as vendas.
+
+**3. Pedido de feedback** — depois que ela fez:
+
+> **Assunto:** O que você achou do diagnóstico?
+>
+> Oi, {nome}! Vi que você fez o diagnóstico. Me conta, sem filtro:
+>
+> 1. Teve alguma pergunta confusa ou difícil de responder?
+> 2. O relatório respondeu a sua dúvida ("{expectativa}")?
+> 3. Teve algum número que não bateu com a sua realidade?
+> 4. O que faltou?
+>
+> Pode responder em tópicos, do jeito que for mais rápido.
+
+**Quem ficou na lista de espera** merece uma resposta também, nem que seja
+uma linha: as pessoas com `situacao: espera` no Firestore.
+
+Vale mandar um a um, ou em cópia oculta (Cco) se for o mesmo texto — nunca em
+cópia aberta, para não expor o e-mail de uma pessoa para as outras.
 
 ---
 
@@ -140,7 +193,9 @@ Três mudanças, todas em `diagnostico-lp.html`:
    apontar para o checkout;
 2. `HZ_CHECKOUT_URL` — cole o link de pagamento do provedor que você usar;
 3. opcional: apague o link para o teste fechado no `index.html`
-   (`diagnostico-beta.html`), se não quiser mais receber inscrições.
+   (`diagnostico-beta.html`), se não quiser mais receber inscrições — ou
+   deixe `aberto: false` no contador, que a página passa a receber só lista
+   de espera.
 
 A página do teste pode continuar no ar: ela não é indexada pelo Google
 (`noindex`), então só chega nela quem tem o link.
