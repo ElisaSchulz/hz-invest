@@ -9,7 +9,8 @@ import { getAuth, onAuthStateChanged, signOut,
          createUserWithEmailAndPassword,
          signInWithPopup, GoogleAuthProvider,
          sendPasswordResetEmail, updateProfile }      from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc }         from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc,
+         runTransaction, serverTimestamp }            from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 // ── YOUR FIREBASE CONFIG ──────────────────────
 const firebaseConfig = {
@@ -32,7 +33,7 @@ export { auth, db, onAuthStateChanged, signOut,
          signInWithEmailAndPassword, createUserWithEmailAndPassword,
          signInWithPopup, GoogleAuthProvider,
          sendPasswordResetEmail, updateProfile,
-         doc, setDoc, getDoc };
+         doc, setDoc, getDoc, runTransaction, serverTimestamp };
 
 // ─────────────────────────────────────────────
 //  SHARED HELPERS

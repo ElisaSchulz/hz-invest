@@ -16,14 +16,14 @@
 <meta property="og:url" content="https://hzinvest.com.br/diagnostico-lp.html">
 <meta property="og:title" content="Diagnóstico Financeiro | HZ Invest">
 <meta property="og:description" content="Um raio-x completo da sua vida financeira em cerca de 15 minutos: score, arquétipo financeiro, plano de ação e projeção até a aposentadoria, tudo a partir dos seus números.">
-<meta property="og:image" content="https://hzinvest.com.br/img/lp/relatorio-adiamento.jpg">
-<meta property="og:image:width" content="900">
-<meta property="og:image:height" content="562">
-<meta property="og:image:alt" content="Página de projeção patrimonial de um relatório do Diagnóstico Financeiro da HZ Invest.">
+<meta property="og:image" content="https://hzinvest.com.br/img/lp/modelo-cartao.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Três páginas do relatório modelo do Diagnóstico Financeiro da HZ Invest, sobrepostas.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Diagnóstico Financeiro | HZ Invest">
 <meta name="twitter:description" content="Um raio-x completo da sua vida financeira em cerca de 15 minutos, com plano de ação a partir dos seus números.">
-<meta name="twitter:image" content="https://hzinvest.com.br/img/lp/relatorio-adiamento.jpg">
+<meta name="twitter:image" content="https://hzinvest.com.br/img/lp/modelo-cartao.jpg">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -705,32 +705,35 @@
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
-    padding: 0.4rem 0 1.4rem;
+    /* folga para a sombra do papel: sem ela o overflow-x corta a sombra
+       embaixo de cada folha e o efeito de papel se perde */
+    padding: 1.6rem 0 2.6rem;
     scrollbar-width: thin;
     scrollbar-color: var(--teal-border) transparent;
   }
   .gal-track::-webkit-scrollbar { height: 6px; }
   .gal-track::-webkit-scrollbar-thumb { background: var(--teal-border); border-radius: 3px; }
+  /* Cada cartão é uma folha do relatório, inteira: página de A4 com sombra
+     de papel, e a legenda embaixo, fora da folha. O formato antigo era um
+     recorte por altura fixa, que terminava onde calhasse — no meio de uma
+     frase, quase sempre. Página inteira não tem como cortar frase. */
   .gal-card {
     scroll-snap-align: start;
-    flex: 0 0 min(420px, 82vw);
-    background: #FBFAF6;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
+    flex: 0 0 min(320px, 74vw);
     display: flex;
     flex-direction: column;
   }
-  .gal-card .capa {
+  .gal-card .folha {
     display: block;
     width: 100%;
-    height: 260px;
-    object-fit: cover;
-    object-position: top center;
-    background: #F6F4EE;
-    border-bottom: 1px solid var(--border);
+    height: auto;
+    aspect-ratio: 600 / 850;
+    background: #FBFAF6;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    box-shadow: 0 18px 38px rgba(21,21,63,0.13), 0 2px 6px rgba(21,21,63,0.06);
   }
-  .gal-card .corpo { padding: 1.4rem 1.5rem 1.6rem; display: flex; flex-direction: column; flex: 1; }
+  .gal-card .corpo { padding: 1.3rem 0.2rem 0; display: flex; flex-direction: column; flex: 1; }
   .gal-card .quem { font-size: 1.02rem; font-weight: 700; color: var(--white-pure); margin-bottom: 0.35rem; }
   .gal-card .situacao { font-size: 0.88rem; line-height: 1.6; color: var(--muted); font-weight: 300; flex: 1; }
   .gal-card .rodape {
@@ -759,6 +762,28 @@
     opacity: 0.75;
     margin-bottom: 0.8rem;
   }
+  /* Leque de abertura: três páginas sobrepostas, do jeito que ficariam
+     numa mesa. O do meio é o da frente, por isso a ordem visual não segue
+     a ordem do HTML. */
+  .leque {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3rem;
+  }
+  .leque img {
+    width: min(232px, 30vw);
+    height: auto;
+    aspect-ratio: 600 / 850;
+    background: #FBFAF6;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    box-shadow: 0 26px 52px rgba(21,21,63,0.15), 0 3px 10px rgba(21,21,63,0.07);
+  }
+  .leque img:nth-child(1) { order: 1; z-index: 1; transform: rotate(-7deg); }
+  .leque img:nth-child(3) { order: 2; z-index: 3; margin: 0 -7%; transform: translateY(-14px); }
+  .leque img:nth-child(2) { order: 3; z-index: 2; transform: rotate(7deg); }
+
   .gal-nav { display: flex; gap: 0.6rem; margin-top: 0.2rem; }
   .gal-btn {
     width: 40px; height: 40px;
@@ -783,11 +808,13 @@
     padding-top: 1.8rem;
     border-top: 1px solid var(--border);
   }
-  .gal-fecho p { font-size: 1.02rem; color: var(--text); font-weight: 300; margin: 0; }
+  .gal-fecho p { font-size: 1.02rem; color: var(--text); font-weight: 300; margin: 0; max-width: 460px; }
+  .gal-fecho .acoes { display: flex; gap: 0.8rem; flex-wrap: wrap; }
   @media (max-width: 639px) {
-    .gal-card .capa { height: 200px; }
     .gal-nav { display: none; }
     .gal-fecho { justify-content: center; text-align: center; }
+    .gal-fecho .acoes { justify-content: center; }
+    .leque { margin-top: 2.2rem; }
   }
 
   /* ─── DEPOIMENTOS ─── */
@@ -937,6 +964,82 @@
     line-height: 1.5;
   }
 
+  /* O atributo hidden precisa vencer os `display` declarados aqui
+     (.hero-badge é inline-flex, .after-buy é grid): sem o !important,
+     esconder um elemento pelo JS não tem efeito nenhum. */
+  [hidden] { display: none !important; }
+
+  /* ─── PRÉ-LANÇAMENTO ("EM BREVE") ───
+     Enquanto o produto não está à venda, estes três elementos aparecem
+     no lugar da compra: a faixa no topo do hero, a caixa da seção de
+     oferta e a etiqueta sobre o preço. Todos nascem com `hidden` e só
+     são revelados pelo script do fim da página, quando HZ_EM_BREVE
+     está ligado — assim a página volta a vender sozinha ao desligar
+     a variável, sem mexer no HTML. */
+  .faixa-breve {
+    max-width: 640px;
+    margin: 0 auto 2rem;
+    background: rgba(79,140,132,0.10);
+    border: 1px solid var(--teal-border);
+    border-radius: 12px;
+    padding: 1rem 1.4rem;
+    font-size: 0.92rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .faixa-breve strong { color: var(--white-pure); font-weight: 700; }
+  .faixa-breve a {
+    color: var(--teal);
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .faixa-breve a:hover { text-decoration: underline; }
+
+  .breve-box {
+    max-width: 620px;
+    margin: 3rem auto 0;
+    background: rgba(79,140,132,0.09);
+    border: 1px solid var(--teal-border);
+    border-radius: 14px;
+    padding: 2.2rem 2rem;
+    text-align: center;
+  }
+  .breve-box h3 {
+    font-size: 1.35rem;
+    color: var(--white-pure);
+    margin: 0.9rem 0 0.7rem;
+  }
+  .breve-box p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    font-weight: 300;
+    max-width: 460px;
+    margin: 0 auto 1.6rem;
+  }
+  .breve-box strong { color: var(--white); font-weight: 600; }
+  .breve-fine {
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: var(--faint);
+  }
+
+  .breve-tag {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    background: rgba(79,140,132,0.14);
+    border: 1px solid var(--teal-border);
+    padding: 0.35rem 0.8rem;
+    border-radius: 100px;
+  }
+  .price-box .breve-tag { position: relative; margin-bottom: 1.4rem; }
+
   /* ─── identidade HZ: títulos na serifada da marca ─── */
   h1, h2, h3, h4,
   .section-title, .hero h1, .hero-title, .nav-logo, .footer-logo, .brand,
@@ -961,6 +1064,11 @@
 
 <!-- ─── HERO ─── -->
 <section class="hero">
+  <div class="faixa-breve" id="faixaBreve" hidden>
+    <strong>Em breve.</strong> O diagnóstico ainda não está à venda — estou fechando os últimos ajustes.
+    Até lá, <strong>10 pessoas</strong> podem fazer ele de graça e me ajudar a melhorar.
+    <a href="diagnostico-beta.html">Quero uma das vagas →</a>
+  </div>
   <div class="hero-badge"><span class="dot-teal"></span> Diagnóstico Financeiro HZ</div>
   <h1>Um raio-x completo da sua vida financeira, <span class="accent">em cerca de 15 minutos</span>.</h1>
   <p class="hero-sub">
@@ -1215,188 +1323,175 @@
   </div>
 
   <div class="arq-grid reveal">
-    <button type="button" class="arq-card" data-alvo="ex-negacao">
+    <button type="button" class="arq-card" data-arquetipo="negacao">
       <div class="nome">Negação Financeira</div>
       <div class="frase">"Você não está sozinho nisso, e o primeiro passo pra sair daqui já foi dado: você chegou até aqui e olhou pros números de frente."</div>
-      <span class="ver">Ver um relatório assim →</span>
+      <span class="ver">Ver o relatório por dentro →</span>
     </button>
-    <button type="button" class="arq-card" data-alvo="ex-ilusao">
+    <button type="button" class="arq-card" data-arquetipo="ilusao">
       <div class="nome">Ilusão de Controle</div>
       <div class="frase">"As contas fecham no fim do mês, e isso já é melhor do que boa parte das pessoas. Mas 'fechar as contas' e 'estar seguro' são coisas diferentes."</div>
-      <span class="ver">Ver um relatório assim →</span>
+      <span class="ver">Ver o relatório por dentro →</span>
     </button>
-    <button type="button" class="arq-card" data-alvo="ex-adiamento">
+    <button type="button" class="arq-card" data-arquetipo="adiamento">
       <div class="nome">Adiamento do Futuro</div>
       <div class="frase">"Você tem disciplina, guarda dinheiro, se vira bem no dia a dia. O que falta não é esforço, é direção."</div>
-      <span class="ver">Ver um relatório assim →</span>
+      <span class="ver">Ver o relatório por dentro →</span>
     </button>
-    <button type="button" class="arq-card" data-alvo="ex-otimismo">
+    <button type="button" class="arq-card" data-arquetipo="otimismo">
       <div class="nome">Otimismo Desprotegido</div>
       <div class="frase">"Ninguém gosta de pensar no que pode dar errado, e é exatamente por isso que essa é a área mais adiada por quase todo mundo."</div>
-      <span class="ver">Ver um relatório assim →</span>
+      <span class="ver">Ver o relatório por dentro →</span>
     </button>
-    <button type="button" class="arq-card" data-alvo="ex-paralisia">
+    <button type="button" class="arq-card" data-arquetipo="paralisia">
       <div class="nome">Paralisia da Decisão</div>
       <div class="frase">"Você guarda dinheiro, isso já é mais do que a maioria consegue fazer. O problema não é a disciplina, é o próximo passo depois de guardar."</div>
-      <span class="ver">Ver um relatório assim →</span>
+      <span class="ver">Ver o relatório por dentro →</span>
     </button>
-    <button type="button" class="arq-card" data-alvo="ex-vazamento">
+    <button type="button" class="arq-card" data-arquetipo="vazamento">
       <div class="nome">Vazamento Silencioso</div>
       <div class="frase">"Suas contas fecham, você não vive no vermelho, mas isso não significa que não haja dinheiro escorrendo pelo ralo todo mês."</div>
-      <span class="ver">Ver um relatório assim →</span>
+      <span class="ver">Ver o relatório por dentro →</span>
     </button>
-    <button type="button" class="arq-card" data-alvo="ex-dominio">
+    <button type="button" class="arq-card" data-arquetipo="dominio">
       <div class="nome">Domínio Comportamental</div>
       <div class="frase">"Você já construiu algo raro: uma relação madura com o dinheiro, não só uma planilha organizada."</div>
-      <span class="ver">Ver um relatório assim →</span>
+      <span class="ver">Ver o relatório por dentro →</span>
     </button>
-    <button type="button" class="arq-card" data-alvo="ex-colheita">
+    <button type="button" class="arq-card" data-arquetipo="colheita">
       <div class="nome">Fase de Colheita</div>
       <div class="frase">"A fase de construir patrimônio ficou pra trás. O que está em jogo agora é transformar o que você juntou em renda que dure o quanto você precisar."</div>
-      <span class="ver">Ver um relatório assim →</span>
+      <span class="ver">Ver o relatório por dentro →</span>
     </button>
   </div>
 </section>
 
-<!-- ─── GALERIA DE EXEMPLOS ─── -->
+<!-- ─── O RELATÓRIO MODELO ─────────────────────────────────────
+     As imagens são páginas inteiras do relatório modelo, geradas por
+     tools/gerar-imagens-lp.py a partir de tools/diagnostico-exemplo.json.
+     Para atualizar depois de mexer no visual do relatório:
+         python3 tools/gerar-imagens-lp.py
+     O script regenera também relatorio-diagnostico-modelo.pdf, que é o
+     arquivo aberto pelo botão no fim desta seção.
+     ───────────────────────────────────────────────────────────── -->
 <section id="exemplos">
   <div class="reveal">
-    <div class="section-label">// oito relatórios por dentro</div>
+    <div class="section-label">// o relatório modelo</div>
     <div class="teal-line"></div>
-    <h2 class="section-title">Oito situações,<br>oito relatórios diferentes</h2>
+    <h2 class="section-title">Um relatório inteiro,<br>de ponta a ponta</h2>
     <p class="section-sub">
-      Preenchemos o diagnóstico com oito situações fictícias, uma para cada padrão, e recortamos do relatório
-      a página que melhor conta a história de cada uma. Arraste para o lado para ver todas.
-      <strong style="color:var(--white-pure);font-weight:600;">São pessoas inventadas para ilustrar o produto</strong>,
-      não clientes: o que você vê são as telas reais que o diagnóstico gera a partir dos números de cada perfil.
+      Este é o relatório completo de um perfil de exemplo: Mariana, 38 anos, casada, dois filhos,
+      R$ 24.500 de renda no casal. São 13 seções montadas pelo diagnóstico a partir das respostas dela,
+      sem nenhum ajuste manual depois.
+      <strong style="color:var(--white-pure);font-weight:600;">É uma pessoa inventada para ilustrar o produto</strong>,
+      não uma cliente — mas as páginas são as que o diagnóstico gera de verdade.
     </p>
+  </div>
+
+  <div class="leque reveal" aria-hidden="true">
+    <img src="img/lp/modelo-aposentadoria.webp" alt="" width="600" height="850" loading="lazy" decoding="async">
+    <img src="img/lp/modelo-capa.webp" alt="" width="600" height="850" loading="lazy" decoding="async">
+    <img src="img/lp/modelo-kpis.webp" alt="" width="600" height="850" loading="lazy" decoding="async">
   </div>
 
   <div class="gal-wrap reveal">
     <div class="gal-track" id="galTrack">
 
-      <article class="gal-card" id="ex-negacao">
-        <picture>
-          <source media="(max-width: 639px)" srcset="img/lp/relatorio-negacao-sm.jpg">
-          <img class="capa" src="img/lp/relatorio-negacao.jpg" loading="lazy" decoding="async"
-               width="900" height="562" alt="Seção de score geral do relatório: nota 28, nível 2, e um bloco de percepção contra realidade.">
-        </picture>
+      <article class="gal-card">
+        <img class="folha" src="img/lp/modelo-score.webp" width="600" height="850" loading="lazy" decoding="async"
+             alt="Página de score geral do relatório: nota 64, nível 4 consolidado, e o resumo do perfil.">
         <div class="corpo">
-          <div class="mostra">Seção 3 · Score geral e nível</div>
-          <div class="quem">Bia, 34 anos</div>
-          <div class="situacao">Ganha R$ 6.000 e gasta R$ 6.400. Respondeu que a renda cobre as despesas — o cálculo mostrou um rombo de R$ 400 por mês.</div>
-          <div class="rodape"><span class="arq">Negação Financeira</span><span class="score">score 28</span></div>
+          <div class="mostra">Seção 3 de 13</div>
+          <div class="quem">Score geral e nível</div>
+          <div class="situacao">A nota de 0 a 100, o nível de maturidade em cinco estágios e o que o número quer dizer na prática.</div>
         </div>
       </article>
-
-      <article class="gal-card" id="ex-ilusao">
-        <picture>
-          <source media="(max-width: 639px)" srcset="img/lp/relatorio-ilusao-sm.jpg">
-          <img class="capa" src="img/lp/relatorio-ilusao.jpg" loading="lazy" decoding="async"
-               width="900" height="562" alt="Seção de score por dimensão do relatório, com as seis barras coloridas por faixa.">
-        </picture>
+      <article class="gal-card">
+        <img class="folha" src="img/lp/modelo-arquetipo.webp" width="600" height="850" loading="lazy" decoding="async"
+             alt="Página do arquétipo financeiro, em fundo azul, com o padrão identificado e a prioridade que ele indica.">
         <div class="corpo">
-          <div class="mostra">Seção 7 · Score por dimensão</div>
-          <div class="quem">Caio, 36 anos</div>
-          <div class="situacao">Poupa 16% da renda todo mês e não tem dívida nenhuma. Mas a reserva de emergência cobre menos de dez dias de despesa.</div>
-          <div class="rodape"><span class="arq">Ilusão de Controle</span><span class="score">score 52</span></div>
+          <div class="mostra">Seção 4 de 13</div>
+          <div class="quem">Arquétipo financeiro</div>
+          <div class="situacao">O padrão de comportamento por trás dos números, por que é aquele e não os outros sete, e o que ele costuma travar.</div>
         </div>
       </article>
-
-      <article class="gal-card" id="ex-adiamento">
-        <picture>
-          <source media="(max-width: 639px)" srcset="img/lp/relatorio-adiamento-sm.jpg">
-          <img class="capa" src="img/lp/relatorio-adiamento.jpg" loading="lazy" decoding="async"
-               width="900" height="562" alt="Seção de projeção patrimonial do relatório, com as curvas do ritmo atual e do plano necessário.">
-        </picture>
+      <article class="gal-card">
+        <img class="folha" src="img/lp/modelo-kpis.webp" width="600" height="850" loading="lazy" decoding="async"
+             alt="Página de KPIs financeiros do relatório, com os indicadores de fluxo, patrimônio, proteção e dívida.">
         <div class="corpo">
-          <div class="mostra">Seção 8 · Projeção até a aposentadoria</div>
-          <div class="quem">Dora, 46 anos</div>
-          <div class="situacao">Presente resolvido: reserva cheia, sem dívida, proteção em dia. Quer parar aos 58 com R$ 14 mil por mês — e o ritmo atual entrega 23% disso.</div>
-          <div class="rodape"><span class="arq">Adiamento do Futuro</span><span class="score">score 70</span></div>
+          <div class="mostra">Seção 5 de 13</div>
+          <div class="quem">Os 14 indicadores</div>
+          <div class="situacao">Renda, patrimônio, reserva, dívida e cobertura de seguro, cada número com a referência ao lado.</div>
         </div>
       </article>
-
-      <article class="gal-card" id="ex-otimismo">
-        <picture>
-          <source media="(max-width: 639px)" srcset="img/lp/relatorio-otimismo-sm.jpg">
-          <img class="capa" src="img/lp/relatorio-otimismo.jpg" loading="lazy" decoding="async"
-               width="900" height="562" alt="Seção do plano de ação do relatório, com as recomendações numeradas e a ação prática de cada uma.">
-        </picture>
+      <article class="gal-card">
+        <img class="folha" src="img/lp/modelo-despesas.webp" width="600" height="850" loading="lazy" decoding="async"
+             alt="Página de distribuição de despesas do relatório, com o gráfico de rosca por categoria.">
         <div class="corpo">
-          <div class="mostra">Seção 9 · Plano de ação</div>
-          <div class="quem">Elias, 40 anos</div>
-          <div class="situacao">R$ 21 mil de renda no casal, três filhos, aposentadoria encaminhada. Nenhum seguro de vida, nenhum plano de saúde.</div>
-          <div class="rodape"><span class="arq">Otimismo Desprotegido</span><span class="score">score 69</span></div>
+          <div class="mostra">Seção 6 de 13</div>
+          <div class="quem">Para onde vai o dinheiro</div>
+          <div class="situacao">Cada categoria de gasto em percentual da renda, comparada com uma distribuição de referência.</div>
         </div>
       </article>
-
-      <article class="gal-card" id="ex-paralisia">
-        <picture>
-          <source media="(max-width: 639px)" srcset="img/lp/relatorio-paralisia-sm.jpg">
-          <img class="capa" src="img/lp/relatorio-paralisia.jpg" loading="lazy" decoding="async"
-               width="900" height="562" alt="Seção do arquétipo financeiro do relatório, em fundo azul, com o padrão identificado e a prioridade imediata.">
-        </picture>
+      <article class="gal-card">
+        <img class="folha" src="img/lp/modelo-dimensoes.webp" width="600" height="850" loading="lazy" decoding="async"
+             alt="Página de score por dimensão do relatório, com as seis barras coloridas por faixa.">
         <div class="corpo">
-          <div class="mostra">Seção 5 · Arquétipo financeiro</div>
-          <div class="quem">Fábio, 42 anos</div>
-          <div class="situacao">Guarda R$ 2.500 por mês há anos, sem falhar. Tem R$ 210 mil parados em poupança e conta corrente, rendendo menos que a inflação.</div>
-          <div class="rodape"><span class="arq">Paralisia da Decisão</span><span class="score">score 70</span></div>
+          <div class="mostra">Seção 7 de 13</div>
+          <div class="quem">Score por dimensão</div>
+          <div class="situacao">As seis notas que formam o score geral, cada uma com a faixa em que caiu e o motivo.</div>
         </div>
       </article>
-
-      <article class="gal-card" id="ex-vazamento">
-        <picture>
-          <source media="(max-width: 639px)" srcset="img/lp/relatorio-vazamento-sm.jpg">
-          <img class="capa" src="img/lp/relatorio-vazamento.jpg" loading="lazy" decoding="async"
-               width="900" height="562" alt="Seção de KPIs financeiros do relatório, com os indicadores de renda, patrimônio e cobertura.">
-        </picture>
+      <article class="gal-card">
+        <img class="folha" src="img/lp/modelo-aposentadoria.webp" width="600" height="850" loading="lazy" decoding="async"
+             alt="Página de projeção da aposentadoria, com patrimônio necessário, aporte necessário e a diferença por mês.">
         <div class="corpo">
-          <div class="mostra">Seção 6 · KPIs financeiros</div>
-          <div class="quem">Gil, 39 anos</div>
-          <div class="situacao">As contas fecham e ele ainda poupa 29%. Só que carrega R$ 40 mil entre cartão e cheque especial, sem saber a que taxa de juros.</div>
-          <div class="rodape"><span class="arq">Vazamento Silencioso</span><span class="score">score 50</span></div>
+          <div class="mostra">Seção 8 de 13</div>
+          <div class="quem">Projeção da aposentadoria</div>
+          <div class="situacao">Quanto falta guardar por mês para bancar a renda que a pessoa quer, tudo a preços de hoje.</div>
         </div>
       </article>
-
-      <article class="gal-card" id="ex-dominio">
-        <picture>
-          <source media="(max-width: 639px)" srcset="img/lp/relatorio-dominio-sm.jpg">
-          <img class="capa" src="img/lp/relatorio-dominio.jpg" loading="lazy" decoding="async"
-               width="900" height="562" alt="Seção de plano de otimização do relatório, com ajustes de eficiência, rebalanceamento e sucessão.">
-        </picture>
+      <article class="gal-card">
+        <img class="folha" src="img/lp/modelo-evolucao.webp" width="600" height="850" loading="lazy" decoding="async"
+             alt="Página com o gráfico de evolução do patrimônio, comparando o ritmo atual com o plano necessário.">
         <div class="corpo">
-          <div class="mostra">Seção 9 · Plano de otimização</div>
-          <div class="quem">Heloísa, 44 anos</div>
-          <div class="situacao">Casal com R$ 30 mil de renda, reserva cheia, seguro dimensionado e aporte automático. Sem lacuna a corrigir, o plano vira refinamento.</div>
-          <div class="rodape"><span class="arq">Domínio Comportamental</span><span class="score">score 95</span></div>
+          <div class="mostra">Seção 8 · continuação</div>
+          <div class="quem">A curva até lá</div>
+          <div class="situacao">As duas curvas lado a lado: o ritmo atual de aportes e o plano necessário até a idade-alvo.</div>
         </div>
       </article>
-
-      <article class="gal-card" id="ex-colheita">
-        <picture>
-          <source media="(max-width: 639px)" srcset="img/lp/relatorio-colheita-sm.jpg">
-          <img class="capa" src="img/lp/relatorio-colheita.jpg" loading="lazy" decoding="async"
-               width="900" height="562" alt="Seção de projeção do relatório para quem já se aposentou, com a curva de consumo do patrimônio.">
-        </picture>
+      <article class="gal-card">
+        <img class="folha" src="img/lp/modelo-plano.webp" width="600" height="850" loading="lazy" decoding="async"
+             alt="Página do plano de ação individualizado, com as recomendações numeradas e a ação prática de cada uma.">
         <div class="corpo">
-          <div class="mostra">Seção 8 · Projeção da renda</div>
-          <div class="quem">Ivo, 67 anos</div>
-          <div class="situacao">Já parou de trabalhar e vive de R$ 8 mil entre aposentadoria e aluguel. O patrimônio sustenta 74% do que ele gostaria de gastar até os 95.</div>
-          <div class="rodape"><span class="arq">Fase de Colheita</span><span class="score">score 82</span></div>
+          <div class="mostra">Seção 9 de 13</div>
+          <div class="quem">Plano de ação</div>
+          <div class="situacao">As prioridades em ordem, cada uma com a ação prática para os próximos 30 dias.</div>
+        </div>
+      </article>
+      <article class="gal-card">
+        <img class="folha" src="img/lp/modelo-checklist.webp" width="600" height="850" loading="lazy" decoding="async"
+             alt="Página do checklist dos próximos 30 dias, com as tarefas em caixas de marcar.">
+        <div class="corpo">
+          <div class="mostra">Seção 10 de 13</div>
+          <div class="quem">Checklist de 30 dias</div>
+          <div class="situacao">A lista curta do que fazer primeiro, para a pessoa sair do relatório com tarefa marcada.</div>
         </div>
       </article>
 
     </div>
     <div class="gal-nav">
-      <button type="button" class="gal-btn" id="galAnterior" aria-label="Ver exemplo anterior">←</button>
-      <button type="button" class="gal-btn" id="galProximo" aria-label="Ver próximo exemplo">→</button>
+      <button type="button" class="gal-btn" id="galAnterior" aria-label="Ver página anterior">←</button>
+      <button type="button" class="gal-btn" id="galProximo" aria-label="Ver próxima página">→</button>
     </div>
   </div>
 
   <div class="gal-fecho reveal">
-    <p>Oito perfis, oito relatórios sem uma linha em comum. O nono é o seu.</p>
-    <a href="#oferta" class="btn-primary">Ver o meu relatório</a>
+    <p>Essas são nove das treze seções. O relatório inteiro, do jeito que sai para quem faz o diagnóstico, está aqui:</p>
+    <div class="acoes">
+      <a href="relatorio-diagnostico-modelo.pdf" target="_blank" rel="noopener" class="btn-secondary js-pdf-modelo">Abrir o relatório modelo em PDF</a>
+      <a href="#oferta" class="btn-primary">Ver o meu relatório</a>
+    </div>
   </div>
 </section>
 
@@ -1491,7 +1586,20 @@
     </div>
   </div>
 
+  <div class="breve-box reveal" id="breveBox" hidden>
+    <span class="breve-tag">Em breve · vendas ainda não abertas</span>
+    <h3>Dá para fazer de graça, agora.</h3>
+    <p>
+      Antes de abrir as vendas, quero rodar o diagnóstico com um grupo pequeno de pessoas de verdade.
+      São <strong>10 vagas sem custo</strong>: você faz o diagnóstico completo e, em troca, me conta com
+      honestidade o que funcionou e o que não funcionou.
+    </p>
+    <a href="diagnostico-beta.html" class="btn-primary" style="font-size:1rem;padding:1.1rem 2.6rem;">Quero uma das 10 vagas</a>
+    <span class="breve-fine">Sem cartão, sem pegadinha. Preciso só do seu feedback depois.</span>
+  </div>
+
   <div class="price-box reveal">
+    <span class="breve-tag js-breve-tag" id="breveTagPreco" hidden>Preço de lançamento</span>
     <div class="price-tag">
       <span class="cur">R$</span><span class="val">97</span>
       <span class="note">pagamento único · sem mensalidade · acesso imediato</span>
@@ -1669,6 +1777,23 @@
 var HZ_CHECKOUT_URL = "COLE-AQUI-O-LINK-DE-CHECKOUT";
 
 // ─────────────────────────────────────────────────────────────
+//  PRÉ-LANÇAMENTO
+//  Com true, a página avisa que o produto ainda não está à venda
+//  e manda quem se interessou para o teste fechado (10 vagas
+//  gratuitas, divulgado no grupo do Telegram):
+//    · faixa "Em breve" no topo do hero;
+//    · caixa do teste antes do preço, na seção de oferta;
+//    · etiqueta "preço de lançamento" sobre os R$ 97;
+//    · todos os botões de compra passam a apontar para o convite.
+//
+//  Quando o checkout estiver pronto, ponha false e preencha o
+//  HZ_CHECKOUT_URL acima: a página volta a vender sem mais nenhuma
+//  alteração no HTML.
+// ─────────────────────────────────────────────────────────────
+var HZ_EM_BREVE = true;
+var HZ_BETA_URL = "diagnostico-beta.html";
+
+// ─────────────────────────────────────────────────────────────
 //  DEPOIMENTOS
 //  A lista está vazia de propósito: enquanto não houver depoimento
 //  real, a seção inteira não aparece na página. É melhor não ter
@@ -1695,26 +1820,66 @@ var HZ_CHECKOUT_URL = "COLE-AQUI-O-LINK-DE-CHECKOUT";
 var HZ_DEPOIMENTOS = [];
 
 (function () {
+  var emBreve = HZ_EM_BREVE === true;
   var configurado = HZ_CHECKOUT_URL.indexOf("COLE-AQUI") === -1 && HZ_CHECKOUT_URL.length > 8;
   var ctas = document.querySelectorAll(".js-cta");
 
-  for (var i = 0; i < ctas.length; i++) {
-    if (configurado) {
-      ctas[i].setAttribute("href", HZ_CHECKOUT_URL);
-    } else {
-      ctas[i].classList.add("disabled");
-      // "#oferta" é a âncora que existe de fato nesta página. O valor
-      // anterior ("#preco") não correspondia a nenhuma seção, então o
-      // clique não fazia absolutamente nada.
-      ctas[i].setAttribute("href", "#oferta");
-      ctas[i].setAttribute("aria-disabled", "true");
+  if (emBreve) {
+    // Pré-lançamento: nada aponta para o checkout. Revela os avisos de
+    // "em breve" e transforma os botões de compra em convite para o teste.
+    mostrar("faixaBreve");
+    mostrar("breveBox");
+    mostrar("breveTagPreco");
+
+    // A etiqueta do hero ("Diagnóstico Financeiro HZ") sai de cena para a
+    // faixa não empilhar duas tarjas em cima do título.
+    var badge = document.querySelector(".hero-badge");
+    if (badge) badge.hidden = true;
+
+    // Os três passos "pagamento → acesso → relatório" descrevem uma compra
+    // que ainda não existe; voltam quando as vendas abrirem.
+    var passos = document.querySelector(".after-buy");
+    if (passos) passos.hidden = true;
+
+    var nota = document.querySelector(".price-tag .note");
+    if (nota) nota.textContent = "preço de lançamento · as vendas ainda não abriram";
+
+    for (var b = 0; b < ctas.length; b++) {
+      ctas[b].setAttribute("href", HZ_BETA_URL);
+      ctas[b].textContent = "Quero uma das 10 vagas de teste";
+    }
+    trocarBotao(".sticky-cta a", "Testar de graça");
+    trocarBotao("nav .btn-primary", "Testar de graça");
+  } else {
+    for (var i = 0; i < ctas.length; i++) {
+      if (configurado) {
+        ctas[i].setAttribute("href", HZ_CHECKOUT_URL);
+      } else {
+        ctas[i].classList.add("disabled");
+        // "#oferta" é a âncora que existe de fato nesta página. O valor
+        // anterior ("#preco") não correspondia a nenhuma seção, então o
+        // clique não fazia absolutamente nada.
+        ctas[i].setAttribute("href", "#oferta");
+        ctas[i].setAttribute("aria-disabled", "true");
+      }
+    }
+    if (!configurado && window.console && console.warn) {
+      console.warn(
+        "[HZ] Checkout não configurado: os botões de compra estão desligados. " +
+        "Preencha HZ_CHECKOUT_URL em diagnostico-lp.html antes de divulgar esta página."
+      );
     }
   }
-  if (!configurado && window.console && console.warn) {
-    console.warn(
-      "[HZ] Checkout não configurado: os botões de compra estão desligados. " +
-      "Preencha HZ_CHECKOUT_URL em diagnostico-lp.html antes de divulgar esta página."
-    );
+
+  function mostrar(id) {
+    var el = document.getElementById(id);
+    if (el) el.hidden = false;
+  }
+  function trocarBotao(seletor, texto) {
+    var el = document.querySelector(seletor);
+    if (!el) return;
+    el.setAttribute("href", HZ_BETA_URL);
+    el.textContent = texto;
   }
   // ── depoimentos ──
   var grid = document.getElementById("depoGrid");
@@ -1807,17 +1972,16 @@ var HZ_DEPOIMENTOS = [];
     window.addEventListener("resize", atualizaSetas);
     atualizaSetas();
 
-    document.querySelectorAll(".arq-card[data-alvo]").forEach(function (botao) {
+    // Antes cada arquétipo levava ao relatório de uma pessoa fictícia
+    // diferente. Agora existe um relatório modelo só, então todos levam a
+    // ele — o evento continua dizendo de qual arquétipo veio o clique.
+    document.querySelectorAll(".arq-card[data-arquetipo]").forEach(function (botao) {
       botao.addEventListener("click", function () {
-        evento("arquetipo_aberto", { arquetipo: botao.dataset.alvo });
-        var alvo = document.getElementById(botao.dataset.alvo);
-        if (!alvo) return;
-        // Traz a seção para a tela e, só então, posiciona a faixa no card certo,
-        // para o scroll horizontal não competir com o vertical.
-        document.getElementById("exemplos").scrollIntoView({ behavior: "smooth", block: "start" });
-        setTimeout(function () {
-          faixa.scrollTo({ left: alvo.offsetLeft - faixa.offsetLeft, behavior: "smooth" });
-        }, 500);
+        evento("arquetipo_aberto", { arquetipo: botao.dataset.arquetipo });
+        var secao = document.getElementById("exemplos");
+        if (!secao) return;
+        secao.scrollIntoView({ behavior: "smooth", block: "start" });
+        setTimeout(function () { faixa.scrollTo({ left: 0, behavior: "smooth" }); }, 500);
       });
     });
   })();
@@ -1866,7 +2030,12 @@ var HZ_DEPOIMENTOS = [];
       ["nav .btn-primary", "nav"],
       [".hero-actions .btn-primary", "hero"],
       [".gal-fecho .btn-primary", "galeria"],
-      [".closing .btn-primary", "fechamento"]
+      [".js-pdf-modelo", "pdf_modelo"],
+      [".closing .btn-primary", "fechamento"],
+      // só existem no pré-lançamento; os seletores não casam com nada
+      // depois que HZ_EM_BREVE vira false
+      ["#faixaBreve a", "teste_faixa"],
+      ["#breveBox .btn-primary", "teste_oferta"]
     ];
     origens.forEach(function (par) {
       document.querySelectorAll(par[0]).forEach(function (el) {
@@ -1876,11 +2045,14 @@ var HZ_DEPOIMENTOS = [];
       });
     });
 
-    // 4. Clique no botão de compra de verdade. Quando o checkout estiver
-    //    configurado, este é o evento a marcar como conversão no GA4.
+    // 4. Clique no botão principal. No pré-lançamento ele leva ao teste
+    //    fechado, e é "beta_inscricao_clique" que mede o interesse; com o
+    //    checkout configurado, "checkout_iniciado" é o evento a marcar
+    //    como conversão no GA4.
     document.querySelectorAll(".js-cta").forEach(function (el) {
       el.addEventListener("click", function () {
-        evento(configurado ? "checkout_iniciado" : "checkout_indisponivel", { valor: 97, moeda: "BRL" });
+        if (emBreve) evento("beta_inscricao_clique", { origem: "oferta" });
+        else evento(configurado ? "checkout_iniciado" : "checkout_indisponivel", { valor: 97, moeda: "BRL" });
       });
     });
 
