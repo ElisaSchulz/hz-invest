@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teste fechado · Diagnóstico Financeiro | HZ Invest</title>
+<meta name="description" content="Dez vagas para testar o Diagnóstico Financeiro da HZ Invest antes do lançamento, sem custo, em troca de feedback honesto.">
+
+<!-- Página de convite para o grupo do Telegram: o link circula por lá, não
+     deve ser encontrada por busca enquanto o produto não estiver à venda. -->
+<meta name="robots" content="noindex, nofollow">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="HZ Invest">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="Teste fechado · Diagnóstico Financeiro HZ">
+<meta property="og:description" content="Dez vagas para testar o Diagnóstico Financeiro antes do lançamento, sem custo, em troca de feedback honesto.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hz-design.css">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.65;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 8%, rgba(79,140,132,0.07) 0%, transparent 62%),
+      radial-gradient(ellipse 50% 60% at 82% 92%, rgba(79,140,132,0.05) 0%, transparent 62%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: relative; z-index: 10;
+    padding: 0 6%; height: 70px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .nav-logo {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 1.35rem; color: var(--navy-deep);
+    text-decoration: none; letter-spacing: -0.02em;
+  }
+  .nav-logo span { color: var(--sage-deep); }
+  .nav-back { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+  .nav-back:hover { color: var(--sage-deep); }
+
+  /* ─── LAYOUT ─── */
+  main {
+    flex: 1; position: relative; z-index: 1;
+    width: 100%; max-width: 960px;
+    margin: 0 auto;
+    padding: 3.5rem 1.5rem 4.5rem;
+  }
+  @media (max-width: 700px) { main { padding: 2.2rem 1.2rem 3rem; } }
+
+  /* ─── CABEÇALHO ─── */
+  .topo { text-align: center; margin-bottom: 2.6rem; }
+  .selo {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--sage-dim);
+    border: 1px solid var(--sage-border);
+    color: var(--sage-deep);
+    font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.4rem 0.9rem; border-radius: 100px;
+    margin-bottom: 1.4rem;
+  }
+  .ponto {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--sage); flex-shrink: 0;
+  }
+  .topo h1 {
+    font-size: clamp(1.9rem, 4.2vw, 2.9rem);
+    color: var(--navy-deep);
+    margin-bottom: 1rem;
+  }
+  .topo h1 .destaque { color: var(--sage-deep); font-style: italic; }
+  .topo .linha-fina {
+    color: var(--muted); font-weight: 300;
+    max-width: 620px; margin: 0 auto;
+  }
+
+  /* ─── CONTADOR DE VAGAS ─── */
+  .vagas {
+    display: none;
+    justify-content: center; align-items: center; gap: 0.6rem;
+    margin: 1.6rem auto 0;
+    font-size: 0.85rem; font-weight: 600;
+    color: var(--sage-deep);
+  }
+  .vagas.on { display: flex; }
+  .vagas .barra {
+    width: 130px; height: 6px; border-radius: 100px;
+    background: rgba(27,27,92,0.10); overflow: hidden;
+  }
+  .vagas .barra i { display: block; height: 100%; background: var(--sage); width: 0; transition: width 0.5s; }
+
+  /* ─── CARTÕES ─── */
+  .cartao {
+    background: var(--surface);
+    border: 1px solid var(--sage-border);
+    border-radius: 16px;
+    padding: 2.2rem 2rem;
+    box-shadow: 0 0 60px rgba(79,140,132,0.08);
+  }
+  @media (max-width: 700px) { .cartao { padding: 1.6rem 1.2rem; } }
+
+  .duplo {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  @media (max-width: 760px) { .duplo { grid-template-columns: 1fr; } }
+  .duplo h2 {
+    font-size: 1.15rem; color: var(--navy-deep);
+    margin-bottom: 1rem;
+  }
+  .lista { list-style: none; display: grid; gap: 0.7rem; }
+  .lista li {
+    display: flex; gap: 0.6rem; align-items: flex-start;
+    font-size: 0.92rem; color: var(--muted); font-weight: 300; line-height: 1.6;
+  }
+  .lista .marca {
+    flex-shrink: 0; width: 18px; height: 18px; margin-top: 3px;
+    border-radius: 50%; display: grid; place-items: center;
+    background: var(--sage-dim); color: var(--sage-deep);
+    font-size: 0.7rem; font-weight: 700;
+  }
+
+  /* ─── FORMULÁRIO ─── */
+  .rotulo-secao {
+    font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--sage-deep); font-weight: 700; margin-bottom: 0.6rem;
+  }
+  .passo-titulo { font-size: 1.35rem; color: var(--navy-deep); margin-bottom: 0.5rem; }
+  .passo-sub { font-size: 0.9rem; color: var(--muted); font-weight: 300; margin-bottom: 1.6rem; }
+
+  .campo { margin-bottom: 1.1rem; }
+  .campo label {
+    display: block; font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--faint); margin-bottom: 0.4rem;
+  }
+  .campo .ajuda { font-size: 0.8rem; color: var(--faint); font-weight: 300; margin-top: 0.35rem; }
+  .campo input, .campo select, .campo textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.8rem 0.9rem;
+    font-family: var(--font-body); font-size: 0.95rem;
+    color: var(--ink);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .campo textarea { min-height: 96px; resize: vertical; line-height: 1.6; }
+  .campo input:focus, .campo select:focus, .campo textarea:focus {
+    outline: none; border-color: var(--sage); background: var(--surface);
+  }
+  .campo input:disabled { color: var(--faint); cursor: not-allowed; }
+  .campo input::placeholder, .campo textarea::placeholder { color: rgba(21,21,63,0.40); }
+  .dois { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 620px) { .dois { grid-template-columns: 1fr; } }
+
+  .caixa-check {
+    display: flex; gap: 0.7rem; align-items: flex-start;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.85rem 0.95rem;
+    margin-bottom: 0.8rem;
+    cursor: pointer;
+  }
+  .caixa-check input { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--sage-deep); flex-shrink: 0; }
+  .caixa-check span { font-size: 0.86rem; color: var(--muted); font-weight: 300; line-height: 1.55; }
+
+  /* ─── BOTÕES ─── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    width: 100%;
+    background: var(--sage-deep); color: #FBFAF6;
+    font-family: var(--font-body); font-weight: 700; font-size: 0.95rem;
+    padding: 0.95rem 1.6rem; border-radius: 8px; border: none;
+    cursor: pointer; text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn:hover { background: var(--sage-darker); color: #FBFAF6; transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+  .btn.sec {
+    background: transparent; color: var(--sage-deep);
+    border: 1px solid var(--sage-border);
+  }
+  .btn.sec:hover { background: var(--sage-dim); color: var(--sage-darker); }
+  .btn.auto { width: auto; }
+
+  .abas {
+    display: flex; gap: 4px; padding: 4px; margin-bottom: 1.6rem;
+    background: var(--bg); border-radius: 10px;
+  }
+  .aba {
+    flex: 1; padding: 0.6rem; border: none; background: transparent;
+    font-family: var(--font-body); font-weight: 600; font-size: 0.88rem;
+    color: var(--muted); border-radius: 7px; cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .aba.ativa { background: var(--sage-deep); color: #FBFAF6; }
+
+  .ou {
+    display: flex; align-items: center; gap: 0.8rem;
+    margin: 1.2rem 0; color: var(--faint); font-size: 0.75rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .ou::before, .ou::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .link-sutil {
+    background: none; border: none; padding: 0;
+    font-family: var(--font-body); font-size: 0.82rem; font-weight: 600;
+    color: var(--sage-deep); cursor: pointer;
+  }
+  .link-sutil:hover { color: var(--navy); text-decoration: underline; }
+
+  /* ─── AVISOS ─── */
+  .aviso {
+    display: none;
+    border-radius: 8px; padding: 0.8rem 1rem;
+    font-size: 0.86rem; line-height: 1.55; margin-bottom: 1.1rem;
+  }
+  .aviso.on { display: block; }
+  .aviso.erro { background: rgba(179,71,71,0.08); border: 1px solid rgba(179,71,71,0.35); color: var(--critico); }
+  .aviso.ok   { background: var(--sage-dim); border: 1px solid var(--sage-border); color: var(--sage-deep); }
+  .aviso.atencao { background: rgba(196,138,62,0.10); border: 1px solid rgba(196,138,62,0.38); color: var(--alerta-texto); }
+
+  .conta-atual {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; flex-wrap: wrap;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.75rem 0.95rem; margin-bottom: 1.6rem;
+    font-size: 0.86rem; color: var(--muted);
+  }
+  .conta-atual strong { color: var(--navy); font-weight: 600; }
+
+  /* ─── ESTADOS ─── */
+  .estado { display: none; }
+  .estado.on { display: block; }
+
+  .girando {
+    width: 26px; height: 26px; margin: 2rem auto;
+    border: 2px solid var(--sage-border); border-top-color: var(--sage-deep);
+    border-radius: 50%; animation: girar 0.8s linear infinite;
+  }
+  @keyframes girar { to { transform: rotate(360deg); } }
+
+  /* ─── CONFIRMAÇÃO ─── */
+  .ok-icone {
+    width: 56px; height: 56px; margin: 0 auto 1.2rem;
+    border-radius: 50%; display: grid; place-items: center;
+    background: var(--sage-dim); color: var(--sage-deep);
+    font-size: 1.6rem;
+  }
+  .ok-wrap { text-align: center; }
+  .ok-wrap h2 { font-size: 1.5rem; color: var(--navy-deep); margin-bottom: 0.6rem; }
+  .ok-wrap > p { color: var(--muted); font-weight: 300; max-width: 520px; margin: 0 auto 1.4rem; }
+  .ok-posicao {
+    display: inline-block; font-family: var(--font-display);
+    font-size: 2.6rem; color: var(--sage-deep); line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .proximos {
+    text-align: left; display: grid; gap: 0.9rem;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.2rem 1.3rem; margin: 1.6rem 0;
+  }
+  .proximos div { font-size: 0.88rem; color: var(--muted); font-weight: 300; line-height: 1.6; }
+  .proximos strong { display: block; color: var(--navy); font-weight: 600; font-size: 0.92rem; margin-bottom: 0.15rem; }
+  .ok-acoes { display: flex; gap: 0.8rem; flex-wrap: wrap; justify-content: center; }
+  .ok-acoes .btn { width: auto; }
+
+  .rodape-nota {
+    text-align: center; font-size: 0.82rem; color: var(--faint);
+    font-weight: 300; max-width: 560px; margin: 1.8rem auto 0; line-height: 1.6;
+  }
+
+  footer {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 1.6rem 6%; text-align: center;
+    font-size: 0.8rem; color: var(--faint);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">HZ <span>Invest</span></a>
+  <a href="diagnostico-lp.html" class="nav-back">← Ver o que é o diagnóstico</a>
+</nav>
+
+<main>
+
+  <!-- ─── CABEÇALHO ─── -->
+  <div class="topo">
+    <div class="selo"><span class="ponto"></span> Teste fechado · grupo do Telegram</div>
+    <h1>Teste o Diagnóstico Financeiro <span class="destaque">antes de todo mundo</span>.</h1>
+    <p class="linha-fina">
+      Antes de colocar o diagnóstico à venda, quero rodar ele com um grupo pequeno de pessoas de verdade.
+      São <strong>10 vagas</strong>, sem custo, para quem topa fazer o questionário completo e me contar,
+      com honestidade, o que funcionou e o que não funcionou.
+    </p>
+    <div class="vagas" id="vagas">
+      <span id="vagasTexto"></span>
+      <span class="barra"><i id="vagasBarra"></i></span>
+    </div>
+  </div>
+
+  <!-- ─── O QUE É / O QUE ESPERO ─── -->
+  <div class="duplo">
+    <div class="cartao">
+      <h2>O que você recebe</h2>
+      <ul class="lista">
+        <li><span class="marca">✓</span><span>Acesso gratuito ao diagnóstico completo, que vai custar R$ 97 no lançamento.</span></li>
+        <li><span class="marca">✓</span><span>Relatório personalizado de 13 seções, com score, arquétipo financeiro e 14 indicadores.</span></li>
+        <li><span class="marca">✓</span><span>Plano de ação priorizado e projeção do seu patrimônio até a aposentadoria.</span></li>
+        <li><span class="marca">✓</span><span>Uma conversa comigo sobre o seu resultado, depois que você ler o relatório.</span></li>
+      </ul>
+    </div>
+    <div class="cartao">
+      <h2>O que eu preciso de você</h2>
+      <ul class="lista">
+        <li><span class="marca">1</span><span>Responder o questionário inteiro com os seus números reais — leva cerca de 15 minutos.</span></li>
+        <li><span class="marca">2</span><span>Fazer isso em até uma semana depois que o acesso for liberado.</span></li>
+        <li><span class="marca">3</span><span>Me mandar feedback sincero: o que confundiu, o que faltou, o que não bateu com a sua realidade.</span></li>
+        <li><span class="marca">4</span><span>Aguentar o fato de que é um teste: pode ter erro, e é justamente isso que eu quero descobrir.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─── CARTÃO PRINCIPAL ─── -->
+  <div class="cartao" id="cartaoPrincipal">
+
+    <!-- carregando -->
+    <div class="estado on" id="estCarregando">
+      <div class="girando"></div>
+      <p style="text-align:center;font-size:0.86rem;color:var(--faint);">Verificando a sua conta…</p>
+    </div>
+
+    <!-- 1. conta -->
+    <div class="estado" id="estConta">
+      <div class="rotulo-secao">// passo 1 de 2</div>
+      <h2 class="passo-titulo">Crie a sua conta HZ</h2>
+      <p class="passo-sub">
+        É por ela que eu libero o seu acesso ao diagnóstico, e é nela que o seu relatório fica guardado.
+        Se você já tem conta no site (cursos, Minha Área), é só entrar.
+      </p>
+
+      <div class="abas">
+        <button type="button" class="aba ativa" id="abaCriar">Criar conta</button>
+        <button type="button" class="aba" id="abaEntrar">Já tenho conta</button>
+      </div>
+
+      <div class="aviso erro" id="avisoConta"></div>
+
+      <!-- criar conta -->
+      <form id="formCriar" autocomplete="on">
+        <div class="campo">
+          <label for="novoNome">Nome completo</label>
+          <input type="text" id="novoNome" autocomplete="name" placeholder="Como você quer ser chamado">
+        </div>
+        <div class="campo">
+          <label for="novoEmail">E-mail</label>
+          <input type="email" id="novoEmail" autocomplete="email" placeholder="voce@email.com">
+        </div>
+        <div class="dois">
+          <div class="campo">
+            <label for="novaSenha">Senha</label>
+            <input type="password" id="novaSenha" autocomplete="new-password" placeholder="mínimo 6 caracteres">
+          </div>
+          <div class="campo">
+            <label for="novaSenha2">Repita a senha</label>
+            <input type="password" id="novaSenha2" autocomplete="new-password" placeholder="a mesma senha">
+          </div>
+        </div>
+        <button type="submit" class="btn" id="btnCriar">Criar minha conta</button>
+      </form>
+
+      <!-- entrar -->
+      <form id="formEntrar" style="display:none;" autocomplete="on">
+        <div class="campo">
+          <label for="loginEmail">E-mail</label>
+          <input type="email" id="loginEmail" autocomplete="email" placeholder="voce@email.com">
+        </div>
+        <div class="campo">
+          <label for="loginSenha">Senha</label>
+          <input type="password" id="loginSenha" autocomplete="current-password" placeholder="sua senha">
+        </div>
+        <button type="submit" class="btn" id="btnEntrar">Entrar</button>
+        <p style="text-align:center;margin-top:0.8rem;">
+          <button type="button" class="link-sutil" id="btnEsqueci">Esqueci minha senha</button>
+        </p>
+      </form>
+
+      <div class="ou">ou</div>
+      <button type="button" class="btn sec" id="btnGoogle">Continuar com o Google</button>
+    </div>
+
+    <!-- 2. formulário -->
+    <div class="estado" id="estForm">
+      <div class="rotulo-secao">// passo 2 de 2</div>
+      <h2 class="passo-titulo">Confirme o seu interesse</h2>
+      <p class="passo-sub">É rápido. Preciso do seu Telegram para falar com você quando o acesso for liberado.</p>
+
+      <div class="conta-atual">
+        <span>Conectado como <strong id="contaEmail"></strong></span>
+        <button type="button" class="link-sutil" id="btnTrocarConta">Usar outra conta</button>
+      </div>
+
+      <div class="aviso atencao" id="avisoEspera">
+        As 10 vagas já foram preenchidas. Você ainda pode se inscrever: entra na lista de espera e é
+        chamado se alguém desistir ou se eu abrir uma segunda rodada.
+      </div>
+      <div class="aviso erro" id="avisoForm"></div>
+
+      <form id="formInteresse">
+        <div class="dois">
+          <div class="campo">
+            <label for="fNome">Nome completo</label>
+            <input type="text" id="fNome" autocomplete="name" placeholder="Seu nome">
+          </div>
+          <div class="campo">
+            <label for="fTelegram">Seu usuário no Telegram</label>
+            <input type="text" id="fTelegram" placeholder="@seuusuario">
+          </div>
+        </div>
+        <div class="dois">
+          <div class="campo">
+            <label for="fEmail">E-mail da conta</label>
+            <input type="email" id="fEmail" disabled>
+            <div class="ajuda">É para esse e-mail que o aviso de liberação vai.</div>
+          </div>
+          <div class="campo">
+            <label for="fWhats">WhatsApp <span style="text-transform:none;letter-spacing:0;font-weight:400;">(opcional)</span></label>
+            <input type="tel" id="fWhats" placeholder="(11) 90000-0000">
+          </div>
+        </div>
+        <div class="campo">
+          <label for="fMomento">Onde você está hoje</label>
+          <select id="fMomento">
+            <option value="">Escolha a opção mais parecida</option>
+            <option>Estou começando a me organizar do zero</option>
+            <option>As contas fecham, mas não sobra muito</option>
+            <option>Tenho dívidas para resolver</option>
+            <option>Já invisto, quero saber se estou no caminho certo</option>
+            <option>Quero planejar a aposentadoria com número na mão</option>
+            <option>Prefiro não dizer agora</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="fExpectativa">O que você mais quer descobrir <span style="text-transform:none;letter-spacing:0;font-weight:400;">(opcional)</span></label>
+          <textarea id="fExpectativa" placeholder="Uma pergunta sobre o seu dinheiro que você gostaria que o diagnóstico respondesse."></textarea>
+        </div>
+
+        <label class="caixa-check">
+          <input type="checkbox" id="fCompromisso">
+          <span>Eu topo responder o questionário em até uma semana depois da liberação e mandar meu feedback depois.</span>
+        </label>
+        <label class="caixa-check">
+          <input type="checkbox" id="fConsentimento">
+          <span>Autorizo a HZ Invest a usar os meus dados para gerar o meu diagnóstico e falar comigo sobre o teste, conforme a <a href="politica-privacidade.html" target="_blank">Política de Privacidade</a>.</span>
+        </label>
+
+        <button type="submit" class="btn" id="btnEnviar">Quero uma das vagas</button>
+      </form>
+    </div>
+
+    <!-- 3. confirmação -->
+    <div class="estado" id="estOk">
+      <div class="ok-wrap">
+        <div class="ok-icone">✓</div>
+        <div id="okPosicaoBloco" style="display:none;">
+          <span class="ok-posicao" id="okPosicao"></span>
+          <div style="font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--faint);font-weight:700;margin-bottom:1rem;" id="okPosicaoLabel"></div>
+        </div>
+        <h2 id="okTitulo">Inscrição registrada</h2>
+        <p id="okTexto"></p>
+
+        <div class="proximos">
+          <div><strong>1. Eu confiro a lista</strong>Olho as inscrições pela ordem de chegada e libero o acesso na sua conta HZ.</div>
+          <div><strong>2. Você recebe um aviso</strong>Mando mensagem no seu Telegram e um e-mail para <span id="okEmail"></span>.</div>
+          <div><strong>3. Você faz o diagnóstico</strong>Entra na Minha Área, responde as 10 etapas e o relatório é gerado na hora.</div>
+        </div>
+
+        <div class="ok-acoes">
+          <a class="btn auto" href="https://t.me/+uMdIiepcb-E0ZWIx" target="_blank" rel="noopener">Abrir o grupo no Telegram</a>
+          <a class="btn sec auto" href="minha-area.html">Ir para a Minha Área</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="rodape-nota">
+    Dúvida sobre o teste? Escreva para <a href="mailto:elisa@hzinvest.com.br">elisa@hzinvest.com.br</a>.
+    Seus dados ficam com a HZ Invest, são usados só para o diagnóstico e você pode pedir a exclusão quando quiser.
+  </p>
+
+</main>
+
+<footer>© 2026 HZ Invest · Todos os direitos reservados</footer>
+
+<!-- ─────────────────────────────────────────────────────────────
+     Inscrição no teste fechado.
+
+     ONDE OS DADOS CAEM (Firebase > Firestore):
+       beta_diagnostico/{uid}     → uma inscrição por pessoa, com o
+                                    uid já pronto para liberar o acesso
+       publico/beta_diagnostico   → { inscritos, limite, aberto }
+                                    contador das vagas, lido por esta página
+
+     COMO LIBERAR O ACESSO DE ALGUÉM (mesma regra da compra):
+       Firestore > enrollments > {uid} > produtos > diagnostico
+         → { ativo: true }
+
+     O passo a passo completo, com as regras de segurança que
+     precisam estar no projeto, está em diagnostico-beta-setup.md.
+
+     Se o contador não existir ou as regras não permitirem lê-lo, a
+     página continua funcionando: a inscrição é gravada do mesmo
+     jeito, só sem número de posição. Perder uma inscrição por causa
+     de configuração faltando seria o pior desfecho aqui.
+     ───────────────────────────────────────────────────────────── -->
+<!-- Rede de segurança, de propósito fora do módulo abaixo.
+
+     O script seguinte é um ES module com import estático do Firebase: se o
+     gstatic.com não responder (rede ruim, bloqueador de anúncios, rede
+     corporativa), ele não executa nem uma linha — e a pessoa ficaria
+     olhando o spinner para sempre, sem saber que precisa tentar de outro
+     jeito. Este trecho roda de qualquer forma e troca o spinner por uma
+     explicação com saída. -->
+<script>
+  setTimeout(function () {
+    if (window.__hzBetaPronto) return;
+    var caixa = document.getElementById('estCarregando');
+    if (!caixa || !caixa.classList.contains('on')) return;
+    var causa = window.__hzBetaCarregado
+      ? 'A verificação da sua conta não respondeu.'
+      : 'Não consegui carregar o sistema de contas da HZ.';
+    caixa.innerHTML =
+      '<div class="aviso erro on">' + causa +
+      ' Costuma ser conexão instável ou uma extensão do navegador bloqueando o serviço de login.' +
+      ' Tente de novo, ou abra esta página numa aba anônima.</div>' +
+      '<button type="button" class="btn" onclick="location.reload()">Tentar de novo</button>' +
+      '<p style="text-align:center;margin-top:1rem;font-size:0.84rem;color:var(--faint);">' +
+      'Se continuar assim, me escreva em <a href="mailto:elisa@hzinvest.com.br">elisa@hzinvest.com.br</a> ' +
+      'que eu anoto a sua vaga na mão.</p>';
+  }, 9000);
+</script>
+
+<script type="module">
+  import { auth, db, onAuthStateChanged, signOut,
+           signInWithEmailAndPassword, createUserWithEmailAndPassword,
+           signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail,
+           updateProfile, doc, setDoc, getDoc,
+           runTransaction, serverTimestamp } from './auth.js?v=3';
+
+  // Quantas vagas o teste tem. O valor que vale de verdade é o campo
+  // `limite` do documento publico/beta_diagnostico — este aqui só é
+  // usado enquanto o contador não responde.
+  // Avisa a rede de segurança acima que o módulo subiu (ver comentário lá).
+  window.__hzBetaCarregado = true;
+
+  const LIMITE_PADRAO = 10;
+
+  const COL_INSCRICOES = 'beta_diagnostico';
+  const DOC_CONTADOR   = ['publico', 'beta_diagnostico'];
+
+  const $ = id => document.getElementById(id);
+
+  // ── troca de estado do cartão ───────────────────────────────
+  function mostrar(id) {
+    ['estCarregando', 'estConta', 'estForm', 'estOk'].forEach(e => {
+      $(e).classList.toggle('on', e === id);
+    });
+  }
+
+  // tipo: "erro" (padrão) ou "ok" — sempre reescreve a classe inteira, para
+  // um aviso verde não ficar verde quando a próxima mensagem for de erro.
+  function aviso(id, texto, tipo) {
+    const el = $(id);
+    if (!texto) { el.className = 'aviso erro'; el.textContent = ''; return; }
+    el.className = 'aviso ' + (tipo || 'erro') + ' on';
+    el.textContent = texto;
+  }
+
+  function carregando(btn, ligado, rotulo) {
+    btn.disabled = ligado;
+    btn.textContent = ligado ? 'Aguarde…' : rotulo;
+  }
+
+  // ── contador de vagas (informativo, no topo) ────────────────
+  let contadorCache = null;
+
+  async function lerContador() {
+    try {
+      const snap = await getDoc(doc(db, ...DOC_CONTADOR));
+      if (!snap.exists()) return null;
+      const d = snap.data() || {};
+      return {
+        inscritos: Number.isFinite(d.inscritos) ? d.inscritos : 0,
+        limite:    Number.isFinite(d.limite) ? d.limite : LIMITE_PADRAO,
+        aberto:    d.aberto !== false
+      };
+    } catch (e) {
+      // Sem permissão de leitura ou sem rede: a página segue sem o contador.
+      console.warn('[HZ] Contador de vagas indisponível:', e);
+      return null;
+    }
+  }
+
+  function pintarVagas(c) {
+    if (!c) return;
+    const restantes = Math.max(0, c.limite - c.inscritos);
+    const cheio = !c.aberto || restantes === 0;
+    $('vagasTexto').textContent = cheio
+      ? 'Vagas preenchidas · lista de espera aberta'
+      : restantes + (restantes === 1 ? ' vaga restante' : ' vagas restantes') + ' de ' + c.limite;
+    $('vagasBarra').style.width = Math.round(((c.limite - restantes) / c.limite) * 100) + '%';
+    $('vagas').classList.add('on');
+    $('avisoEspera').classList.toggle('on', cheio);
+  }
+
+  // ── passo 1: conta ──────────────────────────────────────────
+  function abrirAba(qual) {
+    const criar = qual === 'criar';
+    $('abaCriar').classList.toggle('ativa', criar);
+    $('abaEntrar').classList.toggle('ativa', !criar);
+    $('formCriar').style.display  = criar ? '' : 'none';
+    $('formEntrar').style.display = criar ? 'none' : '';
+    aviso('avisoConta', '');
+  }
+  $('abaCriar').addEventListener('click', () => abrirAba('criar'));
+  $('abaEntrar').addEventListener('click', () => abrirAba('entrar'));
+
+  $('formCriar').addEventListener('submit', ev => {
+    ev.preventDefault();
+    const nome  = $('novoNome').value.trim();
+    const email = $('novoEmail').value.trim();
+    const s1    = $('novaSenha').value;
+    const s2    = $('novaSenha2').value;
+    if (!nome || !email || !s1) return aviso('avisoConta', 'Preencha nome, e-mail e senha.');
+    if (s1.length < 6)          return aviso('avisoConta', 'A senha precisa ter pelo menos 6 caracteres.');
+    if (s1 !== s2)              return aviso('avisoConta', 'As duas senhas não são iguais.');
+    aviso('avisoConta', '');
+    carregando($('btnCriar'), true);
+    createUserWithEmailAndPassword(auth, email, s1)
+      .then(cred => updateProfile(cred.user, { displayName: nome }))
+      .catch(err => {
+        carregando($('btnCriar'), false, 'Criar minha conta');
+        aviso('avisoConta', erroAmigavel(err.code));
+      });
+  });
+
+  $('formEntrar').addEventListener('submit', ev => {
+    ev.preventDefault();
+    const email = $('loginEmail').value.trim();
+    const senha = $('loginSenha').value;
+    if (!email || !senha) return aviso('avisoConta', 'Preencha e-mail e senha.');
+    aviso('avisoConta', '');
+    carregando($('btnEntrar'), true);
+    signInWithEmailAndPassword(auth, email, senha)
+      .catch(err => {
+        carregando($('btnEntrar'), false, 'Entrar');
+        aviso('avisoConta', erroAmigavel(err.code));
+      });
+  });
+
+  $('btnGoogle').addEventListener('click', () => {
+    signInWithPopup(auth, new GoogleAuthProvider())
+      .catch(err => aviso('avisoConta', erroAmigavel(err.code)));
+  });
+
+  $('btnEsqueci').addEventListener('click', () => {
+    const email = $('loginEmail').value.trim();
+    if (!email) return aviso('avisoConta', 'Digite o seu e-mail no campo acima e clique de novo.');
+    sendPasswordResetEmail(auth, email)
+      .then(() => aviso('avisoConta', 'Enviei um e-mail com o link para criar uma senha nova.', 'ok'))
+      .catch(err => aviso('avisoConta', erroAmigavel(err.code)));
+  });
+
+  $('btnTrocarConta').addEventListener('click', () => {
+    signOut(auth).then(() => location.reload());
+  });
+
+  // ── passo 2: inscrição ──────────────────────────────────────
+  let usuario = null;
+
+  onAuthStateChanged(auth, async user => {
+    window.__hzBetaPronto = true;
+    usuario = user;
+    contadorCache = await lerContador();
+    pintarVagas(contadorCache);
+
+    if (!user) { mostrar('estConta'); return; }
+
+    // Já inscrito? Mostra a confirmação em vez de pedir tudo de novo.
+    let inscricao = null;
+    try {
+      const snap = await getDoc(doc(db, COL_INSCRICOES, user.uid));
+      if (snap.exists()) inscricao = snap.data();
+    } catch (e) {
+      console.warn('[HZ] Não foi possível ler a inscrição existente:', e);
+    }
+
+    if (inscricao) { mostrarConfirmacao(inscricao.situacao, inscricao.posicao); return; }
+
+    $('contaEmail').textContent = user.email || '(sem e-mail)';
+    $('fEmail').value = user.email || '';
+    $('fNome').value = user.displayName || '';
+    mostrar('estForm');
+  });
+
+  $('formInteresse').addEventListener('submit', async ev => {
+    ev.preventDefault();
+    if (!usuario) return;
+
+    const nome     = $('fNome').value.trim();
+    const telegram = $('fTelegram').value.trim();
+    const momento  = $('fMomento').value;
+
+    if (!nome)                        return aviso('avisoForm', 'Escreva o seu nome.');
+    if (!telegram)                    return aviso('avisoForm', 'Preciso do seu usuário do Telegram para te avisar.');
+    if (!momento)                     return aviso('avisoForm', 'Escolha a opção que mais parece com a sua situação.');
+    if (!$('fCompromisso').checked)   return aviso('avisoForm', 'Marque o compromisso de responder e dar feedback.');
+    if (!$('fConsentimento').checked) return aviso('avisoForm', 'Preciso da sua autorização para usar os dados no diagnóstico.');
+    aviso('avisoForm', '');
+
+    const dados = {
+      uid: usuario.uid,
+      nome: nome,
+      email: usuario.email || null,
+      telegram: telegram.replace(/^@+/, '').trim(),
+      whatsapp: $('fWhats').value.trim() || null,
+      momento: momento,
+      expectativa: $('fExpectativa').value.trim() || null,
+      compromisso: true,
+      consentimento: true,
+      origem: 'telegram',
+      acessoLiberado: false
+    };
+
+    carregando($('btnEnviar'), true);
+    try {
+      const r = await registrar(dados);
+      contadorCache = await lerContador();
+      pintarVagas(contadorCache);
+      mostrarConfirmacao(r.situacao, r.posicao);
+    } catch (e) {
+      console.error('[HZ] Falha ao gravar a inscrição:', e);
+      carregando($('btnEnviar'), false, 'Quero uma das vagas');
+      aviso('avisoForm',
+        'Não consegui gravar a sua inscrição agora. Tente de novo em alguns minutos — ' +
+        'se continuar, me escreva em elisa@hzinvest.com.br que eu anoto na mão.');
+    }
+  });
+
+  /**
+   * Grava a inscrição e, quando o contador existe, reserva a vaga no
+   * mesmo passo — assim duas pessoas clicando junto não pegam o mesmo
+   * número. Sem contador, grava só a inscrição (situação "registrado").
+   *
+   * @returns {Promise<{situacao: string, posicao: number|null}>}
+   *          situacao: "vaga" | "espera" | "registrado"
+   */
+  async function registrar(dados) {
+    const refInscricao = doc(db, COL_INSCRICOES, usuario.uid);
+    const refContador  = doc(db, ...DOC_CONTADOR);
+
+    try {
+      return await runTransaction(db, async tx => {
+        const jaTem = await tx.get(refInscricao);
+        if (jaTem.exists()) {
+          const d = jaTem.data() || {};
+          return { situacao: d.situacao || 'registrado', posicao: d.posicao || null };
+        }
+        const snapC = await tx.get(refContador);
+        const c = snapC.exists() ? (snapC.data() || {}) : null;
+
+        let situacao = 'registrado';
+        let posicao = null;
+        if (c) {
+          const inscritos = Number.isFinite(c.inscritos) ? c.inscritos : 0;
+          const limite    = Number.isFinite(c.limite) ? c.limite : LIMITE_PADRAO;
+          if (c.aberto !== false && inscritos < limite) {
+            situacao = 'vaga';
+            posicao = inscritos + 1;
+          } else {
+            situacao = 'espera';
+          }
+        }
+
+        tx.set(refInscricao, Object.assign({}, dados, {
+          situacao: situacao,
+          posicao: posicao,
+          criadoEm: serverTimestamp()
+        }));
+        if (situacao === 'vaga') tx.update(refContador, { inscritos: posicao });
+
+        return { situacao: situacao, posicao: posicao };
+      });
+    } catch (e) {
+      // O contador pode não existir, ou as regras podem barrar a leitura
+      // dele. A inscrição em si é o que não pode se perder.
+      console.warn('[HZ] Contador indisponível, gravando só a inscrição:', e);
+      await setDoc(doc(db, COL_INSCRICOES, usuario.uid), Object.assign({}, dados, {
+        situacao: 'registrado',
+        posicao: null,
+        criadoEm: serverTimestamp()
+      }), { merge: true });
+      return { situacao: 'registrado', posicao: null };
+    }
+  }
+
+  function mostrarConfirmacao(situacao, posicao) {
+    $('okEmail').textContent = (usuario && usuario.email) || 'o seu e-mail';
+
+    if (situacao === 'vaga' && posicao) {
+      $('okPosicao').textContent = posicao + 'ª';
+      $('okPosicaoLabel').textContent = 'pessoa inscrita';
+      $('okPosicaoBloco').style.display = '';
+      $('okTitulo').textContent = 'Vaga garantida';
+      $('okTexto').textContent =
+        'Você entrou nas ' + (contadorCache ? contadorCache.limite : LIMITE_PADRAO) +
+        ' primeiras. Agora é comigo: eu libero o diagnóstico na sua conta e te aviso.';
+    } else if (situacao === 'espera') {
+      $('okPosicaoBloco').style.display = 'none';
+      $('okTitulo').textContent = 'Você está na lista de espera';
+      $('okTexto').textContent =
+        'As vagas desta rodada já estavam preenchidas quando você se inscreveu. ' +
+        'Se alguém desistir, ou quando eu abrir a próxima rodada, você é chamado pela ordem de chegada.';
+    } else {
+      $('okPosicaoBloco').style.display = 'none';
+      $('okTitulo').textContent = 'Inscrição registrada';
+      $('okTexto').textContent =
+        'Anotei o seu interesse. Vou olhar as inscrições pela ordem de chegada e te aviso ' +
+        'assim que o seu acesso estiver liberado.';
+    }
+    mostrar('estOk');
+  }
+
+  // ── mensagens de erro do Firebase, em português ─────────────
+  function erroAmigavel(code) {
+    const mapa = {
+      'auth/user-not-found':         'Não encontrei nenhuma conta com esse e-mail.',
+      'auth/wrong-password':         'Senha incorreta.',
+      'auth/invalid-credential':     'E-mail ou senha incorretos.',
+      'auth/invalid-email':          'Esse e-mail não parece válido.',
+      'auth/email-already-in-use':   'Esse e-mail já tem conta na HZ. Use a aba "Já tenho conta".',
+      'auth/weak-password':          'Use pelo menos 6 caracteres na senha.',
+      'auth/too-many-requests':      'Muitas tentativas seguidas. Espere alguns minutos.',
+      'auth/network-request-failed': 'Falha de conexão. Confira a internet e tente de novo.',
+      'auth/popup-closed-by-user':   'A janela do Google foi fechada antes de concluir.',
+      'auth/popup-blocked':          'O navegador bloqueou a janela do Google. Libere o pop-up e tente de novo.'
+    };
+    return mapa[code] || 'Algo deu errado. Tente de novo em instantes.';
+  }
+</script>
+</body>
+</html>

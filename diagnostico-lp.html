@@ -937,6 +937,82 @@
     line-height: 1.5;
   }
 
+  /* O atributo hidden precisa vencer os `display` declarados aqui
+     (.hero-badge é inline-flex, .after-buy é grid): sem o !important,
+     esconder um elemento pelo JS não tem efeito nenhum. */
+  [hidden] { display: none !important; }
+
+  /* ─── PRÉ-LANÇAMENTO ("EM BREVE") ───
+     Enquanto o produto não está à venda, estes três elementos aparecem
+     no lugar da compra: a faixa no topo do hero, a caixa da seção de
+     oferta e a etiqueta sobre o preço. Todos nascem com `hidden` e só
+     são revelados pelo script do fim da página, quando HZ_EM_BREVE
+     está ligado — assim a página volta a vender sozinha ao desligar
+     a variável, sem mexer no HTML. */
+  .faixa-breve {
+    max-width: 640px;
+    margin: 0 auto 2rem;
+    background: rgba(79,140,132,0.10);
+    border: 1px solid var(--teal-border);
+    border-radius: 12px;
+    padding: 1rem 1.4rem;
+    font-size: 0.92rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .faixa-breve strong { color: var(--white-pure); font-weight: 700; }
+  .faixa-breve a {
+    color: var(--teal);
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .faixa-breve a:hover { text-decoration: underline; }
+
+  .breve-box {
+    max-width: 620px;
+    margin: 3rem auto 0;
+    background: rgba(79,140,132,0.09);
+    border: 1px solid var(--teal-border);
+    border-radius: 14px;
+    padding: 2.2rem 2rem;
+    text-align: center;
+  }
+  .breve-box h3 {
+    font-size: 1.35rem;
+    color: var(--white-pure);
+    margin: 0.9rem 0 0.7rem;
+  }
+  .breve-box p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    font-weight: 300;
+    max-width: 460px;
+    margin: 0 auto 1.6rem;
+  }
+  .breve-box strong { color: var(--white); font-weight: 600; }
+  .breve-fine {
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: var(--faint);
+  }
+
+  .breve-tag {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    background: rgba(79,140,132,0.14);
+    border: 1px solid var(--teal-border);
+    padding: 0.35rem 0.8rem;
+    border-radius: 100px;
+  }
+  .price-box .breve-tag { position: relative; margin-bottom: 1.4rem; }
+
   /* ─── identidade HZ: títulos na serifada da marca ─── */
   h1, h2, h3, h4,
   .section-title, .hero h1, .hero-title, .nav-logo, .footer-logo, .brand,
@@ -961,6 +1037,11 @@
 
 <!-- ─── HERO ─── -->
 <section class="hero">
+  <div class="faixa-breve" id="faixaBreve" hidden>
+    <strong>Em breve.</strong> O diagnóstico ainda não está à venda — estou fechando os últimos ajustes.
+    Até lá, <strong>10 pessoas</strong> podem fazer ele de graça e me ajudar a melhorar.
+    <a href="diagnostico-beta.html">Quero uma das vagas →</a>
+  </div>
   <div class="hero-badge"><span class="dot-teal"></span> Diagnóstico Financeiro HZ</div>
   <h1>Um raio-x completo da sua vida financeira, <span class="accent">em cerca de 15 minutos</span>.</h1>
   <p class="hero-sub">
@@ -1491,7 +1572,20 @@
     </div>
   </div>
 
+  <div class="breve-box reveal" id="breveBox" hidden>
+    <span class="breve-tag">Em breve · vendas ainda não abertas</span>
+    <h3>Dá para fazer de graça, agora.</h3>
+    <p>
+      Antes de abrir as vendas, quero rodar o diagnóstico com um grupo pequeno de pessoas de verdade.
+      São <strong>10 vagas sem custo</strong>: você faz o diagnóstico completo e, em troca, me conta com
+      honestidade o que funcionou e o que não funcionou.
+    </p>
+    <a href="diagnostico-beta.html" class="btn-primary" style="font-size:1rem;padding:1.1rem 2.6rem;">Quero uma das 10 vagas</a>
+    <span class="breve-fine">Sem cartão, sem pegadinha. Preciso só do seu feedback depois.</span>
+  </div>
+
   <div class="price-box reveal">
+    <span class="breve-tag js-breve-tag" id="breveTagPreco" hidden>Preço de lançamento</span>
     <div class="price-tag">
       <span class="cur">R$</span><span class="val">97</span>
       <span class="note">pagamento único · sem mensalidade · acesso imediato</span>
@@ -1669,6 +1763,23 @@
 var HZ_CHECKOUT_URL = "COLE-AQUI-O-LINK-DE-CHECKOUT";
 
 // ─────────────────────────────────────────────────────────────
+//  PRÉ-LANÇAMENTO
+//  Com true, a página avisa que o produto ainda não está à venda
+//  e manda quem se interessou para o teste fechado (10 vagas
+//  gratuitas, divulgado no grupo do Telegram):
+//    · faixa "Em breve" no topo do hero;
+//    · caixa do teste antes do preço, na seção de oferta;
+//    · etiqueta "preço de lançamento" sobre os R$ 97;
+//    · todos os botões de compra passam a apontar para o convite.
+//
+//  Quando o checkout estiver pronto, ponha false e preencha o
+//  HZ_CHECKOUT_URL acima: a página volta a vender sem mais nenhuma
+//  alteração no HTML.
+// ─────────────────────────────────────────────────────────────
+var HZ_EM_BREVE = true;
+var HZ_BETA_URL = "diagnostico-beta.html";
+
+// ─────────────────────────────────────────────────────────────
 //  DEPOIMENTOS
 //  A lista está vazia de propósito: enquanto não houver depoimento
 //  real, a seção inteira não aparece na página. É melhor não ter
@@ -1695,26 +1806,66 @@ var HZ_CHECKOUT_URL = "COLE-AQUI-O-LINK-DE-CHECKOUT";
 var HZ_DEPOIMENTOS = [];
 
 (function () {
+  var emBreve = HZ_EM_BREVE === true;
   var configurado = HZ_CHECKOUT_URL.indexOf("COLE-AQUI") === -1 && HZ_CHECKOUT_URL.length > 8;
   var ctas = document.querySelectorAll(".js-cta");
 
-  for (var i = 0; i < ctas.length; i++) {
-    if (configurado) {
-      ctas[i].setAttribute("href", HZ_CHECKOUT_URL);
-    } else {
-      ctas[i].classList.add("disabled");
-      // "#oferta" é a âncora que existe de fato nesta página. O valor
-      // anterior ("#preco") não correspondia a nenhuma seção, então o
-      // clique não fazia absolutamente nada.
-      ctas[i].setAttribute("href", "#oferta");
-      ctas[i].setAttribute("aria-disabled", "true");
+  if (emBreve) {
+    // Pré-lançamento: nada aponta para o checkout. Revela os avisos de
+    // "em breve" e transforma os botões de compra em convite para o teste.
+    mostrar("faixaBreve");
+    mostrar("breveBox");
+    mostrar("breveTagPreco");
+
+    // A etiqueta do hero ("Diagnóstico Financeiro HZ") sai de cena para a
+    // faixa não empilhar duas tarjas em cima do título.
+    var badge = document.querySelector(".hero-badge");
+    if (badge) badge.hidden = true;
+
+    // Os três passos "pagamento → acesso → relatório" descrevem uma compra
+    // que ainda não existe; voltam quando as vendas abrirem.
+    var passos = document.querySelector(".after-buy");
+    if (passos) passos.hidden = true;
+
+    var nota = document.querySelector(".price-tag .note");
+    if (nota) nota.textContent = "preço de lançamento · as vendas ainda não abriram";
+
+    for (var b = 0; b < ctas.length; b++) {
+      ctas[b].setAttribute("href", HZ_BETA_URL);
+      ctas[b].textContent = "Quero uma das 10 vagas de teste";
+    }
+    trocarBotao(".sticky-cta a", "Testar de graça");
+    trocarBotao("nav .btn-primary", "Testar de graça");
+  } else {
+    for (var i = 0; i < ctas.length; i++) {
+      if (configurado) {
+        ctas[i].setAttribute("href", HZ_CHECKOUT_URL);
+      } else {
+        ctas[i].classList.add("disabled");
+        // "#oferta" é a âncora que existe de fato nesta página. O valor
+        // anterior ("#preco") não correspondia a nenhuma seção, então o
+        // clique não fazia absolutamente nada.
+        ctas[i].setAttribute("href", "#oferta");
+        ctas[i].setAttribute("aria-disabled", "true");
+      }
+    }
+    if (!configurado && window.console && console.warn) {
+      console.warn(
+        "[HZ] Checkout não configurado: os botões de compra estão desligados. " +
+        "Preencha HZ_CHECKOUT_URL em diagnostico-lp.html antes de divulgar esta página."
+      );
     }
   }
-  if (!configurado && window.console && console.warn) {
-    console.warn(
-      "[HZ] Checkout não configurado: os botões de compra estão desligados. " +
-      "Preencha HZ_CHECKOUT_URL em diagnostico-lp.html antes de divulgar esta página."
-    );
+
+  function mostrar(id) {
+    var el = document.getElementById(id);
+    if (el) el.hidden = false;
+  }
+  function trocarBotao(seletor, texto) {
+    var el = document.querySelector(seletor);
+    if (!el) return;
+    el.setAttribute("href", HZ_BETA_URL);
+    el.textContent = texto;
   }
   // ── depoimentos ──
   var grid = document.getElementById("depoGrid");
@@ -1866,7 +2017,11 @@ var HZ_DEPOIMENTOS = [];
       ["nav .btn-primary", "nav"],
       [".hero-actions .btn-primary", "hero"],
       [".gal-fecho .btn-primary", "galeria"],
-      [".closing .btn-primary", "fechamento"]
+      [".closing .btn-primary", "fechamento"],
+      // só existem no pré-lançamento; os seletores não casam com nada
+      // depois que HZ_EM_BREVE vira false
+      ["#faixaBreve a", "teste_faixa"],
+      ["#breveBox .btn-primary", "teste_oferta"]
     ];
     origens.forEach(function (par) {
       document.querySelectorAll(par[0]).forEach(function (el) {
@@ -1876,11 +2031,14 @@ var HZ_DEPOIMENTOS = [];
       });
     });
 
-    // 4. Clique no botão de compra de verdade. Quando o checkout estiver
-    //    configurado, este é o evento a marcar como conversão no GA4.
+    // 4. Clique no botão principal. No pré-lançamento ele leva ao teste
+    //    fechado, e é "beta_inscricao_clique" que mede o interesse; com o
+    //    checkout configurado, "checkout_iniciado" é o evento a marcar
+    //    como conversão no GA4.
     document.querySelectorAll(".js-cta").forEach(function (el) {
       el.addEventListener("click", function () {
-        evento(configurado ? "checkout_iniciado" : "checkout_indisponivel", { valor: 97, moeda: "BRL" });
+        if (emBreve) evento("beta_inscricao_clique", { origem: "oferta" });
+        else evento(configurado ? "checkout_iniciado" : "checkout_indisponivel", { valor: 97, moeda: "BRL" });
       });
     });
 
