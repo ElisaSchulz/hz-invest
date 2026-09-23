@@ -119,7 +119,7 @@
   .nota p { margin: 0; }
   .nota p + p { margin-top: 8px; }
 
-  .f-input.narrow { max-width: 340px; }
+  .f-input.narrow, .estreito .f-input { max-width: 340px; }
   .seg-conjuge button { line-height: 1.35; }
   @media (max-width: 519px) { .seg-conjuge { flex-direction: column; } .seg-conjuge button + button { border-left: none; border-top: 1px solid rgba(27,27,92,0.2); } }
 
@@ -755,8 +755,8 @@ function renderStep5() {
 
 function renderStep6() {
   return '<div class="card"><div class="grid2">' +
-    moneyInput("reservaEmergencia", "Valor total da reserva de emergência (mesmo se já informado nos investimentos)") +
-    '<div><label class="f-label">Onde está aplicada</label>' + selectHtml("ondeAplicada", ONDE_APLICADA, data.ondeAplicada) + '</div>' +
+    moneyInput("reservaEmergencia", "Valor total da reserva de emergência (mesmo se já informado nos investimentos)", "span2 estreito") +
+    '<div class="span2 estreito"><label class="f-label">Onde está aplicada</label>' + selectHtml("ondeAplicada", ONDE_APLICADA, data.ondeAplicada) + '</div>' +
     '<div class="span2"><label class="f-label">Se perdesse sua renda hoje, por quanto tempo manteria seu padrão de vida sem se desesperar?</label>' + selectHtml("tempoSemRenda", TEMPO_SEM_RENDA, data.tempoSemRenda) + '</div>' +
     '</div></div>';
 }
