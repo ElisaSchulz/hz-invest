@@ -120,6 +120,8 @@
   .nota p + p { margin-top: 8px; }
 
   .f-input.narrow { max-width: 340px; }
+  .seg-conjuge button { line-height: 1.35; }
+  @media (max-width: 519px) { .seg-conjuge { flex-direction: column; } .seg-conjuge button + button { border-left: none; border-top: 1px solid rgba(27,27,92,0.2); } }
 
   .gasto-slider-box { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .gasto-slider-box span { font-size: 14px; color: rgba(21,21,63,0.6); }
@@ -275,11 +277,13 @@ var STEP_META = {
   1: { eyebrow: "Etapa 1 de 10", title: "Identificação", desc: "Alguns dados básicos pra personalizar seu relatório e mantermos contato sobre seu diagnóstico." },
   2: { eyebrow: "Etapa 2 de 10", title: "Renda Mensal", desc: "Sua renda líquida e a do seu cônjuge, se aplicável, além de outras fontes de renda." },
   3: { eyebrow: "Etapa 3 de 10", title: "Despesas", desc: "Seus gastos mensais por categoria. O valor em Investimentos / Poupança conta como aporte mensal (poupança), não como gasto. Se faltar alguma categoria, adicione no fim da página." },
-  4: { eyebrow: "Etapa 4 de 10", title: "Patrimônio e Investimentos", desc: "Imóveis, veículos, investimentos e seu perfil como investidor. Se você tem cônjuge, informe o patrimônio do casal." },
+  // As etapas 3, 4 e 8 ganham no fim uma frase que depende de somar ou não a
+  // renda do cônjuge; veja notaConjuge().
+  4: { eyebrow: "Etapa 4 de 10", title: "Patrimônio e Investimentos", desc: "Imóveis, veículos, investimentos e seu perfil como investidor." },
   5: { eyebrow: "Etapa 5 de 10", title: "Dívidas", desc: "Cartão de crédito, cheque especial, empréstimos e outras dívidas em aberto. Se não souber um valor exato, use o último extrato ou a última fatura como referência." },
   6: { eyebrow: "Etapa 6 de 10", title: "Liquidez e Reserva de Emergência", desc: "Quanto você tem guardado para imprevistos e onde está aplicado. Informe o valor mesmo que já esteja incluído nos investimentos da etapa 4. Aqui ele serve para avaliar sua liquidez." },
   7: { eyebrow: "Etapa 7 de 10", title: "Gestão de Risco (Seguros)", desc: "Seguro de vida, plano de saúde e proteção da sua renda." },
-  8: { eyebrow: "Etapa 8 de 10", title: "Aposentadoria e Metas de Longo Prazo", desc: "Quando você quer parar de depender do trabalho, quanto quer receber por mês e o que fazer com o patrimônio. É com essas respostas que montamos a projeção do relatório. Se você tem cônjuge, considere as metas do casal." },
+  8: { eyebrow: "Etapa 8 de 10", title: "Aposentadoria e Metas de Longo Prazo", desc: "Quando você quer parar de depender do trabalho, quanto quer receber por mês e o que fazer com o patrimônio. É com essas respostas que montamos a projeção do relatório." },
   9: { eyebrow: "Etapa 9 de 10", title: "Situação Atual", desc: "Como você enxerga sua própria situação financeira hoje." },
   10: { eyebrow: "Etapa 10 de 10", title: "Revisão e Finalização", desc: "Confira tudo antes de enviar. Você pode voltar e editar qualquer etapa." }
 };
@@ -292,7 +296,7 @@ function defaultData() {
   return {
     nome: "", email: "", estado: "", cidade: "", dataNascimento: "",
     estadoCivil: "", temConjuge: "", dataNascimentoConjuge: "", filhos: "", ocupacao: "",
-    rendaPropria: 0, rendaConjuge: 0, outrasRendas: [],
+    rendaPropria: 0, rendaConjuge: 0, considerarRendaConjuge: true, outrasRendas: [],
     despesas: { alimentacao: 0, educacao: 0, filhos: 0, investimentos: 0, lazer: 0, moradia: 0, presentes: 0, saude: 0, seguros: 0, servicos: 0, transporte: 0, vestuario: 0 },
     despesasExtras: [],
     imoveis: [], veiculos: [],
@@ -390,9 +394,33 @@ function idadeHint(iso, rotulo) {
   return '<div class="f-hint">' + (rotulo || "Idade") + ": " + a + (a === 1 ? " ano" : " anos") + "</div>";
 }
 
+/* ===================== Renda do casal ===================== */
+// Ter cônjuge com renda e analisar as contas como um orçamento só são coisas
+// diferentes: muitos casais dividem a vida mas mantêm o dinheiro separado. A
+// escolha da etapa 2 decide se a renda dele entra na análise, e as etapas
+// seguintes precisam seguir a mesma base — não faz sentido excluir a renda
+// dele e depois pedir o patrimônio do casal.
+function somaRendaConjuge() {
+  return data.temConjuge === true && data.considerarRendaConjuge !== false;
+}
+function notaConjuge(n) {
+  if (data.temConjuge !== true) return "";
+  var junto = somaRendaConjuge();
+  if (n === 3) return junto
+    ? " Como a renda do casal entra na análise, informe as despesas do casal."
+    : " Como você optou por analisar só a sua renda, informe apenas as despesas que saem do seu bolso.";
+  if (n === 4) return junto
+    ? " Informe o patrimônio do casal."
+    : " Como você optou por analisar só a sua renda, informe apenas o patrimônio que é seu.";
+  if (n === 8) return junto
+    ? " Considere as metas do casal."
+    : " Como você optou por analisar só a sua renda, considere apenas as metas que você banca sozinho(a).";
+  return "";
+}
+
 /* ===================== Totais ===================== */
 function totals() {
-  var totalRenda = (data.rendaPropria || 0) + (data.temConjuge === true ? (data.rendaConjuge || 0) : 0) + data.outrasRendas.reduce(function (a, r) { return a + (r.valor || 0); }, 0);
+  var totalRenda = (data.rendaPropria || 0) + (somaRendaConjuge() ? (data.rendaConjuge || 0) : 0) + data.outrasRendas.reduce(function (a, r) { return a + (r.valor || 0); }, 0);
   var totalDespesas = DESPESA_CATEGORIES.reduce(function (a, c) { return a + (data.despesas[c[0]] || 0); }, 0) +
     data.despesasExtras.reduce(function (a, d) { return a + (d.valor || 0); }, 0);
   var patrimonioImoveis = data.imoveis.reduce(function (a, i) { return a + (i.valorMercado || 0); }, 0);
@@ -433,7 +461,9 @@ function requiredByStep(n) {
       ["Ocupação", data.ocupacao !== ""],
       ["Aceite da Política de Privacidade", data.consentimento === true]
     ],
-    2: [["Renda mensal (informe ao menos uma fonte)", t.totalRenda > 0]],
+    2: [[data.temConjuge === true && !somaRendaConjuge()
+      ? "Renda mensal (você optou por analisar só a sua renda, então informe a sua renda própria ou outra fonte sua)"
+      : "Renda mensal (informe ao menos uma fonte)", t.totalRenda > 0]],
     3: [["Despesas mensais (informe ao menos uma categoria)", t.totalDespesas > 0]],
     4: [
       ["Perfil de risco autodeclarado", data.perfilRisco !== ""],
@@ -551,7 +581,7 @@ function renderStep1() {
         '<input type="date" class="f-input" data-field="dataNascimentoConjuge" max="' + dataMaxNascimento() + '" value="' + esc(data.dataNascimentoConjuge) + '">' +
         '<div id="hint-nascimento-conjuge">' + idadeHint(data.dataNascimentoConjuge) + '</div></div>' +
       '<div class="f-hint" style="margin-top:0; align-self:end;">A data do cônjuge fica registrada apenas como informação. A projeção de aposentadoria usa a sua idade.</div>' +
-      '<div class="span2"><div class="f-hint" style="margin-top:0;">A renda do cônjuge será perguntada na próxima etapa (Renda Mensal). Nas etapas de patrimônio e metas, considere os valores do casal.</div></div>' : "") +
+      '<div class="span2"><div class="f-hint" style="margin-top:0;">A renda do cônjuge será perguntada na próxima etapa, junto com a escolha de somá-la ou não à análise. As etapas seguintes seguem essa escolha.</div></div>' : "") +
     '<div class="rule"></div>' +
     '<div class="span2"><label class="f-label">Filhos / dependentes</label><input type="number" min="0" class="f-input num" data-field="filhos" placeholder="0" value="' + esc(data.filhos) + '"></div>' +
     '<div class="span2"><label class="f-label">Ocupação</label>' + selectHtml("ocupacao", OCUPACOES, data.ocupacao) + '</div>' +
@@ -574,11 +604,30 @@ function renderStep2() {
       '<div><label class="f-label">Valor</label><input type="text" inputmode="numeric" class="f-input num" data-lmoney="valor" data-list="outrasRendas" data-index="' + i + '" value="' + esc(fmt(item.valor)) + '"></div>' +
       '</div></div>';
   });
+  // Quem tem cônjuge escolhe a base da análise. O padrão é somar, que é o caso
+  // mais comum, mas casal com orçamento separado precisa poder ficar de fora.
+  var junto = somaRendaConjuge();
+  var escolhaConjuge = data.temConjuge === true
+    ? '<div class="rule-full"></div>' +
+      '<label class="f-label" style="margin-bottom:10px;">A renda do cônjuge entra na análise da sua saúde financeira?</label>' +
+      '<div class="seg stretch seg-conjuge" style="width:100%; max-width:520px;">' +
+      '<button type="button" class="' + (junto ? "on" : "") + '" data-action="set" data-key="considerarRendaConjuge" data-val="true">Sim, somar as duas rendas</button>' +
+      '<button type="button" class="' + (!junto ? "on" : "") + '" data-action="set" data-key="considerarRendaConjuge" data-val="false">Não, analisar só a minha</button>' +
+      '</div>' +
+      '<div class="nota" style="margin-top:16px;">' +
+      (junto
+        ? '<p>O diagnóstico vai tratar vocês como um orçamento só: taxa de poupança, régua 50/30/20, comprometimento da renda com dívidas e projeção da aposentadoria usam a soma das duas rendas. Nas etapas seguintes, informe as despesas, o patrimônio e as metas <b>do casal</b>.</p>'
+        : '<p>A renda do cônjuge fica registrada, mas <b>fora de todos os cálculos</b>: taxa de poupança, régua 50/30/20, comprometimento com dívidas e projeção da aposentadoria vão usar apenas a sua renda. É a escolha certa pra quem divide a vida mas mantém as contas separadas.</p>' +
+          '<p>Para o diagnóstico fechar, as etapas seguintes precisam seguir a mesma régua: informe só <b>as despesas que saem do seu bolso</b>, só o patrimônio que é seu e só as metas que você banca. Misturar as despesas do casal com uma renda individual cria um déficit que não existe.</p>') +
+      '</div>'
+    : "";
+
   return totalizerHtml("tot-renda", "Renda total mensal", t.totalRenda) +
     '<div class="card"><div class="grid2">' +
     moneyInput("rendaPropria", "Renda mensal líquida própria") +
-    (data.temConjuge === true ? moneyInput("rendaConjuge", "Renda mensal líquida do cônjuge") : "") +
-    '</div><div class="rule-full"></div>' +
+    (data.temConjuge === true ? moneyInput("rendaConjuge", "Renda mensal líquida do cônjuge",
+      "", junto ? "" : "Registrada para contexto, fora dos cálculos.") : "") +
+    '</div>' + escolhaConjuge + '<div class="rule-full"></div>' +
     '<label class="f-label" style="margin-bottom:14px;">Outras rendas (aluguel, freelance, etc.)</label>' + outras +
     '<button type="button" class="link-add" data-action="addItem" data-list="outrasRendas">+ Adicionar outra renda</button></div>';
 }
@@ -821,9 +870,14 @@ function renderStep10() {
       ["Filhos/dependentes", orDash(data.filhos)], ["Ocupação", orDash(data.ocupacao)]
     ])},
     { n: 2, title: "Renda Mensal", rows: [
-      ["Renda própria", fmt(data.rendaPropria)], ["Renda cônjuge", fmt(data.rendaConjuge)],
-      ["Outras rendas", String(data.outrasRendas.length)], ["Total", fmt(t.totalRenda)]
-    ]},
+      ["Renda própria", fmt(data.rendaPropria)]
+    ].concat(data.temConjuge === true ? [
+      ["Renda cônjuge", fmt(data.rendaConjuge) + (somaRendaConjuge() ? "" : " (fora da análise)")],
+      ["Base da análise", somaRendaConjuge() ? "Renda do casal" : "Só a sua renda"]
+    ] : []).concat([
+      ["Outras rendas", String(data.outrasRendas.length)],
+      ["Total considerado", fmt(t.totalRenda)]
+    ])},
     { n: 3, title: "Despesas", rows: [
       ["Total de despesas", fmt(t.totalDespesas)],
       ["Outras despesas informadas", String(data.despesasExtras.length)]
@@ -917,7 +971,7 @@ function render() {
     var meta = STEP_META[step];
     html += '<div class="step-eyebrow"><div class="step-eyebrow-line"></div><div class="step-eyebrow-text">' + meta.eyebrow + '</div></div>' +
       '<div class="step-title">' + meta.title + '</div>' +
-      '<div class="step-desc">' + meta.desc + '</div>';
+      '<div class="step-desc">' + meta.desc + notaConjuge(step) + '</div>';
     var renderers = { 1: renderStep1, 2: renderStep2, 3: renderStep3, 4: renderStep4, 5: renderStep5, 6: renderStep6, 7: renderStep7, 8: renderStep8, 9: renderStep9, 10: renderStep10 };
     html += renderers[step]();
     var missing = requiredByStep(step);

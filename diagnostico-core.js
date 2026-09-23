@@ -294,7 +294,13 @@
     if (isNaN(dataRef.getTime())) dataRef = new Date();
 
     // ---- Dim 1: Fluxo de Caixa ----
-    var rendaTotal = (D.rendaPropria || 0) + (D.temConjuge ? (D.rendaConjuge || 0) : 0) + (D.outrasRendas || []).reduce(function (a, r) { return a + (r.valor || 0); }, 0);
+    // Ter cônjuge com renda e querer que ela entre na análise são coisas
+    // diferentes: casal com orçamento separado declara a renda do outro como
+    // contexto, mas o diagnóstico é sobre as contas de quem respondeu. Sem o
+    // campo (diagnósticos gerados antes da escolha existir), soma — que era o
+    // comportamento quando eles foram feitos.
+    var somaRendaConjuge = !!D.temConjuge && D.considerarRendaConjuge !== false;
+    var rendaTotal = (D.rendaPropria || 0) + (somaRendaConjuge ? (D.rendaConjuge || 0) : 0) + (D.outrasRendas || []).reduce(function (a, r) { return a + (r.valor || 0); }, 0);
     var despesasCats = D.despesas || {};
     // "impostos" saiu do formulário, mas continua aqui: diagnósticos gerados
     // antes dessa mudança ainda trazem a categoria, e o relatório deles precisa
@@ -1244,7 +1250,11 @@
     var kpiGrupos = [
       {
         titulo: "Fluxo mensal",
-        destaque: { label: "Renda total mensal", value: fmt(rendaTotal) },
+        destaque: { label: "Renda total mensal", value: fmt(rendaTotal),
+          sub: !D.temConjuge ? undefined
+            : (somaRendaConjuge
+              ? "soma da sua renda com a do seu cônjuge"
+              : "só a sua renda: a do cônjuge (" + fmt(D.rendaConjuge || 0) + ") ficou fora da análise, como você pediu") },
         itens: [
           { label: "Despesa total mensal", value: fmt(despesaTotal), sub: aporteMensal > 0 ? "+ " + fmt(aporteMensal) + " de aporte em investimentos" : undefined },
           { label: "Taxa de poupança", value: pct(taxaPoupanca), sub: aporteMensal > 0 ? "inclui o aporte mensal declarado" : undefined }
