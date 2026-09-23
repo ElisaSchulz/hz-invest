@@ -168,7 +168,13 @@
     risco: {
       critico: function (n) { return { texto: "Sua proteção contra imprevistos tem lacunas sérias: " + n.protecaoLista + ". Isso expõe " + (n.dependentes > 0 ? "sua família" : "você") + " a risco financeiro significativo em caso de imprevisto.", acao: n.protecaoAcao }; },
       insuficiente: function (n) { return { texto: "Sua proteção cobre parte dos cenários, mas ainda há lacunas: " + n.protecaoLista + ".", acao: n.protecaoAcao }; },
-      otimizacao: function (n) { return { texto: "Sua proteção está bem estruturada. Recomendamos revisão periódica a cada 2 anos para manter a adequação.", acao: "Revisar " + n.coberturas + " em até 2 anos." }; }
+      otimizacao: function (n) {
+        if (n.semCoberturaInvalidez) return {
+          texto: "O que você tem hoje cobre bem os imprevistos do dia a dia. O que fica em aberto é o cenário mais caro e menos lembrado por quem não tem dependentes: a invalidez, continuar vivo e sem conseguir trabalhar. Quem banca isso hoje é a sua reserva, que tem prazo pra acabar. Um seguro com cobertura de invalidez cobre justamente a parte que ela não alcança, e costuma custar pouco em idade de trabalho.",
+          acao: "Cotar um seguro com cobertura de invalidez e comparar o custo mensal com o tempo que a reserva sustentaria sozinha."
+        };
+        return { texto: "Sua proteção está bem estruturada. Recomendamos revisão periódica a cada 2 anos para manter a adequação.", acao: "Revisar " + n.coberturas + " em até 2 anos." };
+      }
     },
     patrimonio: {
       // O alerta de carteira (concentração ou descasamento com o perfil) precisa
@@ -288,7 +294,13 @@
     if (isNaN(dataRef.getTime())) dataRef = new Date();
 
     // ---- Dim 1: Fluxo de Caixa ----
-    var rendaTotal = (D.rendaPropria || 0) + (D.temConjuge ? (D.rendaConjuge || 0) : 0) + (D.outrasRendas || []).reduce(function (a, r) { return a + (r.valor || 0); }, 0);
+    // Ter cônjuge com renda e querer que ela entre na análise são coisas
+    // diferentes: casal com orçamento separado declara a renda do outro como
+    // contexto, mas o diagnóstico é sobre as contas de quem respondeu. Sem o
+    // campo (diagnósticos gerados antes da escolha existir), soma — que era o
+    // comportamento quando eles foram feitos.
+    var somaRendaConjuge = !!D.temConjuge && D.considerarRendaConjuge !== false;
+    var rendaTotal = (D.rendaPropria || 0) + (somaRendaConjuge ? (D.rendaConjuge || 0) : 0) + (D.outrasRendas || []).reduce(function (a, r) { return a + (r.valor || 0); }, 0);
     var despesasCats = D.despesas || {};
     // "impostos" saiu do formulário, mas continua aqui: diagnósticos gerados
     // antes dessa mudança ainda trazem a categoria, e o relatório deles precisa
@@ -420,15 +432,28 @@
     var dependentes = Number(D.filhos) || 0;
     var benchmarkMultiplo = dependentes <= 2 ? 6.5 : 9;
     var DURACAO_SCORE = { "Nenhum tempo": 5, "Menos de 3 meses": 30, "3-6 meses": 68, "6+ meses ou tenho seguro invalidez": 92 };
-    var scoreRisco2 = DURACAO_SCORE[D.tempoRendaGarantida] !== undefined ? DURACAO_SCORE[D.tempoRendaGarantida] : 40;
+    // Proteção de renda se a pessoa não puder trabalhar. A resposta declarada é
+    // o ponto de partida, mas a reserva de emergência é proteção concreta contra
+    // esse mesmo cenário: parada a renda, é ela que paga as contas enquanto
+    // durar. Por isso a reserva entra como piso — nunca derruba o que foi
+    // declarado, só impede que uma reserva robusta seja ignorada aqui.
+    var duracaoDeclarada = DURACAO_SCORE[D.tempoRendaGarantida] !== undefined ? DURACAO_SCORE[D.tempoRendaGarantida] : 40;
+    var pisoReserva = mesesCobertura >= 6 ? 70 : mesesCobertura >= 3 ? 50 : mesesCobertura >= 1 ? 28 : 0;
+    var scoreRisco2 = Math.max(duracaoDeclarada, pisoReserva);
+    var rendaProtegidaPelaReserva = pisoReserva > duracaoDeclarada;
     // Proteção de saúde: plano de saúde e/ou reserva médica dedicada
     var scoreRisco3 = D.temPlanoSaude ? (D.reservaMedica ? 100 : 80) : (D.reservaMedica ? 45 : 10);
-    // O seguro de vida existe pra proteger quem depende da sua renda. Sem
-    // dependentes ele sai da conta, e a proteção passa a ser medida pela
-    // garantia de renda em caso de incapacidade e pela cobertura de saúde.
     var scoreRisco1 = null, scoreRisco;
     if (dependentes === 0) {
-      scoreRisco = scoreRisco2 * 0.6 + scoreRisco3 * 0.4;
+      // Sem dependentes, o seguro de vida deixa de ser sobre sustentar alguém
+      // depois da sua morte, e passa a valer pela cobertura de invalidez que
+      // quase toda apólice traz junto. Então ele continua na conta, mas com
+      // peso pequeno e sem punição pesada: ter o seguro soma, não ter custa
+      // alguns pontos, e ninguém cai na faixa crítica só por estar solteiro e
+      // sem filhos. O que decide a nota é o que sustenta a renda se a pessoa
+      // não puder trabalhar, e a cobertura de saúde.
+      scoreRisco1 = D.temSeguroVida ? 90 : 45;
+      scoreRisco = scoreRisco1 * 0.2 + scoreRisco2 * 0.5 + scoreRisco3 * 0.3;
     } else {
       scoreRisco1 = D.temSeguroVida
         ? bandInterp(multiploCobertura, [benchmarkMultiplo * 0.5, benchmarkMultiplo * 0.85, benchmarkMultiplo * 1.15])
@@ -802,11 +827,21 @@
     if (dependentes > 0 && !D.temSeguroVida) protecaoGaps.push("nenhum seguro de vida, com " + plural(dependentes, "dependente", "dependentes"));
     else if (seguroVidaInsuficiente) protecaoGaps.push("cobertura de seguro de vida de " + num1(multiploCobertura) + "x a renda anual, abaixo do recomendado (" + String(benchmarkMultiplo).replace(".", ",") + "x)");
     if (!D.temPlanoSaude) protecaoGaps.push(D.reservaMedica ? "sem plano de saúde (compensado em parte pela reserva médica)" : "sem plano de saúde nem reserva pra emergências médicas");
-    if (D.tempoRendaGarantida === "Nenhum tempo" || D.tempoRendaGarantida === "Menos de 3 meses") protecaoGaps.push("renda garantida por pouco tempo em caso de incapacidade de trabalhar");
+    // A lacuna de renda só vale como lacuna se a reserva também não cobrir o
+    // período: quem declarou pouco tempo mas tem meio ano de despesas guardado
+    // está protegido, e apontar isso como falha seria ignorar o próprio número.
+    var rendaCurtaEmIncapacidade = (D.tempoRendaGarantida === "Nenhum tempo" || D.tempoRendaGarantida === "Menos de 3 meses") && mesesCobertura < 3;
+    if (rendaCurtaEmIncapacidade) protecaoGaps.push("renda garantida por pouco tempo em caso de incapacidade de trabalhar");
+    // Sem dependentes, não ter seguro nenhum ainda é uma lacuna — não pela
+    // morte, e sim pela invalidez, cenário em que a pessoa continua viva e
+    // precisando se sustentar sem conseguir trabalhar.
+    var semCoberturaInvalidez = dependentes === 0 && !D.temSeguroVida && D.tempoRendaGarantida !== "6+ meses ou tenho seguro invalidez";
+    if (semCoberturaInvalidez) protecaoGaps.push("nenhuma cobertura para invalidez além do que a reserva sustenta");
     var protecaoAcao =
       (dependentes > 0 && !D.temSeguroVida) ? "Cotar um seguro de vida compatível com o número de dependentes nos próximos 30 dias." :
       seguroVidaInsuficiente ? "Revisar o capital segurado do seguro de vida para fechar o gap identificado." :
       (!D.temPlanoSaude) ? "Cotar um plano de saúde ou estruturar uma reserva dedicada a emergências médicas." :
+      semCoberturaInvalidez ? "Cotar um seguro com cobertura de invalidez, que é o cenário que pesa quando não há dependentes." :
       "Estruturar proteção de renda (seguro de invalidez ou reserva estendida) para imprevistos longos.";
 
     var N = {
@@ -851,6 +886,7 @@
       retornoAtual: pct(rAtualAnual * 100, 1),
       protecaoLista: protecaoGaps.join("; ") || "nenhuma lacuna relevante identificada",
       protecaoAcao: protecaoAcao,
+      semCoberturaInvalidez: semCoberturaInvalidez,
       coberturas: coberturasDaPessoa,
       aporteViavel: aporteNecessario <= rendaTotal * 0.5,
       aposentado: aposentadoriaAtingida,
@@ -897,11 +933,24 @@
       return { dimNome: DIM_NAMES[e.key], texto: gen.texto, key: e.key };
     });
 
-    // Regra contextual: taxa de juros desconhecida e uso recorrente de rotativo sempre entram na recomendação de endividamento
+    // Regra contextual: como a dívida aparece e o uso de rotativo pra cobrir
+    // outra dívida sempre entram na recomendação de endividamento. São dois
+    // padrões de comportamento, e é o padrão — não o saldo — que decide se o
+    // plano é de quitação ou de sair do ciclo.
     if (D.temDividas) {
       var extra = "";
+      // A pergunta de taxa de juros saiu do formulário; diagnósticos gerados
+      // antes disso ainda trazem a resposta, e o texto dela continua valendo.
       if (D.sabeTaxaJuros === "Não sei") {
         extra += " Levantar a taxa de juros exata de cada dívida é o primeiro passo. Sem esse dado não é possível priorizar corretamente o que quitar primeiro.";
+      }
+      if (D.origemDivida === "Sempre no aperto, quando não tem outra saída" || D.origemDivida === "Quase sempre no aperto") {
+        extra += " Suas dívidas " + (D.origemDivida === "Quase sempre no aperto" ? "quase sempre aparecem" : "aparecem") +
+          " no aperto, sem espaço pra comparar custo — e é aí que se contrata a linha mais cara disponível. Nesse padrão, quitar o saldo resolve metade do problema: sem uma reserva mínima, a próxima emergência vira dívida nova. Construir essa reserva, mesmo pequena, entra no mesmo plano da quitação.";
+      } else if (D.origemDivida === "Depende: às vezes planejo, às vezes não") {
+        extra += " Parte das suas dívidas é planejada e parte aparece no aperto. Vale separar quais foram as de emergência: são elas que costumam carregar as taxas mais altas e as que mais ganham com renegociação.";
+      } else if (D.origemDivida === "Sempre planejada, comparando o custo antes") {
+        extra += " Você contrata dívida de forma planejada, comparando o custo antes, e isso muda a natureza do que está em jogo aqui: é uma questão de volume e prazo, não de padrão de comportamento.";
       }
       if (D.usouRotativo === "Frequentemente" || D.usouRotativo === "Já aconteceu 1-2 vezes") {
         extra += " O uso recorrente de crédito rotativo pra cobrir outra dívida é um sinal de ciclo. Resolver isso é tão prioritário quanto reduzir o valor total da dívida.";
@@ -1214,7 +1263,11 @@
     var kpiGrupos = [
       {
         titulo: "Fluxo mensal",
-        destaque: { label: "Renda total mensal", value: fmt(rendaTotal) },
+        destaque: { label: "Renda total mensal", value: fmt(rendaTotal),
+          sub: !D.temConjuge ? undefined
+            : (somaRendaConjuge
+              ? "soma da sua renda com a do seu cônjuge"
+              : "só a sua renda: a do cônjuge (" + fmt(D.rendaConjuge || 0) + ") ficou fora da análise, como você pediu") },
         itens: [
           { label: "Despesa total mensal", value: fmt(despesaTotal), sub: aporteMensal > 0 ? "+ " + fmt(aporteMensal) + " de aporte em investimentos" : undefined },
           { label: "Taxa de poupança", value: pct(taxaPoupanca), sub: aporteMensal > 0 ? "inclui o aporte mensal declarado" : undefined }
@@ -1281,8 +1334,9 @@
       endividamento: D.temDividas ? "Dívidas de " + fmt(totalDividas) + ", com parcelas comprometendo " + pct(comprometimento) + " da renda mensal." : "Sem dívidas em aberto no momento.",
       risco: (dependentes > 0
         ? "Cobertura de seguro de vida de " + num1(multiploCobertura) + "x a renda anual para " + plural(dependentes, "dependente", "dependentes") + ", "
-        : "Sem dependentes, então a proteção é medida pela garantia de renda: ") +
-        (D.temPlanoSaude ? "com" : "sem") + " plano de saúde, renda garantida por \"" + (D.tempoRendaGarantida || "—").toLowerCase() + "\".",
+        : "Sem dependentes, o peso fica na invalidez: " + (D.temSeguroVida ? "com seguro contratado, " : "sem seguro contratado, ")) +
+        (D.temPlanoSaude ? "com" : "sem") + " plano de saúde, renda garantida por \"" + (D.tempoRendaGarantida || "—").toLowerCase() + "\"" +
+        (rendaProtegidaPelaReserva ? " e reserva que cobre " + num1(mesesCobertura) + " meses de despesas." : "."),
       patrimonio: aposentadoriaAtingida
         ? "Patrimônio investido cobre " + pct(indicePatrimonio) + " do necessário para a renda que você deseja."
         : "Patrimônio em " + pct(indicePatrimonio) + " do esperado pra sua idade e renda.",

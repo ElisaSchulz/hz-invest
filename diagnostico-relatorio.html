@@ -260,12 +260,18 @@ function renderDistribuicao(R) {
     return el;
   }).join("");
 
+  // Cada linha traz o valor em reais que a pessoa informou, além do percentual:
+  // o percentual diz o peso relativo, mas é o valor que ela reconhece como o
+  // próprio gasto e consegue conferir contra o orçamento dela.
   vistos = {};
   var lista = d.categorias.map(function (c) {
     var i = (vistos[c.grupo] = (vistos[c.grupo] || 0)); vistos[c.grupo]++;
-    return '<div style="display:flex; align-items:center; gap:8px; padding:5px 0;">' +
-      '<div style="width:9px; height:9px; border-radius:50%; background:' + corDaCategoria(c, i) + '; flex-shrink:0;"></div>' +
-      '<div style="font-size:12.5px; color:rgba(21,21,63,0.8); flex:1; min-width:0;">' + c.label + '</div>' +
+    return '<div style="display:flex; align-items:flex-start; gap:8px; padding:5px 0;">' +
+      '<div style="width:9px; height:9px; border-radius:50%; background:' + corDaCategoria(c, i) + '; flex-shrink:0; margin-top:4px;"></div>' +
+      '<div style="flex:1; min-width:0;">' +
+      '<div style="font-size:12.5px; color:rgba(21,21,63,0.8); line-height:1.35;">' + c.label + '</div>' +
+      '<div style="font-size:12px; color:rgba(21,21,63,0.5); font-feature-settings:\'tnum\'; line-height:1.35;">' + fmt(c.valor) + '</div>' +
+      '</div>' +
       '<div style="font-size:12.5px; font-weight:700; color:#1B1B5C; font-feature-settings:\'tnum\';">' + pct(c.pct, 1) + '</div>' +
       '</div>';
   }).join("");
