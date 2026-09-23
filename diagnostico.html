@@ -264,6 +264,10 @@ var PERFIL_RISCO = ["Conservador", "Moderado", "Arrojado"];
 var SABE_RENTABILIDADE = ["Não sei", "Ideia vaga", "Sei aproximado", "Sei exato"];
 var INVESTE_AUTOMATICO = ["Só o que sobra", "Às vezes automático", "Quase sempre", "Sempre automático"];
 var USOU_ROTATIVO = ["Frequentemente", "Já aconteceu 1-2 vezes", "Raramente", "Nunca"];
+// Dívida planejada e dívida de emergência pedem planos diferentes: uma é
+// questão de volume e prazo, a outra é falta de reserva. A ordem vai do pior
+// padrão para o melhor.
+var ORIGEM_DIVIDA = ["Sempre no aperto, quando não tem outra saída", "Quase sempre no aperto", "Depende: às vezes planejo, às vezes não", "Sempre planejada, comparando o custo antes"];
 var ONDE_APLICADA = ["Poupança", "Conta corrente", "CDB liquidez diária", "Tesouro Selic", "Outro"];
 var TEMPO_SEM_RENDA = ["Dias", "Semanas", "Poucos meses", "6+ meses"];
 var TEMPO_RENDA_GARANTIDA = ["Nenhum tempo", "Menos de 3 meses", "3-6 meses", "6+ meses ou tenho seguro invalidez"];
@@ -303,7 +307,7 @@ function defaultData() {
     investPoupanca: 0, investRendaFixaPublica: 0, investRendaFixaPrivada: 0, investRendaVariavel: 0, investCripto: 0, investOutros: 0,
     perfilRisco: "", sabeRentabilidade: "", investeAutomatico: "",
     temDividas: "", cartaoCredito: 0, chequeEspecial: 0, emprestimoPessoal: 0, outrasDividas: [],
-    parcelasMensais: 0, sabeTaxaJuros: "", usouRotativo: "",
+    parcelasMensais: 0, origemDivida: "", usouRotativo: "",
     reservaEmergencia: 0, ondeAplicada: "", tempoSemRenda: "",
     temSeguroVida: "", capitalSegurado: 0, temPlanoSaude: "", reservaMedica: "",
     tempoRendaGarantida: "", revisouApolices: "",
@@ -470,7 +474,14 @@ function requiredByStep(n) {
       ["Sabe a rentabilidade média no último ano?", data.sabeRentabilidade !== ""],
       ["Investe automático ou só o que sobra?", data.investeAutomatico !== ""]
     ],
-    5: [["Você tem dívidas em cartão de crédito, cheque especial ou empréstimo pessoal hoje?", data.temDividas === true || data.temDividas === false]],
+    // Com dívida em aberto, as duas perguntas de comportamento são o que separa
+    // um plano de quitação de um plano de sair do ciclo — sem elas o relatório
+    // trata padrões muito diferentes do mesmo jeito.
+    5: [["Você tem dívidas em cartão de crédito, cheque especial ou empréstimo pessoal hoje?", data.temDividas === true || data.temDividas === false]]
+      .concat(data.temDividas === true ? [
+        ["Se a dívida costuma ser planejada ou aparece no aperto", data.origemDivida !== ""],
+        ["Se já usou empréstimo ou rotativo pra cobrir outra dívida", data.usouRotativo !== ""]
+      ] : []),
     6: [
       ["Onde está aplicada", data.ondeAplicada !== ""],
       ["Tempo sem se desesperar", data.tempoSemRenda !== ""]
@@ -741,7 +752,8 @@ function renderStep5() {
       '<button type="button" class="link-add" data-action="addItem" data-list="outrasDividas">+ Adicionar outra dívida</button>' +
       '<div class="rule-full"></div>' +
       '<div class="grid1">' +
-      '<div><label class="f-label">Sabe a taxa de juros da dívida mais cara?</label>' + selectHtml("sabeTaxaJuros", SABE_RENTABILIDADE, data.sabeTaxaJuros) + '</div>' +
+      '<div><label class="f-label">Quando você contrai uma dívida, ela costuma ser planejada ou aparece no aperto?</label>' + selectHtml("origemDivida", ORIGEM_DIVIDA, data.origemDivida) +
+      '<div class="f-hint">Dívida planejada — com prazo definido, taxa comparada e parcela que cabe no orçamento — é uma ferramenta. Dívida que aparece no aperto costuma ser a mais cara disponível, contratada sem comparar nada. Os dois casos pedem planos diferentes: um é questão de volume e prazo, o outro se resolve construindo reserva.</div></div>' +
       '<div><label class="f-label">Nos últimos 12 meses, já pegou empréstimo/usou rotativo pra cobrir outra dívida?</label>' + selectHtml("usouRotativo", USOU_ROTATIVO, data.usouRotativo) +
       '<div class="f-hint">Pagar uma dívida com outra dívida mais cara é o padrão que mais rápido transforma um aperto passageiro numa bola de neve. Responder com honestidade aqui muda o plano de ação do relatório.</div></div>' +
       '</div></div>';
@@ -887,7 +899,12 @@ function renderStep10() {
       ["Perfil de risco", orDash(data.perfilRisco)], ["Patrimônio total", fmt(t.patrimonioTotal)],
       ["Patrimônio líquido", fmt(t.patrimonioLiquido)]
     ]},
-    { n: 5, title: "Dívidas", rows: [["Tem dívidas", simNao(data.temDividas)], ["Total de dívidas", fmt(t.totalDividas)]] },
+    { n: 5, title: "Dívidas", rows: [
+      ["Tem dívidas", simNao(data.temDividas)], ["Total de dívidas", fmt(t.totalDividas)]
+    ].concat(data.temDividas === true ? [
+      ["Como a dívida aparece", orDash(data.origemDivida)],
+      ["Usou rotativo pra cobrir dívida", orDash(data.usouRotativo)]
+    ] : [])},
     { n: 6, title: "Liquidez e Reserva", rows: [
       ["Reserva de emergência", fmt(data.reservaEmergencia)], ["Onde está aplicada", orDash(data.ondeAplicada)],
       ["Tempo sem se desesperar", orDash(data.tempoSemRenda)]

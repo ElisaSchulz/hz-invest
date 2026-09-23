@@ -933,11 +933,24 @@
       return { dimNome: DIM_NAMES[e.key], texto: gen.texto, key: e.key };
     });
 
-    // Regra contextual: taxa de juros desconhecida e uso recorrente de rotativo sempre entram na recomendação de endividamento
+    // Regra contextual: como a dívida aparece e o uso de rotativo pra cobrir
+    // outra dívida sempre entram na recomendação de endividamento. São dois
+    // padrões de comportamento, e é o padrão — não o saldo — que decide se o
+    // plano é de quitação ou de sair do ciclo.
     if (D.temDividas) {
       var extra = "";
+      // A pergunta de taxa de juros saiu do formulário; diagnósticos gerados
+      // antes disso ainda trazem a resposta, e o texto dela continua valendo.
       if (D.sabeTaxaJuros === "Não sei") {
         extra += " Levantar a taxa de juros exata de cada dívida é o primeiro passo. Sem esse dado não é possível priorizar corretamente o que quitar primeiro.";
+      }
+      if (D.origemDivida === "Sempre no aperto, quando não tem outra saída" || D.origemDivida === "Quase sempre no aperto") {
+        extra += " Suas dívidas " + (D.origemDivida === "Quase sempre no aperto" ? "quase sempre aparecem" : "aparecem") +
+          " no aperto, sem espaço pra comparar custo — e é aí que se contrata a linha mais cara disponível. Nesse padrão, quitar o saldo resolve metade do problema: sem uma reserva mínima, a próxima emergência vira dívida nova. Construir essa reserva, mesmo pequena, entra no mesmo plano da quitação.";
+      } else if (D.origemDivida === "Depende: às vezes planejo, às vezes não") {
+        extra += " Parte das suas dívidas é planejada e parte aparece no aperto. Vale separar quais foram as de emergência: são elas que costumam carregar as taxas mais altas e as que mais ganham com renegociação.";
+      } else if (D.origemDivida === "Sempre planejada, comparando o custo antes") {
+        extra += " Você contrata dívida de forma planejada, comparando o custo antes, e isso muda a natureza do que está em jogo aqui: é uma questão de volume e prazo, não de padrão de comportamento.";
       }
       if (D.usouRotativo === "Frequentemente" || D.usouRotativo === "Já aconteceu 1-2 vezes") {
         extra += " O uso recorrente de crédito rotativo pra cobrir outra dívida é um sinal de ciclo. Resolver isso é tão prioritário quanto reduzir o valor total da dívida.";
